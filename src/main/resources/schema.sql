@@ -39,6 +39,7 @@ CREATE TABLE Task (
     StartTime TIMESTAMP,
     EndTime TIMESTAMP,
     ActivityID BigInt,
+    Advancement VarChar(50)
 );
 
 CREATE TABLE Operator (
