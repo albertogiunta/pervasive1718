@@ -1,3 +1,3 @@
-data class Role(val id: Int, val name: String)
+package model
 
 data class ResponseMessage(val id: Int, val message: String)
