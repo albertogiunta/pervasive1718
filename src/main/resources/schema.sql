@@ -1,4 +1,4 @@
-CREATE TABLE Log (
+﻿CREATE TABLE Log (
     ID BigSerial PRIMARY KEY,
     Name VarChar(50),
     LogTime TIMESTAMP,
@@ -23,7 +23,7 @@ CREATE TABLE Status (
 CREATE TABLE Activity (
     ID BigSerial PRIMARY KEY,
     Name VarChar(50),
-    ExpectedEffect VarChar(500)
+    ExpectedEffect VarChar(500),
     TypeID BigInt,
     StatusID BigInt
 );
@@ -31,7 +31,7 @@ CREATE TABLE Activity (
 CREATE TABLE ActionType (
     ID BigSerial PRIMARY KEY,
     Name VarChar(50)
-)
+);
 
 CREATE TABLE Task (
     ID BigSerial PRIMARY KEY,
