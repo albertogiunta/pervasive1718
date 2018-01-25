@@ -26,6 +26,8 @@ object Params {
         const val TABLE_NAME = "log"
         const val ID = "id"
         const val NAME = "name"
+        const val LOG_TIME = "logtime"
+        const val VALUE = "value"
         const val HEALTH_PARAMETER_ID = "healthparameterid"
         const val HEALTH_PARAMETER_VALUE = "healthparametervalue"
     }
