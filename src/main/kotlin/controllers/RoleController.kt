@@ -6,7 +6,7 @@ import spark.kotlin.get
 import spark.kotlin.post
 import utils.JdbiConfiguration
 import utils.Params
-import utils.ok
+import utils.okCreated
 import utils.toJson
 import java.sql.SQLException
 
@@ -20,7 +20,7 @@ object RoleController : Controller {
         post("/role", "application/json") {
             JdbiConfiguration.INSTANCE.jdbi.useExtension<RoleDao, SQLException>(RoleDao::class.java)
             { it.insertNewRole(request.queryParams(Params.Role.NAME)) }
-            response.ok()
+            response.okCreated()
         }
 
         /**

@@ -8,7 +8,7 @@ fun getGsonInstance(): Gson = Gson()
 
 fun Any.toJson(): String = getGsonInstance().toJson(this)
 
-fun Response.ok(): String {
+fun Response.okCreated(): String {
     this.status(201)
     this.type("application/json")
     this.body(ResponseMessage(201, "Ok").toJson())

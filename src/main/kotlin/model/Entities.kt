@@ -1,8 +1,8 @@
 package model
 
-data class ActionType(val id: Int, val name: String)
-
 data class Activity(val id: Int, val name: String, val expectedEffect: String, val typeId: Int, val signature: String, val statusId: Int)
+
+data class ActivityType(val id: Int, val name: String)
 
 data class HealthParameter(val id: Int, val name: String, val signature: String)
 
