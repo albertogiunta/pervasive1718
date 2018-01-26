@@ -1,10 +1,20 @@
 package controllers
 
+import controllers.Controller.Companion.applicationJsonRequestType
 import controllers.api.*
-import controllers.api.Controller.Companion.applicationJsonRequestType
 import spark.Spark.path
 import spark.kotlin.get
 import spark.kotlin.post
+
+interface Controller {
+
+    companion object {
+        const val applicationJsonRequestType = "application/json"
+    }
+
+    fun initRoutes()
+
+}
 
 object RouteController : Controller {
 
@@ -65,5 +75,6 @@ object RouteController : Controller {
             }
 
         }
+
     }
 }

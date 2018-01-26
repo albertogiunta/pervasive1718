@@ -1,4 +1,4 @@
-package controllers
+package controllers.api
 
 import dao.LogDao
 import model.Log
@@ -10,14 +10,20 @@ import utils.okCreated
 import utils.toJson
 import java.sql.SQLException
 
-object LogController {
+object LogApi {
 
     /**
      * Insert a new entry in the Log table
      */
     fun addLogEntry(request: Request, response: Response): String {
         JdbiConfiguration.INSTANCE.jdbi.useExtension<LogDao, SQLException>(LogDao::class.java)
-        { it.insertNewLogEntry(request.queryParams(Params.Log.NAME), request.queryParams(Params.Log.LOG_TIME), request.queryParams(Params.Log.HEALTH_PARAMETER_ID).toInt(), request.queryParams(Params.Log.HEALTH_PARAMETER_VALUE).toDouble()) }
+        {
+            it.insertNewLogEntry(
+                request.queryParams(Params.Log.NAME),
+                request.queryParams(Params.Log.LOG_TIME),
+                request.queryParams(Params.Log.HEALTH_PARAMETER_ID).toInt(),
+                request.queryParams(Params.Log.HEALTH_PARAMETER_VALUE).toDouble())
+        }
         return response.okCreated()
     }
 
