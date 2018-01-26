@@ -4,22 +4,28 @@ import model.Activity
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
-import utils.Params
+import utils.Params.Activity.EXPECTED_EFFECT
+import utils.Params.Activity.ID
+import utils.Params.Activity.NAME
+import utils.Params.Activity.SIGNATURE
+import utils.Params.Activity.STATUS_ID
+import utils.Params.Activity.TABLE_NAME
+import utils.Params.Activity.TYPE_ID
 
 interface ActivityDao {
 
-    @SqlUpdate("INSERT INTO ${Params.Activity.TABLE_NAME}(name, expectedEffect, typeId, signature, statusId) VALUES (:name, :expectedEffect, :typeId, :signature, :statusId)")
-    fun insertNewActivity(@Bind("name") name: String,
-                          @Bind("expectedEffect") expectedEffect: String,
-                          @Bind("typeId") typeId: Int,
-                          @Bind("signature") signature: String,
-                          @Bind("statusId") statusId: Int)
+    @SqlUpdate("INSERT INTO $TABLE_NAME($NAME, $EXPECTED_EFFECT, $TYPE_ID, $SIGNATURE, $STATUS_ID) VALUES (:$NAME, :$EXPECTED_EFFECT, :$TYPE_ID, :$SIGNATURE, :$STATUS_ID)")
+    fun insertNewActivity(@Bind(NAME) name: String,
+                          @Bind(EXPECTED_EFFECT) expectedEffect: String,
+                          @Bind(TYPE_ID) typeId: Int,
+                          @Bind(SIGNATURE) signature: String,
+                          @Bind(STATUS_ID) statusId: Int)
 
-    @SqlQuery("SELECT * FROM ${Params.Activity.TABLE_NAME}")
+    @SqlQuery("SELECT * FROM $TABLE_NAME")
     fun selectAllActivities(): List<Activity>
 
-    @SqlQuery("SELECT * FROM ${Params.Activity.TABLE_NAME} WHERE id = (:id)")
-    fun selectActivityById(@Bind("id") id: Int): List<Activity>
+    @SqlQuery("SELECT * FROM $TABLE_NAME WHERE $ID = (:$ID)")
+    fun selectActivityById(@Bind(ID) id: Int): List<Activity>
 
 }
 

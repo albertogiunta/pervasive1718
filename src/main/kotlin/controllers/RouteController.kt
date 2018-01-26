@@ -1,6 +1,7 @@
 package controllers
 
-import controllers.Controller.Companion.applicationJsonRequestType
+import controllers.api.*
+import controllers.api.Controller.Companion.applicationJsonRequestType
 import spark.Spark.path
 import spark.kotlin.get
 import spark.kotlin.post
@@ -36,17 +37,33 @@ object RouteController : Controller {
             }
 
             path("/log") {
-                post("/add", applicationJsonRequestType) { LogController.addLogEntry(request, response) }
-                get("/all", applicationJsonRequestType) { LogController.getAllLogEntries(request, response) }
+                post("/add", applicationJsonRequestType) { LogApi.addLogEntry(request, response) }
+                get("/all", applicationJsonRequestType) { LogApi.getAllLogEntries(request, response) }
 
                 path("/healthParameter") {
-                    get("/:id", applicationJsonRequestType) { LogController.getAllLogEntriesByHealthParameterId(request, response) }
-                    get("/:id/minThreshold/:value", applicationJsonRequestType) { LogController.getAllLogEntriesByHealthParameterIdAboveValue(request, response) }
+                    get("/:id", applicationJsonRequestType) { LogApi.getAllLogEntriesByHealthParameterId(request, response) }
+                    get("/:id/minThreshold/:value", applicationJsonRequestType) { LogApi.getAllLogEntriesByHealthParameterIdAboveValue(request, response) }
                 }
+            }
+
+            path("/operator") {
+                post("/add", applicationJsonRequestType) { OperatorApi.addOperator(request, response) }
+                get("/all", applicationJsonRequestType) { OperatorApi.getAllOperators(request, response) }
+                get("/:id", applicationJsonRequestType) { OperatorApi.getOperatorById(request, response) }
+            }
+
+            path("/status") {
+                post("/add", applicationJsonRequestType) { StatusApi.addStatus(request, response) }
+                get("/all", applicationJsonRequestType) { StatusApi.getAllStatuses(request, response) }
+                get("/:id", applicationJsonRequestType) { StatusApi.getStatusById(request, response) }
+            }
+
+            path("/task") {
+                post("/add", applicationJsonRequestType) { TaskApi.addTask(request, response) }
+                get("/all", applicationJsonRequestType) { TaskApi.getAllTasks(request, response) }
+                get("/:id", applicationJsonRequestType) { TaskApi.getTaskById(request, response) }
             }
 
         }
     }
 }
-
-/// /log/healthParameter/:id

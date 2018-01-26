@@ -4,17 +4,19 @@ import model.ActivityType
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
-import utils.Params
+import utils.Params.ActivityType.ID
+import utils.Params.ActivityType.NAME
+import utils.Params.ActivityType.TABLE_NAME
 
 interface ActivityTypeDao {
 
-    @SqlUpdate("INSERT INTO ${Params.ActivityType.TABLE_NAME}(name) VALUES (:name)")
-    fun insertNewActivityType(@Bind("name") name: String)
+    @SqlUpdate("INSERT INTO $TABLE_NAME($NAME) VALUES (:$NAME)")
+    fun insertNewActivityType(@Bind(NAME) name: String)
 
-    @SqlQuery("SELECT * FROM ${Params.ActivityType.TABLE_NAME}")
+    @SqlQuery("SELECT * FROM $TABLE_NAME")
     fun selectAllActivityTypes(): List<ActivityType>
 
-    @SqlQuery("SELECT * FROM ${Params.ActivityType.TABLE_NAME} WHERE id = (:id)")
-    fun selectActivityTypeById(@Bind("id") id: Int): List<ActivityType>
+    @SqlQuery("SELECT * FROM $TABLE_NAME WHERE $ID = (:$ID)")
+    fun selectActivityTypeById(@Bind(ID) id: Int): List<ActivityType>
 
 }

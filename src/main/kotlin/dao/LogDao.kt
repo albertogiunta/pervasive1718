@@ -4,24 +4,29 @@ import model.Log
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
-import utils.Params
+import utils.Params.Log.HEALTH_PARAMETER_ID
+import utils.Params.Log.HEALTH_PARAMETER_VALUE
+import utils.Params.Log.LOG_TIME
+import utils.Params.Log.NAME
+import utils.Params.Log.TABLE_NAME
+import utils.Params.Log.VALUE
 
 interface LogDao {
 
-    @SqlUpdate("INSERT INTO ${Params.Log.TABLE_NAME}(name, logtime, healthparameterid, healthparametervalue) VALUES (:name, :logtime, :healthparameterid, :healthparametervalue)")
-    fun insertNewLogEntry(@Bind("name") name: String,
-                          @Bind("logtime") logtime: String,
-                          @Bind("healthparameterid") healthparameterid: Int,
-                          @Bind("healthparametervalue") healthparametervalue: Double)
+    @SqlUpdate("INSERT INTO $TABLE_NAME($NAME, $LOG_TIME, $HEALTH_PARAMETER_ID, $HEALTH_PARAMETER_ID) VALUES (:$NAME, :$LOG_TIME, :$HEALTH_PARAMETER_ID, :$HEALTH_PARAMETER_ID)")
+    fun insertNewLogEntry(@Bind(NAME) name: String,
+                          @Bind(LOG_TIME) logTime: String,
+                          @Bind(HEALTH_PARAMETER_ID) healthParameterId: Int,
+                          @Bind(HEALTH_PARAMETER_ID) healthParameterValue: Double)
 
-    @SqlQuery("SELECT * FROM ${Params.Log.TABLE_NAME}")
+    @SqlQuery("SELECT * FROM $TABLE_NAME")
     fun selectAllLogEntries(): List<Log>
 
-    @SqlQuery("SELECT * FROM ${Params.Log.TABLE_NAME} as l WHERE l.healthparameterid = (:healthparameterid)")
-    fun selectAllLogEntriesByHealthParameterId(@Bind("healthparameterid") healthparameterid: Int): List<Log>
+    @SqlQuery("SELECT * FROM $TABLE_NAME as l WHERE l.$HEALTH_PARAMETER_ID = (:$HEALTH_PARAMETER_ID)")
+    fun selectAllLogEntriesByHealthParameterId(@Bind(HEALTH_PARAMETER_ID) healthParameterId: Int): List<Log>
 
-    @SqlQuery("SELECT * FROM ${Params.Log.TABLE_NAME} as l WHERE l.healthparameterid = (:healthparameterid) AND l.healthparametervalue > (:value)")
-    fun selectAllLogEntriesByHealthParameterAboveThreshold(@Bind("healthparameterid") healthparameterid: Int,
-                                                           @Bind("value") value: Int): List<Log>
+    @SqlQuery("SELECT * FROM $TABLE_NAME as l WHERE l.$HEALTH_PARAMETER_ID = (:$HEALTH_PARAMETER_ID) AND l.$HEALTH_PARAMETER_VALUE > (:$VALUE)")
+    fun selectAllLogEntriesByHealthParameterAboveThreshold(@Bind(HEALTH_PARAMETER_ID) healthParameterId: Int,
+                                                           @Bind(VALUE) value: Int): List<Log>
 
 }
