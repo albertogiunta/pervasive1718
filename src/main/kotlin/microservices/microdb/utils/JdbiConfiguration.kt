@@ -1,4 +1,4 @@
-package utils
+package microservices.microdb.utils
 
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.kotlin.KotlinPlugin
@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 class JdbiConfiguration private constructor() {
 
     val jdbi = Jdbi
-        .create("$DB_URL$DB_NAME", USERNAME, PASSWORD)
+        .create("${DB_URL}${DB_NAME}", USERNAME, PASSWORD)
         .installPlugin(PostgresPlugin())
         .installPlugin(SqlObjectPlugin())
         .installPlugin(KotlinPlugin())

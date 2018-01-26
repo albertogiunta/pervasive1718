@@ -1,13 +1,13 @@
-package dao
+package microservices.microdb.dao
 
-import model.HealthParameter
+import microservices.microdb.model.HealthParameter
+import microservices.microdb.utils.Params.HealthParameter.ID
+import microservices.microdb.utils.Params.HealthParameter.NAME
+import microservices.microdb.utils.Params.HealthParameter.SIGNATURE
+import microservices.microdb.utils.Params.HealthParameter.TABLE_NAME
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
-import utils.Params.HealthParameter.ID
-import utils.Params.HealthParameter.NAME
-import utils.Params.HealthParameter.SIGNATURE
-import utils.Params.HealthParameter.TABLE_NAME
 
 interface HealthParameterDao {
 

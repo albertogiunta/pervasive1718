@@ -1,12 +1,12 @@
-package dao
+package microservices.microdb.dao
 
-import model.ActivityType
+import microservices.microdb.model.ActivityType
+import microservices.microdb.utils.Params.ActivityType.ID
+import microservices.microdb.utils.Params.ActivityType.NAME
+import microservices.microdb.utils.Params.ActivityType.TABLE_NAME
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
-import utils.Params.ActivityType.ID
-import utils.Params.ActivityType.NAME
-import utils.Params.ActivityType.TABLE_NAME
 
 interface ActivityTypeDao {
 

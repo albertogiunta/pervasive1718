@@ -1,15 +1,15 @@
-package dao
+package microservices.microdb.dao
 
-import model.Status
+import microservices.microdb.model.Status
+import microservices.microdb.utils.Params.Status.ACTIVITY_ID
+import microservices.microdb.utils.Params.Status.HEALTH_PARAMETER_ID
+import microservices.microdb.utils.Params.Status.ID
+import microservices.microdb.utils.Params.Status.LOWERBOUND
+import microservices.microdb.utils.Params.Status.TABLE_NAME
+import microservices.microdb.utils.Params.Status.UPPERBOUND
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
-import utils.Params.Status.ACTIVITY_ID
-import utils.Params.Status.HEALTH_PARAMETER_ID
-import utils.Params.Status.ID
-import utils.Params.Status.LOWERBOUND
-import utils.Params.Status.TABLE_NAME
-import utils.Params.Status.UPPERBOUND
 
 interface StatusDao {
 

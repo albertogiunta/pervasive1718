@@ -1,7 +1,7 @@
-package controllers
+package microservices.microdb.controllers
 
-import controllers.Controller.Companion.applicationJsonRequestType
-import controllers.api.*
+import microservices.microdb.controllers.Controller.Companion.applicationJsonRequestType
+import microservices.microdb.controllers.api.*
 import spark.Spark.path
 import spark.kotlin.get
 import spark.kotlin.post

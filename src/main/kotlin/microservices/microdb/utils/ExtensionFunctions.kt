@@ -1,7 +1,7 @@
-package utils
+package microservices.microdb.utils
 
 import com.google.gson.Gson
-import model.ResponseMessage
+import microservices.microdb.model.ResponseMessage
 import spark.Response
 
 fun getGsonInstance(): Gson = Gson()

@@ -1,15 +1,15 @@
-package dao
+package microservices.microdb.dao
 
-import model.Log
+import microservices.microdb.model.Log
+import microservices.microdb.utils.Params.Log.HEALTH_PARAMETER_ID
+import microservices.microdb.utils.Params.Log.HEALTH_PARAMETER_VALUE
+import microservices.microdb.utils.Params.Log.LOG_TIME
+import microservices.microdb.utils.Params.Log.NAME
+import microservices.microdb.utils.Params.Log.TABLE_NAME
+import microservices.microdb.utils.Params.Log.VALUE
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
-import utils.Params.Log.HEALTH_PARAMETER_ID
-import utils.Params.Log.HEALTH_PARAMETER_VALUE
-import utils.Params.Log.LOG_TIME
-import utils.Params.Log.NAME
-import utils.Params.Log.TABLE_NAME
-import utils.Params.Log.VALUE
 
 interface LogDao {
 

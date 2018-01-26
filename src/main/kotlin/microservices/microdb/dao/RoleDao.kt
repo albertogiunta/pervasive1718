@@ -1,12 +1,12 @@
-package dao
+package microservices.microdb.dao
 
-import model.Role
+import microservices.microdb.model.Role
+import microservices.microdb.utils.Params.Role.ID
+import microservices.microdb.utils.Params.Role.NAME
+import microservices.microdb.utils.Params.Role.TABLE_NAME
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
-import utils.Params.Role.ID
-import utils.Params.Role.NAME
-import utils.Params.Role.TABLE_NAME
 
 interface RoleDao {
 

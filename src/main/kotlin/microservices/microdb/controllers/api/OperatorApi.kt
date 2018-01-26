@@ -1,13 +1,13 @@
-package controllers.api
+package microservices.microdb.controllers.api
 
-import dao.OperatorDao
-import model.Operator
+import microservices.microdb.dao.OperatorDao
+import microservices.microdb.model.Operator
+import microservices.microdb.utils.JdbiConfiguration
+import microservices.microdb.utils.Params
+import microservices.microdb.utils.okCreated
+import microservices.microdb.utils.toJson
 import spark.Request
 import spark.Response
-import utils.JdbiConfiguration
-import utils.Params
-import utils.okCreated
-import utils.toJson
 import java.sql.SQLException
 
 object OperatorApi {

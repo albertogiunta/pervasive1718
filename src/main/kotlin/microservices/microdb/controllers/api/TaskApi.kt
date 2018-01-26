@@ -1,13 +1,13 @@
-package controllers.api
+package microservices.microdb.controllers.api
 
-import dao.TaskDao
-import model.Task
+import microservices.microdb.dao.TaskDao
+import microservices.microdb.model.Task
+import microservices.microdb.utils.JdbiConfiguration
+import microservices.microdb.utils.Params
+import microservices.microdb.utils.okCreated
+import microservices.microdb.utils.toJson
 import spark.Request
 import spark.Response
-import utils.JdbiConfiguration
-import utils.Params
-import utils.okCreated
-import utils.toJson
 import java.sql.SQLException
 
 object TaskApi {

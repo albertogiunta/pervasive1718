@@ -1,15 +1,15 @@
-package dao
+package microservices.microdb.dao
 
-import model.Operator
+import microservices.microdb.model.Operator
+import microservices.microdb.utils.Params.Operator.ID
+import microservices.microdb.utils.Params.Operator.IS_ACTIVE
+import microservices.microdb.utils.Params.Operator.NAME
+import microservices.microdb.utils.Params.Operator.ROLE_ID
+import microservices.microdb.utils.Params.Operator.SURNAME
+import microservices.microdb.utils.Params.Operator.TABLE_NAME
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
-import utils.Params.Operator.ID
-import utils.Params.Operator.IS_ACTIVE
-import utils.Params.Operator.NAME
-import utils.Params.Operator.ROLE_ID
-import utils.Params.Operator.SURNAME
-import utils.Params.Operator.TABLE_NAME
 
 interface OperatorDao {
 

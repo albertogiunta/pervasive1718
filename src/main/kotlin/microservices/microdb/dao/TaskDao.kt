@@ -1,16 +1,16 @@
-package dao
+package microservices.microdb.dao
 
-import model.Task
+import microservices.microdb.model.Task
+import microservices.microdb.utils.Params.Task.ACTIVITY_ID
+import microservices.microdb.utils.Params.Task.END_TIME
+import microservices.microdb.utils.Params.Task.ID
+import microservices.microdb.utils.Params.Task.OPERATOR_ID
+import microservices.microdb.utils.Params.Task.PROGRESS
+import microservices.microdb.utils.Params.Task.START_TIME
+import microservices.microdb.utils.Params.Task.TABLE_NAME
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
-import utils.Params.Task.ACTIVITY_ID
-import utils.Params.Task.END_TIME
-import utils.Params.Task.ID
-import utils.Params.Task.OPERATOR_ID
-import utils.Params.Task.PROGRESS
-import utils.Params.Task.START_TIME
-import utils.Params.Task.TABLE_NAME
 
 interface TaskDao {
 

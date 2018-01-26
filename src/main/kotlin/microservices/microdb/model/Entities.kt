@@ -1,4 +1,4 @@
-package model
+package microservices.microdb.model
 
 data class Activity(val id: Int, val name: String, val expectedEffect: String, val typeId: Int, val signature: String, val statusId: Int)
 

@@ -1,4 +1,4 @@
-package utils
+package microservices.microdb.utils
 
 object Params {
 

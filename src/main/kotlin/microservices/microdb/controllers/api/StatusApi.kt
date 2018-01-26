@@ -1,13 +1,13 @@
-package controllers.api
+package microservices.microdb.controllers.api
 
-import dao.StatusDao
-import model.Status
+import microservices.microdb.dao.StatusDao
+import microservices.microdb.model.Status
+import microservices.microdb.utils.JdbiConfiguration
+import microservices.microdb.utils.Params
+import microservices.microdb.utils.okCreated
+import microservices.microdb.utils.toJson
 import spark.Request
 import spark.Response
-import utils.JdbiConfiguration
-import utils.Params
-import utils.okCreated
-import utils.toJson
 import java.sql.SQLException
 
 object StatusApi {
