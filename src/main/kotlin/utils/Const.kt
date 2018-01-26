@@ -7,6 +7,9 @@ object Params {
         const val ID = "id"
         const val NAME = "name"
         const val EXPECTED_EFFECT = "expectedeffect"
+        const val TYPE_ID = "typeid"
+        const val SIGNATURE = "signature"
+        const val STATUS_ID = "statusid"
     }
 
     object ActivityType {
