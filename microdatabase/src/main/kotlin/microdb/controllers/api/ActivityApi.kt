@@ -19,9 +19,8 @@ object ActivityApi {
         JdbiConfiguration.INSTANCE.jdbi.useExtension<ActivityDao, SQLException>(ActivityDao::class.java) {
             it.insertNewActivity(
                     request.queryParams(Params.Activity.NAME),
-                    request.queryParams(Params.Activity.EXPECTED_EFFECT),
-                    request.queryParams(Params.Activity.TYPE_ID).toInt(),
-                    request.queryParams(Params.Activity.SIGNATURE),
+                request.queryParams(Params.Activity.ACTIVITY_TYPE_ID).toInt(),
+                request.queryParams(Params.Activity.ACRONYM),
                     request.queryParams(Params.Activity.STATUS_ID).toInt())
         }
                 .toJson()

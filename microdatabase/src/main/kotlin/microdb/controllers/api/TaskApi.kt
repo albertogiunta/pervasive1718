@@ -23,7 +23,7 @@ object TaskApi {
                     request.queryParams(Params.Task.START_TIME),
                     request.queryParams(Params.Task.END_TIME),
                     request.queryParams(Params.Task.ACTIVITY_ID).toInt(),
-                    request.queryParams(Params.Task.PROGRESS))
+                request.queryParams(Params.Task.TASK_STATUS_ID))
         }
         return response.okCreated()
     }

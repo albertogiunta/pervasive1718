@@ -24,56 +24,62 @@ object RouteController : Controller {
          */
         path("/api") {
 
-            path("/activity") {
+            path("/${Params.Activity.TABLE_NAME}") {
                 post("/add", Controller.applicationJsonRequestType) { ActivityApi.addActivity(request, response) }
                 get("/all", Controller.applicationJsonRequestType) { ActivityApi.getAllActivities(request, response) }
                 get("/:id", Controller.applicationJsonRequestType) { ActivityApi.getActivityById(request, response) }
             }
 
-            path("/activitytype") {
+            path("/${Params.ActivityType.TABLE_NAME}") {
                 post("/add", Controller.applicationJsonRequestType) { ActivityTypeApi.addActivityType(request, response) }
                 get("/all", Controller.applicationJsonRequestType) { ActivityTypeApi.getAllActivityTypes(request, response) }
                 get("/:id", Controller.applicationJsonRequestType) { ActivityTypeApi.getActivityTypeById(request, response) }
             }
 
-            path("/healthparameter") {
+            path("/${Params.Boundary.TABLE_NAME}") {
+                post("/add", Controller.applicationJsonRequestType) { BoundaryApi.addStatus(request, response) }
+                get("/all", Controller.applicationJsonRequestType) { BoundaryApi.getAllStatuses(request, response) }
+                get("/:id", Controller.applicationJsonRequestType) { BoundaryApi.getStatusById(request, response) }
+            }
+
+            path("/${Params.HealthParameter.TABLE_NAME}") {
                 post("/add", Controller.applicationJsonRequestType) { HealthParameterApi.addHealthParameter(request, response) }
                 get("/all", Controller.applicationJsonRequestType) { HealthParameterApi.getAllHealthParameters(request, response) }
                 get("/:id", Controller.applicationJsonRequestType) { HealthParameterApi.getHealthParameterById(request, response) }
             }
 
-            path("/role") {
+            path("/${Params.Role.TABLE_NAME}") {
                 post("/add", Controller.applicationJsonRequestType) { RoleApi.addRole(request, response) }
                 get("/all", Controller.applicationJsonRequestType) { RoleApi.getAllRoles(request, response) }
                 get("/:id", Controller.applicationJsonRequestType) { RoleApi.getRoleById(request, response) }
             }
 
-            path("/log") {
+            path("/${Params.Log.TABLE_NAME}") {
                 post("/add", Controller.applicationJsonRequestType) { LogApi.addLogEntry(request, response) }
                 get("/all", Controller.applicationJsonRequestType) { LogApi.getAllLogEntries(request, response) }
 
-                path("/healthparameter") {
+                path("/${Params.HealthParameter.TABLE_NAME}") {
                     get("/:id", Controller.applicationJsonRequestType) { LogApi.getAllLogEntriesByHealthParameterId(request, response) }
                     get("/:id/minthreshold/:value", Controller.applicationJsonRequestType) { LogApi.getAllLogEntriesByHealthParameterIdAboveValue(request, response) }
                 }
             }
 
-            path("/operator") {
+            path("/${Params.Operator.TABLE_NAME}") {
                 post("/add", Controller.applicationJsonRequestType) { OperatorApi.addOperator(request, response) }
                 get("/all", Controller.applicationJsonRequestType) { OperatorApi.getAllOperators(request, response) }
                 get("/:id", Controller.applicationJsonRequestType) { OperatorApi.getOperatorById(request, response) }
             }
 
-            path("/status") {
-                post("/add", Controller.applicationJsonRequestType) { StatusApi.addStatus(request, response) }
-                get("/all", Controller.applicationJsonRequestType) { StatusApi.getAllStatuses(request, response) }
-                get("/:id", Controller.applicationJsonRequestType) { StatusApi.getStatusById(request, response) }
-            }
-
-            path("/task") {
+            path("/${Params.Task.TABLE_NAME}") {
                 post("/add", Controller.applicationJsonRequestType) { TaskApi.addTask(request, response) }
                 get("/all", Controller.applicationJsonRequestType) { TaskApi.getAllTasks(request, response) }
                 get("/:id", Controller.applicationJsonRequestType) { TaskApi.getTaskById(request, response) }
+            }
+
+            path("/${Params.TaskStatus.TABLE_NAME}") {
+                post("/add", Controller.applicationJsonRequestType) { TaskStatusApi.addTaskStatus(request, response) }
+                get("/all", Controller.applicationJsonRequestType) { TaskStatusApi.getAllTaskStatuss(request, response) }
+                get("/:id", Controller.applicationJsonRequestType) { TaskStatusApi.getTaskStatusById(request, response) }
             }
         }
     }

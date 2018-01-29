@@ -20,7 +20,7 @@ object HealthParameterApi {
         {
             it.insertNewHealthParameter(
                     request.queryParams(Params.HealthParameter.NAME),
-                    request.queryParams(Params.HealthParameter.SIGNATURE))
+                request.queryParams(Params.HealthParameter.ACRONYM))
         }
         return response.okCreated()
     }

@@ -4,9 +4,9 @@ object Params {
         const val TABLE_NAME = "activity"
         const val ID = "id"
         const val NAME = "name"
-        const val EXPECTED_EFFECT = "expectedeffect"
-        const val TYPE_ID = "typeid"
-        const val SIGNATURE = "signature"
+        //        const val EXPECTED_EFFECT = "expectedeffect"
+        const val ACTIVITY_TYPE_ID = "activitytypeid"
+        const val ACRONYM = "acronym"
         const val STATUS_ID = "statusid"
     }
 
@@ -20,7 +20,7 @@ object Params {
         const val TABLE_NAME = "healthparameter"
         const val ID = "id"
         const val NAME = "name"
-        const val SIGNATURE = "signature"
+        const val ACRONYM = "acronym"
     }
 
     object Log {
@@ -48,8 +48,8 @@ object Params {
         const val NAME = "name"
     }
 
-    object Status {
-        const val TABLE_NAME = "status"
+    object Boundary {
+        const val TABLE_NAME = "boundary"
         const val ID = "id"
         const val HEALTH_PARAMETER_ID = "healthparameterid"
         const val ACTIVITY_ID = "activityid"
@@ -64,6 +64,12 @@ object Params {
         const val START_TIME = "starttime"
         const val END_TIME = "endtime"
         const val ACTIVITY_ID = "activityid"
-        const val PROGRESS = "progress"
+        const val TASK_STATUS_ID = "taskstatusid"
+    }
+
+    object TaskStatus {
+        const val TABLE_NAME = "taskstatus"
+        const val ID = "id"
+        const val NAME = "name"
     }
 }
