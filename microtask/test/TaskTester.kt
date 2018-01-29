@@ -1,4 +1,4 @@
-import main.kotlin.microtask.ToBeTestedObj
+import src.main.kotlin.microtask.ToBeTestedObj
 import org.junit.Assert
 import org.junit.Test
 

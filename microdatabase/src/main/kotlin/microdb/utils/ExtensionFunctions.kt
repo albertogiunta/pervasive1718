@@ -1,5 +1,5 @@
 import com.google.gson.Gson
-import main.kotlin.microdb.model.ResponseMessage
+import microdb.model.ResponseMessage
 import spark.Response
 
 fun getGsonInstance(): Gson = Gson()

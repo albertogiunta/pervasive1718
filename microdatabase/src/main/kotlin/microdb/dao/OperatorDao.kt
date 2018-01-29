@@ -1,4 +1,4 @@
-package main.kotlin.microdb.dao
+package microdb.dao
 
 import Params.Operator.ID
 import Params.Operator.IS_ACTIVE
@@ -6,7 +6,7 @@ import Params.Operator.NAME
 import Params.Operator.ROLE_ID
 import Params.Operator.SURNAME
 import Params.Operator.TABLE_NAME
-import main.kotlin.microdb.model.Operator
+import microdb.model.Operator
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate

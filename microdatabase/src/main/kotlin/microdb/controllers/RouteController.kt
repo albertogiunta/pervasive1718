@@ -1,6 +1,6 @@
-package main.kotlin.microdb.controllers
+package microdb.controllers
 
-import main.kotlin.microdb.controllers.api.*
+import microdb.controllers.api.*
 import spark.Spark.path
 import spark.kotlin.get
 import spark.kotlin.post

@@ -1,9 +1,9 @@
-package main.kotlin.microdb.controllers.api
+package microdb.controllers.api
 
 import JdbiConfiguration
 import Params
-import main.kotlin.microdb.dao.RoleDao
-import main.kotlin.microdb.model.Role
+import microdb.dao.RoleDao
+import microdb.model.Role
 import okCreated
 import spark.Request
 import spark.Response

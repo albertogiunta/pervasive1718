@@ -1,9 +1,9 @@
-package main.kotlin.microdb.controllers.api
+package microdb.controllers.api
 
 import JdbiConfiguration
 import Params
-import main.kotlin.microdb.dao.HealthParameterDao
-import main.kotlin.microdb.model.HealthParameter
+import microdb.dao.HealthParameterDao
+import microdb.model.HealthParameter
 import okCreated
 import spark.Request
 import spark.Response

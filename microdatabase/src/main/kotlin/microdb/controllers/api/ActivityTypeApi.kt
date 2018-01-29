@@ -1,9 +1,9 @@
-package main.kotlin.microdb.controllers.api
+package microdb.controllers.api
 
 import JdbiConfiguration
 import Params
-import main.kotlin.microdb.dao.ActivityTypeDao
-import main.kotlin.microdb.model.ActivityType
+import microdb.dao.ActivityTypeDao
+import microdb.model.ActivityType
 import okCreated
 import spark.Request
 import spark.Response

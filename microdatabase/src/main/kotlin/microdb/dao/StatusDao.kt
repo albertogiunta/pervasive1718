@@ -1,4 +1,4 @@
-package main.kotlin.microdb.dao
+package microdb.dao
 
 import Params.Status.ACTIVITY_ID
 import Params.Status.HEALTH_PARAMETER_ID
@@ -6,7 +6,7 @@ import Params.Status.ID
 import Params.Status.LOWERBOUND
 import Params.Status.TABLE_NAME
 import Params.Status.UPPERBOUND
-import main.kotlin.microdb.model.Status
+import microdb.model.Status
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate

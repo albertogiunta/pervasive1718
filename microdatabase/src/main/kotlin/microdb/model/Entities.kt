@@ -1,4 +1,4 @@
-package main.kotlin.microdb.model
+package microdb.model
 
 data class Activity(val id: Int, val name: String, val expectedEffect: String, val typeId: Int, val signature: String, val boundaryId: Int)
 

@@ -1,4 +1,4 @@
-import main.kotlin.microdb.controllers.RouteController
+import microdb.controllers.RouteController
 
 fun main(args: Array<String>) {
 

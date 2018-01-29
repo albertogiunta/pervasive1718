@@ -1,4 +1,4 @@
-package main.kotlin.microdb.dao
+package microdb.dao
 
 import Params.Activity.EXPECTED_EFFECT
 import Params.Activity.ID
@@ -7,7 +7,7 @@ import Params.Activity.SIGNATURE
 import Params.Activity.STATUS_ID
 import Params.Activity.TABLE_NAME
 import Params.Activity.TYPE_ID
-import main.kotlin.microdb.model.Activity
+import microdb.model.Activity
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate

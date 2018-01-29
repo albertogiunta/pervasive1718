@@ -28,7 +28,6 @@ repositories {
 dependencies {
     // spark
     compile "com.sparkjava:spark-kotlin:$spark_version"
-//    compile 'com.sparkjava:spark-core:2.3'
 
     // jdbi
     compile "org.jdbi:jdbi3-core:$jdbi_version"
