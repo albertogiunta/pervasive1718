@@ -16,7 +16,11 @@ class BrokerConnector private constructor(host: String) {
     val channel: Channel
 
     init {
-        factory.host = host
+        with(factory) {
+            this.host = host
+            username = "pervasive"
+            password = "zeronegativo"
+        }
         connection = factory.newConnection()
         channel = connection.createChannel()
         LifeParameters.values().forEach { X ->
@@ -32,11 +36,19 @@ class BrokerConnector private constructor(host: String) {
     }
 
     companion object {
+        const val LOCAL_HOST = "localhost"
+        const val REMOTE_HOST = "http://2.234.121.101:4369/"
+
         lateinit var INSTANCE: BrokerConnector
         val isInitialized = AtomicBoolean()
-        fun init(host: String) {
+        fun init(host: String = REMOTE_HOST) {
             if (!isInitialized.getAndSet(true)) {
                 INSTANCE = BrokerConnector(host)
+
+                with(INSTANCE.factory) {
+                    username = "pervasive"
+                    password = "zeronegativo"
+                }
             }
         }
     }

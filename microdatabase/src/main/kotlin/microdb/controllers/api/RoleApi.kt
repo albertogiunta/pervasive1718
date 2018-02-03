@@ -28,9 +28,7 @@ object RoleApi {
      * Retrieves all the roles
      */
     fun getAllRoles(request: Request, response: Response): String {
-        BrokerConnector.init("localhost")
-        val connector = BrokerConnector.INSTANCE
-        val pub = RabbitMQPublisher(connector)
+        val pub = RabbitMQPublisher(BrokerConnector.init().let { BrokerConnector.INSTANCE })
         pub.publish("Test 1", LifeParameters.HEART_RATE)
 
         return JdbiConfiguration.INSTANCE.jdbi.withExtension<List<Role>, RoleDao, SQLException>(RoleDao::class.java)

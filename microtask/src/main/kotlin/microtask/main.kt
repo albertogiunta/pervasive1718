@@ -5,8 +5,6 @@ import LifeParameters
 import RabbitMQSubscriber
 
 fun main(args: Array<String>) {
-    BrokerConnector.init("localhost")
-    val connector = BrokerConnector.INSTANCE
-    val sub = RabbitMQSubscriber(connector)
+    val sub = RabbitMQSubscriber(BrokerConnector.init().let { BrokerConnector.INSTANCE })
     sub.subscribe(LifeParameters.HEART_RATE, sub.createStringConsumer { X -> println(X) })
 }
