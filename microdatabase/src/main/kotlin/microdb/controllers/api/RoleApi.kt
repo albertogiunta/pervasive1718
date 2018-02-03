@@ -1,7 +1,10 @@
 package microdb.controllers.api
 
+import BrokerConnector
 import JdbiConfiguration
+import LifeParameters
 import Params
+import RabbitMQPublisher
 import microdb.dao.RoleDao
 import microdb.model.Role
 import okCreated
@@ -25,6 +28,11 @@ object RoleApi {
      * Retrieves all the roles
      */
     fun getAllRoles(request: Request, response: Response): String {
+        BrokerConnector.init("localhost")
+        val connector = BrokerConnector.INSTANCE
+        val pub = RabbitMQPublisher(connector)
+        pub.publish("Test 1", LifeParameters.HEART_RATE)
+
         return JdbiConfiguration.INSTANCE.jdbi.withExtension<List<Role>, RoleDao, SQLException>(RoleDao::class.java)
         { it.selectAllRoles() }
                 .toJson()

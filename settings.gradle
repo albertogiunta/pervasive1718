@@ -1,0 +1,5 @@
+rootProject.name = 'com.crioprecipitati'
+include 'microdatabase'
+include 'microtask'
+include 'pubsub-adapter'
+
