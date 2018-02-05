@@ -18,8 +18,10 @@ class BrokerConnector private constructor(host: String) {
     init {
         with(factory) {
             this.host = host
-            username = "pervasive"
-            password = "zeronegativo"
+            if (host != LOCAL_HOST) {
+                username = "pervasive"
+                password = "zeronegativo"
+            }
         }
         connection = factory.newConnection()
         channel = connection.createChannel()

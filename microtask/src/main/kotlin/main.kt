@@ -1,10 +1,3 @@
-package microtask
-
-import BrokerConnector
-import LifeParameters
-import RabbitMQPublisher
-import RabbitMQSubscriber
-
 fun main(args: Array<String>) {
     val pub = RabbitMQPublisher(BrokerConnector.init().let { BrokerConnector.INSTANCE })
     pub.publish("Test 1", LifeParameters.HEART_RATE)

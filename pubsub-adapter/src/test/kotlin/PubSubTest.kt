@@ -1,3 +1,4 @@
+import BrokerConnector.Companion.LOCAL_HOST
 import org.junit.AfterClass
 import org.junit.Assert
 import org.junit.Test
@@ -11,11 +12,10 @@ class PubSubTest {
     companion object {
         //Remember to start the RabbitMQ broker on the specified host
         // otherwise the system throw a ConnectionException
-        private val brokerHost = "localhost"
         private val connector: BrokerConnector
 
         init {
-            BrokerConnector.init(brokerHost)
+            BrokerConnector.init(LOCAL_HOST)
             connector = BrokerConnector.INSTANCE
         }
 

@@ -1,5 +1,4 @@
-rootProject.name = 'com.crioprecipitati'
+rootProject.name = 'pervasive1718'
 include 'microdatabase'
 include 'microtask'
 include 'pubsub-adapter'
-
