@@ -1,4 +1,10 @@
 rootProject.name = 'pervasive1718'
+include 'commons'
+include 'pubsub-adapter'
 include 'microdatabase'
 include 'microtask'
-include 'pubsub-adapter'
+include 'micromonitor'
+include 'microsession'
+include 'micronotifier'
+include 'microvisors'
+
