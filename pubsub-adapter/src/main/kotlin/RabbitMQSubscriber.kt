@@ -37,7 +37,7 @@ class RabbitMQSubscriber(val connector: BrokerConnector) : Subscriber<LifeParame
         return set
     }
 
-    fun createStringConsumer(messageHandler: (String) -> Any): Consumer {
+    fun createStringConsumer(messageHandler: (String) -> Unit): Consumer {
         return object : DefaultConsumer(connector.channel) {
             @Throws(java.io.IOException::class)
             override fun handleDelivery(consumerTag: String,

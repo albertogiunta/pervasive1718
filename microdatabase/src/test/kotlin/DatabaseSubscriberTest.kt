@@ -4,6 +4,7 @@ import Connection.LOCAL_HOST
 import Connection.PORT_SEPARATOR
 import Connection.PROTOCOL
 import Connection.PROTOCOL_SEPARATOR
+import com.github.kittinunf.fuel.Fuel
 
 import com.github.kittinunf.fuel.httpPost
 import com.google.gson.JsonElement
@@ -17,7 +18,7 @@ class DatabaseSubscriberTest {
         //Remember to start the RabbitMQ broker on the specified host
         // otherwise the system throw a ConnectionException
         private val connector: BrokerConnector
-        private val completeURL: String = PROTOCOL + PROTOCOL_SEPARATOR + ADDRESS + PORT_SEPARATOR + API_PORT + "/" + Params.Log.TABLE_NAME + "/add"
+        private val completeURL: String = PROTOCOL + PROTOCOL_SEPARATOR + ADDRESS + PORT_SEPARATOR + API_PORT + "/" + Connection.API + "/" + Params.Log.TABLE_NAME + "/add"
 
         init {
             BrokerConnector.init(LOCAL_HOST)
@@ -27,44 +28,38 @@ class DatabaseSubscriberTest {
         @AfterClass
         @JvmStatic
         fun closeConnection() {
-            Thread.sleep(4000)
             BrokerConnector.INSTANCE.close()
         }
     }
     @Test
     fun writeSingleData(){
 
+        val sub = RabbitMQSubscriber(connector)
 
         val json = JsonObject()
-        json.addProperty(Params.Log.HEALTH_PARAMETER_ID,123)
-        json.addProperty(Params.Log.HEALTH_PARAMETER_VALUE,1212)
-        println(json.toString())
-        val sub = Thread({
-            val sub = RabbitMQSubscriber(connector)
-            print(completeURL)
-            sub.subscribe(LifeParameters.HEART_RATE, sub.createStringConsumer {
-                X -> {
-                    json.addProperty(Params.Log.NAME,X)
-                    val (_, _, result) =
-                    completeURL.httpPost()
-                            .body(json.toString())
-                            .responseString()
-                    result.fold(success = {
-                        println(it)
-                    }, failure = {
-                        println(String(it.errorData))
-                    })
-                }
-            })
-        })
-        sub.start()
+        json.addProperty("healthParameterId",123)
+        json.addProperty("healthParameterValue",1212)
+        print(completeURL)
+        sub.subscribe(LifeParameters.HEART_RATE, sub.createStringConsumer{
+            json.addProperty(Params.Log.NAME, it)
+            val (_, _, result) = completeURL.httpPost().body(json.toString()).responseString()
+            print(result)
+            print(it)})
 
-        Thread.sleep(2000)
+        Thread.sleep(5000)
 
         val pub = Thread({
             val pub = RabbitMQPublisher(connector)
             pub.publish("Test 1", LifeParameters.HEART_RATE)
         })
         pub.start()
+
+        Thread.sleep(2000)
+
+
+    }
+
+    fun porcatroia(value : String):Unit {
+
     }
 }
