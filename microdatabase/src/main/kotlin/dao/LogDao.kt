@@ -13,11 +13,11 @@ import org.jdbi.v3.sqlobject.statement.SqlUpdate
 
 interface LogDao {
 
-    @SqlUpdate("INSERT INTO $TABLE_NAME($NAME, $LOG_TIME, $HEALTH_PARAMETER_ID, $HEALTH_PARAMETER_ID) VALUES (:$NAME, :$LOG_TIME, :$HEALTH_PARAMETER_ID, :$HEALTH_PARAMETER_ID)")
+    @SqlUpdate("INSERT INTO $TABLE_NAME($NAME, $LOG_TIME, $HEALTH_PARAMETER_ID, $HEALTH_PARAMETER_VALUE) VALUES (:$NAME, :$LOG_TIME, :$HEALTH_PARAMETER_ID, :$HEALTH_PARAMETER_VALUE)")
     fun insertNewLogEntry(@Bind(NAME) name: String,
-                          @Bind(LOG_TIME) logTime: String,
+                          @Bind(LOG_TIME) logTime: java.sql.Timestamp,
                           @Bind(HEALTH_PARAMETER_ID) healthParameterId: Int,
-                          @Bind(HEALTH_PARAMETER_ID) healthParameterValue: Double)
+                          @Bind(HEALTH_PARAMETER_VALUE) healthParameterValue: Double)
 
     @SqlQuery("SELECT * FROM $TABLE_NAME")
     fun selectAllLogEntries(): List<Log>

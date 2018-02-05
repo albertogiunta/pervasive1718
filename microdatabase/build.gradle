@@ -1,4 +1,7 @@
 dependencies {
+    repositories {
+        jcenter()
+    }
     // local
     compile project(":pubsub-adapter")
 
@@ -12,4 +15,7 @@ dependencies {
     compile "org.jdbi:jdbi3-sqlobject:$jdbi_version"
     compile "org.jdbi:jdbi3-kotlin:$jdbi_version"
     compile "org.jdbi:jdbi3-kotlin-sqlobject:$jdbi_version"
+
+    //fuel
+    compile 'com.github.kittinunf.fuel:fuel:1.12.0'
 }

@@ -73,3 +73,15 @@ object Params {
         const val NAME = "name"
     }
 }
+
+object Connection{
+    const val LOCAL_HOST = "127.0.0.1"
+    const val REMOTE_HOST = "2.234.121.101"
+    const val ADDRESS = LOCAL_HOST
+    const val PROTOCOL = "http"
+    const val API_PORT = "8080"
+    const val POST = "POST"
+    const val GET = "GET"
+    const val PROTOCOL_SEPARATOR = "://"
+    const val PORT_SEPARATOR =":"
+}

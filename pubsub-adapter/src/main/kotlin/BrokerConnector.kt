@@ -38,7 +38,7 @@ class BrokerConnector private constructor(host: String) {
     }
 
     companion object {
-        const val LOCAL_HOST = "localhost"
+        const val LOCAL_HOST = "127.0.0.1"
         const val REMOTE_HOST = "2.234.121.101"
 
         lateinit var INSTANCE: BrokerConnector

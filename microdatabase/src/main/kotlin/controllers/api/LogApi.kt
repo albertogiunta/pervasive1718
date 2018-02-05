@@ -2,6 +2,8 @@ package controllers.api
 
 import JdbiConfiguration
 import Params
+import com.beust.klaxon.Klaxon
+import com.google.gson.Gson
 import dao.LogDao
 import model.Log
 import okCreated
@@ -9,6 +11,8 @@ import spark.Request
 import spark.Response
 import toJson
 import java.sql.SQLException
+import java.sql.Timestamp
+import java.util.*
 
 object LogApi {
 
@@ -16,13 +20,16 @@ object LogApi {
      * Insert a new entry in the Log table
      */
     fun addLogEntry(request: Request, response: Response): String {
+        val gson = Gson()
+        val log: Log = Klaxon().parse<Log>(request.body())!!
+        println(log)
         JdbiConfiguration.INSTANCE.jdbi.useExtension<LogDao, SQLException>(LogDao::class.java)
         {
             it.insertNewLogEntry(
-                    request.queryParams(Params.Log.NAME),
-                    request.queryParams(Params.Log.LOG_TIME),
-                    request.queryParams(Params.Log.HEALTH_PARAMETER_ID).toInt(),
-                    request.queryParams(Params.Log.HEALTH_PARAMETER_VALUE).toDouble())
+                    log.name,
+                    log.logTime,
+                    log.healthParameterId,
+                    log.healthParameterValue)
         }
         return response.okCreated()
     }
