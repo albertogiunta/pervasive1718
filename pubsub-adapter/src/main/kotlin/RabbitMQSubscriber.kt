@@ -52,7 +52,8 @@ class RabbitMQSubscriber(val connector: BrokerConnector) : Subscriber<LifeParame
 }
 
 fun main(argv: Array<String>) {
-    BrokerConnector.init("localhost")
+    //BrokerConnector.init("127.0.0.1")
+    BrokerConnector.init()
     val sub = RabbitMQSubscriber(BrokerConnector.INSTANCE)
 
     val consumer = sub.createStringConsumer { X ->
