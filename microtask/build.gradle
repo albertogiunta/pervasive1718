@@ -1,1 +1,4 @@
-dependencies {}
+dependencies {
+    // local
+    compile project(":pubsub-adapter")
+}
