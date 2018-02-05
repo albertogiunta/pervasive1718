@@ -18,12 +18,12 @@ object ActivityApi {
     fun addActivity(request: Request, response: Response): String {
         JdbiConfiguration.INSTANCE.jdbi.useExtension<ActivityDao, SQLException>(ActivityDao::class.java) {
             it.insertNewActivity(
-                    request.queryParams(Params.Activity.NAME),
+                request.queryParams(Params.Activity.NAME),
                 request.queryParams(Params.Activity.ACTIVITY_TYPE_ID).toInt(),
                 request.queryParams(Params.Activity.ACRONYM),
-                    request.queryParams(Params.Activity.STATUS_ID).toInt())
+                request.queryParams(Params.Activity.STATUS_ID).toInt())
         }
-                .toJson()
+            .toJson()
         return response.okCreated()
     }
 
@@ -33,7 +33,7 @@ object ActivityApi {
     fun getAllActivities(request: Request, response: Response): String {
         return JdbiConfiguration.INSTANCE.jdbi.withExtension<List<Activity>, ActivityDao, SQLException>(ActivityDao::class.java)
         { it.selectAllActivities() }
-                .toJson()
+            .toJson()
     }
 
     /**
@@ -41,7 +41,7 @@ object ActivityApi {
      */
     fun getActivityById(request: Request, response: Response): String {
         return JdbiConfiguration.INSTANCE.jdbi.withExtension<List<Activity>, ActivityDao, SQLException>(ActivityDao::class.java)
-        { it.selectActivityById(request.queryParams(Params.Activity.ID).toInt()) }
-                .toJson()
+        { it.selectActivityById(request.params(Params.Activity.ID).toInt()) }
+            .toJson()
     }
 }
