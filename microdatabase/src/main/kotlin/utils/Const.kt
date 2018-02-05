@@ -80,8 +80,7 @@ object Connection{
     const val ADDRESS = LOCAL_HOST
     const val PROTOCOL = "http"
     const val API_PORT = "8080"
-    const val POST = "POST"
-    const val GET = "GET"
+    const val API = "api"
     const val PROTOCOL_SEPARATOR = "://"
     const val PORT_SEPARATOR =":"
 }
