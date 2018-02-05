@@ -1,9 +1,9 @@
-package microdb.controllers.api
+package controllers.api
 
 import JdbiConfiguration
 import Params
-import microdb.dao.TaskStatusDao
-import microdb.model.TaskStatus
+import dao.TaskStatusDao
+import model.TaskStatus
 import okCreated
 import spark.Request
 import spark.Response

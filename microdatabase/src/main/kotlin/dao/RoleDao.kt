@@ -1,9 +1,9 @@
-package microdb.dao
+package dao
 
 import Params.Role.ID
 import Params.Role.NAME
 import Params.Role.TABLE_NAME
-import microdb.model.Role
+import model.Role
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate

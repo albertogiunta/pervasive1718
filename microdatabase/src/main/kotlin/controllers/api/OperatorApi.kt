@@ -1,9 +1,9 @@
-package microdb.controllers.api
+package controllers.api
 
 import JdbiConfiguration
 import Params
-import microdb.dao.OperatorDao
-import microdb.model.Operator
+import dao.OperatorDao
+import model.Operator
 import okCreated
 import spark.Request
 import spark.Response

@@ -1,9 +1,9 @@
-package microdb.controllers.api
+package controllers.api
 
 import JdbiConfiguration
 import Params
-import microdb.dao.RoleDao
-import microdb.model.Role
+import dao.RoleDao
+import model.Role
 import okCreated
 import spark.Request
 import spark.Response

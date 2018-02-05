@@ -1,4 +1,4 @@
-package microdb.dao
+package dao
 
 import Params.Log.HEALTH_PARAMETER_ID
 import Params.Log.HEALTH_PARAMETER_VALUE
@@ -6,7 +6,7 @@ import Params.Log.LOG_TIME
 import Params.Log.NAME
 import Params.Log.TABLE_NAME
 import Params.Log.VALUE
-import microdb.model.Log
+import model.Log
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate

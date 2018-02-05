@@ -1,10 +1,10 @@
-package microdb.dao
+package dao
 
 import Params.HealthParameter.ID
 import Params.HealthParameter.NAME
 import Params.HealthParameter.ACRONYM
 import Params.HealthParameter.TABLE_NAME
-import microdb.model.HealthParameter
+import model.HealthParameter
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate

@@ -1,4 +1,4 @@
-import microdb.controllers.RouteController
+import controllers.RouteController
 
 fun main(args: Array<String>) {
 

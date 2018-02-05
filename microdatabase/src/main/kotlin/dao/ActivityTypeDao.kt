@@ -1,9 +1,9 @@
-package microdb.dao
+package dao
 
 import Params.ActivityType.ID
 import Params.ActivityType.NAME
 import Params.ActivityType.TABLE_NAME
-import microdb.model.ActivityType
+import model.ActivityType
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate

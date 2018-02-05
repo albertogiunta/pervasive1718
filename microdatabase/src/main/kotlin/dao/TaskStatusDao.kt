@@ -1,9 +1,9 @@
-package microdb.dao
+package dao
 
 import Params.TaskStatus.ID
 import Params.TaskStatus.NAME
 import Params.TaskStatus.TABLE_NAME
-import microdb.model.TaskStatus
+import model.TaskStatus
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate

@@ -1,9 +1,9 @@
-package microdb.controllers.api
+package controllers.api
 
 import JdbiConfiguration
 import Params
-import microdb.dao.BoundaryDao
-import microdb.model.Boundary
+import dao.BoundaryDao
+import model.Boundary
 import okCreated
 import spark.Request
 import spark.Response

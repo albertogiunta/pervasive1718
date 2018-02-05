@@ -1,4 +1,4 @@
-package microdb.dao
+package dao
 
 import Params.Task.ACTIVITY_ID
 import Params.Task.END_TIME
@@ -7,7 +7,7 @@ import Params.Task.OPERATOR_ID
 import Params.Task.TASK_STATUS_ID
 import Params.Task.START_TIME
 import Params.Task.TABLE_NAME
-import microdb.model.Task
+import model.Task
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate

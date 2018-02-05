@@ -1,4 +1,4 @@
-package microdb.model
+package model
 
 data class Activity(val id: Int, val name: String, val activityTypeId: Int, val acronym: String, val boundaryId: Int)
 

@@ -1,9 +1,9 @@
-package microdb.controllers.api
+package controllers.api
 
 import JdbiConfiguration
 import Params
-import microdb.dao.HealthParameterDao
-import microdb.model.HealthParameter
+import dao.HealthParameterDao
+import model.HealthParameter
 import okCreated
 import spark.Request
 import spark.Response

@@ -1,4 +1,4 @@
-package microdb.dao
+package dao
 
 import Params.Boundary.ACTIVITY_ID
 import Params.Boundary.HEALTH_PARAMETER_ID
@@ -6,7 +6,7 @@ import Params.Boundary.ID
 import Params.Boundary.LOWERBOUND
 import Params.Boundary.TABLE_NAME
 import Params.Boundary.UPPERBOUND
-import microdb.model.Boundary
+import model.Boundary
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate

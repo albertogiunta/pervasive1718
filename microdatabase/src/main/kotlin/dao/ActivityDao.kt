@@ -1,4 +1,4 @@
-package microdb.dao
+package dao
 
 import Params.Activity.ID
 import Params.Activity.NAME
@@ -6,7 +6,7 @@ import Params.Activity.ACRONYM
 import Params.Activity.STATUS_ID
 import Params.Activity.TABLE_NAME
 import Params.Activity.ACTIVITY_TYPE_ID
-import microdb.model.Activity
+import model.Activity
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
