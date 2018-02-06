@@ -1,0 +1,771 @@
+{
+  "info": {
+    "name": "PERVASIVE1718",
+    "_postman_id": "e9c16e23-db0e-d86a-7aea-ee3d5d2b8f20",
+    "description": "",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "ACTIVITY",
+      "description": "",
+      "item": [
+        {
+          "name": "ALL ACTIVITIES",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {},
+            "url": {
+              "raw": "{{prefix}}/activity/all",
+              "host": [
+                "{{prefix}}"
+              ],
+              "path": [
+                "activity",
+                "all"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "ACTIVITY BY ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {},
+            "url": {
+              "raw": "{{prefix}}/activity/2",
+              "host": [
+                "{{prefix}}"
+              ],
+              "path": [
+                "activity",
+                "2"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "ADD ACTIVITY",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"activityTypeId\",\n    \"activityTypeId\": 3,\n    \"acronym\": \"TST\",\n    \"boundaryId\": 0\n}"
+            },
+            "url": {
+              "raw": "{{prefix}}/activity/add",
+              "host": [
+                "{{prefix}}"
+              ],
+              "path": [
+                "activity",
+                "add"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "ACTIVITY TYPE",
+      "description": "",
+      "item": [
+        {
+          "name": "ALL ACTIVITY TYPES",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {},
+            "url": {
+              "raw": "{{prefix}}/activitytype/all",
+              "host": [
+                "{{prefix}}"
+              ],
+              "path": [
+                "activitytype",
+                "all"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "ACITIVITY BY ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {},
+            "url": {
+              "raw": "{{prefix}}/activitytype/1",
+              "host": [
+                "{{prefix}}"
+              ],
+              "path": [
+                "activitytype",
+                "1"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "ADD ACTIVITY TYPE",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Laddroga\"\n}"
+            },
+            "url": {
+              "raw": "{{prefix}}/activitytype/add",
+              "host": [
+                "{{prefix}}"
+              ],
+              "path": [
+                "activitytype",
+                "add"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "BOUNDARY",
+      "description": "",
+      "item": [
+        {
+          "name": "ALL BOUNDARIES",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {},
+            "url": {
+              "raw": "{{prefix}}/boundary/all",
+              "host": [
+                "{{prefix}}"
+              ],
+              "path": [
+                "boundary",
+                "all"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "BOUNDARY BY ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {},
+            "url": {
+              "raw": "{{prefix}}/boundary/1",
+              "host": [
+                "{{prefix}}"
+              ],
+              "path": [
+                "boundary",
+                "1"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "ADD BOUNDARY",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/javascript"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"healthParameterId\": 1,\n\t\"activityId\": 1,\n\t\"upperBound\": 1.0,\n\t\"lowerBound\": 1.0 \n}"
+            },
+            "url": {
+              "raw": "{{prefix}}/boundary/add",
+              "host": [
+                "{{prefix}}"
+              ],
+              "path": [
+                "boundary",
+                "add"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "HEALTH PARAMETER",
+      "description": "",
+      "item": [
+        {
+          "name": "ALL HEALTH PARAMETERS",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {},
+            "url": {
+              "raw": "{{prefix}}/healthParameter/all",
+              "host": [
+                "{{prefix}}"
+              ],
+              "path": [
+                "healthParameter",
+                "all"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "HEALTH PARAMETER BY ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {},
+            "url": {
+              "raw": "{{prefix}}/healthParameter/1",
+              "host": [
+                "{{prefix}}"
+              ],
+              "path": [
+                "healthParameter",
+                "1"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "ADD HEALTH PARAMETER",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": " {\n        \"name\": \"testone sterone\",\n        \"acronym\": \"CIAONE\"\n    }"
+            },
+            "url": {
+              "raw": "{{prefix}}/healthparameter/add",
+              "host": [
+                "{{prefix}}"
+              ],
+              "path": [
+                "healthparameter",
+                "add"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "ROLE",
+      "description": "",
+      "item": [
+        {
+          "name": "ALL ROLES",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {},
+            "url": {
+              "raw": "{{prefix}}/role/all",
+              "host": [
+                "{{prefix}}"
+              ],
+              "path": [
+                "role",
+                "all"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "ROLE BY ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {},
+            "url": {
+              "raw": "{{prefix}}/role/40",
+              "host": [
+                "{{prefix}}"
+              ],
+              "path": [
+                "role",
+                "40"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "ADD ROLE",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "name",
+                "value": "alberto",
+                "disabled": true
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"name\": \"test name\", \"healthParameterId\": 10, \"healthParameterValue\": 10.0 }"
+            },
+            "url": {
+              "raw": "{{prefix}}/log/add",
+              "host": [
+                "{{prefix}}"
+              ],
+              "path": [
+                "log",
+                "add"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "LOG",
+      "description": "",
+      "item": [
+        {
+          "name": "LOG BY HEALTHPARAMETERID WITH MIN THRESHOLD",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {},
+            "url": {
+              "raw": "{{prefix}}/log/healthParameter/123/minthreshold/1",
+              "host": [
+                "{{prefix}}"
+              ],
+              "path": [
+                "log",
+                "healthParameter",
+                "123",
+                "minthreshold",
+                "1"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "ADD LOG",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": " {\n        \"name\": \"mariuccio grande e bello\",\n        \"healthParameterId\": 123,\n        \"healthParameterValue\": 1212\n}"
+            },
+            "url": {
+              "raw": "{{prefix}}/log/add",
+              "host": [
+                "{{prefix}}"
+              ],
+              "path": [
+                "log",
+                "add"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "ALL LOGS",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {},
+            "url": {
+              "raw": "{{prefix}}/log/all",
+              "host": [
+                "{{prefix}}"
+              ],
+              "path": [
+                "log",
+                "all"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "LOG BY HEALTHPARAMETER ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {},
+            "url": {
+              "raw": "{{prefix}}/log/healthParameter/54",
+              "host": [
+                "{{prefix}}"
+              ],
+              "path": [
+                "log",
+                "healthParameter",
+                "54"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "OPERATOR",
+      "description": "",
+      "item": [
+        {
+          "name": "ALL OPERATORS",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {},
+            "url": {
+              "raw": "{{prefix}}/operator/all",
+              "host": [
+                "{{prefix}}"
+              ],
+              "path": [
+                "operator",
+                "all"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "OPERATOR BY ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {},
+            "url": {
+              "raw": "{{prefix}}/operator/1",
+              "host": [
+                "{{prefix}}"
+              ],
+              "path": [
+                "operator",
+                "1"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "ADD OPERATOR",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/javascript"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"name\": \"albert\",\n\t\"surname\": \"giunt\",\n\t\"roleId\": 1,\n\t\"isActive\": true  \n}"
+            },
+            "url": {
+              "raw": "{{prefix}}/operator/add",
+              "host": [
+                "{{prefix}}"
+              ],
+              "path": [
+                "operator",
+                "add"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        }
+      ],
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "id": "b625167d-3510-4fea-88ad-7092136d00fd",
+            "type": "text/javascript",
+            "exec": [
+              ""
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "id": "df8c502a-e15f-4fc8-95eb-0e14653fb4af",
+            "type": "text/javascript",
+            "exec": [
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "TASK",
+      "description": "",
+      "item": [
+        {
+          "name": "ALL TASKS",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {},
+            "url": {
+              "raw": "{{prefix}}/task/all",
+              "host": [
+                "{{prefix}}"
+              ],
+              "path": [
+                "task",
+                "all"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "TASK BY ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {},
+            "url": {
+              "raw": "{{prefix}}/task/1",
+              "host": [
+                "{{prefix}}"
+              ],
+              "path": [
+                "task",
+                "1"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "ADD TASK",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/javascript"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"operatorId\": 1,\n\t\"startTime\": \"2018-02-06 10:53:28.642\",\n\t\"endTime\": \"2018-02-06 10:58:28.642\",\n\t\"activityId\": 1,\n\t\"statudId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{prefix}}/task/add",
+              "host": [
+                "{{prefix}}"
+              ],
+              "path": [
+                "task",
+                "add"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        }
+      ],
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "id": "b625167d-3510-4fea-88ad-7092136d00fd",
+            "type": "text/javascript",
+            "exec": [
+              ""
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "id": "df8c502a-e15f-4fc8-95eb-0e14653fb4af",
+            "type": "text/javascript",
+            "exec": [
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "TASK STATUS",
+      "description": "",
+      "item": [
+        {
+          "name": "ALL TASK STATUSES",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {},
+            "url": {
+              "raw": "{{prefix}}/taskstatus/all",
+              "host": [
+                "{{prefix}}"
+              ],
+              "path": [
+                "taskstatus",
+                "all"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "TASK STATUS BY ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {},
+            "url": {
+              "raw": "{{prefix}}/taskstatus/1",
+              "host": [
+                "{{prefix}}"
+              ],
+              "path": [
+                "taskstatus",
+                "1"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "ADD TASK STATUS",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/javascript"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n        \"name\": \"chitemmuort\"\n}"
+            },
+            "url": {
+              "raw": "{{prefix}}/taskstatus/add",
+              "host": [
+                "{{prefix}}"
+              ],
+              "path": [
+                "taskstatus",
+                "add"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        }
+      ],
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "id": "b625167d-3510-4fea-88ad-7092136d00fd",
+            "type": "text/javascript",
+            "exec": [
+              ""
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "id": "df8c502a-e15f-4fc8-95eb-0e14653fb4af",
+            "type": "text/javascript",
+            "exec": [
+              ""
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
