@@ -17,6 +17,6 @@ data class Role(val id: Int = 0, val name: String) // leader, collaboratore, ane
 
 data class Boundary(val id: Int = 0, val healthParameterId: Int, val activityId: Int, val upperBound: Double, val lowerBound: Double)
 
-data class Task(val id: Int = 0, val operatorId: Int, val startTime: Timestamp, val endTime: Timestamp, val activityId: Int, val taskStatusId: String)
+data class Task(val id: Int = 0, val operatorId: Int, val startTime: Timestamp, val endTime: Timestamp, val activityId: Int, val statusId: String)
 
 data class TaskStatus(val id: Int = 0, val name: String) // sospseso, in corso, terminato, eliminato

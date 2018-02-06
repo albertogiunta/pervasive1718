@@ -20,7 +20,7 @@ object ActivityTypeApi {
     fun addActivityType(request: Request, response: Response): String {
         val activityType: ActivityType = Klaxon().parse<ActivityType>(request.body()) ?: return response.badRequest()
         JdbiConfiguration.INSTANCE.jdbi.useExtension<ActivityTypeDao, SQLException>(ActivityTypeDao::class.java)
-        { it.insertNewActivityType(request.queryParams(activityType.name)) }
+        { it.insertNewActivityType(activityType.name) }
         return response.okCreated()
     }
 

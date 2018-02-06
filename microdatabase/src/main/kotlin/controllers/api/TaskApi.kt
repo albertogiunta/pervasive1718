@@ -26,7 +26,7 @@ object TaskApi {
                 task.startTime,
                 task.endTime,
                 task.activityId,
-                task.taskStatusId)
+                task.statusId)
         }
         return response.okCreated()
     }
