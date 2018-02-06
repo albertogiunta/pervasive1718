@@ -4,12 +4,8 @@ import Connection.LOCAL_HOST
 import Connection.PORT_SEPARATOR
 import Connection.PROTOCOL
 import Connection.PROTOCOL_SEPARATOR
-import com.github.kittinunf.fuel.Fuel
-
 import com.github.kittinunf.fuel.httpPost
-import com.google.gson.JsonElement
 import com.google.gson.JsonObject
-
 import org.junit.AfterClass
 import org.junit.Test
 
@@ -31,20 +27,22 @@ class DatabaseSubscriberTest {
             BrokerConnector.INSTANCE.close()
         }
     }
+
     @Test
-    fun writeSingleData(){
+    fun writeSingleData() {
 
         val sub = RabbitMQSubscriber(connector)
 
         val json = JsonObject()
-        json.addProperty("healthParameterId",123)
-        json.addProperty("healthParameterValue",1212)
+        json.addProperty("healthParameterId", 123)
+        json.addProperty("healthParameterValue", 1212)
         print(completeURL)
-        sub.subscribe(LifeParameters.HEART_RATE, sub.createStringConsumer{
+        sub.subscribe(LifeParameters.HEART_RATE, sub.createStringConsumer {
             json.addProperty(Params.Log.NAME, it)
             val (_, _, result) = completeURL.httpPost().body(json.toString()).responseString()
             print(result)
-            print(it)})
+            print(it)
+        })
 
         Thread.sleep(5000)
 
@@ -55,11 +53,6 @@ class DatabaseSubscriberTest {
         pub.start()
 
         Thread.sleep(2000)
-
-
-    }
-
-    fun porcatroia(value : String):Unit {
 
     }
 }
