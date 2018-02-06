@@ -7,26 +7,46 @@ import logic.ontologies.Status
  */
 interface Controller{
 
-    val associationList: MutableList<Association>
+    fun addMember(member: Member)
 
-    fun addTask(task:Task,member:Member):Unit{
-        associationList + Association.create(task,member)
-    }
+    fun removeMember(member: Member)
 
-    fun removeTask(task:Task):Unit{
-        associationList.remove(associationList.first{it.task == task})
-    }
+    fun addTask(task:Task,member:Member)
 
-    fun changeTaskStatus(task:Task,newStatus:Status):Unit{
-        associationList.first{it.task == task}.task.status = newStatus
-    }
+    fun removeTask(task:Task)
+
+    fun changeTaskStatus(task:Task,newStatus:Status)
 
     companion object {
-        fun create(associationList: MutableList<Association>) = ControllerImpl(associationList)
+        fun create() = ControllerImpl()
     }
 
 }
 
-class ControllerImpl(override val associationList:MutableList<Association>):Controller{
+class ControllerImpl:Controller{
+    private val associationList: MutableList<Association> = mutableListOf()
+    private val memberList:MutableList<Member> = mutableListOf()
+
+    override fun addMember(member: Member){
+        memberList + member
+    }
+
+    override fun removeMember(member: Member){
+        memberList - member
+    }
+
+    override fun addTask(task:Task,member:Member){
+        if(memberList.contains(member)){
+            associationList + Association.create(task,member)
+        }
+    }
+
+    override fun removeTask(task:Task){
+        associationList.remove(associationList.first{it.task == task})
+    }
+
+    override fun changeTaskStatus(task:Task,newStatus:Status){
+        associationList.first{it.task == task}.task.status = newStatus
+    }
 
 }
