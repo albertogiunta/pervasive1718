@@ -10,9 +10,7 @@ import com.beust.klaxon.Klaxon
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpPost
 import com.google.gson.JsonObject
-import model.KlaxonDate
 import model.Log
-import model.dateConverter
 import org.junit.AfterClass
 import org.junit.Test
 import java.io.StringReader

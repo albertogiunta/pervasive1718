@@ -1,6 +1,6 @@
 package logic
 
-interface Association{
+interface TaskMemberAssociation {
     val task: Task
     val member: Member
     companion object {
@@ -8,4 +8,4 @@ interface Association{
     }
 }
 
-data class AssociationImpl(override val task:Task, override val member: Member): Association
+data class AssociationImpl(override val task: Task, override val member: Member) : TaskMemberAssociation

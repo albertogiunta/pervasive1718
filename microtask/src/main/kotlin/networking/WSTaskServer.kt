@@ -1,5 +1,11 @@
 package networking
 
+import JSONClass
+import KlaxonDate
+import com.beust.klaxon.Klaxon
+import dateConverter
+import logic.Controller
+import logic.ontologies.Operation
 import org.eclipse.jetty.websocket.api.Session
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect
@@ -11,39 +17,45 @@ import spark.kotlin.port
 import utils.WSParams.TASK_ROOT_PATH
 import utils.WSParams.WS_PORT
 import java.io.IOException
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.ConcurrentLinkedQueue
 
 @Suppress("unused", "UNUSED_PARAMETER")
 @WebSocket
 class WSTaskServer {
 
-    private val sessions = ConcurrentLinkedQueue<Session>()
+    private val controller = Controller.create(this)
 
     @OnWebSocketConnect
     fun connected(session: Session) {
-        sessions.add(session)
     }
 
     @OnWebSocketClose
     fun closed(session: Session, statusCode: Int, reason: String) {
-        sessions.remove(session)
+        controller.removeMember(session)
     }
 
     @OnWebSocketMessage
     @Throws(IOException::class)
     fun message(session: Session, message: String) {
-        println("Got: " + message)
-        session.remote.sendString(message)
-    }
+        println(message)
 
+        val jsonClass = Klaxon().fieldConverter(KlaxonDate::class, dateConverter).parse<JSONClass>(message)
+
+        jsonClass?.let {
+            with(jsonClass) {
+                when (operation) {
+                    Operation.ADD_MEMBER -> controller.addMember(doctor, session)
+                    Operation.REMOVE_MEMBER -> controller.removeMember(doctor)
+                    Operation.ADD_TASK -> controller.addTask(task, doctor)
+                    Operation.REMOVE_TASK -> controller.removeTask(task)
+                    Operation.CHANGE_TASK_STATUS -> controller.changeTaskStatus(task)
+                }
+            }
+        }
+        println(controller.members.keys)
+    }
 }
 
 fun main(args: Array<String>) {
-    // this map is shared between sessions and threads, so it needs to be thread-safe (http://stackoverflow.com/a/2688817)
-    val userUsernameMap = ConcurrentHashMap<String, String>()
-    val nextUserNumber = 1 //Used for creating the next username
-
     port(WS_PORT)
     webSocket(TASK_ROOT_PATH, WSTaskServer::class.java)
     init()
