@@ -89,9 +89,9 @@
 								<div id="login_div" class="panel">
 									<span class="info">Connection details</span><br/>
 									<label for="url">Location</label><input id="url" placeholder="Example: ws://localhost:8001/amqp"/><br/>
-									<label for="username">AMQP Username</label><input id="username" value="guest"
+									<label for="username">AMQP Username</label><input id="username" value="pervasive"
 																					  placeholder="Username on AMQP broker"/><br/>
-									<label for="password">AMQP Password</label><input type="password" id="password" value="guest"
+									<label for="password">AMQP Password</label><input type="password" id="password" value="zeronegativo"
 																					  placeholder="Password on AMQP broker"/><br/>
 									<label for="virtualhost">AMQP Virtual Host</label><input id="virtualhost" value="/"
 																							 placeholder="Virtual host on AMQP broker. Example: /"/><br/>
@@ -123,92 +123,6 @@
 										</div>
 									</div>
 								</div>
-
-								<div id="properties_div" class="panel">
-				<span class="info"><a href="javascript:void(0); // Show AMQP Properties" id="propertiesToggle"
-									  class="infoHidden">Show</a> AMQP properties</span><br/>
-									<div id="properties_div_content">
-										<label for="propAppId">appId</label><input id="propAppId" placeholder="Example: My app"/><br/>
-										<label for="propContentEncoding">contentEncoding</label><input id="propContentEncoding"
-																									   placeholder="Example: UTF-8"
-																									   value="UTF-8"/><br/>
-										<label for="propContentType">contentType</label><input id="propContentType"
-																							   placeholder="Example: text/plain"
-																							   value="text/plain"/><br/>
-										<label for="propCorrelationId">correlationId</label><input id="propCorrelationId"
-																								   placeholder="Example: 1"/><br/>
-										<label for="propDeliveryMode">deliveryMode</label>
-										<select id="propDeliveryMode" name="propDeliveryMode">
-											<option value="1" selected>1 (Non-persistent)</option>
-											<option value="2">2 (persistent)</option>
-										</select>
-										<br/>
-										<label for="propExpiration">expiration</label><input id="propExpiration"
-																							 placeholder="Time to live (milliseconds). Example: 60000"/><br/>
-										<label>messageId</label><input type="checkbox" id="propMessageId" name="propMessageId"
-																	   checked/><label class="checkboxLabel" for="propMessageId">Include
-										sequentially generated id</label><br/>
-										<label for="propPriority">priority</label>
-										<select id="propPriority" name="propPriority">
-											<!-- Options will be added dynamically. -->
-										</select>
-										<br/>
-										<label for="propReplyTo">replyTo</label><input id="propReplyTo"
-																					   placeholder="Address to send replies"/><br/>
-										<label>timestamp</label>
-										<input type="checkbox" id="propTimestamp" name="propTimestamp" checked/><label class="checkboxLabel"
-																													   for="propTimestamp">Include
-										timestamp when sending</label><br/>
-										<label for="propType">type</label><input id="propType"
-																				 placeholder="Message type. Example: custom-event"/><br/>
-										<label for="propUserId">userId</label><input id="propUserId"
-																					 placeholder="Id of user publishing the message"/><br/>
-									</div>
-								</div>
-
-								<div id="headers_div" class="panel">
-									<span class="info"><a href="javascript:void(0); // Show Headers" id="headersToggle" class="infoHidden">Show</a> Custom headers</span><br/>
-									<div id="headers_div_content">
-										<label>Header 1</label>
-										<input id="headerName1" placeholder="Name" value="headerKey1"/>
-										<select id="headerType1" name="headerType1">
-											<option value="int" selected>int</option>
-											<option value="String">String</option>
-										</select>
-										<input id="headerValue1" placeholder="Value" value="123"/>
-										<br/>
-										<label>Header 2</label>
-										<input id="headerName2" placeholder="Name" value="headerKey2"/>
-										<select id="headerType2" name="headerType2">
-											<option value="int">int</option>
-											<option value="String" selected>String</option>
-										</select>
-										<input id="headerValue2" placeholder="Value" value="abcde"/>
-										<br/>
-									</div>
-								</div>
-
-								<div id="exchange_div" class="panel">
-									<span class="info">Publish a message to an exchange</span><br/>
-									<label for="consumeExchange">Exchange</label><input id="consumeExchange" value="demo_exchange"/><br/>
-									<label for="consumeMessage">Message</label><input id="consumeMessage" value="Hello, AMQP!"/><br/>
-									<label></label>
-									<button id="sendBut">Publish</button>
-									<button id="flowOnBut">Flow On</button>
-									<button id="flowOffBut">Flow Off</button>
-								</div>
-
-								<div id="transaction_div" class="panel">
-									<span class="info">Publish as a transaction</span><br/>
-									<label for="txExchange">Exchange</label><input id="txExchange" value="demo_txn_exchange"/><br/>
-									<label for="txMessage">Message</label><input id="txMessage" value="Hello transaction message!"/><br/>
-									<label></label>
-									<button id="selectBut">Select</button>
-									<button id="txSendBut">Publish</button>
-									<button id="commitBut">Commit</button>
-									<button id="rollbackBut">Rollback</button>
-								</div>
-
 							</div> <!-- .leftPanels -->
 
 							<div class="rightPanels">
