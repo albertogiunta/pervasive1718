@@ -210,7 +210,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n\t\"healthParameterId\": 1,\n\t\"activityId\": 1,\n\t\"upperBound\": 1.0,\n\t\"lowerBound\": 1.0 \n}"
+              "raw": "{\n\t\"healthparameterId\": 1,\n\t\"activityId\": 1,\n\t\"upperBound\": 1.0,\n\t\"lowerBound\": 1.0 \n}"
             },
             "url": {
               "raw": "{{prefix}}/boundary/add",
@@ -239,7 +239,7 @@
             "header": [],
             "body": {},
             "url": {
-              "raw": "{{prefix}}/healthParameter/all",
+              "raw": "{{prefix}}/healthparameter/all",
               "host": [
                 "{{prefix}}"
               ],
