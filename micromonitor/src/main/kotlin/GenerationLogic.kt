@@ -11,7 +11,7 @@ interface GenerationLogic<T> {
  * For performance reason the sin values are calculated one time at the program begin
  * and cached
  */
-object ChachedSin {
+object CachedSin {
     private val rad = 360
 
     var sin = Array<Double>(rad, { i ->
@@ -33,7 +33,7 @@ object GenerationStrategies {
         private val range = maxBound - minBound
 
         override fun nextValue(): Double {
-            return ((ChachedSin.getRandomValue() + 1.0) * range) + minBound
+            return ((CachedSin.getRandomValue() + 1.0) * range) + minBound
         }
     }
 
@@ -42,7 +42,7 @@ object GenerationStrategies {
         private val range = maxBound - minBound
 
         override fun nextValue(): Int {
-            return ((ChachedSin.getRandomValue() + 1).toInt() * range) + minBound
+            return ((CachedSin.getRandomValue() + 1).toInt() * range) + minBound
         }
     }
 
