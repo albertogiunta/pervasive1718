@@ -1,14 +1,32 @@
 package logic
 
+import logic.ontologies.Status
+
 /**
  * The interface representing the contract of the microservice
  */
 interface Controller{
 
-    fun addTask(Task task, Member member):Unit
+    val associationList: MutableList<Association>
 
-    fun removeTask(Task task):Unit
+    fun addTask(task:Task,member:Member):Unit{
+        associationList + Association.create(task,member)
+    }
 
-    fun changeTaskStatus(Task task, Status newStatus):Unit
+    fun removeTask(task:Task):Unit{
+        associationList.remove(associationList.first{it.task == task})
+    }
+
+    fun changeTaskStatus(task:Task,newStatus:Status):Unit{
+        associationList.first{it.task == task}.task.status = newStatus
+    }
+
+    companion object {
+        fun create(associationList: MutableList<Association>) = ControllerImpl(associationList)
+    }
+
+}
+
+class ControllerImpl(override val associationList:MutableList<Association>):Controller{
 
 }
