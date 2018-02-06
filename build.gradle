@@ -36,7 +36,7 @@ subprojects {
         compile project(":commons")
 
 
-        // utility
+        // u,tility
         compile "org.slf4j:slf4j-simple:$slf4j_version"
         compile "com.google.code.gson:gson:$gson_version"
         compile "com.beust:klaxon:$klaxon_version"

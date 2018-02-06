@@ -1,5 +1,6 @@
 package controllers
 
+import Params
 import controllers.api.*
 import spark.Spark.path
 import spark.kotlin.get
@@ -59,8 +60,8 @@ object RouteController : Controller {
                 get("/all", Controller.applicationJsonRequestType) { LogApi.getAllLogEntries(request, response) }
 
                 path("/${Params.HealthParameter.TABLE_NAME}") {
-                    get("/:id", Controller.applicationJsonRequestType) { LogApi.getAllLogEntriesByHealthParameterId(request, response) }
-                    get("/:id/minthreshold/:value", Controller.applicationJsonRequestType) { LogApi.getAllLogEntriesByHealthParameterIdAboveValue(request, response) }
+                    get("/:${Params.Log.HEALTH_PARAMETER_ID}", Controller.applicationJsonRequestType) { LogApi.getAllLogEntriesByHealthParameterId(request, response) }
+                    get("/:${Params.Log.HEALTH_PARAMETER_ID}/minthreshold/:${Params.Log.HEALTH_PARAMETER_VALUE}", Controller.applicationJsonRequestType) { LogApi.getAllLogEntriesByHealthParameterIdAboveValue(request, response) }
                 }
             }
 

@@ -13,6 +13,13 @@ fun Response.okCreated(): String {
     return this.body()
 }
 
+fun Response.badRequest(): String {
+    this.status(400)
+    this.type("application/json")
+    this.body(ResponseMessage(400, "Request body was unacceptable").toJson())
+    return this.body()
+}
+
 fun Response.notFound(): String {
     this.status(404)
     this.type("application/json")

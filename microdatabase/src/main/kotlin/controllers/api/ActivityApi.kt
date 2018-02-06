@@ -21,7 +21,7 @@ object ActivityApi {
                 request.queryParams(Params.Activity.NAME),
                 request.queryParams(Params.Activity.ACTIVITY_TYPE_ID).toInt(),
                 request.queryParams(Params.Activity.ACRONYM),
-                request.queryParams(Params.Activity.STATUS_ID).toInt())
+                request.queryParams(Params.Activity.BOUNDARY_ID).toInt())
         }
             .toJson()
         return response.okCreated()
