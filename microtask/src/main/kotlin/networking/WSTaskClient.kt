@@ -19,7 +19,6 @@ import java.util.*
 class WSTaskClient(serverURI: URI) : WebSocketClient(serverURI) {
 
     override fun onOpen(handshakeData: ServerHandshake) {
-        send(JSONClass(Member(1, "Leader"), Operation.ADD_MEMBER, Task(1, "task dei cojoni", Status.RUNNING, Timestamp(Date().time), Timestamp(Date().time))).toJson())
         println("new connection opened")
     }
 

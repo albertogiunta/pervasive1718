@@ -47,6 +47,7 @@ class ControllerImpl(private val ws: WSTaskServer) : Controller {
     override fun addTask(task: Task, member: Member) {
         if (members.containsKey(member)) {
             taskMemberAssociationList + TaskMemberAssociation.create(task, member)
+            members[member]!!.remote.sendString("Task assegnato"+task )
         }
     }
 
