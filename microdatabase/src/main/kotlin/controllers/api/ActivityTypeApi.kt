@@ -1,3 +1,5 @@
+@file:Suppress("UNUSED_PARAMETER")
+
 package controllers.api
 
 import JdbiConfiguration
@@ -20,7 +22,7 @@ object ActivityTypeApi {
     fun addActivityType(request: Request, response: Response): String {
         val activityType: ActivityType = Klaxon().parse<ActivityType>(request.body()) ?: return response.badRequest()
         JdbiConfiguration.INSTANCE.jdbi.useExtension<ActivityTypeDao, SQLException>(ActivityTypeDao::class.java)
-        { it.insertNewActivityType(request.queryParams(activityType.name)) }
+        { it.insertNewActivityType(activityType.name) }
         return response.okCreated()
     }
 
@@ -30,7 +32,7 @@ object ActivityTypeApi {
     fun getAllActivityTypes(request: Request, response: Response): String {
         return JdbiConfiguration.INSTANCE.jdbi.withExtension<List<ActivityType>, ActivityTypeDao, SQLException>(ActivityTypeDao::class.java)
         { it.selectAllActivityTypes() }
-                .toJson()
+            .toJson()
     }
 
     /**
@@ -39,6 +41,6 @@ object ActivityTypeApi {
     fun getActivityTypeById(request: Request, response: Response): String {
         return JdbiConfiguration.INSTANCE.jdbi.withExtension<List<ActivityType>, ActivityTypeDao, SQLException>(ActivityTypeDao::class.java)
         { it.selectActivityTypeById(request.params(Params.ActivityType.ID).toInt()) }
-                .toJson()
+            .toJson()
     }
 }

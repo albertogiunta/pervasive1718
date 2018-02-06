@@ -25,7 +25,7 @@ object Params {
     }
 
     object HealthParameter {
-        const val TABLE_NAME = "healthParameter"
+        const val TABLE_NAME = "healthparameter"
         const val ID = "id"
         const val NAME = "name"
         const val ACRONYM = "acronym"
@@ -62,7 +62,7 @@ object Params {
         const val START_TIME = "starttime"
         const val END_TIME = "endtime"
         const val ACTIVITY_ID = "activityid"
-        const val TASK_STATUS_ID = "taskstatusid"
+        const val STATUS_ID = "statusid"
     }
 
     object TaskStatus {

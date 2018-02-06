@@ -1,3 +1,5 @@
+@file:Suppress("UNUSED_PARAMETER")
+
 package controllers.api
 
 import JdbiConfiguration
@@ -30,7 +32,7 @@ object RoleApi {
     fun getAllRoles(request: Request, response: Response): String {
         return JdbiConfiguration.INSTANCE.jdbi.withExtension<List<Role>, RoleDao, SQLException>(RoleDao::class.java)
         { it.selectAllRoles() }
-                .toJson()
+            .toJson()
     }
 
     /**
@@ -39,6 +41,6 @@ object RoleApi {
     fun getRoleById(request: Request, response: Response): String {
         return JdbiConfiguration.INSTANCE.jdbi.withExtension<List<Role>, RoleDao, SQLException>(RoleDao::class.java)
         { it.selectRoleById(request.params(Params.Role.ID).toInt()) }
-                .toJson()
+            .toJson()
     }
 }

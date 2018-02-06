@@ -1,3 +1,5 @@
+@file:Suppress("UNUSED_PARAMETER")
+
 package controllers.api
 
 import JdbiConfiguration
@@ -5,7 +7,9 @@ import Params
 import badRequest
 import com.beust.klaxon.Klaxon
 import dao.TaskDao
+import model.KlaxonDate
 import model.Task
+import model.dateConverter
 import okCreated
 import spark.Request
 import spark.Response
@@ -18,7 +22,8 @@ object TaskApi {
      * Inserts a new role inside of the Task table
      */
     fun addTask(request: Request, response: Response): String {
-        val task: Task = Klaxon().parse<Task>(request.body()) ?: return response.badRequest()
+        val task: Task = Klaxon().fieldConverter(KlaxonDate::class, dateConverter).parse<Task>(request.body())
+                ?: return response.badRequest()
         JdbiConfiguration.INSTANCE.jdbi.useExtension<TaskDao, SQLException>(TaskDao::class.java)
         {
             it.insertNewTask(
@@ -26,7 +31,7 @@ object TaskApi {
                 task.startTime,
                 task.endTime,
                 task.activityId,
-                task.taskStatusId)
+                task.statusId)
         }
         return response.okCreated()
     }

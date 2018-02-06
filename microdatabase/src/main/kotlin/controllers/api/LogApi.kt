@@ -1,3 +1,5 @@
+@file:Suppress("UNUSED_PARAMETER")
+
 package controllers.api
 
 import JdbiConfiguration
@@ -22,10 +24,10 @@ object LogApi {
         JdbiConfiguration.INSTANCE.jdbi.useExtension<LogDao, SQLException>(LogDao::class.java)
         {
             it.insertNewLogEntry(
-                    log.name,
-                    log.logTime,
-                    log.healthParameterId,
-                    log.healthParameterValue)
+                log.name,
+                log.logTime,
+                log.healthParameterId,
+                log.healthParameterValue)
         }
         return response.okCreated()
     }
@@ -36,7 +38,7 @@ object LogApi {
     fun getAllLogEntries(request: Request, response: Response): String {
         return JdbiConfiguration.INSTANCE.jdbi.withExtension<List<Log>, LogDao, SQLException>(LogDao::class.java)
         { it.selectAllLogEntries() }
-                .toJson()
+            .toJson()
     }
 
     /**
@@ -45,7 +47,7 @@ object LogApi {
     fun getAllLogEntriesByHealthParameterId(request: Request, response: Response): String {
         return JdbiConfiguration.INSTANCE.jdbi.withExtension<List<Log>, LogDao, SQLException>(LogDao::class.java)
         { it.selectAllLogEntriesByHealthParameterId(request.params(Params.Log.HEALTH_PARAMETER_ID).toInt()) }
-                .toJson()
+            .toJson()
     }
 
     /**
@@ -54,7 +56,7 @@ object LogApi {
     fun getAllLogEntriesByHealthParameterIdAboveValue(request: Request, response: Response): String {
         return JdbiConfiguration.INSTANCE.jdbi.withExtension<List<Log>, LogDao, SQLException>(LogDao::class.java)
         { it.selectAllLogEntriesByHealthParameterAboveThreshold(request.params(Params.Log.HEALTH_PARAMETER_ID).toInt(), request.params(Params.Log.HEALTH_PARAMETER_VALUE).toInt()) }
-                .toJson()
+            .toJson()
     }
 
 }
