@@ -27,8 +27,8 @@ class DatabaseSubscriberTest {
         //Remember to start the RabbitMQ broker on the specified host
         // otherwise the system throw a ConnectionException
         private val connector: BrokerConnector
-        private val addString: String = PROTOCOL + PROTOCOL_SEPARATOR + ADDRESS + PORT_SEPARATOR + API_PORT + "/" + Connection.API + "/" + TABLE_NAME + "/add"
-        private val readString: String = PROTOCOL + PROTOCOL_SEPARATOR + ADDRESS + PORT_SEPARATOR + API_PORT + "/" + Connection.API + "/" + TABLE_NAME + "/" + Params.HealthParameter.TABLE_NAME + "/"
+        private val addString: String = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR$API_PORT/${Connection.API}/$TABLE_NAME/add"
+        private val readString: String = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR$API_PORT/${Connection.API}/$TABLE_NAME/${Params.HealthParameter.TABLE_NAME}/"
 
         init {
             BrokerConnector.init(LOCAL_HOST)
