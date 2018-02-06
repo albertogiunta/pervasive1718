@@ -20,7 +20,11 @@ interface Monitor<T> {
      * */
     val name: String
 
-    //val measuredParamenter:  LifeParameter
+    val measuredParamenter: LifeParameters
+}
+
+class BasicMonitor<T>(val initialValue: T, override val name: String, override val measuredParamenter: LifeParameters) : Monitor<T> {
+    override fun currentValue() = initialValue
 }
 
 /**
@@ -29,6 +33,7 @@ interface Monitor<T> {
 class SimulatedMonitor<T>(decoratedMonitor: Monitor<T>, generationLogic: GenerationLogic<T>, refreshRate: Long) : Monitor<T> {
 
     override val name: String
+    override val measuredParamenter: LifeParameters
 
     @Volatile
     private var value: T
@@ -39,6 +44,7 @@ class SimulatedMonitor<T>(decoratedMonitor: Monitor<T>, generationLogic: Generat
     init {
         name = decoratedMonitor.name
         value = decoratedMonitor.currentValue()
+        measuredParamenter = decoratedMonitor.measuredParamenter
 
         changeLogic = Runnable { this.setCurrentValue(generationLogic.nextValue()) }
         this.executor.scheduleAtFixedRate(changeLogic, 0L, refreshRate, TimeUnit.MILLISECONDS)
@@ -64,23 +70,25 @@ class SimulatedMonitor<T>(decoratedMonitor: Monitor<T>, generationLogic: Generat
  * A decoration for a generic monitor in order to adds the logic of observable data flow creation
  * according to the RxKotlin (ReactiveX API)
  * */
-class ObservableMonitor<T>(private val observedMonitor: Monitor<T>, private val refreshPeriod: Long) : Observable<T> {
+class ObservableMonitor<T>(private val observedMonitor: Monitor<T>, private val refreshPeriod: Long) : Observable<T>, Monitor<T> {
 
+    override val name: String = observedMonitor.name
+    override val measuredParamenter: LifeParameters = observedMonitor.measuredParamenter
+
+    @Volatile
     private var continueObservation = true
+
+    override fun currentValue(): T = observedMonitor.currentValue()
 
     override fun createObservable(refreshPeriod: Long): Flowable<T> = Flowable.create<T>({ emitter ->
         continueObservation = true
         Thread({
-            var curVal: T = observedMonitor.currentValue()
-            var tmpPrev = curVal
+            var curVal: T
             while (continueObservation) {
                 try {
                     curVal = observedMonitor.currentValue()
-                    if (tmpPrev != curVal) {
-                        emitter.onNext(curVal)
-                        tmpPrev = curVal
-                        Thread.sleep(refreshPeriod)
-                    }
+                    emitter.onNext(curVal)
+                    Thread.sleep(refreshPeriod)
                 } catch (ex: Exception) {
                     println(ex.stackTrace)
                 }
@@ -92,21 +100,5 @@ class ObservableMonitor<T>(private val observedMonitor: Monitor<T>, private val 
         continueObservation = false
     }
 }
-
-
-/**
- * A basic implementation of a static Temperature Monitor
- * */
-class TemperatureMonitor : Monitor<Double> {
-    override fun currentValue(): Double {
-        return 0.0
-    }
-
-    override val name: String
-        get() = "Temperature"
-}
-
-
-
 
 
