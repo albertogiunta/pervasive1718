@@ -1,0 +1,2 @@
+https://cdn.kaazing.com/releases/enterprise.gateway/5.7.3/kaazing-enterprise-gateway-5.7.3.tar.gz   <---- Linux/Mac
+https://cdn.kaazing.com/releases/enterprise.gateway/5.7.3/kaazing-enterprise-gateway-5.7.3.zip		<---- Windows
