@@ -4,13 +4,11 @@ import Connection.LOCAL_HOST
 import Connection.PORT_SEPARATOR
 import Connection.PROTOCOL
 import Connection.PROTOCOL_SEPARATOR
-import Params.Log.HEALTH_PARAMETER_VALUE
 import Params.Log.TABLE_NAME
 import com.beust.klaxon.JsonReader
 import com.beust.klaxon.Klaxon
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpPost
-import com.google.gson.Gson
 import com.google.gson.JsonObject
 import model.KlaxonDate
 import model.Log
@@ -20,7 +18,6 @@ import org.junit.AfterClass
 import org.junit.Test
 import java.io.StringReader
 import java.util.*
-import kotlin.math.absoluteValue
 
 class DatabaseSubscriberTest {
     companion object {
@@ -92,6 +89,10 @@ class DatabaseSubscriberTest {
         println(listResult)
         assert(listResult.firstOrNull{it.healthParameterId == randomId} != null)
 
+    }
+
+    fun writeMultipleData(){
+        //fai spedire x dati dal publisher e vedi se la size è aumentata di x
     }
 
 }
