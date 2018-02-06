@@ -13,7 +13,8 @@ class RabbitMQPublisher(val connector: BrokerConnector) : Publisher<String, Life
 }
 
 fun main(argv: Array<String>) {
-    BrokerConnector.init("localhost")
+    //BrokerConnector.init("127.0.0.1")
+    BrokerConnector.init()
     val pub = RabbitMQPublisher(BrokerConnector.INSTANCE)
     //LifeParameters.values().forEach { X -> pub.publish("Stampo su "+ X.longName, X) }
     for (i in 0 until 10) {

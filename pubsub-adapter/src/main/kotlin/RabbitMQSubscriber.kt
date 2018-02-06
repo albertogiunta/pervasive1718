@@ -37,7 +37,7 @@ class RabbitMQSubscriber(val connector: BrokerConnector) : Subscriber<LifeParame
         return set
     }
 
-    fun createStringConsumer(messageHandler: (String) -> Any): Consumer {
+    fun createStringConsumer(messageHandler: (String) -> Unit): Consumer {
         return object : DefaultConsumer(connector.channel) {
             @Throws(java.io.IOException::class)
             override fun handleDelivery(consumerTag: String,
@@ -52,7 +52,8 @@ class RabbitMQSubscriber(val connector: BrokerConnector) : Subscriber<LifeParame
 }
 
 fun main(argv: Array<String>) {
-    BrokerConnector.init("localhost")
+    //BrokerConnector.init("127.0.0.1")
+    BrokerConnector.init()
     val sub = RabbitMQSubscriber(BrokerConnector.INSTANCE)
 
     val consumer = sub.createStringConsumer { X ->
