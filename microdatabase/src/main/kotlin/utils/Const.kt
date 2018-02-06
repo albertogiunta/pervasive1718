@@ -25,7 +25,7 @@ object Params {
     }
 
     object HealthParameter {
-        const val TABLE_NAME = "healthParameter"
+        const val TABLE_NAME = "healthparameter"
         const val ID = "id"
         const val NAME = "name"
         const val ACRONYM = "acronym"

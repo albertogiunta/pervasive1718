@@ -2,7 +2,6 @@ package model
 
 import com.beust.klaxon.Converter
 import com.beust.klaxon.JsonValue
-import com.beust.klaxon.Klaxon
 import com.beust.klaxon.KlaxonException
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
@@ -25,7 +24,7 @@ data class Role(val id: Int, val name: String) // leader, collaboratore, anestes
 
 data class Boundary(val id: Int, val healthParameterId: Int, val activityId: Int, val upperBound: Double, val lowerBound: Double)
 
-data class Task(val id: Int, val operatorId: Int, val startTime: String, val endTime: String, val activityId: Int, val taskStatusId: String)
+data class Task(val id: Int = 0, val operatorId: Int, val startTime: Timestamp, val endTime: Timestamp, val activityId: Int, val taskStatusId: String)
 
 data class TaskStatus(val id: Int, val name: String) // sospseso, in corso, terminato, eliminato
 
