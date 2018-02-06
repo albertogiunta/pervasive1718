@@ -1,3 +1,5 @@
+@file:Suppress("UNUSED_PARAMETER")
+
 package controllers.api
 
 import JdbiConfiguration
@@ -36,7 +38,7 @@ object BoundaryApi {
     fun getAllBoundaries(request: Request, response: Response): String {
         return JdbiConfiguration.INSTANCE.jdbi.withExtension<List<Boundary>, BoundaryDao, SQLException>(BoundaryDao::class.java)
         { it.selectAllStatuses() }
-                .toJson()
+            .toJson()
     }
 
     /**
@@ -45,7 +47,7 @@ object BoundaryApi {
     fun getBoundaryById(request: Request, response: Response): String {
         return JdbiConfiguration.INSTANCE.jdbi.withExtension<List<Boundary>, BoundaryDao, SQLException>(BoundaryDao::class.java)
         { it.selectStatusById(request.params(Params.Role.ID).toInt()) }
-                .toJson()
+            .toJson()
     }
 
 }
