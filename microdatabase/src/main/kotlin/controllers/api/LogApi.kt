@@ -19,7 +19,6 @@ object LogApi {
      */
     fun addLogEntry(request: Request, response: Response): String {
         val log: Log = Klaxon().parse<Log>(request.body()) ?: return response.badRequest()
-        println(log)
         JdbiConfiguration.INSTANCE.jdbi.useExtension<LogDao, SQLException>(LogDao::class.java)
         {
             it.insertNewLogEntry(

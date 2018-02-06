@@ -2,6 +2,8 @@ package controllers.api
 
 import JdbiConfiguration
 import Params
+import badRequest
+import com.beust.klaxon.Klaxon
 import dao.ActivityTypeDao
 import model.ActivityType
 import okCreated
@@ -16,8 +18,9 @@ object ActivityTypeApi {
      * Add a new activity type
      */
     fun addActivityType(request: Request, response: Response): String {
+        val activityType: ActivityType = Klaxon().parse<ActivityType>(request.body()) ?: return response.badRequest()
         JdbiConfiguration.INSTANCE.jdbi.useExtension<ActivityTypeDao, SQLException>(ActivityTypeDao::class.java)
-        { it.insertNewActivityType(request.queryParams(Params.ActivityType.NAME)) }
+        { it.insertNewActivityType(request.queryParams(activityType.name)) }
         return response.okCreated()
     }
 

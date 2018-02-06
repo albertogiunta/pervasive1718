@@ -2,6 +2,8 @@ package controllers.api
 
 import JdbiConfiguration
 import Params
+import badRequest
+import com.beust.klaxon.Klaxon
 import dao.BoundaryDao
 import model.Boundary
 import okCreated
@@ -15,14 +17,15 @@ object BoundaryApi {
     /**
      * Inserts a new status inside of the Boundary table
      */
-    fun addStatus(request: Request, response: Response): String {
+    fun addBoundary(request: Request, response: Response): String {
+        val boundary: Boundary = Klaxon().parse<Boundary>(request.body()) ?: return response.badRequest()
         JdbiConfiguration.INSTANCE.jdbi.useExtension<BoundaryDao, SQLException>(BoundaryDao::class.java)
         {
             it.insertNewStatus(
-                request.queryParams(Params.Boundary.HEALTH_PARAMETER_ID).toInt(),
-                request.queryParams(Params.Boundary.ACTIVITY_ID).toInt(),
-                request.queryParams(Params.Boundary.UPPERBOUND).toDouble(),
-                request.queryParams(Params.Boundary.LOWERBOUND).toDouble())
+                boundary.healthParameterId,
+                boundary.activityId,
+                boundary.upperBound,
+                boundary.lowerBound)
         }
         return response.okCreated()
     }
@@ -30,7 +33,7 @@ object BoundaryApi {
     /**
      * Retrieves all the statuses
      */
-    fun getAllStatuses(request: Request, response: Response): String {
+    fun getAllBoundaries(request: Request, response: Response): String {
         return JdbiConfiguration.INSTANCE.jdbi.withExtension<List<Boundary>, BoundaryDao, SQLException>(BoundaryDao::class.java)
         { it.selectAllStatuses() }
                 .toJson()
@@ -39,7 +42,7 @@ object BoundaryApi {
     /**
      * Retrieves a specific status based on the passed role ID
      */
-    fun getStatusById(request: Request, response: Response): String {
+    fun getBoundaryById(request: Request, response: Response): String {
         return JdbiConfiguration.INSTANCE.jdbi.withExtension<List<Boundary>, BoundaryDao, SQLException>(BoundaryDao::class.java)
         { it.selectStatusById(request.params(Params.Role.ID).toInt()) }
                 .toJson()

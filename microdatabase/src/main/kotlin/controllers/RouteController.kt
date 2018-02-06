@@ -38,9 +38,9 @@ object RouteController : Controller {
             }
 
             path("/${Params.Boundary.TABLE_NAME}") {
-                post("/add", Controller.applicationJsonRequestType) { BoundaryApi.addStatus(request, response) }
-                get("/all", Controller.applicationJsonRequestType) { BoundaryApi.getAllStatuses(request, response) }
-                get("/:id", Controller.applicationJsonRequestType) { BoundaryApi.getStatusById(request, response) }
+                post("/add", Controller.applicationJsonRequestType) { BoundaryApi.addBoundary(request, response) }
+                get("/all", Controller.applicationJsonRequestType) { BoundaryApi.getAllBoundaries(request, response) }
+                get("/:id", Controller.applicationJsonRequestType) { BoundaryApi.getBoundaryById(request, response) }
             }
 
             path("/${Params.HealthParameter.TABLE_NAME}") {
