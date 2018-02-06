@@ -2,6 +2,8 @@ package controllers.api
 
 import JdbiConfiguration
 import Params
+import badRequest
+import com.beust.klaxon.Klaxon
 import dao.ActivityDao
 import model.Activity
 import okCreated
@@ -16,14 +18,14 @@ object ActivityApi {
      * Retrieves all the activities
      */
     fun addActivity(request: Request, response: Response): String {
+        val activity: Activity = Klaxon().parse<Activity>(request.body()) ?: return response.badRequest()
         JdbiConfiguration.INSTANCE.jdbi.useExtension<ActivityDao, SQLException>(ActivityDao::class.java) {
             it.insertNewActivity(
-                request.queryParams(Params.Activity.NAME),
-                request.queryParams(Params.Activity.ACTIVITY_TYPE_ID).toInt(),
-                request.queryParams(Params.Activity.ACRONYM),
-                request.queryParams(Params.Activity.STATUS_ID).toInt())
+                activity.name,
+                activity.activityTypeId,
+                activity.acronym,
+                activity.boundaryId)
         }
-            .toJson()
         return response.okCreated()
     }
 

@@ -4,10 +4,9 @@ object Params {
         const val TABLE_NAME = "activity"
         const val ID = "id"
         const val NAME = "name"
-        //        const val EXPECTED_EFFECT = "expectedeffect"
         const val ACTIVITY_TYPE_ID = "activitytypeid"
         const val ACRONYM = "acronym"
-        const val STATUS_ID = "statusid"
+        const val BOUNDARY_ID = "boundaryid"
     }
 
     object ActivityType {
@@ -16,8 +15,17 @@ object Params {
         const val NAME = "name"
     }
 
+    object Boundary {
+        const val TABLE_NAME = "boundary"
+        const val ID = "id"
+        const val HEALTH_PARAMETER_ID = "healthparameterid"
+        const val ACTIVITY_ID = "activityid"
+        const val UPPERBOUND = "upperbound"
+        const val LOWERBOUND = "lowerbound"
+    }
+
     object HealthParameter {
-        const val TABLE_NAME = "healthparameter"
+        const val TABLE_NAME = "healthParameter"
         const val ID = "id"
         const val NAME = "name"
         const val ACRONYM = "acronym"
@@ -28,7 +36,6 @@ object Params {
         const val ID = "id"
         const val NAME = "name"
         const val LOG_TIME = "logtime"
-        const val VALUE = "value"
         const val HEALTH_PARAMETER_ID = "healthparameterid"
         const val HEALTH_PARAMETER_VALUE = "healthparametervalue"
     }
@@ -46,15 +53,6 @@ object Params {
         const val TABLE_NAME = "role"
         const val ID = "id"
         const val NAME = "name"
-    }
-
-    object Boundary {
-        const val TABLE_NAME = "boundary"
-        const val ID = "id"
-        const val HEALTH_PARAMETER_ID = "healthparameterid"
-        const val ACTIVITY_ID = "activityid"
-        const val UPPERBOUND = "upperbound"
-        const val LOWERBOUND = "lowerbound"
     }
 
     object Task {

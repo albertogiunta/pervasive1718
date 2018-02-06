@@ -36,7 +36,6 @@ subprojects {
 
         compile project(":commons")
 
-
         // utility
         compile "org.slf4j:slf4j-simple:$slf4j_version"
         compile "com.google.code.gson:gson:$gson_version"

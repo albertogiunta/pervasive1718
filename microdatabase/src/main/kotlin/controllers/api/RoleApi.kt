@@ -2,6 +2,8 @@ package controllers.api
 
 import JdbiConfiguration
 import Params
+import badRequest
+import com.beust.klaxon.Klaxon
 import dao.RoleDao
 import model.Role
 import okCreated
@@ -16,8 +18,9 @@ object RoleApi {
      * Inserts a new role inside of the Role table
      */
     fun addRole(request: Request, response: Response): String {
+        val role: Role = Klaxon().parse<Role>(request.body()) ?: return response.badRequest()
         JdbiConfiguration.INSTANCE.jdbi.useExtension<RoleDao, SQLException>(RoleDao::class.java)
-        { it.insertNewRole(request.queryParams(Params.Role.NAME)) }
+        { it.insertNewRole(role.name) }
         return response.okCreated()
     }
 

@@ -16,7 +16,7 @@ interface OperatorDao {
     fun insertNewOperator(@Bind(NAME) name: String,
                           @Bind(SURNAME) surname: String,
                           @Bind(ROLE_ID) roleId: Int,
-                          @Bind(IS_ACTIVE) isActive: String)
+                          @Bind(IS_ACTIVE) isActive: Boolean)
 
     @SqlQuery("SELECT * FROM $TABLE_NAME")
     fun selectAllOperators(): List<Operator>

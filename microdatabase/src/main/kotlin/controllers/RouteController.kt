@@ -1,5 +1,6 @@
 package controllers
 
+import Params
 import controllers.api.*
 import spark.Spark.path
 import spark.kotlin.get
@@ -37,9 +38,9 @@ object RouteController : Controller {
             }
 
             path("/${Params.Boundary.TABLE_NAME}") {
-                post("/add", Controller.applicationJsonRequestType) { BoundaryApi.addStatus(request, response) }
-                get("/all", Controller.applicationJsonRequestType) { BoundaryApi.getAllStatuses(request, response) }
-                get("/:id", Controller.applicationJsonRequestType) { BoundaryApi.getStatusById(request, response) }
+                post("/add", Controller.applicationJsonRequestType) { BoundaryApi.addBoundary(request, response) }
+                get("/all", Controller.applicationJsonRequestType) { BoundaryApi.getAllBoundaries(request, response) }
+                get("/:id", Controller.applicationJsonRequestType) { BoundaryApi.getBoundaryById(request, response) }
             }
 
             path("/${Params.HealthParameter.TABLE_NAME}") {
@@ -60,7 +61,7 @@ object RouteController : Controller {
 
                 path("/${Params.HealthParameter.TABLE_NAME}") {
                     get("/:${Params.Log.HEALTH_PARAMETER_ID}", Controller.applicationJsonRequestType) { LogApi.getAllLogEntriesByHealthParameterId(request, response) }
-                    get("/:${Params.Log.HEALTH_PARAMETER_ID}/minthreshold/:value", Controller.applicationJsonRequestType) { LogApi.getAllLogEntriesByHealthParameterIdAboveValue(request, response) }
+                    get("/:${Params.Log.HEALTH_PARAMETER_ID}/minthreshold/:${Params.Log.HEALTH_PARAMETER_VALUE}", Controller.applicationJsonRequestType) { LogApi.getAllLogEntriesByHealthParameterIdAboveValue(request, response) }
                 }
             }
 

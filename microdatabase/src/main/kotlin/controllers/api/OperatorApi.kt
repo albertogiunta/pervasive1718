@@ -2,6 +2,8 @@ package controllers.api
 
 import JdbiConfiguration
 import Params
+import badRequest
+import com.beust.klaxon.Klaxon
 import dao.OperatorDao
 import model.Operator
 import okCreated
@@ -16,13 +18,14 @@ object OperatorApi {
      * Inserts a new role inside of the Operator table
      */
     fun addOperator(request: Request, response: Response): String {
+        val operator: Operator = Klaxon().parse<Operator>(request.body()) ?: return response.badRequest()
         JdbiConfiguration.INSTANCE.jdbi.useExtension<OperatorDao, SQLException>(OperatorDao::class.java)
         {
             it.insertNewOperator(
-                    request.queryParams(Params.Operator.NAME),
-                    request.queryParams(Params.Operator.SURNAME),
-                    request.queryParams(Params.Operator.ROLE_ID).toInt(),
-                    request.queryParams(Params.Operator.IS_ACTIVE))
+                operator.name,
+                operator.surname,
+                operator.roleId,
+                operator.isActive)
         }
         return response.okCreated()
     }
@@ -33,7 +36,7 @@ object OperatorApi {
     fun getAllOperators(request: Request, response: Response): String {
         return JdbiConfiguration.INSTANCE.jdbi.withExtension<List<Operator>, OperatorDao, SQLException>(OperatorDao::class.java)
         { it.selectAllOperators() }
-                .toJson()
+            .toJson()
     }
 
     /**
@@ -42,7 +45,7 @@ object OperatorApi {
     fun getOperatorById(request: Request, response: Response): String {
         return JdbiConfiguration.INSTANCE.jdbi.withExtension<List<Operator>, OperatorDao, SQLException>(OperatorDao::class.java)
         { it.selectOperatorById(request.params(Params.Operator.ID).toInt()) }
-                .toJson()
+            .toJson()
     }
 
 }

@@ -2,6 +2,8 @@ package controllers.api
 
 import JdbiConfiguration
 import Params
+import badRequest
+import com.beust.klaxon.Klaxon
 import dao.TaskDao
 import model.Task
 import okCreated
@@ -16,14 +18,15 @@ object TaskApi {
      * Inserts a new role inside of the Task table
      */
     fun addTask(request: Request, response: Response): String {
+        val task: Task = Klaxon().parse<Task>(request.body()) ?: return response.badRequest()
         JdbiConfiguration.INSTANCE.jdbi.useExtension<TaskDao, SQLException>(TaskDao::class.java)
         {
             it.insertNewTask(
-                    request.queryParams(Params.Task.OPERATOR_ID).toInt(),
-                    request.queryParams(Params.Task.START_TIME),
-                    request.queryParams(Params.Task.END_TIME),
-                    request.queryParams(Params.Task.ACTIVITY_ID).toInt(),
-                request.queryParams(Params.Task.TASK_STATUS_ID))
+                task.operatorId,
+                task.startTime,
+                task.endTime,
+                task.activityId,
+                task.taskStatusId)
         }
         return response.okCreated()
     }
@@ -34,7 +37,7 @@ object TaskApi {
     fun getAllTasks(request: Request, response: Response): String {
         return JdbiConfiguration.INSTANCE.jdbi.withExtension<List<Task>, TaskDao, SQLException>(TaskDao::class.java)
         { it.selectAllTasks() }
-                .toJson()
+            .toJson()
     }
 
     /**
@@ -43,7 +46,7 @@ object TaskApi {
     fun getTaskById(request: Request, response: Response): String {
         return JdbiConfiguration.INSTANCE.jdbi.withExtension<List<Task>, TaskDao, SQLException>(TaskDao::class.java)
         { it.selectTaskById(request.params(Params.Task.ID).toInt()) }
-                .toJson()
+            .toJson()
     }
 
 }

@@ -1,7 +1,4 @@
 dependencies {
-    repositories {
-        jcenter()
-    }
     // local
     compile project(":pubsub-adapter")
 

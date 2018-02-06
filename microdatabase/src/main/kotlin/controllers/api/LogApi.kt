@@ -2,8 +2,8 @@ package controllers.api
 
 import JdbiConfiguration
 import Params
+import badRequest
 import com.beust.klaxon.Klaxon
-import com.google.gson.Gson
 import dao.LogDao
 import model.Log
 import okCreated
@@ -11,8 +11,6 @@ import spark.Request
 import spark.Response
 import toJson
 import java.sql.SQLException
-import java.sql.Timestamp
-import java.util.*
 
 object LogApi {
 
@@ -20,9 +18,7 @@ object LogApi {
      * Insert a new entry in the Log table
      */
     fun addLogEntry(request: Request, response: Response): String {
-        val gson = Gson()
-        val log: Log = Klaxon().parse<Log>(request.body())!!
-        println(log)
+        val log: Log = Klaxon().parse<Log>(request.body()) ?: return response.badRequest()
         JdbiConfiguration.INSTANCE.jdbi.useExtension<LogDao, SQLException>(LogDao::class.java)
         {
             it.insertNewLogEntry(
@@ -57,7 +53,7 @@ object LogApi {
      */
     fun getAllLogEntriesByHealthParameterIdAboveValue(request: Request, response: Response): String {
         return JdbiConfiguration.INSTANCE.jdbi.withExtension<List<Log>, LogDao, SQLException>(LogDao::class.java)
-        { it.selectAllLogEntriesByHealthParameterAboveThreshold(request.params(Params.Log.HEALTH_PARAMETER_ID).toInt(), request.params(Params.Log.VALUE).toInt()) }
+        { it.selectAllLogEntriesByHealthParameterAboveThreshold(request.params(Params.Log.HEALTH_PARAMETER_ID).toInt(), request.params(Params.Log.HEALTH_PARAMETER_VALUE).toInt()) }
                 .toJson()
     }
 

@@ -5,7 +5,6 @@ import Params.Log.HEALTH_PARAMETER_VALUE
 import Params.Log.LOG_TIME
 import Params.Log.NAME
 import Params.Log.TABLE_NAME
-import Params.Log.VALUE
 import model.Log
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
@@ -25,8 +24,8 @@ interface LogDao {
     @SqlQuery("SELECT * FROM $TABLE_NAME as l WHERE l.$HEALTH_PARAMETER_ID = (:$HEALTH_PARAMETER_ID)")
     fun selectAllLogEntriesByHealthParameterId(@Bind(HEALTH_PARAMETER_ID) healthParameterId: Int): List<Log>
 
-    @SqlQuery("SELECT * FROM $TABLE_NAME as l WHERE l.$HEALTH_PARAMETER_ID = (:$HEALTH_PARAMETER_ID) AND l.$HEALTH_PARAMETER_VALUE > (:$VALUE)")
+    @SqlQuery("SELECT * FROM $TABLE_NAME as l WHERE l.$HEALTH_PARAMETER_ID = (:$HEALTH_PARAMETER_ID) AND l.$HEALTH_PARAMETER_VALUE > (:$HEALTH_PARAMETER_VALUE)")
     fun selectAllLogEntriesByHealthParameterAboveThreshold(@Bind(HEALTH_PARAMETER_ID) healthParameterId: Int,
-                                                           @Bind(VALUE) value: Int): List<Log>
+                                                           @Bind(HEALTH_PARAMETER_VALUE) value: Int): List<Log>
 
 }
