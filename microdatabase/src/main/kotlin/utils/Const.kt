@@ -62,7 +62,7 @@ object Params {
         const val START_TIME = "starttime"
         const val END_TIME = "endtime"
         const val ACTIVITY_ID = "activityid"
-        const val TASK_STATUS_ID = "statusid"
+        const val STATUS_ID = "statusid"
     }
 
     object TaskStatus {

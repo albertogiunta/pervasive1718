@@ -13,7 +13,6 @@ import com.google.gson.JsonObject
 import model.KlaxonDate
 import model.Log
 import model.dateConverter
-
 import org.junit.AfterClass
 import org.junit.Test
 import java.io.StringReader
@@ -70,8 +69,7 @@ class DatabaseSubscriberTest {
         lateinit var listResult :List<Log>
         val (_, _, result) = (readString + randomId).httpGet().responseString()
         result.fold(success = {
-            val klaxon = Klaxon()
-                    .fieldConverter(KlaxonDate::class, dateConverter)
+            val klaxon = Klaxon().fieldConverter(KlaxonDate::class, dateConverter)
             JsonReader(StringReader(it)).use { reader ->
                 listResult = arrayListOf<Log>()
                 reader.beginArray {

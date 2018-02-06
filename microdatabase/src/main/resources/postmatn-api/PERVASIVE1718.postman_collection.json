@@ -631,7 +631,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n\t\"operatorId\": 1,\n\t\"startTime\": \"2018-02-06 10:53:28.642\",\n\t\"endTime\": \"2018-02-06 10:58:28.642\",\n\t\"activityId\": 1,\n\t\"statudId\": 1\n}"
+              "raw": "{\n\t\"operatorId\": 1,\n\t\"startTime\": \"Feb 2, 2018 10:53:28 AM\",\n\t\"endTime\": \"Feb 2, 2018 10:58:28 AM\",\n\t\"activityId\": 1,\n\t\"statudId\": 1\n}"
             },
             "url": {
               "raw": "{{prefix}}/task/add",
