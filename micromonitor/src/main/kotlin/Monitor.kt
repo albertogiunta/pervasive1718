@@ -4,7 +4,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 /**
- * The interface for a basic monitor that measure life paramenters
+ * The interface for a basic monitor that measure life parameters
  *
  * @param T the type used to rappresent the life parameter values (ex: Integer, Double, Long, ecc...)
  * */
@@ -73,7 +73,7 @@ class SimulatedMonitor<T>(decoratedMonitor: Monitor<T>, generationLogic: Generat
  * A decoration for a generic monitor in order to adds the logic of observable data flow creation
  * according to the RxKotlin (ReactiveX API)
  * */
-class ObservableMonitor<T>(private val observedMonitor: Monitor<T>, private val refreshPeriod: Long) : Observable<T>, Monitor<T> {
+class ObservableMonitor<T>(private val observedMonitor: Monitor<T>) : Observable<T>, Monitor<T> {
 
     override val name: String = observedMonitor.name
     override val measuredParameter: LifeParameters = observedMonitor.measuredParameter
