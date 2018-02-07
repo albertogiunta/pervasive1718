@@ -19,32 +19,35 @@ interface Monitor<T> {
      * Get the monitor's name
      * */
     val name: String
+    val measuredParameter: LifeParameters
 
-    val measuredParamenter: LifeParameters
 }
 
-class BasicMonitor<T>(val initialValue: T, override val name: String, override val measuredParamenter: LifeParameters) : Monitor<T> {
+/**
+ * A basic implementation of a monitor
+ * */
+class BasicMonitor<T>(private val initialValue: T, override val name: String, override val measuredParameter: LifeParameters) : Monitor<T> {
     override fun currentValue() = initialValue
 }
 
 /**
- * A decoration for a generic monitor in order to adds a simultated behaviour
+ * A decoration for a generic monitor in order to adds a simulated behaviour
  * */
 class SimulatedMonitor<T>(decoratedMonitor: Monitor<T>, generationLogic: GenerationLogic<T>, refreshRate: Long) : Monitor<T> {
 
     override val name: String
-    override val measuredParamenter: LifeParameters
+    override val measuredParameter: LifeParameters
 
     @Volatile
     private var value: T
-    val executor = Executors.newScheduledThreadPool(1)
+    private val executor = Executors.newScheduledThreadPool(1)
     private val changeLogic: Runnable
 
 
     init {
         name = decoratedMonitor.name
         value = decoratedMonitor.currentValue()
-        measuredParamenter = decoratedMonitor.measuredParamenter
+        measuredParameter = decoratedMonitor.measuredParameter
 
         changeLogic = Runnable { this.setCurrentValue(generationLogic.nextValue()) }
         this.executor.scheduleAtFixedRate(changeLogic, 0L, refreshRate, TimeUnit.MILLISECONDS)
@@ -73,7 +76,7 @@ class SimulatedMonitor<T>(decoratedMonitor: Monitor<T>, generationLogic: Generat
 class ObservableMonitor<T>(private val observedMonitor: Monitor<T>, private val refreshPeriod: Long) : Observable<T>, Monitor<T> {
 
     override val name: String = observedMonitor.name
-    override val measuredParamenter: LifeParameters = observedMonitor.measuredParamenter
+    override val measuredParameter: LifeParameters = observedMonitor.measuredParameter
 
     @Volatile
     private var continueObservation = true

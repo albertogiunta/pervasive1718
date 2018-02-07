@@ -1,9 +1,19 @@
 package utils
 
-object WSParams {
+import java.sql.Timestamp
+import java.util.*
 
-    const val HOST = "ws://localhost:"
-    const val WS_PORT = 8081
-    const val TASK_ROOT_PATH = "/task"
+object WSParams
 
+object EmptyTask{
+    const val emptyTaskName : String = "empty task"
+    const val emptyTaskId : Int = -1
+    //TODO play with this fucking things
+    val emptyTaskStartTime : Timestamp = Timestamp(Date().time -1000)
+    val emptyTaskEndTime : Timestamp = Timestamp(Date().time )
+}
+
+object EmptyMember{
+    const val emptyMemberId : Int = -2
+    const val emptyMemberName: String = "empty member"
 }

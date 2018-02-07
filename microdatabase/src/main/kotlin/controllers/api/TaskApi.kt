@@ -7,9 +7,9 @@ import Params
 import badRequest
 import com.beust.klaxon.Klaxon
 import dao.TaskDao
-import model.KlaxonDate
+import dateConverter
+import KlaxonDate
 import model.Task
-import model.dateConverter
 import okCreated
 import spark.Request
 import spark.Response
