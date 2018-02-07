@@ -61,13 +61,13 @@ class ServerControllerImpl private constructor(private val ws: WSTaskServer,
 
     override fun addTask(task: Task, member: Member) {
         if (members.containsKey(member)) {
-            taskMemberAssociationList + TaskMemberAssociation.create(task, member)
+            taskMemberAssociationList += TaskMemberAssociation.create(task, member)
             ws.sendMessage(members[member]!!, member, Operation.ADD_TASK, task)
         }
     }
 
     override fun removeTask(task: Task) {
-        taskMemberAssociationList.remove(taskMemberAssociationList.first { it.task == task })
+        taskMemberAssociationList.remove(taskMemberAssociationList.first { it.task.id == task.id })
     }
 
     override fun changeTaskStatus(task: Task) {
