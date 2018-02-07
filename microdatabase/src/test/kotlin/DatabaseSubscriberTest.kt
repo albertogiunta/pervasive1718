@@ -29,7 +29,8 @@ class DatabaseSubscriberTest {
         private val allString: String = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR$API_PORT/${Connection.API}/$TABLE_NAME/all"
         private val readString: String = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR$API_PORT/${Connection.API}/$TABLE_NAME/${Params.HealthParameter.TABLE_NAME}/"
 
-        lateinit var listResult :List<Log>
+        lateinit var listResult: List<Log>
+
         init {
             BrokerConnector.init(LOCAL_HOST)
             connector = BrokerConnector.INSTANCE
@@ -41,17 +42,18 @@ class DatabaseSubscriberTest {
             BrokerConnector.INSTANCE.close()
         }
     }
+
     @Test
-    fun writeSingleData(){
+    fun writeSingleData() {
 
         val sub = RabbitMQSubscriber(connector)
         val randomId = Math.abs(Random().nextInt(500))
         val json = JsonObject()
-        json.addProperty("healthParameterId",randomId)
-        json.addProperty("healthParameterValue",1212)
+        json.addProperty("healthParameterId", randomId)
+        json.addProperty("healthParameterValue", 1212)
         sub.subscribe(LifeParameters.HEART_RATE, sub.createStringConsumer {
             json.addProperty(Params.Log.NAME, it)
-            makePost(addString,json)
+            makePost(addString, json)
         })
 
         Thread.sleep(6000)
@@ -66,25 +68,26 @@ class DatabaseSubscriberTest {
         handlingGetResponse(makeGet(readString + randomId))
 
         println(listResult)
-        assert(listResult.firstOrNull{it.healthParameterId == randomId} != null)
+        assert(listResult.firstOrNull { it.healthParameterId == randomId } != null)
 
     }
 
     @Test
-    fun writeMultipleData(){
+    fun writeMultipleData() {
 
         handlingGetResponse(makeGet(allString))
         val initialListSize = listResult.size
 
         val json = JsonObject()
-        json.addProperty("healthParameterId",12)
-        json.addProperty("healthParameterValue",1212)
+        json.addProperty("healthParameterId", 12)
+        json.addProperty("healthParameterValue", 1212)
         val subCode = Thread {
             val sub = RabbitMQSubscriber(connector)
             LifeParameters.values().forEach { X ->
                 sub.subscribe(X, sub.createStringConsumer {
                     json.addProperty(Params.Log.NAME, it)
-                    makePost(addString,json) })
+                    makePost(addString, json)
+                })
             }
         }
         subCode.start()
@@ -108,7 +111,7 @@ class DatabaseSubscriberTest {
 
         println(listResult.size)
         println(initialListSize)
-        assert(listResult.size == (initialListSize+18))
+        assert(listResult.size == (initialListSize + 18))
 
     }
 
@@ -122,16 +125,15 @@ class DatabaseSubscriberTest {
         }
     }
 
-    private fun makeGet(string: String): Triple<Request, Response, Result<String, FuelError>>
-    {
+    private fun makeGet(string: String): Triple<Request, Response, Result<String, FuelError>> {
         return string.httpGet().responseString()
     }
 
-    private fun handlingGetResponse(triplet:Triple<Request, Response, Result<String, FuelError>> ): Unit{
+    private fun handlingGetResponse(triplet: Triple<Request, Response, Result<String, FuelError>>) {
         triplet.third.fold(success = {
             val klaxon = Klaxon().fieldConverter(KlaxonDate::class, dateConverter)
             JsonReader(StringReader(it)).use { reader ->
-                listResult = arrayListOf<Log>()
+                listResult = arrayListOf()
                 reader.beginArray {
                     while (reader.hasNext()) {
                         val log = klaxon.parse<Log>(reader)!!
@@ -140,8 +142,8 @@ class DatabaseSubscriberTest {
                 }
             }
         }
-                , failure = {
-            println(String(it.errorData))
-        })
+            , failure = {
+                println(String(it.errorData))
+            })
     }
 }

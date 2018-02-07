@@ -8,4 +8,5 @@ include 'microsession'
 include 'micronotifier'
 include 'microvisors'
 include 'websocket-adapter'
+include 'rest-adapter'
 

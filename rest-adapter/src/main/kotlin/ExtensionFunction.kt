@@ -1,15 +1,18 @@
-import com.google.gson.Gson
-import model.ResponseMessage
 import spark.Response
 
-fun getGsonInstance(): Gson = Gson()
+data class ResponseMessage(val id: Int, val message: String)
 
-fun Any.toJson(): String = getGsonInstance().toJson(this)
+fun Response.ok(): String {
+    this.status(200)
+    this.type("application/json")
+    this.body(ResponseMessage(200, "Ok").toJson())
+    return this.body()
+}
 
 fun Response.okCreated(): String {
     this.status(201)
     this.type("application/json")
-    this.body(ResponseMessage(201, "Ok").toJson())
+    this.body(ResponseMessage(201, "Ok Created").toJson())
     return this.body()
 }
 
