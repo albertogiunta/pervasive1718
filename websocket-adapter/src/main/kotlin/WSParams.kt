@@ -6,6 +6,7 @@ object WSParams {
     const val WS_PORT = 8081
     const val WS_PATH_DEFAULT = "/"
     const val WS_PATH_TASK = "/task"
+    const val WS_PATH_SESSION = "/session"
     const val WS_PATH_NOTIFIER = "/notifier"
 
 }
