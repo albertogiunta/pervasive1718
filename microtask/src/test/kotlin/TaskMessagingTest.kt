@@ -1,21 +1,17 @@
-import junit.framework.Assert.*
+
 import logic.*
-import logic.ServerControllerImpl.Companion.HOST
-import logic.ServerControllerImpl.Companion.TASK_ROOT_PATH
-import logic.ServerControllerImpl.Companion.WS_PORT
-import networking.WSTaskClient
 import networking.WSTaskServer
+import org.junit.Assert.*
 import org.junit.Test
 import spark.Spark
 import spark.kotlin.port
-import java.net.URI
 import java.sql.Timestamp
 import java.util.*
 
 class TaskMessagingTest {
 
     companion object {
-        private var controller: Controller
+        private var controller: ServerController
 
         init {
             initServer()
@@ -24,13 +20,12 @@ class TaskMessagingTest {
         }
 
         private fun initServer() {
-            port(WS_PORT)
-            Spark.webSocket(TASK_ROOT_PATH, WSTaskServer::class.java)
+            port(WSParams.WS_PORT)
+            Spark.webSocket(WSParams.WS_PATH_TASK, WSTaskServer::class.java)
             Spark.init()
         }
 
-        private fun initClient(): WSTaskClient =
-            WSTaskClient(URI("$HOST$WS_PORT$TASK_ROOT_PATH"))
+        private fun initClient(): WSClient = WSClientInitializer.init(WSClient(URIFactory.getTaskURI()))
     }
 
     @Test
@@ -55,8 +50,8 @@ class TaskMessagingTest {
 
         // leader
         val leader = addTaskThread(
-                Task(1, "task dei cojoni", Status.RUNNING, Timestamp(Date().time), Timestamp(Date().time)),
-                Member(1, "Member")
+            Task(1, "task dei cojoni", Status.RUNNING, Timestamp(Date().time), Timestamp(Date().time)),
+            Member(1, "Member")
         )
         leader.start()
         Thread.sleep(5000)
@@ -71,18 +66,18 @@ class TaskMessagingTest {
         Thread.sleep(3000)
         removeMember.start()
         Thread.sleep(3000)
-        assertFalse(controller.members.containsKey(Member(1,"Member")))
+        assertFalse(controller.members.containsKey(Member(1, "Member")))
         assertTrue(controller.members.isEmpty())
     }
 
     @Test
-    fun removeTaskTest(){
+    fun removeTaskTest() {
         val addMember = addMemberThread()
         val addTask = addTaskThread(
-               defaultTask(),
-               defaultMember()
+            defaultTask(),
+            defaultMember()
         )
-        val removeTask = removeTaskThread( defaultTask())
+        val removeTask = removeTaskThread(defaultTask())
         addMember.start()
         Thread.sleep(3000)
         addTask.start()
@@ -90,20 +85,20 @@ class TaskMessagingTest {
         removeTask.start()
         Thread.sleep(3000)
         assertFalse(controller.taskMemberAssociationList.contains(TaskMemberAssociation.create(
-                defaultTask(),
-                defaultMember()))
+            defaultTask(),
+            defaultMember()))
         )
         assertTrue(controller.taskMemberAssociationList.isEmpty())
     }
 
     @Test
-    fun changeTaskStatusTest(){
+    fun changeTaskStatusTest() {
         val addMember = addMemberThread()
         val addTask = addTaskThread(
-                defaultTask(),
-                defaultMember()
+            defaultTask(),
+            defaultMember()
         )
-        val taskChanged = defaultTask().also { it.status = Status.FINISHED}
+        val taskChanged = defaultTask().also { it.status = Status.FINISHED }
         val changeTaskStatus = changeTaskStatus(taskChanged)
         addMember.start()
         Thread.sleep(3000)
@@ -111,45 +106,42 @@ class TaskMessagingTest {
         Thread.sleep(3000)
         changeTaskStatus.start()
         Thread.sleep(3000)
-        assertTrue(controller.taskMemberAssociationList.first{ it.task.id == taskChanged.id}.task.status == Status.FINISHED)
+        assertTrue(controller.taskMemberAssociationList.first { it.task.id == taskChanged.id }.task.status == Status.FINISHED)
     }
 
-    private fun addMemberThread(id :Int = 1, member: String = "Member"):Thread{
+    private fun addMemberThread(id: Int = 1, member: String = "Member"): Thread {
         return Thread({
-            initializeConnection().send(TaskPayload(Member(id, member),Operation.ADD_MEMBER,emptyTask()).toJson()
+            initializeConnection().send(TaskPayload(Member(id, member), Operation.ADD_MEMBER, emptyTask()).toJson()
             )
         })
     }
 
-    private fun removeMemberThread(id :Int = 1, member: String = "Member"):Thread{
+    private fun removeMemberThread(id: Int = 1, member: String = "Member"): Thread {
         return Thread({
-            initializeConnection().send(TaskPayload(Member(id, member),Operation.REMOVE_MEMBER,emptyTask()).toJson()
+            initializeConnection().send(TaskPayload(Member(id, member), Operation.REMOVE_MEMBER, emptyTask()).toJson()
             )
         })
     }
 
-    private fun addTaskThread(task: Task, member: Member):Thread{
+    private fun addTaskThread(task: Task, member: Member): Thread {
         return Thread({
-            initializeConnection().send(TaskPayload(member, Operation.ADD_TASK,task).toJson())
+            initializeConnection().send(TaskPayload(member, Operation.ADD_TASK, task).toJson())
         })
     }
 
-    private fun removeTaskThread(task: Task):Thread{
+    private fun removeTaskThread(task: Task): Thread {
         return Thread({
-            initializeConnection().send(TaskPayload(emptyMember(), Operation.REMOVE_TASK,task).toJson())
+            initializeConnection().send(TaskPayload(emptyMember(), Operation.REMOVE_TASK, task).toJson())
         })
     }
 
-    private fun changeTaskStatus(task: Task):Thread{
+    private fun changeTaskStatus(task: Task): Thread {
         return Thread({
-            initializeConnection().send(TaskPayload(emptyMember(), Operation.CHANGE_TASK_STATUS,task).toJson())
+            initializeConnection().send(TaskPayload(emptyMember(), Operation.CHANGE_TASK_STATUS, task).toJson())
         })
     }
 
-    private fun initializeConnection():WSTaskClient{
-        val client = initClient()
-        client.connect()
-        Thread.sleep(1000)
-        return client
+    private fun initializeConnection(): WSClient {
+        return WSClientInitializer.init(WSClient(URIFactory.getTaskURI())).also { Thread.sleep(1000) }
     }
 }

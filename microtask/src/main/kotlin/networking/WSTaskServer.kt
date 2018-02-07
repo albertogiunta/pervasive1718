@@ -6,10 +6,7 @@ import WSServerInitializer
 import logic.*
 import logic.Serializer.klaxon
 import org.eclipse.jetty.websocket.api.Session
-import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose
-import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage
 import org.eclipse.jetty.websocket.api.annotations.WebSocket
-import java.io.IOException
 
 @Suppress("unused", "UNUSED_PARAMETER", "MemberVisibilityCanBePrivate")
 @WebSocket
@@ -21,14 +18,11 @@ class WSTaskServer : WSServer<TaskPayload>() {
 
     private val serverController: ServerController = ServerControllerImpl.INSTANCE
 
-    @OnWebSocketClose
     override fun closed(session: Session, statusCode: Int, reason: String) {
         super.closed(session, statusCode, reason)
         serverController.removeMember(session)
     }
 
-    @OnWebSocketMessage
-    @Throws(IOException::class)
     override fun message(session: Session, message: String) {
         super.message(session, message)
 
