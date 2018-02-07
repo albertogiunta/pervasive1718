@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 /**
  * The interface representing the contract of the microservice
  */
-interface Controller {
+interface ServerController {
 
     val taskMemberAssociationList: MutableList<TaskMemberAssociation>
     val members: Map<Member, Session>
@@ -29,15 +29,11 @@ interface Controller {
 
 class ServerControllerImpl private constructor(private val ws: WSTaskServer,
                                                override val taskMemberAssociationList: MutableList<TaskMemberAssociation> = mutableListOf(),
-                                               override val members: ConcurrentHashMap<Member, Session> = ConcurrentHashMap()) : Controller {
+                                               override val members: ConcurrentHashMap<Member, Session> = ConcurrentHashMap()) : ServerController {
 
     companion object {
-        const val HOST = "ws://localhost:"
-        const val WS_PORT = 8081
-        const val TASK_ROOT_PATH = "/task"
-
         lateinit var INSTANCE: ServerControllerImpl
-        val isInitialized = AtomicBoolean()
+        private val isInitialized = AtomicBoolean()
 
         fun init(ws: WSTaskServer) {
             if (!isInitialized.getAndSet(true)) {

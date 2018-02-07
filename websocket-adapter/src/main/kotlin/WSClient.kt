@@ -1,15 +1,9 @@
-package networking
-
-import logic.ServerControllerImpl.Companion.HOST
-import logic.ServerControllerImpl.Companion.TASK_ROOT_PATH
-import logic.ServerControllerImpl.Companion.WS_PORT
-import logic.WSLogger
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
 import java.net.URI
 
 @Suppress("unused", "UNUSED_PARAMETER")
-class WSTaskClient(serverURI: URI) : WebSocketClient(serverURI) {
+open class WSClient(serverURI: URI) : WebSocketClient(serverURI) {
 
     private val log = WSLogger(WSLogger.WSUser.CLIENT)
 
@@ -35,7 +29,14 @@ class WSTaskClient(serverURI: URI) : WebSocketClient(serverURI) {
     }
 }
 
+object WSClientInitializer {
+
+    fun <T : WSClient> init(client: T): T {
+        client.connect()
+        return client
+    }
+}
+
 fun main(args: Array<String>) {
-    val client = WSTaskClient(URI("$HOST$WS_PORT$TASK_ROOT_PATH"))
-    client.connect()
+    WSClientInitializer.init(WSClient(URIFactory.getDefaultURI()))
 }

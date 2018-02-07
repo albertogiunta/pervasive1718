@@ -43,18 +43,3 @@ object Serializer {
     val klaxon = Klaxon().fieldConverter(KlaxonDate::class, dateConverter)
 
 }
-
-class WSLogger(private val user: WSUser) {
-
-    enum class WSUser(name: String) {
-        SERVER("SERVER"),
-        CLIENT("CLIENT")
-    }
-
-    fun printStatusMessage(message: String) = println("[ ${user.name} | *** ] $message")
-
-    fun printIncomingMessage(message: String) = println("[ ${user.name} | <-- ] $message")
-
-    fun printOutgoingMessage(message: String) = println("[ ${user.name} | --> ] $message")
-
-}
