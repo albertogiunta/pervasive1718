@@ -14,8 +14,8 @@ interface GenerationLogic<T> {
 object CachedSin {
     private val rad = 360
 
-    var sin = Array<Double>(rad, { i ->
-        Math.sin(Math.toRadians(i.toDouble()))
+    val sin = Array<Double>(rad, { i ->
+        Math.round(Math.sin(Math.toRadians(i.toDouble())) * 10000.0) / 10000.0
     })
 
     fun getValue(index: Int) = sin[index % rad]
@@ -33,7 +33,7 @@ object GenerationStrategies {
         private val range = maxBound - minBound
 
         override fun nextValue(): Double {
-            return ((CachedSin.getRandomValue() + 1.0) * range) + minBound
+            return ((CachedSin.getRandomValue() + 1.0) * range / 2) + minBound
         }
     }
 
@@ -42,24 +42,50 @@ object GenerationStrategies {
         private val range = maxBound - minBound
 
         override fun nextValue(): Int {
-            return ((CachedSin.getRandomValue() + 1).toInt() * range) + minBound
+            return (((CachedSin.getRandomValue() + 1.0) * range / 2) + minBound).toInt()
         }
     }
 
     class DoubleLinearGeneration(val minBound: Double, val maxBound: Double) : GenerationLogic<Double> {
         private var increase = true
         private var counter: Double = minBound
+
+        init {
+            if (minBound >= maxBound) throw IllegalArgumentException("The minBound value must be less than maxBound")
+        }
+
         override fun nextValue(): Double {
+            if ((counter == maxBound && increase) || (counter == minBound && !increase)) increase = !increase
             if (increase) {
                 ++counter
-                if (counter == maxBound) increase = false
             } else {
                 --counter
-                if (counter == minBound) increase = true
             }
             return counter
         }
 
+        fun isIncreasing(): Boolean = increase
+    }
+
+    class IntLinearGeneration(val minBound: Int, val maxBound: Int) : GenerationLogic<Int> {
+        private var increase = true
+        private var counter: Int = minBound
+
+        init {
+            if (minBound >= maxBound) throw IllegalArgumentException("The minBound value must be less than maxBound")
+        }
+
+        override fun nextValue(): Int {
+            if ((counter == maxBound && increase) || (counter == minBound && !increase)) increase = !increase
+            if (increase) {
+                ++counter
+            } else {
+                --counter
+            }
+            return counter
+        }
+
+        fun isIncreasing(): Boolean = increase
     }
 
 }
