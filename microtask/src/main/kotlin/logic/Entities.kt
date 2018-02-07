@@ -32,7 +32,9 @@ interface TaskMemberAssociation {
 
 data class AssociationImpl(override val task: Task, override val member: Member) : TaskMemberAssociation
 
-data class TaskPayload(val doctor: Member, val operation: Operation, val task: Task)
+data class TaskPayload(val member: Member, val taskOperation: TaskOperation, val task: Task)
+
+data class SessionPayload(val leader: Member, val sessionOperation: SessionOperation, val sessionId: Int)
 
 fun TaskPayload.toJson(): String = gson.toJson(this)
 
