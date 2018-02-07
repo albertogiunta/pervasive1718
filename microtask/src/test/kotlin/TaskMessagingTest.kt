@@ -1,41 +1,37 @@
+
 import junit.framework.Assert.assertEquals
 import logic.*
-import logic.ServerControllerImpl.Companion.HOST
-import logic.ServerControllerImpl.Companion.TASK_ROOT_PATH
-import logic.ServerControllerImpl.Companion.WS_PORT
 import networking.WSTaskClient
 import networking.WSTaskServer
 import org.junit.Test
 import spark.Spark
 import spark.kotlin.port
-import java.net.URI
 import java.sql.Timestamp
 import java.util.*
 
 class TaskMessagingTest {
 
     companion object {
-        private var controller: Controller
+        private var serverController: ServerController
 
         init {
             initServer()
             Thread.sleep(3000)
-            controller = ServerControllerImpl.INSTANCE
+            serverController = ServerControllerImpl.INSTANCE
         }
 
         private fun initServer() {
-            port(WS_PORT)
-            Spark.webSocket(TASK_ROOT_PATH, WSTaskServer::class.java)
+            port(WSParams.WS_PORT)
+            Spark.webSocket(WSParams.WS_PATH_TASK, WSTaskServer::class.java)
             Spark.init()
         }
 
-        private fun initClient(): WSTaskClient =
-            WSTaskClient(URI("$HOST$WS_PORT$TASK_ROOT_PATH"))
+        private fun initClient(): WSTaskClient = WSClientInitializer.init(WSTaskClient(URIFactory.getTaskURI()))
     }
 
     @Test
     fun memberAddedTest() {
-        val initialSize = controller.members.size
+        val initialSize = serverController.members.size
 
         // member
         val member = Thread({
@@ -47,7 +43,7 @@ class TaskMessagingTest {
 
         member.start()
         Thread.sleep(3000)
-        assertEquals(controller.members.size, initialSize + 1)
+        assertEquals(serverController.members.size, initialSize + 1)
     }
 
     @Test
