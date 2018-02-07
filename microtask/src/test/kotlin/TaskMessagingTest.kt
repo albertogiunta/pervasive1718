@@ -36,7 +36,7 @@ class TaskMessagingTest {
         val member = addMemberThread()
 
         member.start()
-        Thread.sleep(3000)
+        Thread.sleep(7000)
         assertEquals(controller.members.size, initialSize + 1)
     }
 
@@ -66,7 +66,7 @@ class TaskMessagingTest {
         Thread.sleep(3000)
         removeMember.start()
         Thread.sleep(3000)
-        assertFalse(controller.members.containsKey(Member(1, "Member")))
+        assertFalse(controller.members.containsKey(defaultMember()))
         assertTrue(controller.members.isEmpty())
     }
 
