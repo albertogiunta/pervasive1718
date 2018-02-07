@@ -20,10 +20,13 @@ interface Monitor<T> {
      * */
     val name: String
 
-    val measuredParamenter: LifeParameters
+    val measuredParameter: LifeParameters
 }
 
-class BasicMonitor<T>(val initialValue: T, override val name: String, override val measuredParamenter: LifeParameters) : Monitor<T> {
+/**
+ * A basic implementation of a monitor
+ * */
+class BasicMonitor<T>(val initialValue: T, override val name: String, override val measuredParameter: LifeParameters) : Monitor<T> {
     override fun currentValue() = initialValue
 }
 
@@ -33,7 +36,7 @@ class BasicMonitor<T>(val initialValue: T, override val name: String, override v
 class SimulatedMonitor<T>(decoratedMonitor: Monitor<T>, generationLogic: GenerationLogic<T>, refreshRate: Long) : Monitor<T> {
 
     override val name: String
-    override val measuredParamenter: LifeParameters
+    override val measuredParameter: LifeParameters
 
     @Volatile
     private var value: T
@@ -44,7 +47,7 @@ class SimulatedMonitor<T>(decoratedMonitor: Monitor<T>, generationLogic: Generat
     init {
         name = decoratedMonitor.name
         value = decoratedMonitor.currentValue()
-        measuredParamenter = decoratedMonitor.measuredParamenter
+        measuredParameter = decoratedMonitor.measuredParameter
 
         changeLogic = Runnable { this.setCurrentValue(generationLogic.nextValue()) }
         this.executor.scheduleAtFixedRate(changeLogic, 0L, refreshRate, TimeUnit.MILLISECONDS)
@@ -73,7 +76,7 @@ class SimulatedMonitor<T>(decoratedMonitor: Monitor<T>, generationLogic: Generat
 class ObservableMonitor<T>(private val observedMonitor: Monitor<T>, private val refreshPeriod: Long) : Observable<T>, Monitor<T> {
 
     override val name: String = observedMonitor.name
-    override val measuredParamenter: LifeParameters = observedMonitor.measuredParamenter
+    override val measuredParameter: LifeParameters = observedMonitor.measuredParameter
 
     @Volatile
     private var continueObservation = true
