@@ -7,4 +7,5 @@ include 'micromonitor'
 include 'microsession'
 include 'micronotifier'
 include 'microvisors'
+include 'websocket-adapter'
 

@@ -15,12 +15,12 @@ import java.util.*
 class TaskMessagingTest {
 
     companion object {
-        private lateinit var controller: Controller
+        private var controller: Controller
 
         init {
             initServer()
-                .also { Thread.sleep(3000) }
-                .also { controller = ServerControllerImpl.INSTANCE }
+            Thread.sleep(3000)
+            controller = ServerControllerImpl.INSTANCE
         }
 
         private fun initServer() {
@@ -38,48 +38,45 @@ class TaskMessagingTest {
         val initialSize = controller.members.size
 
         // member
-        Thread({
-            initClient()
-                .also { it.connect() }
-                .also { Thread.sleep(1000) }
-                .also { it.send(TaskPayload(Member(1, "Member"), Operation.ADD_MEMBER, Task(1, "task dei cojoni", Status.RUNNING, Timestamp(Date().time), Timestamp(Date().time))).toJson()) }
+        val member = Thread({
+            val client = initClient()
+            client.connect()
+            Thread.sleep(1000)
+            client.send(TaskPayload(Member(1, "Member"), Operation.ADD_MEMBER, Task(1, "task dei cojoni", Status.RUNNING, Timestamp(Date().time), Timestamp(Date().time))).toJson())
         })
-            .also { it.start() }
-            .also { Thread.sleep(3000) }
-            .also { assertEquals(controller.members.size, initialSize + 1) }
+
+        member.start()
+        Thread.sleep(3000)
+        assertEquals(controller.members.size, initialSize + 1)
     }
 
     @Test
     fun taskAssignmentTest() {
         // member
-        Thread({
-            initClient()
-                .also { it.connect() }
-                .also { Thread.sleep(1000) }
-                .also {
-                    it.send(TaskPayload(Member(1, "Member"),
-                        Operation.ADD_MEMBER,
-                        Task(1, "task dei cojoni", Status.RUNNING, Timestamp(Date().time), Timestamp(Date().time)))
-                        .toJson())
-                }
-
+        val member = Thread({
+            val client = initClient()
+            client.connect()
+            Thread.sleep(1000)
+            client.send(TaskPayload(Member(1, "Member"),
+                Operation.ADD_MEMBER,
+                Task(1, "task dei cojoni", Status.RUNNING, Timestamp(Date().time), Timestamp(Date().time)))
+                .toJson())
         })
-            .also { it.start() }
-            .also { Thread.sleep(1000) }
+
+        member.start()
+        Thread.sleep(1000)
 
         // leader
-        Thread({
-            initClient()
-                .also { it.connect() }
-                .also { Thread.sleep(1000) }
-                .also {
-                    it.send(TaskPayload(Member(1, "Member"),
-                        Operation.ADD_TASK,
-                        Task(1, "task dei cojoni", Status.RUNNING, Timestamp(Date().time), Timestamp(Date().time)))
-                        .toJson())
-                }
+        val leader = Thread({
+            val client = initClient()
+            client.connect()
+            Thread.sleep(1000)
+            client.send(TaskPayload(Member(1, "Member"),
+                Operation.ADD_TASK,
+                Task(1, "task dei cojoni", Status.RUNNING, Timestamp(Date().time), Timestamp(Date().time)))
+                .toJson())
         })
-            .also { it.start() }
-            .also { Thread.sleep(5000) }
+        leader.start()
+        Thread.sleep(5000)
     }
 }
