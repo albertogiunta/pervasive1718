@@ -66,7 +66,7 @@ class TaskMessagingTest {
         Thread.sleep(3000)
         removeMember.start()
         Thread.sleep(3000)
-        assertFalse(controller.members.containsKey(defaultMember()))
+        assertFalse(controller.members.containsKey(Member.defaultMember()))
         assertTrue(controller.members.isEmpty())
     }
 
@@ -74,10 +74,10 @@ class TaskMessagingTest {
     fun removeTaskTest() {
         val addMember = addMemberThread()
         val addTask = addTaskThread(
-            defaultTask(),
-            defaultMember()
+            Task.defaultTask(),
+            Member.defaultMember()
         )
-        val removeTask = removeTaskThread(defaultTask())
+        val removeTask = removeTaskThread(Task.defaultTask())
         addMember.start()
         Thread.sleep(3000)
         addTask.start()
@@ -85,8 +85,8 @@ class TaskMessagingTest {
         removeTask.start()
         Thread.sleep(3000)
         assertFalse(controller.taskMemberAssociationList.contains(TaskMemberAssociation.create(
-            defaultTask(),
-            defaultMember()))
+            Task.defaultTask(),
+            Member.defaultMember()))
         )
         assertTrue(controller.taskMemberAssociationList.isEmpty())
     }
@@ -95,10 +95,10 @@ class TaskMessagingTest {
     fun changeTaskStatusTest() {
         val addMember = addMemberThread()
         val addTask = addTaskThread(
-            defaultTask(),
-            defaultMember()
+            Task.defaultTask(),
+            Member.defaultMember()
         )
-        val taskChanged = defaultTask().also { it.status = Status.FINISHED }
+        val taskChanged = Task.defaultTask().also { it.status = Status.FINISHED }
         val changeTaskStatus = changeTaskStatus(taskChanged)
         addMember.start()
         Thread.sleep(3000)
@@ -111,14 +111,14 @@ class TaskMessagingTest {
 
     private fun addMemberThread(id: Int = 1, member: String = "Member"): Thread {
         return Thread({
-            initializeConnection().send(TaskPayload(Member(id, member), Operation.ADD_MEMBER, emptyTask()).toJson()
+            initializeConnection().send(TaskPayload(Member(id, member), Operation.ADD_MEMBER, Task.emptyTask()).toJson()
             )
         })
     }
 
     private fun removeMemberThread(id: Int = 1, member: String = "Member"): Thread {
         return Thread({
-            initializeConnection().send(TaskPayload(Member(id, member), Operation.REMOVE_MEMBER, emptyTask()).toJson()
+            initializeConnection().send(TaskPayload(Member(id, member), Operation.REMOVE_MEMBER, Task.emptyTask()).toJson()
             )
         })
     }
@@ -131,13 +131,13 @@ class TaskMessagingTest {
 
     private fun removeTaskThread(task: Task): Thread {
         return Thread({
-            initializeConnection().send(TaskPayload(emptyMember(), Operation.REMOVE_TASK, task).toJson())
+            initializeConnection().send(TaskPayload(Member.defaultMember(), Operation.REMOVE_TASK, task).toJson())
         })
     }
 
     private fun changeTaskStatus(task: Task): Thread {
         return Thread({
-            initializeConnection().send(TaskPayload(emptyMember(), Operation.CHANGE_TASK_STATUS, task).toJson())
+            initializeConnection().send(TaskPayload(Member.defaultMember(), Operation.CHANGE_TASK_STATUS, task).toJson())
         })
     }
 
