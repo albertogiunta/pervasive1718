@@ -1,7 +1,13 @@
-package logic.ontologies
+package logic
 
 enum class Operation {
 
     ADD_MEMBER, REMOVE_MEMBER, ADD_TASK, REMOVE_TASK, CHANGE_TASK_STATUS
+
+}
+
+enum class Status {
+
+    RUNNING, SUSPENDED, MONITORING, FINISHED, ELIMINATED
 
 }

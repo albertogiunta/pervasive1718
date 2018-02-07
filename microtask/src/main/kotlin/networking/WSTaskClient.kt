@@ -1,37 +1,37 @@
 package networking
 
-import JSONClass
-import logic.Member
-import logic.Task
-import logic.ontologies.Operation
-import logic.ontologies.Status
+import logic.ServerControllerImpl.Companion.HOST
+import logic.ServerControllerImpl.Companion.TASK_ROOT_PATH
+import logic.ServerControllerImpl.Companion.WS_PORT
+import logic.WSLogger
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
-import toJson
-import utils.WSParams.HOST
-import utils.WSParams.TASK_ROOT_PATH
-import utils.WSParams.WS_PORT
 import java.net.URI
-import java.sql.Timestamp
-import java.util.*
 
 @Suppress("unused", "UNUSED_PARAMETER")
 class WSTaskClient(serverURI: URI) : WebSocketClient(serverURI) {
 
+    private val log = WSLogger(WSLogger.WSUser.CLIENT)
+
     override fun onOpen(handshakeData: ServerHandshake) {
-        println("new connection opened")
+        log.printStatusMessage("session opened")
     }
 
     override fun onClose(code: Int, reason: String, remote: Boolean) {
-        println("closed with exit code $code additional info: $reason")
+        log.printStatusMessage("session closed | exit code $code | info: $reason")
     }
 
     override fun onMessage(message: String) {
-        println("received message: " + message)
+        log.printIncomingMessage(message)
+    }
+
+    fun sendMessage(message: String) {
+        log.printOutgoingMessage(message)
+        send(message)
     }
 
     override fun onError(ex: Exception) {
-        System.err.println("an error occurred:" + ex)
+        log.printStatusMessage("error occurred: $ex")
     }
 }
 
