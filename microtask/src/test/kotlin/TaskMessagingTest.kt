@@ -56,7 +56,12 @@ class TaskMessagingTest {
             initClient()
                 .also { it.connect() }
                 .also { Thread.sleep(1000) }
-                .also { it.send(TaskPayload(Member(1, "Member"), Operation.ADD_MEMBER, Task(1, "task dei cojoni", Status.RUNNING, Timestamp(Date().time), Timestamp(Date().time))).toJson()) }
+                .also {
+                    it.send(TaskPayload(Member(1, "Member"),
+                        Operation.ADD_MEMBER,
+                        Task(1, "task dei cojoni", Status.RUNNING, Timestamp(Date().time), Timestamp(Date().time)))
+                        .toJson())
+                }
 
         })
             .also { it.start() }
@@ -67,7 +72,12 @@ class TaskMessagingTest {
             initClient()
                 .also { it.connect() }
                 .also { Thread.sleep(1000) }
-                .also { it.send(TaskPayload(Member(1, "Member"), Operation.ADD_TASK, Task(1, "task dei cojoni", Status.RUNNING, Timestamp(Date().time), Timestamp(Date().time))).toJson()) }
+                .also {
+                    it.send(TaskPayload(Member(1, "Member"),
+                        Operation.ADD_TASK,
+                        Task(1, "task dei cojoni", Status.RUNNING, Timestamp(Date().time), Timestamp(Date().time)))
+                        .toJson())
+                }
         })
             .also { it.start() }
             .also { Thread.sleep(5000) }
