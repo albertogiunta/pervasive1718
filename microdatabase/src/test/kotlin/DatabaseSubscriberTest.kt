@@ -7,8 +7,12 @@ import Connection.PROTOCOL_SEPARATOR
 import Params.Log.TABLE_NAME
 import com.beust.klaxon.JsonReader
 import com.beust.klaxon.Klaxon
+import com.github.kittinunf.fuel.core.FuelError
+import com.github.kittinunf.fuel.core.Request
+import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpPost
+import com.github.kittinunf.result.Result
 import com.google.gson.JsonObject
 import model.Log
 import org.junit.AfterClass
@@ -22,8 +26,10 @@ class DatabaseSubscriberTest {
         // otherwise the system throw a ConnectionException
         private val connector: BrokerConnector
         private val addString: String = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR$API_PORT/${Connection.API}/$TABLE_NAME/add"
+        private val allString: String = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR$API_PORT/${Connection.API}/$TABLE_NAME/all"
         private val readString: String = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR$API_PORT/${Connection.API}/$TABLE_NAME/${Params.HealthParameter.TABLE_NAME}/"
 
+        lateinit var listResult :List<Log>
         init {
             BrokerConnector.init(LOCAL_HOST)
             connector = BrokerConnector.INSTANCE
@@ -45,12 +51,7 @@ class DatabaseSubscriberTest {
         json.addProperty("healthParameterValue",1212)
         sub.subscribe(LifeParameters.HEART_RATE, sub.createStringConsumer {
             json.addProperty(Params.Log.NAME, it)
-            val (_, _, result) = addString.httpPost().body(json.toString()).responseString()
-            result.fold(success = {
-                println(it)
-            }, failure = {
-                println(String(it.errorData))
-            })
+            makePost(addString,json)
         })
 
         Thread.sleep(6000)
@@ -62,11 +63,72 @@ class DatabaseSubscriberTest {
         pub.start()
 
         Thread.sleep(4000)
+        handlingGetResponse(makeGet(readString + randomId))
+
+        println(listResult)
+        assert(listResult.firstOrNull{it.healthParameterId == randomId} != null)
+
+    }
+
+    @Test
+    fun writeMultipleData(){
+
+        handlingGetResponse(makeGet(allString))
+        val initialListSize = listResult.size
+
+        val json = JsonObject()
+        json.addProperty("healthParameterId",12)
+        json.addProperty("healthParameterValue",1212)
+        val subCode = Thread {
+            val sub = RabbitMQSubscriber(connector)
+            LifeParameters.values().forEach { X ->
+                sub.subscribe(X, sub.createStringConsumer {
+                    json.addProperty(Params.Log.NAME, it)
+                    makePost(addString,json) })
+            }
+        }
+        subCode.start()
+
+        Thread.sleep(6000)
+
+        val pub = Thread({
+            val pub = RabbitMQPublisher(connector)
+            LifeParameters.values().forEach {
+                for (i in 0 until 3) {
+                    Thread.sleep(1000)
+                    pub.publish(i.toString(), it)
+                }
+            }
+        })
+        pub.start()
+        Thread.sleep(50000)
 
 
-        lateinit var listResult :List<Log>
-        val (_, _, result) = (readString + randomId).httpGet().responseString()
-        result.fold(success = {
+        handlingGetResponse(makeGet(allString))
+
+        println(listResult.size)
+        println(initialListSize)
+        assert(listResult.size == (initialListSize+18))
+
+    }
+
+    private fun makePost(string: String, data: JsonObject): Triple<Request, Response, Result<String, FuelError>> {
+        return string.httpPost().body(data.toString()).responseString().also {
+            it.third.fold(success = {
+                println(it)
+            }, failure = {
+                println(String(it.errorData))
+            })
+        }
+    }
+
+    private fun makeGet(string: String): Triple<Request, Response, Result<String, FuelError>>
+    {
+        return string.httpGet().responseString()
+    }
+
+    private fun handlingGetResponse(triplet:Triple<Request, Response, Result<String, FuelError>> ): Unit{
+        triplet.third.fold(success = {
             val klaxon = Klaxon().fieldConverter(KlaxonDate::class, dateConverter)
             JsonReader(StringReader(it)).use { reader ->
                 listResult = arrayListOf<Log>()
@@ -78,17 +140,8 @@ class DatabaseSubscriberTest {
                 }
             }
         }
-        , failure = {
+                , failure = {
             println(String(it.errorData))
         })
-
-        println(listResult)
-        assert(listResult.firstOrNull{it.healthParameterId == randomId} != null)
-
     }
-
-    fun writeMultipleData(){
-        //fai spedire x dati dal publisher e vedi se la size è aumentata di x
-    }
-
 }

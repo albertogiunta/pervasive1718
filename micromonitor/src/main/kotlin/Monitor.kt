@@ -19,14 +19,14 @@ interface Monitor<T> {
      * Get the monitor's name
      * */
     val name: String
-
     val measuredParameter: LifeParameters
+
 }
 
 /**
  * A basic implementation of a monitor
  * */
-class BasicMonitor<T>(val initialValue: T, override val name: String, override val measuredParameter: LifeParameters) : Monitor<T> {
+class BasicMonitor<T>(private val initialValue: T, override val name: String, override val measuredParameter: LifeParameters) : Monitor<T> {
     override fun currentValue() = initialValue
 }
 
@@ -40,7 +40,7 @@ class SimulatedMonitor<T>(decoratedMonitor: Monitor<T>, generationLogic: Generat
 
     @Volatile
     private var value: T
-    val executor = Executors.newScheduledThreadPool(1)
+    private val executor = Executors.newScheduledThreadPool(1)
     private val changeLogic: Runnable
 
 
