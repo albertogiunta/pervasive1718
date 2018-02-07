@@ -1,11 +1,9 @@
 package networking
 
-import JSONClass
-import KlaxonDate
-import com.beust.klaxon.Klaxon
-import dateConverter
-import logic.Controller
-import logic.ontologies.Operation
+import logic.*
+import logic.Serializer.klaxon
+import logic.ServerControllerImpl.Companion.TASK_ROOT_PATH
+import logic.ServerControllerImpl.Companion.WS_PORT
 import org.eclipse.jetty.websocket.api.Session
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect
@@ -14,31 +12,36 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket
 import spark.Spark.init
 import spark.Spark.webSocket
 import spark.kotlin.port
-import utils.WSParams.TASK_ROOT_PATH
-import utils.WSParams.WS_PORT
 import java.io.IOException
 
-@Suppress("unused", "UNUSED_PARAMETER")
+@Suppress("unused", "UNUSED_PARAMETER", "MemberVisibilityCanBePrivate")
 @WebSocket
 class WSTaskServer {
 
-    private val controller = Controller.create(this)
+    init {
+        ServerControllerImpl.init(this)
+    }
+
+    private val controller: Controller = ServerControllerImpl.INSTANCE
+    private val log = WSLogger(WSLogger.WSUser.SERVER)
 
     @OnWebSocketConnect
     fun connected(session: Session) {
+        log.printStatusMessage("session opened")
     }
 
     @OnWebSocketClose
     fun closed(session: Session, statusCode: Int, reason: String) {
+        log.printStatusMessage("session closed | exit code $statusCode | info: $reason")
         controller.removeMember(session)
     }
 
     @OnWebSocketMessage
     @Throws(IOException::class)
     fun message(session: Session, message: String) {
-        println(message)
+        log.printIncomingMessage(message)
 
-        val jsonClass = Klaxon().fieldConverter(KlaxonDate::class, dateConverter).parse<JSONClass>(message)
+        val jsonClass = klaxon.parse<TaskPayload>(message)
 
         jsonClass?.let {
             with(jsonClass) {
@@ -51,7 +54,19 @@ class WSTaskServer {
                 }
             }
         }
-        println(controller.members.keys)
+    }
+
+    fun sendMessage(session: Session, member: Member, operation: Operation, task: Task) {
+        sendMessage(session, TaskPayload(member, operation, task))
+    }
+
+    fun sendMessage(session: Session, taskPayload: TaskPayload) {
+        sendMessage(session, taskPayload.toJson())
+    }
+
+    private fun sendMessage(session: Session, message: String) {
+        log.printOutgoingMessage(message)
+        session.remote.sendString(message)
     }
 }
 
