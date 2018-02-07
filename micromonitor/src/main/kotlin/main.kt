@@ -1,12 +1,12 @@
 fun main(argv: Array<String>) {
-    var tempMonitor = TemperatureMonitorsFactory.createSimulatedTemperatureMonitor()
+    val tempMonitor = TemperatureMonitorsFactory.createSimulatedTemperatureMonitor()
 
-    var systolicMonitor = HeartMonitorsFactory.createSimulatedSystolicPressureMonitor()
-    var diastolicMonitor = HeartMonitorsFactory.createSimulatedDiastolicPressureMonitor()
-    var heartRateMonitor = HeartMonitorsFactory.createSimulatedHeartRateMonitor()
+    val systolicMonitor = HeartMonitorsFactory.createSimulatedSystolicPressureMonitor()
+    val diastolicMonitor = HeartMonitorsFactory.createSimulatedDiastolicPressureMonitor()
+    val heartRateMonitor = HeartMonitorsFactory.createSimulatedHeartRateMonitor()
 
-    var spO2Monitor = SpO2MonitorsFactory.createSimulatedSpO2Monitor()
-    var etCO2 = EtCO2MonitorsFactory.createSimulatedEtCO2Monitor()
+    val spO2Monitor = SpO2MonitorsFactory.createSimulatedSpO2Monitor()
+    val etCO2 = EtCO2MonitorsFactory.createSimulatedEtCO2Monitor()
 
     //BrokerConnector.init("127.0.0.1")
     BrokerConnector.init()
@@ -37,10 +37,8 @@ fun main(argv: Array<String>) {
         pub.publish("Dato SpO2 simulato " + it, LifeParameters.OXYGEN_SATURATION)
     })
 
-
     val obsEtCO2Gen = ObservableMonitor(etCO2, 1000)
-    obsSpO2Gen.createObservable(2000).subscribe({
+    obsEtCO2Gen.createObservable(2000).subscribe({
         pub.publish("Dato EtCO2 simulato " + it, LifeParameters.END_TIDAL_CARBON_DIOXIDE)
     })
-
 }

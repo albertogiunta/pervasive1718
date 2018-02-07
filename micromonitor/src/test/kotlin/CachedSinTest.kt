@@ -3,6 +3,9 @@ import org.junit.Test
 
 class CachedSinTest {
 
+    /*
+     * Checks if sin defined function returns valid values.
+     */
     @Test
     fun getSin() {
         CachedSin.sin.forEach {
@@ -11,6 +14,9 @@ class CachedSinTest {
         }
     }
 
+    /*
+     * Checks if sin defined function returns correct specified values.
+     */
     @Test
     fun getValue() {
         Assert.assertTrue(CachedSin.getValue(0) == 0.0)
@@ -19,6 +25,9 @@ class CachedSinTest {
         Assert.assertTrue(CachedSin.getValue(270) == -1.0)
     }
 
+    /*
+     * Checks if sin defined function returns valid values.
+     */
     @Test
     fun getRandomValue() {
         val sin = CachedSin.sin
