@@ -1,9 +1,8 @@
 package amqp
 
 import logic.Member
-import spark.Session
 import LifeParameters
-import core.NotifierController
+import core.TopicController
 import RabbitMQSubscriber
 import BrokerConnector
 import io.reactivex.subjects.PublishSubject
@@ -14,15 +13,14 @@ import java.util.concurrent.ConcurrentHashMap
  *
  *
  */
-class AMQPClient(val broker: BrokerConnector,
-                 val controller: NotifierController<LifeParameters, Member, Session>) {
+class AMQPClient(val broker: BrokerConnector, val controller: TopicController<LifeParameters, Member>) {
 
-    val amqpSubscriber = RabbitMQSubscriber(broker)
+    private val amqpSubscriber = RabbitMQSubscriber(broker)
     val publishSubjects = ConcurrentHashMap<LifeParameters, Subject<String>>()
 
     init {
         with(controller) {
-            controller.topics().forEach { lp ->
+            controller.activeTopics().forEach { lp ->
                 publishSubjects[lp] = PublishSubject.create<String>()
                 amqpSubscriber.subscribe(lp, amqpSubscriber.createStringConsumer {
                     publishSubjects[lp]?.onNext(it)
