@@ -21,16 +21,22 @@ class TaskController private constructor(private val ws: WSTaskServer,
 
     override fun addTask(task: Task, member: Member) {
         if (sessionController.members.containsKey(member)) {
-            taskMemberAssociationList += TaskMemberAssociation.create(task, member)
+            taskMemberAssociationList.add(TaskMemberAssociation.create(task, member))
             ws.sendMessage(sessionController.members[member]!!, TaskPayload(member, TaskOperation.ADD_TASK, task))
         }
     }
 
     override fun removeTask(task: Task) {
-        taskMemberAssociationList.remove(taskMemberAssociationList.first { it.task.id == task.id })
+        with(taskMemberAssociationList.first { it.task.id == task.id }) {
+            taskMemberAssociationList.remove(this)
+            ws.sendMessage(sessionController.members[member]!!, TaskPayload(member, TaskOperation.REMOVE_TASK, task))
+        }
     }
 
-    override fun changeTaskStatus(task: Task) {
-        taskMemberAssociationList.first { it.task.id == task.id }.task.status = task.status
+    override fun changeTaskStatus(newTask: Task) {
+        with(taskMemberAssociationList.first { it.task.id == newTask.id }) {
+            task.status = newTask.status
+            ws.sendMessage(sessionController.members[member]!!, TaskPayload(member, TaskOperation.CHANGE_TASK_STATUS, task))
+        }
     }
 }

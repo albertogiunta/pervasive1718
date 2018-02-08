@@ -4,6 +4,8 @@ import KlaxonDate
 import java.sql.Timestamp
 import java.util.*
 
+data class Session(val sessionId: Int = 0, val roomId: Int)
+
 data class Activity(val id: Int = 0, val name: String, val activityTypeId: Int, val acronym: String, val boundaryId: Int)
 
 data class ActivityType(val id: Int = 0, val name: String) // farmaci, manovre, diagnostiche

@@ -1,5 +1,7 @@
 package logic
 
+import com.github.kittinunf.fuel.httpDelete
+import com.github.kittinunf.fuel.httpPost
 import networking.WSSessionServer
 import org.eclipse.jetty.websocket.api.Session
 import java.util.concurrent.ConcurrentHashMap
@@ -7,9 +9,10 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 class SessionController private constructor(private val ws: WSSessionServer) {
 
+    lateinit var leader: Pair<Member, Session>
     val members: ConcurrentHashMap<Member, Session> = ConcurrentHashMap()
 
-    lateinit var leader: Pair<Member, Session>
+    private var sessionId: Int = -1
 
     companion object {
         lateinit var INSTANCE: SessionController
@@ -23,18 +26,20 @@ class SessionController private constructor(private val ws: WSSessionServer) {
     }
 
     fun createSession(member: Member, traumaSessionId: Int, session: Session) {
-        // TODO metti traumaSessionId nel db
+        "http://localhost:8080/api/session/add/$traumaSessionId".httpPost().responseString()
         leader = Pair(member, session)
+        sessionId = traumaSessionId
     }
 
     fun closeSession(traumaSessionId: Int) {
-        // TODO comunica al db
+        "http://localhost:8080/api/session/close/$traumaSessionId".httpDelete().responseString()
         removeAllMembers()
     }
 
     fun addMember(member: Member, session: Session) {
         members[member] = session
-        // TODO comunica al leader che è arrivato un nuovo member
+        // TODO comunica al member che è arrivato un nuovo member
+        ws.sendMessage(leader.second, SessionPayload(member, SessionOperation.ADD_MEMBER, sessionId))
     }
 
     fun removeMember(session: Session) {
@@ -42,6 +47,6 @@ class SessionController private constructor(private val ws: WSSessionServer) {
     }
 
     private fun removeAllMembers() {
-
+        members.clear()
     }
 }

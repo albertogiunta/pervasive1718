@@ -6,8 +6,10 @@ import WSServerInitializer
 import logic.*
 import logic.Serializer.klaxon
 import org.eclipse.jetty.websocket.api.Session
+import org.eclipse.jetty.websocket.api.annotations.WebSocket
 
 @Suppress("unused", "UNUSED_PARAMETER", "MemberVisibilityCanBePrivate")
+@WebSocket
 class WSTaskServer : WSServer<TaskPayload>() {
 
     init {
@@ -39,5 +41,5 @@ class WSTaskServer : WSServer<TaskPayload>() {
 
 fun main(args: Array<String>) {
     WSServerInitializer.init(serverClazz = WSTaskServer::class.java, wsPath = WSParams.WS_PATH_TASK)
-    WSServerInitializer.init(serverClazz = WSTaskServer::class.java, wsPath = WSParams.WS_PATH_TASK)
+    WSServerInitializer.init(serverClazz = WSTaskServer::class.java, wsPath = WSParams.WS_PATH_SESSION)
 }

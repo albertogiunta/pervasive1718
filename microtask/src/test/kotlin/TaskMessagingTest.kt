@@ -1,149 +1,188 @@
 
-/*
 import logic.*
+import logic.Member.Companion.emptyMember
+import networking.WSSessionServer
 import networking.WSTaskServer
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
-import spark.Spark
-import spark.kotlin.port
+import spark.kotlin.ignite
 import java.sql.Timestamp
 import java.util.*
 
 class TaskMessagingTest {
 
     companion object {
-        private var controller: Controller
+        private var taskController: TaskController
+        private var sessionController: SessionController
 
         init {
-            initServer()
-            Thread.sleep(3000)
-            controller = TaskController.INSTANCE
-        }
+            val sessionService = ignite()
+            sessionService.port(WSParams.WS_SESSION_PORT)
+            sessionService.service.webSocket(WSParams.WS_PATH_SESSION, WSSessionServer::class.java)
+            sessionService.service.init()
 
-        private fun initServer() {
-            port(WSParams.WS_PORT)
-            Spark.webSocket(WSParams.WS_PATH_TASK, WSTaskServer::class.java)
-            Spark.init()
-        }
+            Thread.sleep(1000)
 
-        private fun initClient(): WSClient = WSClientInitializer.init(WSClient(URIFactory.getTaskURI()))
+            val taskService = ignite()
+            taskService.port(WSParams.WS_PORT)
+            taskService.service.webSocket(WSParams.WS_PATH_TASK, WSTaskServer::class.java)
+            taskService.service.init()
+
+            Thread.sleep(1000)
+
+            sessionController = SessionController.INSTANCE
+            taskController = TaskController.INSTANCE
+
+        }
     }
 
     @Test
-    fun memberAddedTest() {
-        val initialSize = controller.members.size
+    fun createSessionAndAddLeaderTest() {
+        // member
+        createSessionThread().start()
+        Thread.sleep(3000)
+
+        assertEquals(sessionController.leader.first.id, 0)
+        assertEquals(sessionController.leader.first.name, "Leader")
+    }
+
+    @Test
+    fun memberJoinsSessionTest() {
+        val initialSize = sessionController.members.size
 
         // member
-        val member = addMemberThread()
+        createSessionThread().start()
+        Thread.sleep(3000)
+        // member
+        addMemberThread(memberId = 0).start()
+        Thread.sleep(3000)
+        // member
+        addMemberThread(memberId = 1).start()
+        Thread.sleep(3000)
 
-        member.start()
-        Thread.sleep(7000)
-        assertEquals(controller.members.size, initialSize + 1)
+        assertEquals(sessionController.members.size, initialSize + 2)
     }
 
     @Test
     fun taskAssignmentTest() {
-        // member
-        val member = addMemberThread()
+        // leader
+        createSessionThread().start()
+        Thread.sleep(3000)
 
-        member.start()
+        val member = Member(1, "Member")
+
+        // member
+        addMemberThread(memberId = member.id).start()
         Thread.sleep(1000)
 
-        // leader
-        val leader = addTaskThread(
-            Task(1, "task dei cojoni", Status.RUNNING, Timestamp(Date().time), Timestamp(Date().time)),
-            Member(1, "Member")
-        )
-        leader.start()
-        Thread.sleep(5000)
-    }
-
-    @Test
-    fun removeMemberTest() {
-        val addMember = addMemberThread()
-        val removeMember = removeMemberThread()
-
-        addMember.start()
+        // member
+        addTaskThread(Task(1, "task dei cojoni", Status.RUNNING, Timestamp(Date().time), Timestamp(Date().time)), member).start()
         Thread.sleep(3000)
-        removeMember.start()
-        Thread.sleep(3000)
-        assertFalse(controller.members.containsKey(Member.defaultMember()))
-        assertTrue(controller.members.isEmpty())
     }
 
     @Test
     fun removeTaskTest() {
-        val addMember = addMemberThread()
-        val addTask = addTaskThread(
-            Task.defaultTask(),
-            Member.defaultMember()
-        )
-        val removeTask = removeTaskThread(Task.defaultTask())
-        addMember.start()
+
+        // leader
+        createSessionThread().start()
         Thread.sleep(3000)
-        addTask.start()
+
+        val member = Member(1, "Member")
+
+        // member
+        addMemberThread(memberId = member.id).start()
+        Thread.sleep(1000)
+
+        addTaskThread(Task.defaultTask(), Member.defaultMember()).start()
+        Thread.sleep(1000)
+
+        removeTaskThread(Task.defaultTask()).start()
         Thread.sleep(3000)
-        removeTask.start()
-        Thread.sleep(3000)
-        assertFalse(controller.taskMemberAssociationList.contains(TaskMemberAssociation.create(
-            Task.defaultTask(),
-            Member.defaultMember()))
-        )
-        assertTrue(controller.taskMemberAssociationList.isEmpty())
+
+        assertTrue(taskController.taskMemberAssociationList.isEmpty())
     }
 
     @Test
     fun changeTaskStatusTest() {
-        val addMember = addMemberThread()
-        val addTask = addTaskThread(
-            Task.defaultTask(),
-            Member.defaultMember()
-        )
-        val taskChanged = Task.defaultTask().also { it.status = Status.FINISHED }
-        val changeTaskStatus = changeTaskStatus(taskChanged)
-        addMember.start()
+        // leader
+        createSessionThread().start()
         Thread.sleep(3000)
-        addTask.start()
+
+        val member = Member(1, "Member")
+
+        // member
+        addMemberThread(memberId = member.id).start()
+        Thread.sleep(1000)
+
+        addTaskThread(Task.defaultTask(), Member.defaultMember()).start()
+        Thread.sleep(1000)
+
+        val taskChanged = Task.defaultTask().apply { this.status = Status.FINISHED }
+
+        changeTaskStatus(taskChanged).start()
         Thread.sleep(3000)
-        changeTaskStatus.start()
-        Thread.sleep(3000)
-        assertTrue(controller.taskMemberAssociationList.first { it.task.id == taskChanged.id }.task.status == Status.FINISHED)
+
+        assertTrue(taskController.taskMemberAssociationList.first { it.task.id == taskChanged.id }.task.status == Status.FINISHED)
     }
 
-    private fun addMemberThread(id: Int = 1, member: String = "Member"): Thread {
+//    @Test
+//    fun removeMemberTest() {
+//        val addMember = addMemberThread()
+//        val removeMember = removeMemberThread()
+//
+//        addMember.start()
+//        Thread.sleep(3000)
+//        removeMember.start()
+//        Thread.sleep(3000)
+//        assertFalse(sessionController.members.containsKey(Member.defaultMember()))
+//        assertTrue(sessionController.members.isEmpty())
+//    }
+
+    private fun createSessionThread(sessionId: Int = 0, leader: Member = Member(0, "Leader")): Thread {
         return Thread({
-            initializeConnection().send(TaskPayload(Member(id, member), TaskOperation.ADD_MEMBER, emptyTask()).toJson()
-            )
+            initializeConnectionWithSessionWSClient()
+                .send(SessionPayload(leader, SessionOperation.OPEN, sessionId).toJson())
         })
     }
 
-    private fun removeMemberThread(id: Int = 1, member: String = "Member"): Thread {
+    private fun addMemberThread(sessionId: Int = 0, memberId: Int): Thread {
         return Thread({
-            initializeConnection().send(TaskPayload(Member(id, member), TaskOperation.REMOVE_MEMBER, emptyTask()).toJson()
-            )
+            initializeConnectionWithSessionWSClient()
+                .send(SessionPayload(Member(memberId, "Member"), SessionOperation.ADD_MEMBER, sessionId).toJson())
         })
     }
+
+//    private fun removeMemberThread(id: Int = 1, member: String = "Member"): Thread {
+//        return Thread({
+//            initializeConnectionWithTaskWSClient().send(TaskPayload(Member(id, member), SessionOperation.REMOVE_MEMBER, emptyTask()).toJson()
+//            )
+//        })
+//    }
 
     private fun addTaskThread(task: Task, member: Member): Thread {
         return Thread({
-            initializeConnection().send(TaskPayload(member, TaskOperation.ADD_TASK, task).toJson())
+            initializeConnectionWithTaskWSClient().send(TaskPayload(member, TaskOperation.ADD_TASK, task).toJson())
         })
     }
 
     private fun removeTaskThread(task: Task): Thread {
         return Thread({
-            initializeConnection().send(TaskPayload(emptyMember(), TaskOperation.REMOVE_TASK, task).toJson())
+            initializeConnectionWithTaskWSClient().send(TaskPayload(emptyMember(), TaskOperation.REMOVE_TASK, task).toJson())
         })
     }
 
     private fun changeTaskStatus(task: Task): Thread {
         return Thread({
-            initializeConnection().send(TaskPayload(emptyMember(), TaskOperation.CHANGE_TASK_STATUS, task).toJson())
+            initializeConnectionWithTaskWSClient().send(TaskPayload(emptyMember(), TaskOperation.CHANGE_TASK_STATUS, task).toJson())
         })
     }
 
-    private fun initializeConnection(): WSClient {
+    private fun initializeConnectionWithSessionWSClient(): WSClient {
+        return WSClientInitializer.init(WSClient(URIFactory.getSessionURI())).also { Thread.sleep(2000) }
+    }
+
+    private fun initializeConnectionWithTaskWSClient(): WSClient {
         return WSClientInitializer.init(WSClient(URIFactory.getTaskURI())).also { Thread.sleep(1000) }
     }
 }
-*/
