@@ -1,5 +1,7 @@
 package logic
 
+import com.github.kittinunf.fuel.httpDelete
+import com.github.kittinunf.fuel.httpPost
 import networking.WSSessionServer
 import org.eclipse.jetty.websocket.api.Session
 import java.util.concurrent.ConcurrentHashMap
@@ -24,13 +26,13 @@ class SessionController private constructor(private val ws: WSSessionServer) {
     }
 
     fun createSession(member: Member, traumaSessionId: Int, session: Session) {
-        // TODO metti traumaSessionId nel db
+        "http://localhost:8080/api/session/add/$traumaSessionId".httpPost().responseString()
         leader = Pair(member, session)
         sessionId = traumaSessionId
     }
 
     fun closeSession(traumaSessionId: Int) {
-        // TODO comunica al db
+        "http://localhost:8080/api/session/close/$traumaSessionId".httpDelete().responseString()
         removeAllMembers()
     }
 
