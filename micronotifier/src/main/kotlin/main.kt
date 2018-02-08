@@ -1,19 +1,17 @@
-import amqp.AMQPClient
-import core.NotifierTopicController
+import networking.rabbit.AMQPClient
+import controller.NotifierTopicController
 import logic.Member
 import utils.Logger
 import com.google.gson.GsonBuilder
-import core.NotifierSessionController
-
+import controller.NotifierSessionController
 
 fun main(args: Array<String>) {
 
-    val topicController = NotifierTopicController(LifeParameters.values().toSet())
-    val sessionController= NotifierSessionController()
+    val topicController = NotifierTopicController.singleton(LifeParameters.values().toSet())
+    val sessionController = NotifierSessionController.singleton()
 
     BrokerConnector.init()
-    val client = AMQPClient(BrokerConnector.INSTANCE, topicController)
-
+    val amqp = AMQPClient(BrokerConnector.INSTANCE, topicController.activeTopics())
     val gson = GsonBuilder().create()
 
     topicController.addListenerTo(LifeParameters.HEART_RATE, Member(666, "Mario Rossi"))
@@ -21,7 +19,7 @@ fun main(args: Array<String>) {
     topicController.addListenerTo(LifeParameters.OXYGEN_SATURATION, Member(777, "Padre Pio"))
 
     topicController.activeTopics().forEach { lp ->
-        client.publishSubjects[lp]
+        amqp.publishSubjects[lp]
             ?.filter {
                 // Check if out of boundaries and notify of the WS
                 true
@@ -36,7 +34,7 @@ fun main(args: Array<String>) {
             }
     }
 
-    client.publishSubjects.forEach { _, stream ->
+    amqp.publishSubjects.forEach { _, stream ->
         stream.map {
             mapOf(gson.fromJson(it, Pair::class.java))
         }.doOnNext{
@@ -50,7 +48,7 @@ fun main(args: Array<String>) {
                     lps.map{it.toString()}.toSet().contains(e.key)
                 }.forEach {
                     Logger.info("$m ===> ${it.toJson()}")
-                            sessionController.sessionsMap[m] // Notify the WS, dunno how.
+                    sessionController.sessionsMap[m]?.remote?.sendString(message.toJson()) // Notify the WS, dunno how.
                 }
             }
         }
