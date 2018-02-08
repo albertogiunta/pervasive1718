@@ -3,14 +3,11 @@ package utils
 import java.sql.Timestamp
 import java.util.*
 
-object WSParams
-
 object EmptyTask{
     const val emptyTaskName : String = "empty task"
     const val emptyTaskId : Int = -1
-    //TODO play with this fucking things
-    val emptyTaskStartTime : Timestamp = Timestamp(Date().time -1000)
-    val emptyTaskEndTime : Timestamp = Timestamp(Date().time )
+    val emptyTaskStartTime : Timestamp = Timestamp(Date(0).time )
+    val emptyTaskEndTime : Timestamp = Timestamp(Date(1).time )
 }
 
 object EmptyMember{

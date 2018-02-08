@@ -1,1 +1,6 @@
-dependencies {}
+dependencies {
+
+    compile project(":websocket-adapter")
+    compile project(":rest-adapter")
+
+}

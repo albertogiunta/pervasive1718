@@ -1,11 +1,7 @@
 dependencies {
     // local
     compile project(":pubsub-adapter")
-
-    // networking
-    compile "com.sparkjava:spark-kotlin:$spark_version"
-    compile "com.github.kittinunf.fuel:fuel:$fuel_version"
-
+    compile project(":rest-adapter")
 
     // jdbi
     compile "org.jdbi:jdbi3-core:$jdbi_version"
