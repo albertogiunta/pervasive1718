@@ -3,7 +3,7 @@ import org.junit.Test
 
 class GenerationStrategiesTest {
 
-    /*
+    /**
      * Checks if the double sinusoid generator returns values in boundaries.
      */
     @Test
@@ -19,7 +19,7 @@ class GenerationStrategiesTest {
         }
     }
 
-    /*
+    /**
      * Checks if the int sinusoid generator returns values in boundaries.
      */
     @Test
@@ -35,7 +35,7 @@ class GenerationStrategiesTest {
         }
     }
 
-    /*
+    /**
      * Checks if the double linear generator returns expected values and in boundaries.
      */
     @Test
@@ -59,7 +59,7 @@ class GenerationStrategiesTest {
         }
     }
 
-    /*
+    /**
      * Checks if the integer linear generator returns expected values and in boundaries.
      */
     @Test
@@ -83,7 +83,7 @@ class GenerationStrategiesTest {
         }
     }
 
-    /*
+    /**
      * Checks if IllegalArgumentException is thrown in DoubleSinusoidGeneration
      */
     @Test(expected = IllegalArgumentException::class)
@@ -93,7 +93,7 @@ class GenerationStrategiesTest {
         GenerationStrategies.DoubleSinusoidGeneration(minBound, maxBound)
     }
 
-    /*
+    /**
      * Checks if IllegalArgumentException is thrown in IntSinusoidGeneration
      */
     @Test(expected = IllegalArgumentException::class)
@@ -103,7 +103,7 @@ class GenerationStrategiesTest {
         GenerationStrategies.IntSinusoidGeneration(minBound, maxBound)
     }
 
-    /*
+    /**
      * Checks if IllegalArgumentException is thrown in DoubleLinearGeneration
      */
     @Test(expected = IllegalArgumentException::class)
@@ -113,7 +113,7 @@ class GenerationStrategiesTest {
         GenerationStrategies.DoubleLinearGeneration(minBound, maxBound)
     }
 
-    /*
+    /**
      * Checks if IllegalArgumentException is thrown in IntLinearGeneration
      */
     @Test(expected = IllegalArgumentException::class)
