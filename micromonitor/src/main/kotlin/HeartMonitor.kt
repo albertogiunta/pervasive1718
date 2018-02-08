@@ -1,10 +1,26 @@
 object HeartMonitorsFactory {
 
+    val DEFAULT_SYSTOLIC_BLOOD_PRESSURE_INIT_VAL = 120.0
+    val DEFAULT_DIASTOLIC_BLOOD_PRESSURE_INIT_VAL = 80.0
+    val DEFAULT_HEART_RATE_INIT_VAL = 70.0
+
+    val DEFAULT_SYSTOLIC_BLOOD_PRESSURE_MIN_BOUND = 70.0
+    val DEFAULT_DIASTOLIC_BLOOD_PRESSURE_MIN_BOUND = 40.0
+    val DEFAULT_HEART_RATE_MIN_BOUND = 0.0
+
+    val DEFAULT_SYSTOLIC_BLOOD_PRESSURE_MAX_BOUND = 120.0
+    val DEFAULT_DIASTOLIC_BLOOD_PRESSURE_MAX_BOUND = 100.0
+    val DEFAULT_HEART_RATE_MAX_BOUND = 200.0
+
+
+    val DEFAULT_REFRESH_RATE = 1000L
+
+
     /**
      * A factory method for a static systolic pressure monitor
      * */
     fun createStaticSystolicBloodPressureMonitor() = BasicMonitor(
-            120.0,
+            DEFAULT_SYSTOLIC_BLOOD_PRESSURE_INIT_VAL,
             LifeParameters.SYSTOLIC_BLOOD_PRESSURE.longName,
             LifeParameters.SYSTOLIC_BLOOD_PRESSURE
     )
@@ -14,7 +30,7 @@ object HeartMonitorsFactory {
      * A factory method for a static diastolic blood pressure monitor
      * */
     fun createStaticDiastolicBloodPressureMonitor() = BasicMonitor(
-            80.0,
+            DEFAULT_DIASTOLIC_BLOOD_PRESSURE_INIT_VAL,
             LifeParameters.DIASTOLIC_BLOOD_PRESSURE.longName,
             LifeParameters.DIASTOLIC_BLOOD_PRESSURE
     )
@@ -24,7 +40,7 @@ object HeartMonitorsFactory {
      * A factory method for a static heart rate monitor
      * */
     fun createStaticHeartRateMonitor() = BasicMonitor(
-            70.0,
+            DEFAULT_HEART_RATE_INIT_VAL,
             LifeParameters.HEART_RATE.longName,
             LifeParameters.HEART_RATE
     )
@@ -34,16 +50,21 @@ object HeartMonitorsFactory {
      * */
     fun createSimulatedSystolicPressureMonitor() = SimulatedMonitor(
             createStaticSystolicBloodPressureMonitor(),
-            GenerationStrategies.DoubleSinusoidGeneration(70.0, 120.0),
-            100)
+            GenerationStrategies.DoubleSinusoidGeneration(
+                    DEFAULT_SYSTOLIC_BLOOD_PRESSURE_MIN_BOUND,
+                    DEFAULT_SYSTOLIC_BLOOD_PRESSURE_MAX_BOUND),
+            DEFAULT_REFRESH_RATE)
+
 
     /**
      * A factory method for a simulated diastolic blood pressure monitor
      * */
     fun createSimulatedDiastolicPressureMonitor() = SimulatedMonitor(
             createStaticDiastolicBloodPressureMonitor(),
-            GenerationStrategies.DoubleSinusoidGeneration(40.0, 100.0),
-            100)
+            GenerationStrategies.DoubleSinusoidGeneration(
+                    DEFAULT_DIASTOLIC_BLOOD_PRESSURE_MIN_BOUND,
+                    DEFAULT_DIASTOLIC_BLOOD_PRESSURE_MAX_BOUND),
+            DEFAULT_REFRESH_RATE)
 
 
     /**
@@ -51,6 +72,8 @@ object HeartMonitorsFactory {
      * */
     fun createSimulatedHeartRateMonitor() = SimulatedMonitor(
             createStaticHeartRateMonitor(),
-            GenerationStrategies.DoubleSinusoidGeneration(0.0, 200.0),
-            100)
+            GenerationStrategies.DoubleSinusoidGeneration(
+                    DEFAULT_HEART_RATE_MIN_BOUND,
+                    DEFAULT_HEART_RATE_MAX_BOUND),
+            DEFAULT_REFRESH_RATE)
 }
