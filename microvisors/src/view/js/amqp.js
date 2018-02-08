@@ -12,6 +12,8 @@ var queueName, myConsumerTag, routingKey, consumeChannel;
 // Track the number of messages consumed.
 var receivedMessageCounter;
 
+var graphs = [];
+
 $(document).ready(function () {
 
 	// Create references to GUI objects.
@@ -23,17 +25,17 @@ $(document).ready(function () {
 	routingKey = "broadcastkey";
 	consumeExchange = ["DIA", "EtCO2", "HR", "SYS", "SpO2", "T"];
 
-	connectBut = $("#connectBut");
-	disconnectBut = $("#disconnectBut");
+	//connectBut = $("#connectBut");
+	//disconnectBut = $("#disconnectBut");
 
-	logConsole = $("div#console");
-	receivedMessageCount = $("#receivedMessageCount");
-	clearBut = $("#clearBut");
+	//logConsole = $("div#console");
+	//receivedMessageCount = $("#receivedMessageCount");
+	//clearBut = $("#clearBut");
 
 	// Add event handlers.
-	connectBut.click(handleConnect);
-	disconnectBut.click(handleDisconnect);
-	clearBut.click(handleClearLog);
+	//connectBut.click(handleConnect);
+	//disconnectBut.click(handleDisconnect);
+	//clearBut.click(handleClearLog);
 
 	receivedMessageCounter = 0;
 
@@ -60,20 +62,20 @@ $(document).ready(function () {
 // to Kaazing Gateway.
 //
 var handleConnect = function () {
-	connectBut.prop("disabled", true);
-	log("CONNECTING: " + url + " " + username);
+	//connectBut.prop("disabled", true);
+	//log("CONNECTING: " + url + " " + username);
 
 	queueName = "queue" + Math.floor(Math.random() * 1000000);
 
 	amqpClient = amqpClientFactory.createAmqpClient();
-	amqpClient.addEventListener("close", function () {
+	/*amqpClient.addEventListener("close", function () {
 		log("DISCONNECTED");
 		updateGuiState(false);
 	});
 	amqpClient.addEventListener("error", function (e) {
 		log("CONNECTION ERROR:" + e.message);
 		connectBut.prop("disabled", false);
-	});
+	});*/
 
 	var credentials = {username: username, password: password};
 	var options = {
@@ -87,16 +89,16 @@ var handleConnect = function () {
 // Event handler invoked when the connection is successfully made.
 //
 var openHandler = function () {
-	log("CONNECTED");
-	updateGuiState(true);
-	log("OPEN: Consume Channel");
+	// log("CONNECTED");
+	// updateGuiState(true);
+	// log("OPEN: Consume Channel");
 	consumeChannel = amqpClient.openChannel(consumeChannelOpenHandler);
 };
 
 // Event handler when the consume channel is opened.
 //
 var consumeChannelOpenHandler = function (channel) {
-	log("OPENED: Consume Channel");
+	// log("OPENED: Consume Channel");
 
 	consumeChannel.addEventListener("message", function (message) {
 		handleMessageReceived(message);
@@ -118,8 +120,7 @@ var consumeChannelOpenHandler = function (channel) {
 // Event handler when the disconnect button is pressed.
 //
 var handleDisconnect = function () {
-	log("DISCONNECT");
-	consumeChannel
+	// log("DISCONNECT");
 	consumeChannel.closeChannel(consumeChannel);
 	amqpClient.disconnect();
 	
@@ -129,7 +130,7 @@ var handleDisconnect = function () {
 //
 var handleMessageReceived = function (event) {
 
-	receivedMessageCount.text(++receivedMessageCounter);
+	// receivedMessageCount.text(++receivedMessageCounter);
 
 	var body = null;
 
@@ -142,7 +143,11 @@ var handleMessageReceived = function (event) {
 		body = arrayBufferToString(event.getBodyAsArrayBuffer())
 	}
 	var exchange = event.args.exchange;
-	log("MESSAGE FROM " + exchange + ": " + body);
+
+	var curGraph = graphs.filter(graph => graph.channel === exchange)[0];
+	if (curGraph !== undefined)
+		curGraph.setData(body);
+	// log("MESSAGE FROM " + exchange + ": " + body);
 }
 
 // Create a WebSocketFactory which can be used for multiple AMQP clients if
@@ -166,7 +171,7 @@ var createWebSocketFactory = function () {
 
 // Event handler when the user presses the clear log button.
 //
-var handleClearLog = function () {
+/*var handleClearLog = function () {
 	logConsole.empty();
 }
 
@@ -194,7 +199,7 @@ var logDiv = function (div) {
 		logConsole.children().first().remove();
 	}
 }
-
+*/
 // Convert a string to an ArrayBuffer.
 //
 var stringToArrayBuffer = function (str) {
@@ -221,7 +226,14 @@ function getRandomInt(min, max) {
 
 // Enable or disable buttons on the screen based on whether we are currently
 // connected or not.
-var updateGuiState = function (connected) {
+/*var updateGuiState = function (connected) {
 	connectBut.prop("disabled", connected);
 	disconnectBut.prop("disabled", !connected);
-}
+}*/
+
+graphs.push(new Graph("Battito cardiaco", "HR", 0, 220, "black"));
+graphs.push(new Graph("Temperatura", "T", 0, 45, "red"));
+graphs.push(new Graph("Pressione sistolica", "SYS", 0, 230, "blue"));
+graphs.push(new Graph("Pressione diastolica", "DIA", 0, 150, "green"));
+graphs.push(new Graph("Saturazione ossigeno", "SpO2", 0, 100, "purple"));
+graphs.push(new Graph("Fine respirazione CO2", "EtCO2", 0, 15, "gray"));

@@ -12,9 +12,34 @@ html {
   background: whitesmoke; }
 
 body {
-  font: 14px/24px Arial, Helvetica, Helvetica Neue, sans-serif;
+  /*font: 14px/24px Arial, Helvetica, Helvetica Neue, sans-serif;*/
+  font-family: 14px/24px "Helvetica Neue", Helvetica, Arial, sans-serif;
   background-color: whitesmoke;
   color: #535353; }
+
+.graph .axis {
+  stroke-width: 1;
+}
+
+.graph .axis .tick line {
+  stroke: black;
+}
+
+.graph .axis .tick text {
+  fill: black;
+  font-size: 0.7em;
+}
+
+.graph .axis .domain {
+  fill: none;
+  stroke: black;
+}
+
+.graph .group {
+  fill: none;
+  stroke: black;
+  stroke-width: 1.5;
+}
 
 input {
   padding-left: 3px; }
@@ -245,13 +270,13 @@ header.wrapper nav ul {
 
 header .logo {
   margin: 0;
-  background-image: url("../images/nav-logo-kaazing.png");
-  background-size: 235px 38px;
+  background-image: url("../images/logo.jpg");
+  background-size: 400px 80px;
   background-repeat: no-repeat;
   margin-top: 12px;
   margin-bottom: 10px;
-  width: 235px;
-  height: 38px; }
+  width: 400px;
+  height: 80px; }
 
 h1, h2, h3, h4, h5 {
   color: #4aaadf; }
@@ -391,7 +416,7 @@ footer div.k-bottom {
   footer div.k-bottom .logo {
     float: left;
     margin-right: 50px;
-    background-image: url("../images/nav-logo-kaazing.png");
+    background-image: url("../images/logo.jpg");
     background-size: 166px 28px;
     background-repeat: no-repeat;
     width: 166px;
@@ -657,3 +682,39 @@ ul.breadcrumbs {
   h2,
   h3 {
     page-break-after: avoid; } }
+
+
+    /*x-axis gridline styles*/
+.c_x_grid {
+  fill: none;
+  stroke: grey;
+  stroke-dasharray: 3 3;
+  stroke-width: 1px;
+  opacity: 0.7;
+}
+
+/*y-axis gridline styles*/
+.c_y_grid {
+  fill: none;
+  stroke: grey;
+  stroke-dasharray: 3 3;
+  stroke-width: 1px;
+  opacity: 0.7;
+}
+
+.c_y_axis text {
+  font: 10px sans-serif;
+}
+
+.c_y_axis path,
+.c_y_axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+.c_axis_title {
+	text-anchor: middle;
+	font: 13px sans-serif;
+}
+
