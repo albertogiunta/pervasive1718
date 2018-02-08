@@ -14,31 +14,31 @@ fun main(argv: Array<String>) {
 
     val obsTempGen = ObservableMonitor<Double>(tempMonitor)
     obsTempGen.createObservable(2000).subscribe({
-        pub.publish("Dato Temperatura simulato " + it, obsTempGen.measuredParameter)
+        pub.publish("" + it, obsTempGen.measuredParameter)
     })
 
     val obsSysGen = ObservableMonitor<Double>(systolicMonitor)
     obsSysGen.createObservable(2000).subscribe({
-        pub.publish("Dato Systolic blood pressure simulato " + it, obsSysGen.measuredParameter)
+        pub.publish("" + it, obsSysGen.measuredParameter)
     })
 
     val obsDiaGen = ObservableMonitor<Double>(diastolicMonitor)
     obsDiaGen.createObservable(2000).subscribe({
-        pub.publish("Dato Diastolic blood pressure simulato " + it, obsDiaGen.measuredParameter)
+        pub.publish("" + it, obsDiaGen.measuredParameter)
     })
 
     val obsHrGen = ObservableMonitor<Double>(heartRateMonitor)
     obsHrGen.createObservable(2000).subscribe({
-        pub.publish("Dato Heart rate simulato " + it, obsHrGen.measuredParameter)
+        pub.publish("" + it, obsHrGen.measuredParameter)
     })
 
     val obsSpO2Gen = ObservableMonitor(spO2Monitor)
     obsSpO2Gen.createObservable(2000).subscribe({
-        pub.publish("Dato SpO2 simulato " + it, obsSpO2Gen.measuredParameter)
+        pub.publish("" + it, obsSpO2Gen.measuredParameter)
     })
 
     val obsEtCO2Gen = ObservableMonitor(etCO2)
     obsEtCO2Gen.createObservable(2000).subscribe({
-        pub.publish("Dato EtCO2 simulato " + it, obsEtCO2Gen.measuredParameter)
+        pub.publish("" + it, obsEtCO2Gen.measuredParameter)
     })
 }
