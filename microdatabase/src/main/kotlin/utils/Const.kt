@@ -1,5 +1,11 @@
 object Params {
 
+    object Session {
+        const val TABLE_NAME = "session"
+        const val SESSION_ID = "sessionId"
+        const val ROOM_ID = "roomId"
+    }
+
     object Activity {
         const val TABLE_NAME = "activity"
         const val ID = "id"

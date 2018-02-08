@@ -3,6 +3,7 @@ package controllers
 import Params
 import controllers.api.*
 import spark.Spark.path
+import spark.kotlin.delete
 import spark.kotlin.get
 import spark.kotlin.post
 
@@ -24,6 +25,13 @@ object RouteController : Controller {
          * NOTE: Calling APIs is CASE SENSITIVE. Use of camelCase on path definition is then discouraged.
          */
         path("/api") {
+
+            path("/${Params.Session.TABLE_NAME}") {
+                post("/add", Controller.applicationJsonRequestType) { SessionApi.addSession(request, response) }
+                get("/all", Controller.applicationJsonRequestType) { SessionApi.getAllSessions(request, response) }
+                get("/:roomId", Controller.applicationJsonRequestType) { SessionApi.getSessionByRoomId(request, response) }
+                delete("/close/:roomId", Controller.applicationJsonRequestType) { SessionApi.removeSessionByRoomId(request, response) }
+            }
 
             path("/${Params.Activity.TABLE_NAME}") {
                 post("/add", Controller.applicationJsonRequestType) { ActivityApi.addActivity(request, response) }
