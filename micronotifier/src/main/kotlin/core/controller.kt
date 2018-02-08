@@ -4,9 +4,6 @@ import logic.Member
 import spark.Session
 import java.util.concurrent.ConcurrentHashMap
 import LifeParameters
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
-import java.util.HashMap
 
 interface NotifierController<T, L, S> {
 
@@ -19,6 +16,8 @@ interface NotifierController<T, L, S> {
     fun addListenerTo(topic: T, listener: L)
 
     fun getListenersOn(topic: T): Set<L>?
+
+    fun getTopicsOf(listener: L): Set<T>?
 
     fun removeListener(listener: L)
 
@@ -34,28 +33,32 @@ interface NotifierController<T, L, S> {
 
 class NotifierControllerImpl(private var topics: Set<LifeParameters>) : NotifierController<LifeParameters, Member, Session> {
 
-    val lifeParametersMap = ConcurrentHashMap<LifeParameters, Set<Member>>()
-    val sessionMap = ConcurrentHashMap<Member, Session>()
+    val lifeParametersMap = ConcurrentHashMap<LifeParameters, MutableSet<Member>>()
+    val listenersMap = ConcurrentHashMap<Member, MutableSet<LifeParameters>>()
+    val sessionsMap = ConcurrentHashMap<Member, Session>()
 
     override fun setSessionFor(listener: Member, session: Session) {
-        sessionMap[listener] = session
+        sessionsMap[listener] = session
     }
 
-    override fun getSessionOf(listener: Member): Session? = sessionMap[listener]
+    override fun getSessionOf(listener: Member): Session? = sessionsMap[listener]
 
     override fun removeSession(session: Session) {
-        sessionMap.keySet(session).forEach { sessionMap.remove(it) }
+        sessionsMap.keySet(session).forEach { sessionsMap.remove(it) }
     }
 
     override fun addListenerTo(topic: LifeParameters, listener: Member) {
-        topics += topic
-        lifeParametersMap.merge(topic, setOf(listener), { t, u -> t + u })
+        if (topics.contains(topic)) {
+            lifeParametersMap[topic]?.add(listener)
+            listenersMap[listener]?.add(topic)
+        }
     }
 
     override fun getListenersOn(topic: LifeParameters): Set<Member>? = lifeParametersMap[topic]
+    override fun getTopicsOf(listener: Member): Set<LifeParameters>? = listenersMap[listener]
 
     override fun removeListener(listener: Member) {
-        sessionMap.remove(listener)
+        sessionsMap.remove(listener)
     }
 
     override fun addTopic(topic: LifeParameters) {
@@ -69,14 +72,18 @@ class NotifierControllerImpl(private var topics: Set<LifeParameters>) : Notifier
     override fun topics(): Set<LifeParameters> = topics
 
     override fun removeTopic(topic: LifeParameters) {
+
         topics -= topic
         lifeParametersMap.remove(topic)
+        listenersMap.keys().toList().forEach{
+            listenersMap[it]?.remove(topic)
+        }
     }
 
     init {
         with(topics) {
             topics.forEach {
-                lifeParametersMap[it] = emptySet()
+                lifeParametersMap[it] = mutableSetOf()
             }
         }
     }
