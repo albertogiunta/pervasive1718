@@ -4,6 +4,7 @@ import logic.Member
 import spark.Session
 import java.util.concurrent.ConcurrentHashMap
 import LifeParameters
+import utils.Logger
 
 interface NotifierController<T, L, S> {
 
@@ -50,7 +51,11 @@ class NotifierControllerImpl(private var topics: Set<LifeParameters>) : Notifier
     override fun addListenerTo(topic: LifeParameters, listener: Member) {
         if (topics.contains(topic)) {
             lifeParametersMap[topic]?.add(listener)
-            listenersMap[listener]?.add(topic)
+            if (listenersMap.containsKey(listener)) {
+                listenersMap[listener]?.add(topic)
+            } else {
+                listenersMap[listener] = mutableSetOf(topic)
+            }
         }
     }
 

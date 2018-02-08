@@ -24,7 +24,6 @@ class AMQPClient(val broker: BrokerConnector,
         with(controller) {
             controller.topics().forEach { lp ->
                 publishSubjects[lp] = PublishSubject.create<String>()
-                //publishSubjects[lp]?.subscribe(Logger::info)
                 amqpSubscriber.subscribe(lp, amqpSubscriber.createStringConsumer {
                     publishSubjects[lp]?.onNext(it)
                 })
