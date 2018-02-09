@@ -23,7 +23,7 @@ function Graph(paramName, channel, lowerbound, upperbound, color) {
 
     var x_scale = d3.time.scale()
         .domain([now - (limit - dataPeriod), now - duration]) // sure? set 2 instead of dataPeriod
-        .range([0, width])
+        .range([0, width - 40])
 
     var y_scale = d3.scale.linear()
         .domain([lowerbound, upperbound])
@@ -32,7 +32,7 @@ function Graph(paramName, channel, lowerbound, upperbound, color) {
     var line = d3.svg.line()
         .interpolate('basis')
         .x(function(d, i) {
-            return x_scale(now - (limit - 1 - i) * duration)
+            return x_scale(now - (limit - 8 - i) * duration)
         })
         .y(function(d) {
             return y_scale(d)
@@ -62,7 +62,7 @@ function Graph(paramName, channel, lowerbound, upperbound, color) {
     svg.selectAll(".c_y_grid")
         .data(ticks)
         .enter().append("path")
-        .attr("d", function (d, i) { return "M" + 0 + "," + y_scale(d) + "L" + (width) + "," + y_scale(d); })
+        .attr("d", function (d, i) { return "M" + 50 + "," + y_scale(d) + "L" + (width + 10) + "," + y_scale(d); })
         .attr("class", "c_y_grid");
 
     // Scale on y axis
@@ -107,6 +107,8 @@ function Graph(paramName, channel, lowerbound, upperbound, color) {
 
         // Remove oldest data point
         healthParam.data.shift()
+        if (healthParam.data.length < limit -1)
+            healthParam.data.push(0)
     }
 
     tick()

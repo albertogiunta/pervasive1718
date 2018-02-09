@@ -54,7 +54,7 @@ object GenerationStrategies {
          * Retrieves a random double value in range.
          * */
         override fun nextValue(): Double {
-            return ((CachedSin.getRandomValue() + 1.0) * range / 2) + minBound
+            return Math.round((((CachedSin.getRandomValue() + 1.0) * range / 2) + minBound) * 100.0) /100.0
         }
     }
 

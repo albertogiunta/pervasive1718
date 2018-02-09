@@ -17,6 +17,10 @@ body {
   background-color: whitesmoke;
   color: #535353; }
 
+svg {
+  padding: 10px;
+}
+
 .graph .axis {
   stroke-width: 1;
 }
@@ -231,8 +235,7 @@ header.wrapper nav a:hover, .nav-hover {
   color: white;
   padding: 20px 0; }
 
-/* For filename, path, and URL references. */
-.uri {
+.numParam {
   font-family: monospace, sans-serif;
   color: #f37333; }
 

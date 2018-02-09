@@ -1,16 +1,5 @@
-<!--
-
-    Copyright (c) 2007-2014, Kaazing Corporation. All rights reserved.
-
--->
-
 <!DOCTYPE html>
 <head>
-	<!--
-
-		Copyright (c) 2007-2014, Kaazing Corporation. All rights reserved.
-
-	-->
 	<!--[if lt IE 7]>
 	<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 	<!--[if IE 7]>
@@ -37,7 +26,7 @@
 
 		<script src="node_modules/jquery/dist/jquery.js"></script>
 		<script src="node_modules/npm-modernizr/modernizr.js"></script>
-		<script src="http://d3js.org/d3.v3.min.js"></script>
+		<script src="js/d3.v3.min.js"></script>
 		<script type="text/javascript" language="javascript"
 				src="node_modules/kaazing-javascript-gateway-client/WebSocket.js"></script>
 		<script type="text/javascript" language="javascript"
@@ -87,6 +76,9 @@
 						<div id="middle">
 								<div class="graph"></div>
 								<script type="text/javascript" language="javascript" src="js/amqp.js"></script>
+								Temperatura: <div class="numParam" id="T"></div>
+								ET CO2: <div class="numParam" id="EtCO2"></div>
+								Saturazione O2: <div class="numParam" id="SpO2"></div>
 						</div> <!-- #middle -->
 					</div>
 				</div>

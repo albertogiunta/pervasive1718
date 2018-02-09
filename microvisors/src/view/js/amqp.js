@@ -18,7 +18,7 @@ $(document).ready(function () {
 
 	// Create references to GUI objects.
 
-	url = "ws://192.168.1.175:8000/amqp";
+	url = "ws://localhost:8000/amqp";
 	username = "pervasive";
 	password = "zeronegativo";
 	virtualhost = "/";
@@ -123,6 +123,7 @@ var handleDisconnect = function () {
 	// log("DISCONNECT");
 	consumeChannel.closeChannel(consumeChannel);
 	amqpClient.disconnect();
+	console.log("handler has been called")
 	
 }
 
@@ -147,6 +148,10 @@ var handleMessageReceived = function (event) {
 	var curGraph = graphs.filter(graph => graph.channel === exchange)[0];
 	if (curGraph !== undefined)
 		curGraph.setData(body);
+	else {
+		var classId = "#"+exchange;
+		$(classId).text(body);
+	}
 	// log("MESSAGE FROM " + exchange + ": " + body);
 }
 
@@ -231,9 +236,16 @@ function getRandomInt(min, max) {
 	disconnectBut.prop("disabled", !connected);
 }*/
 
+
+var printConnectionStatus = function() {
+	console.log(amqpClient)
+}
+
+//setInterval(printConnectionStatus, 1000)
+
 graphs.push(new Graph("Battito cardiaco", "HR", 0, 220, "black"));
-graphs.push(new Graph("Temperatura", "T", 0, 45, "red"));
+//graphs.push(new Graph("Temperatura", "T", 0, 45, "red"));
 graphs.push(new Graph("Pressione sistolica", "SYS", 0, 230, "blue"));
 graphs.push(new Graph("Pressione diastolica", "DIA", 0, 150, "green"));
-graphs.push(new Graph("Saturazione ossigeno", "SpO2", 0, 100, "purple"));
-graphs.push(new Graph("Fine respirazione CO2", "EtCO2", 0, 15, "gray"));
+//graphs.push(new Graph("Saturazione ossigeno", "SpO2", 0, 100, "purple"));
+//graphs.push(new Graph("Fine respirazione CO2", "EtCO2", 0, 15, "gray"));
