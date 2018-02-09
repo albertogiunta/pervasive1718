@@ -1,7 +1,5 @@
 package controller
 
-import com.github.kittinunf.fuel.httpDelete
-import com.github.kittinunf.fuel.httpPost
 import logic.Member
 import org.eclipse.jetty.websocket.api.Session
 import java.util.concurrent.ConcurrentHashMap
@@ -14,9 +12,9 @@ interface SessionsController<L, S> {
 
     fun getSessionOf(listener: L): S?
 
-    fun removeListener(listener: L)
+    fun removeListener(listener: L): S?
 
-    fun removeListenerOn(session: S)
+    fun removeListenerOn(session: S): Iterable<L>
 
     fun closeSession(sid: Long)
 
@@ -33,7 +31,7 @@ class NotifierSessionController private constructor() : SessionsController<Membe
 
     override fun openSession(sid: Long) {
         if (this.SID != SessionsController.DEFAULT_SESSION_VALUE) {
-            "http://localhost:8080/notifier/api/session/open/$sid".httpPost().responseString()
+            //"http://localhost:8080/notifier/api/session/open/$sid".httpPost().responseString()
             this.SID = sid
         }
     }
@@ -44,17 +42,16 @@ class NotifierSessionController private constructor() : SessionsController<Membe
 
     override fun getSessionOf(listener: Member): Session? = sessionsMap[listener]
 
-    override fun removeListener(listener: Member) {
-        sessionsMap.remove(listener)
-    }
+    override fun removeListener(listener: Member): Session? = sessionsMap.remove(listener)
 
-    override fun removeListenerOn(session: Session) {
-        sessionsMap.keySet(session).forEach { sessionsMap.remove(it) }
-    }
+
+    override fun removeListenerOn(session: Session): Iterable<Member> =
+            sessionsMap.keySet(session).onEach { sessionsMap.remove(it) }
+
 
     override fun closeSession(sid: Long) {
         if (SID == sid) {
-            "http://localhost:8080/notifier/api/session/close/$sid".httpDelete().responseString()
+            //"http://localhost:8080/notifier/api/session/close/$sid".httpDelete().responseString()
             SID = -1
             sessionsMap.clear()
         }

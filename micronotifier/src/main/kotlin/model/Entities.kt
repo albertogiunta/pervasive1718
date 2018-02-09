@@ -3,7 +3,6 @@ package model
 import LifeParameters
 import com.google.gson.GsonBuilder
 import logic.Member
-import logic.SessionOperation
 import toJson
 import java.time.ZonedDateTime
 import java.util.*
@@ -20,13 +19,29 @@ interface Payload<T, D> {
     }
 }
 
-enum class SubscriptionOperation { SUBSCRIBE, UNSUBSCRIBE, REMOVE }
+enum class SessionOperation(val path: String) {
+    OPEN("/open"),
+    CLOSE("/close"),
+    ADD("/add"),
+    REMOVE("/remove"),
+    SUBSCRIBE("/subscribe"),
+    UNSUBSCRIBE("/unsubscribe"),
+    UPDATE("/update"),
+    NOTIFY("/notify")
+}
+
+data class PayloadWrapper(override val sid: Long,
+                          override val topic: SessionOperation,
+                          override val body: String,
+                          override val time: String = Payload.getTime()) :
+        Payload<SessionOperation, String>
+
 
 data class Notification(override val sid: Long,
-                        override val topic: LifeParameters,
+                        override val topic: Set<LifeParameters>,
                         override val body: String,
                         override val time: String = Payload.getTime()) :
-        Payload<LifeParameters, String>
+        Payload<Set<LifeParameters>, String>
 
 data class Update(override val sid: Long,
                   override val topic: LifeParameters,
@@ -35,21 +50,20 @@ data class Update(override val sid: Long,
         Payload<LifeParameters, Double>
 
 data class Subscription(override val sid: Long,
-                        override val topic: SubscriptionOperation,
-                        override val body: Pair<Member, List<LifeParameters>>,
+                        override val topic: Member,
+                        override val body: List<LifeParameters>,
                         override val time: String = Payload.getTime()) :
-        Payload<SubscriptionOperation, Pair<Member, List<LifeParameters>>>
-
-data class Join(override val sid: Long,
-                override val topic: SessionOperation,
-                override val body: Member,
-                override val time: String = Payload.getTime()) :
-        Payload<SessionOperation, Member>
+        Payload<Member, List<LifeParameters>>
 
 fun main(args: Array<String>) {
 
     val gson = GsonBuilder().create()
-    val json = Notification(Random().nextLong(), LifeParameters.TEMPERATURE, "DEAD").toJson()
+    val sid = Random().nextLong()
 
-    println(gson.fromJson(json, Notification::class.java).toString())
+    val json = PayloadWrapper(sid, SessionOperation.NOTIFY, Notification(sid, emptySet(), "DEAD").toJson()).toJson()
+
+    println(json)
+    val wrapper = gson.fromJson(json, PayloadWrapper::class.java)
+    println(wrapper.toString())
+    println(gson.fromJson(wrapper.body, Notification::class.java))
 }
