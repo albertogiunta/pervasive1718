@@ -5,10 +5,10 @@ import WSParams
 import WSServer
 import WSServerInitializer
 import com.google.gson.GsonBuilder
-import controller.NotifierSessionController
-import controller.NotifierTopicController
+import controller.NotifierSessionsController
+import controller.NotifierTopicsController
 import controller.SessionsController
-import controller.TopicController
+import controller.TopicsController
 import logic.Member
 import model.Payload
 import model.PayloadWrapper
@@ -21,12 +21,12 @@ import utils.Logger
 @WebSocket
 class RelayService : WSServer<Payload<SessionOperation, String>>() {
 
-    val topicController: () -> TopicController<LifeParameters, Member> = { NotifierTopicController.singleton() }
-    val sessionsController: () -> SessionsController<Member, Session> = { NotifierSessionController.singleton() }
+    val topicsController: () -> TopicsController<LifeParameters, Member> = { NotifierTopicsController.singleton() }
+    val sessionsController: () -> SessionsController<Member, Session> = { NotifierSessionsController.singleton() }
     val Gson = GsonBuilder().create()
 
     init {
-        Logger.info(topicController().activeTopics().toString())
+        Logger.info(topicsController().activeTopics().toString())
     }
 
     override fun closed(session: Session, statusCode: Int, reason: String) {
@@ -50,20 +50,20 @@ class RelayService : WSServer<Payload<SessionOperation, String>>() {
                 SessionOperation.ADD -> {
                     val subscription = Gson.fromJson(request.body, Subscription::class.java)
                     sessionsController().setSessionFor(subscription.topic, session)
-                    topicController().addListenerTo(subscription.body, subscription.topic)
+                    topicsController().addListenerOn(subscription.body, subscription.topic)
                 }
                 SessionOperation.REMOVE -> {
                     val subscription = Gson.fromJson(request.body, Subscription::class.java)
-                    topicController().removeListener(subscription.topic)
+                    topicsController().removeListener(subscription.topic)
                 }
                 SessionOperation.SUBSCRIBE -> {
                     val subscription = Gson.fromJson(request.body, Subscription::class.java)
-                    topicController().removeListener(subscription.topic)
-                    topicController().addListenerTo(subscription.body, subscription.topic)
+                    topicsController().removeListener(subscription.topic)
+                    topicsController().addListenerOn(subscription.body, subscription.topic)
                 }
                 SessionOperation.UNSUBSCRIBE -> {
                     val subscription = Gson.fromJson(request.body, Subscription::class.java)
-                    topicController().removeListenerOn(subscription.body, subscription.topic)
+                    topicsController().removeListenerOn(subscription.body, subscription.topic)
                 }
                 SessionOperation.NOTIFY -> {
                 } //Do Nothing
@@ -76,6 +76,6 @@ class RelayService : WSServer<Payload<SessionOperation, String>>() {
 
 fun main(args: Array<String>) {
 
-    NotifierTopicController.init(LifeParameters.values().toSet())
+    NotifierTopicsController.init(LifeParameters.values().toSet())
     WSServerInitializer.init(RelayService::class.java, WSParams.WS_PORT, WSParams.WS_PATH_NOTIFIER)
 }

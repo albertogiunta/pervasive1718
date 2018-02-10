@@ -23,7 +23,7 @@ interface SessionsController<L, S> {
     }
 }
 
-class NotifierSessionController private constructor() : SessionsController<Member, Session> {
+class NotifierSessionsController private constructor() : SessionsController<Member, Session> {
 
     val sessionsMap = ConcurrentHashMap<Member, Session>()
 
@@ -31,7 +31,6 @@ class NotifierSessionController private constructor() : SessionsController<Membe
 
     override fun openSession(sid: Long) {
         if (this.SID != SessionsController.DEFAULT_SESSION_VALUE) {
-            //"http://localhost:8080/notifier/api/session/open/$sid".httpPost().responseString()
             this.SID = sid
         }
     }
@@ -48,10 +47,8 @@ class NotifierSessionController private constructor() : SessionsController<Membe
     override fun removeListenerOn(session: Session): Iterable<Member> =
             sessionsMap.keySet(session).onEach { sessionsMap.remove(it) }
 
-
     override fun closeSession(sid: Long) {
         if (SID == sid) {
-            //"http://localhost:8080/notifier/api/session/close/$sid".httpDelete().responseString()
             SID = -1
             sessionsMap.clear()
         }
@@ -59,9 +56,9 @@ class NotifierSessionController private constructor() : SessionsController<Membe
 
     companion object {
 
-        private lateinit var controller: NotifierSessionController
+        private var controller: NotifierSessionsController = NotifierSessionsController()
 
-        fun singleton() : NotifierSessionController = controller
+        fun singleton(): NotifierSessionsController = controller
 
     }
 }
