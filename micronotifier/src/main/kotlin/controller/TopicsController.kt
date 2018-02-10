@@ -7,13 +7,13 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 interface TopicsController<T, L> {
 
-    fun addListenerOn(topic: T, listener: L)
+    fun add(topic: T, listener: L)
 
-    fun addListenerOn(topics: Iterable<T>, listener: L)
+    fun add(topics: Iterable<T>, listener: L)
 
-    fun getListenersOn(topic: T): Set<L>?
+    operator fun get(topic: T): Set<L>?
 
-    fun getTopicsOf(listener: L): Set<T>?
+    fun topicsOf(listener: L): Set<T>?
 
     fun removeListener(listener: L)
 
@@ -21,19 +21,13 @@ interface TopicsController<T, L> {
 
     fun clearListeners()
 
-    fun addTopic(topic: T)
-
-    fun addTopics(topics: Set<T>)
-
     fun activeTopics(): Set<T>
-
-    fun removeTopic(topic: T)
 
 }
 
 class NotifierTopicsController private constructor(private var topics: Set<LifeParameters>) : TopicsController<LifeParameters, Member> {
 
-    val topicsMap = ConcurrentHashMap<LifeParameters, MutableSet<Member>>()
+    private val topicsMap = ConcurrentHashMap<LifeParameters, MutableSet<Member>>()
 
     init {
         topics.forEach {
@@ -41,13 +35,13 @@ class NotifierTopicsController private constructor(private var topics: Set<LifeP
         }
     }
 
-    override fun addListenerOn(topic: LifeParameters, listener: Member) {
+    override fun add(topic: LifeParameters, listener: Member) {
         if (topics.contains(topic)) {
             topicsMap[topic]?.add(listener)
         }
     }
 
-    override fun addListenerOn(topics: Iterable<LifeParameters>, listener: Member) {
+    override fun add(topics: Iterable<LifeParameters>, listener: Member) {
 
         val goodies = topics.filter { this.topics.contains(it) }
 
@@ -56,9 +50,9 @@ class NotifierTopicsController private constructor(private var topics: Set<LifeP
         }
     }
 
-    override fun getListenersOn(topic: LifeParameters): Set<Member>? = topicsMap[topic]
+    override operator fun get(topic: LifeParameters): Set<Member>? = topicsMap[topic]
 
-    override fun getTopicsOf(listener: Member): Set<LifeParameters>? =
+    override fun topicsOf(listener: Member): Set<LifeParameters>? =
             topicsMap.filter { e -> e.value.contains(listener) }.keys
 
     override fun removeListener(listener: Member) {
@@ -77,39 +71,25 @@ class NotifierTopicsController private constructor(private var topics: Set<LifeP
         topicsMap.replaceAll { _, _ -> mutableSetOf()}
     }
 
-    override fun addTopic(topic: LifeParameters) {
-        this.topics += topic
-    }
-
-    override fun addTopics(topics: Set<LifeParameters>) {
-        this.topics += topics
-    }
-
     override fun activeTopics(): Set<LifeParameters> = topics
-
-    override fun removeTopic(topic: LifeParameters) {
-
-        this.topics -= topic
-        topicsMap.remove(topic)
-    }
 
     companion object {
 
-        private lateinit var controller: NotifierTopicsController
+        private lateinit var instance: NotifierTopicsController
         private val isInitialized : AtomicBoolean = AtomicBoolean(false)
 
         fun init(topics: Set<LifeParameters>): NotifierTopicsController {
             if (!isInitialized.getAndSet(true)){
-                controller = NotifierTopicsController(topics)
+                instance = NotifierTopicsController(topics)
             }
-            return controller
+            return instance
         }
 
         @Throws(Exception::class)
         fun singleton(): NotifierTopicsController {
             if (!isInitialized.get()) {
                 throw Exception("SINGLETON not Initialized")
-            } else return controller
+            } else return instance
         }
 
         fun singleton(topics: Set<LifeParameters>): NotifierTopicsController = init(topics)

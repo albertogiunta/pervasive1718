@@ -6,11 +6,11 @@ import java.util.concurrent.ConcurrentHashMap
 
 interface SessionsController<L, S> {
 
-    fun openSession(sid: Long)
+    fun open(sid: Long)
 
-    fun setSessionFor(listener: L, session: S)
+    operator fun set(listener: L, session: S)
 
-    fun getSessionOf(listener: L): S?
+    operator fun get(listener: L): S?
 
     fun removeListener(listener: L): S?
 
@@ -25,21 +25,22 @@ interface SessionsController<L, S> {
 
 class NotifierSessionsController private constructor() : SessionsController<Member, Session> {
 
-    val sessionsMap = ConcurrentHashMap<Member, Session>()
+    private val sessionsMap = ConcurrentHashMap<Member, Session>()
 
     private var SID: Long = SessionsController.DEFAULT_SESSION_VALUE
 
-    override fun openSession(sid: Long) {
+    override fun open(sid: Long) {
         if (this.SID != SessionsController.DEFAULT_SESSION_VALUE) {
             this.SID = sid
         }
     }
 
-    override fun setSessionFor(listener: Member, session: Session) {
+    override fun get(listener: Member): Session? = sessionsMap[listener]
+
+
+    override operator fun set(listener: Member, session: Session) {
         sessionsMap[listener] = session
     }
-
-    override fun getSessionOf(listener: Member): Session? = sessionsMap[listener]
 
     override fun removeListener(listener: Member): Session? = sessionsMap.remove(listener)
 

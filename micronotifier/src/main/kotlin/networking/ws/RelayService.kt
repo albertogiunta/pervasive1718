@@ -5,11 +5,8 @@ import WSParams
 import WSServer
 import WSServerInitializer
 import com.google.gson.GsonBuilder
-import controller.NotifierSessionsController
+import controller.CoreController
 import controller.NotifierTopicsController
-import controller.SessionsController
-import controller.TopicsController
-import logic.Member
 import model.Payload
 import model.PayloadWrapper
 import model.SessionOperation
@@ -21,54 +18,53 @@ import utils.Logger
 @WebSocket
 class RelayService : WSServer<Payload<SessionOperation, String>>() {
 
-    val topicsController: () -> TopicsController<LifeParameters, Member> = { NotifierTopicsController.singleton() }
-    val sessionsController: () -> SessionsController<Member, Session> = { NotifierSessionsController.singleton() }
-    val Gson = GsonBuilder().create()
+    private val core = CoreController.singleton()
+
+    private val gson = GsonBuilder().create()
 
     init {
-        Logger.info(topicsController().activeTopics().toString())
+        Logger.info(core.topics.activeTopics().toString())
     }
 
     override fun closed(session: Session, statusCode: Int, reason: String) {
         super.closed(session, statusCode, reason)
-        sessionsController().removeListenerOn(session)
+        core.sessions.removeListenerOn(session)
     }
 
     override fun onMessage(session: Session, message: String) {
         super.onMessage(session, message)
 
-        val request = Gson.fromJson(message, PayloadWrapper::class.java)
+        val request = gson.fromJson(message, PayloadWrapper::class.java)
 
-        // Probably this should be moved into the controller => Pattern Observer
-        // If a Pattern Observer is used then both the controllers should be wrapped by a main controller
+        // Probably this should be moved into the controller => Pattern patterns.Observer
+        // If a Pattern patterns.Observer is used then both the controllers should be wrapped by a core controller
         // Where the whole observation behavior is handled
         with(request) {
 
-            when (topic) {
-                SessionOperation.OPEN -> sessionsController().openSession(sid)
-                SessionOperation.CLOSE -> sessionsController().closeSession(sid)
+            when (subject) {
+                SessionOperation.OPEN -> core.sessions.open(sid)
+                SessionOperation.CLOSE -> core.sessions.closeSession(sid)
                 SessionOperation.ADD -> {
-                    val subscription = Gson.fromJson(request.body, Subscription::class.java)
-                    sessionsController().setSessionFor(subscription.topic, session)
-                    topicsController().addListenerOn(subscription.body, subscription.topic)
+                    val subscription = gson.fromJson(request.body, Subscription::class.java)
+                    core.sessions[subscription.subject] = session
+                    core.topics.add(subscription.body, subscription.subject)
                 }
                 SessionOperation.REMOVE -> {
-                    val subscription = Gson.fromJson(request.body, Subscription::class.java)
-                    topicsController().removeListener(subscription.topic)
+                    val subscription = gson.fromJson(request.body, Subscription::class.java)
+                    core.topics.removeListener(subscription.subject)
                 }
                 SessionOperation.SUBSCRIBE -> {
-                    val subscription = Gson.fromJson(request.body, Subscription::class.java)
-                    topicsController().removeListener(subscription.topic)
-                    topicsController().addListenerOn(subscription.body, subscription.topic)
+                    val subscription = gson.fromJson(request.body, Subscription::class.java)
+                    core.topics.removeListener(subscription.subject)
+                    core.topics.add(subscription.body, subscription.subject)
                 }
                 SessionOperation.UNSUBSCRIBE -> {
-                    val subscription = Gson.fromJson(request.body, Subscription::class.java)
-                    topicsController().removeListenerOn(subscription.body, subscription.topic)
+                    val subscription = gson.fromJson(request.body, Subscription::class.java)
+                    core.topics.removeListenerOn(subscription.body, subscription.subject)
                 }
-                SessionOperation.NOTIFY -> {
-                } //Do Nothing
-                SessionOperation.UPDATE -> {
-                } //Do Nothing
+
+                else -> {
+                } // Do Nothing at all
             }
         }
     }
