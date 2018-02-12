@@ -52,7 +52,7 @@ class NotifierTopicsController private constructor(private var topics: Set<LifeP
 
     override operator fun get(topic: LifeParameters): Set<Member>? = topicsMap[topic]
 
-    override fun topicsOf(listener: Member): Set<LifeParameters>? =
+    override fun topicsOf(listener: Member): Set<LifeParameters> =
             topicsMap.filter { e -> e.value.contains(listener) }.keys
 
     override fun removeListener(listener: Member) {

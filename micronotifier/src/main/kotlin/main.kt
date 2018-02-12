@@ -36,7 +36,11 @@ fun main(args: Array<String>) {
                         false
                     }.doOnNext {
                         utils.Logger.info(it.toString())
-                    }.subscribe { message ->
+                    }.subscribe { (lp, value) ->
+                        val message = PayloadWrapper(-1L,
+                                model.SessionOperation.NOTIFY,
+                                model.Notification(-1L, setOf(lp), "...").toJson()
+                        )
                         // Do Stuff, if necessary but Subscription is MANDATORY.
                         core.topics[topic]?.forEach { member ->
                             core.sessions[member]?.remote?.sendString(message.toJson()) // Notify the WS, dunno how.
@@ -55,7 +59,11 @@ fun main(args: Array<String>) {
                         LifeParameters.valueOf(lp.toString()) to value.toString().toDouble()
             }.doOnNext {
                         utils.Logger.info(it.toString())
-                    }.subscribe { message ->
+                    }.subscribe { (lp, value) ->
+                        val message = PayloadWrapper(-1L,
+                                model.SessionOperation.UPDATE,
+                                model.Update(-1L, lp, value).toJson()
+                        )
                         // Do stuff with the WebSockets, dispatch only some of the merged values
                         // With one are specified into controller.listenerMap: Member -> Set<LifeParameters>
                         core.topics[topic]?.forEach { member ->
