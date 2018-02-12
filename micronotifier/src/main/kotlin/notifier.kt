@@ -1,16 +1,18 @@
 import com.google.gson.GsonBuilder
 import controller.CoreController
-import logic.Member
 import model.PayloadWrapper
 import model.SessionOperation
 import networking.rabbit.AMQPClient
 import networking.ws.RelayService
 import org.eclipse.jetty.websocket.api.Session
+import utils.Logger
 
 fun main(args: Array<String>) {
 
     val gson = GsonBuilder().create()
+
     val core = CoreController.singleton()
+    val coreSubject = core.subjects.getSubjectsOf<Pair<Session, String>>(core.toString())!!
 
     WSServerInitializer.init(RelayService::class.java, WSParams.WS_PORT, WSParams.WS_PATH_NOTIFIER)
 
@@ -34,16 +36,16 @@ fun main(args: Array<String>) {
             }.filter {
                         // Check if out of boundaries and notify of the WS
                         false
-                    }.doOnNext {
-                        utils.Logger.info(it.toString())
-                    }.subscribe { (lp, value) ->
-                        val message = PayloadWrapper(-1L,
-                                model.SessionOperation.NOTIFY,
-                                model.Notification(-1L, setOf(lp), "...").toJson()
-                        )
-                        // Do Stuff, if necessary but Subscription is MANDATORY.
-                        core.topics[topic]?.forEach { member ->
-                            core.sessions[member]?.remote?.sendString(message.toJson()) // Notify the WS, dunno how.
+            }.doOnNext {
+                utils.Logger.info(it.toString())
+            }.subscribe { (lp, value) ->
+                val message = PayloadWrapper(-1L,
+                        model.SessionOperation.NOTIFY,
+                        model.Notification(-1L, setOf(lp), "...").toJson()
+                )
+                // Do Stuff, if necessary but Subscription is MANDATORY.
+                core.topics[topic]?.forEach { member ->
+                    core.sessions[member]?.remote?.sendString(message.toJson()) // Notify the WS, dunno how.
                 }
             }
         }
@@ -58,7 +60,7 @@ fun main(args: Array<String>) {
             }.map { (lp, value) ->
                         LifeParameters.valueOf(lp.toString()) to value.toString().toDouble()
             }.doOnNext {
-                utils.Logger.info(it.toString())
+//                utils.Logger.info(it.toString())
             }.subscribe { (lp, value) ->
                 val message = PayloadWrapper(-1L,
                         model.SessionOperation.UPDATE,
@@ -74,16 +76,21 @@ fun main(args: Array<String>) {
         }
     }
 
-    val channel = core.subjects.getSubjectsOf<Pair<Session, String>>(core.toString())!!
-
-    channel.map { (session, json) ->
+    coreSubject.map { (session, json) ->
         session to gson.fromJson(json, PayloadWrapper::class.java)
     }.subscribe { (session, wrapper) ->
         // Probably this should be moved into the controller => Pattern patterns.Observer
         // If a Pattern patterns.Observer is used then both the controllers should be wrapped by a core controller
         // Where the whole observation behavior is handled
         when (wrapper.subject) {
-            SessionOperation.CLOSE -> core.sessions.close()
+            SessionOperation.CLOSE -> {
+
+                val removed = core.sessions.removeListenerOn(session).onEach {
+                    core.topics.removeListener(it)
+                }
+
+                Logger.info(removed.toString())
+            }
             SessionOperation.ADD -> {
                 val subscription = gson.fromJson(wrapper.body, model.Subscription::class.java)
                 core.sessions[subscription.subject] = session
@@ -108,8 +115,8 @@ fun main(args: Array<String>) {
         }
     }
 
-    core.topics.add(LifeParameters.HEART_RATE, Member(666, "Mario Rossi"))
-    core.topics.add(LifeParameters.TEMPERATURE, Member(666, "Mario Rossi"))
-    core.topics.add(LifeParameters.OXYGEN_SATURATION, Member(777, "Padre Pio"))
+//    core.topics.add(LifeParameters.HEART_RATE, Member(666, "Mario Rossi"))
+//    core.topics.add(LifeParameters.TEMPERATURE, Member(666, "Mario Rossi"))
+//    core.topics.add(LifeParameters.OXYGEN_SATURATION, Member(777, "Padre Pio"))
 }
 
