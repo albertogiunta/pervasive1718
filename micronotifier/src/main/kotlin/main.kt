@@ -58,19 +58,19 @@ fun main(args: Array<String>) {
             }.map { (lp, value) ->
                         LifeParameters.valueOf(lp.toString()) to value.toString().toDouble()
             }.doOnNext {
-                        utils.Logger.info(it.toString())
-                    }.subscribe { (lp, value) ->
-                        val message = PayloadWrapper(-1L,
-                                model.SessionOperation.UPDATE,
-                                model.Update(-1L, lp, value).toJson()
-                        )
-                        // Do stuff with the WebSockets, dispatch only some of the merged values
-                        // With one are specified into controller.listenerMap: Member -> Set<LifeParameters>
-                        core.topics[topic]?.forEach { member ->
-                            utils.Logger.info("$member ===> ${message.toJson()}")
-                            core.sessions[member]?.remote?.sendString(message.toJson()) // Notify the WS, dunno how.
-                        }
-                    }
+                utils.Logger.info(it.toString())
+            }.subscribe { (lp, value) ->
+                val message = PayloadWrapper(-1L,
+                        model.SessionOperation.UPDATE,
+                        model.Update(-1L, lp, value).toJson()
+                )
+                // Do stuff with the WebSockets, dispatch only some of the merged values
+                // With one are specified into controller.listenerMap: Member -> Set<LifeParameters>
+                core.topics[topic]?.forEach { member ->
+                    utils.Logger.info("$member ===> ${message.toJson()}")
+                    core.sessions[member]?.remote?.sendString(message.toJson()) // Notify the WS, dunno how.
+                }
+            }
         }
     }
 
@@ -79,34 +79,34 @@ fun main(args: Array<String>) {
     channel.map { (session, json) ->
         session to gson.fromJson(json, PayloadWrapper::class.java)
     }.subscribe { (session, wrapper) ->
-                // Probably this should be moved into the controller => Pattern patterns.Observer
-                // If a Pattern patterns.Observer is used then both the controllers should be wrapped by a core controller
-                // Where the whole observation behavior is handled
-                when (wrapper.subject) {
-                    SessionOperation.CLOSE -> core.sessions.close()
-                    SessionOperation.ADD -> {
-                        val subscription = gson.fromJson(wrapper.body, model.Subscription::class.java)
-                        core.sessions[subscription.subject] = session
-                        core.topics.add(subscription.body, subscription.subject)
-                    }
-                    SessionOperation.REMOVE -> {
-                        val subscription = gson.fromJson(wrapper.body, model.Subscription::class.java)
-                        core.topics.removeListener(subscription.subject)
-                    }
-                    SessionOperation.SUBSCRIBE -> {
-                        val subscription = gson.fromJson(wrapper.body, model.Subscription::class.java)
-                        core.topics.removeListener(subscription.subject)
-                        core.topics.add(subscription.body, subscription.subject)
-                    }
-                    SessionOperation.UNSUBSCRIBE -> {
-                        val subscription = gson.fromJson(wrapper.body, model.Subscription::class.java)
-                        core.topics.removeListenerOn(subscription.body, subscription.subject)
-                    }
-
-                    else -> { // Do Nothing at all
-                    }
-                }
+        // Probably this should be moved into the controller => Pattern patterns.Observer
+        // If a Pattern patterns.Observer is used then both the controllers should be wrapped by a core controller
+        // Where the whole observation behavior is handled
+        when (wrapper.subject) {
+            SessionOperation.CLOSE -> core.sessions.close()
+            SessionOperation.ADD -> {
+                val subscription = gson.fromJson(wrapper.body, model.Subscription::class.java)
+                core.sessions[subscription.subject] = session
+                core.topics.add(subscription.body, subscription.subject)
             }
+            SessionOperation.REMOVE -> {
+                val subscription = gson.fromJson(wrapper.body, model.Subscription::class.java)
+                core.topics.removeListener(subscription.subject)
+            }
+            SessionOperation.SUBSCRIBE -> {
+                val subscription = gson.fromJson(wrapper.body, model.Subscription::class.java)
+                core.topics.removeListener(subscription.subject)
+                core.topics.add(subscription.body, subscription.subject)
+            }
+            SessionOperation.UNSUBSCRIBE -> {
+                val subscription = gson.fromJson(wrapper.body, model.Subscription::class.java)
+                core.topics.removeListenerOn(subscription.body, subscription.subject)
+            }
+
+            else -> { // Do Nothing at all
+            }
+        }
+    }
 
     core.topics.add(LifeParameters.HEART_RATE, Member(666, "Mario Rossi"))
     core.topics.add(LifeParameters.TEMPERATURE, Member(666, "Mario Rossi"))

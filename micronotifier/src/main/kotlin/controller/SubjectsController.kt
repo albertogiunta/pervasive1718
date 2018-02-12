@@ -6,16 +6,24 @@ import io.reactivex.subjects.Subject
 import utils.Logger
 import java.util.concurrent.ConcurrentHashMap
 
-@Suppress("UNCHECKED_CAST")
-class SubjectsController<I, T> private constructor() {
+interface SubjectsController <I, T> {
 
-    private val publishSubjects = ConcurrentHashMap<I, Subject<out T>>()
+    fun <N : T> createNewSubjectFor(identifier: I): Subject<N>
+
+    fun <N : T> getSubjectsOf(identifier: I): Subject<N>?
+
+}
+
+@Suppress("UNCHECKED_CAST")
+class NotifierSubjectsController private constructor() : SubjectsController<String, Any>{
+
+    private val publishSubjects = ConcurrentHashMap<String, Subject<out Any>>()
 
     init {
     }
 
     @Synchronized
-    fun <N : T> createNewSubjectFor(identifier: I): Subject<N> {
+    override fun <N : Any> createNewSubjectFor(identifier: String): Subject<N> {
         if (!publishSubjects.containsKey(identifier)) {
             publishSubjects[identifier] = PublishSubject.create<N>()
         }
@@ -24,11 +32,11 @@ class SubjectsController<I, T> private constructor() {
     }
 
     @Synchronized
-    fun <N : T> getSubjectsOf(identifier: I): Subject<N>? = publishSubjects[identifier] as? Subject<N>
+    override fun <N : Any> getSubjectsOf(identifier: String): Subject<N>? = publishSubjects[identifier] as? Subject<N>
 
     companion object {
 
-        private var instance: SubjectsController<String, Any> = SubjectsController()
+        private var instance: SubjectsController<String, Any> = NotifierSubjectsController()
 
         fun singleton(): SubjectsController<String, Any> = instance
     }
@@ -36,26 +44,26 @@ class SubjectsController<I, T> private constructor() {
 
 fun main(args: Array<String>) {
 
-    //SubjectsController.init()
+    //NotifierSubjectsController.init()
 
     val dumb = NotifierSessionsController.singleton()
     val dumber = NotifierTopicsController.singleton(LifeParameters.values().toSet())
 
-    SubjectsController.singleton().createNewSubjectFor<String>(dumb.toString())
-    SubjectsController.singleton().createNewSubjectFor<String>(dumber.toString())
-    SubjectsController.singleton().createNewSubjectFor<String>(LifeParameters.TEMPERATURE.toString())
-    SubjectsController.singleton().createNewSubjectFor<String>(LifeParameters.OXYGEN_SATURATION.toString())
-    SubjectsController.singleton().createNewSubjectFor<String>(LifeParameters.HEART_RATE.toString())
-    SubjectsController.singleton().createNewSubjectFor<String>(LifeParameters.DIASTOLIC_BLOOD_PRESSURE.toString())
-    SubjectsController.singleton().createNewSubjectFor<String>(LifeParameters.SYSTOLIC_BLOOD_PRESSURE.toString())
-    SubjectsController.singleton().createNewSubjectFor<String>(LifeParameters.END_TIDAL_CARBON_DIOXIDE.toString())
+    NotifierSubjectsController.singleton().createNewSubjectFor<String>(dumb.toString())
+    NotifierSubjectsController.singleton().createNewSubjectFor<String>(dumber.toString())
+    NotifierSubjectsController.singleton().createNewSubjectFor<String>(LifeParameters.TEMPERATURE.toString())
+    NotifierSubjectsController.singleton().createNewSubjectFor<String>(LifeParameters.OXYGEN_SATURATION.toString())
+    NotifierSubjectsController.singleton().createNewSubjectFor<String>(LifeParameters.HEART_RATE.toString())
+    NotifierSubjectsController.singleton().createNewSubjectFor<String>(LifeParameters.DIASTOLIC_BLOOD_PRESSURE.toString())
+    NotifierSubjectsController.singleton().createNewSubjectFor<String>(LifeParameters.SYSTOLIC_BLOOD_PRESSURE.toString())
+    NotifierSubjectsController.singleton().createNewSubjectFor<String>(LifeParameters.END_TIDAL_CARBON_DIOXIDE.toString())
 
-    Logger.info(SubjectsController.singleton().getSubjectsOf<String>(dumb.toString()).toString())
-    Logger.info(SubjectsController.singleton().getSubjectsOf<String>(dumber.toString()).toString())
-    Logger.info(SubjectsController.singleton().getSubjectsOf<String>(LifeParameters.TEMPERATURE.toString()).toString())
-    Logger.info(SubjectsController.singleton().getSubjectsOf<String>(LifeParameters.OXYGEN_SATURATION.toString()).toString())
-    Logger.info(SubjectsController.singleton().getSubjectsOf<String>(LifeParameters.HEART_RATE.toString()).toString())
-    Logger.info(SubjectsController.singleton().getSubjectsOf<String>(LifeParameters.DIASTOLIC_BLOOD_PRESSURE.toString()).toString())
-    Logger.info(SubjectsController.singleton().getSubjectsOf<String>(LifeParameters.SYSTOLIC_BLOOD_PRESSURE.toString()).toString())
-    Logger.info(SubjectsController.singleton().getSubjectsOf<String>(LifeParameters.END_TIDAL_CARBON_DIOXIDE.toString()).toString())
+    Logger.info(NotifierSubjectsController.singleton().getSubjectsOf<String>(dumb.toString()).toString())
+    Logger.info(NotifierSubjectsController.singleton().getSubjectsOf<String>(dumber.toString()).toString())
+    Logger.info(NotifierSubjectsController.singleton().getSubjectsOf<String>(LifeParameters.TEMPERATURE.toString()).toString())
+    Logger.info(NotifierSubjectsController.singleton().getSubjectsOf<String>(LifeParameters.OXYGEN_SATURATION.toString()).toString())
+    Logger.info(NotifierSubjectsController.singleton().getSubjectsOf<String>(LifeParameters.HEART_RATE.toString()).toString())
+    Logger.info(NotifierSubjectsController.singleton().getSubjectsOf<String>(LifeParameters.DIASTOLIC_BLOOD_PRESSURE.toString()).toString())
+    Logger.info(NotifierSubjectsController.singleton().getSubjectsOf<String>(LifeParameters.SYSTOLIC_BLOOD_PRESSURE.toString()).toString())
+    Logger.info(NotifierSubjectsController.singleton().getSubjectsOf<String>(LifeParameters.END_TIDAL_CARBON_DIOXIDE.toString()).toString())
 }

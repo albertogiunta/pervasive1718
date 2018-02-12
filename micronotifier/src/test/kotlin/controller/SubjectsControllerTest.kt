@@ -16,7 +16,7 @@ class SubjectsControllerTest {
 
     @Before
     fun setUp() {
-        subjCont = SubjectsController.singleton()
+        subjCont = NotifierSubjectsController.singleton()
     }
 
     @Test
