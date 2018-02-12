@@ -23,12 +23,20 @@ open class WSServer<in P> {
         log.printStatusMessage("session closed on remote ${session.remote} | exit code $statusCode | info: $reason")
     }
 
+    /**
+     * This Method is called when the WS receives a Message from a client to the web-socket.
+     *
+     */
     @OnWebSocketMessage
     @Throws(IOException::class)
-    open fun message(session: Session, message: String) {
+    open fun onMessage(session: Session, message: String) {
         log.printIncomingMessage(message)
     }
 
+    /**
+     * This is the stub method to call when relaying a onMessage to/through the web-socket to the client
+     *
+     */
     open fun sendMessage(session: Session, payload: P) {
         sendMessage(session, payload.toJson())
     }

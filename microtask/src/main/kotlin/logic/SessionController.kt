@@ -38,7 +38,6 @@ class SessionController private constructor(private val ws: WSSessionServer) {
 
     fun addMember(member: Member, session: Session) {
         members[member] = session
-        // TODO comunica al member che è arrivato un nuovo member
         ws.sendMessage(leader.second, SessionPayload(member, SessionOperation.ADD_MEMBER, sessionId))
     }
 
