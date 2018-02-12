@@ -116,10 +116,10 @@ var handleMessageReceived = function (event) {
 
 	var curGraph = graphs.filter(graph => graph.channel === exchange)[0];
 	if (curGraph !== undefined)
-		curGraph.setData(JSON.parse(body).second);
+		curGraph.setData(body);
 	else {
 		var classId = "#"+exchange;
-		$(classId).text(JSON.parse(body).second);
+		$(classId).text(body);
 	}
 }
 

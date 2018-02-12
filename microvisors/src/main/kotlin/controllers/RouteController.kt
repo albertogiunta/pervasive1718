@@ -1,10 +1,10 @@
 package controllers
 
 import controllers.api.VisorApi
+import spark.Request
+import spark.Response
 import spark.Spark.path
-import spark.kotlin.delete
-import spark.kotlin.get
-import spark.kotlin.post
+import spark.kotlin.*
 
 interface Controller {
 
@@ -19,6 +19,27 @@ interface Controller {
 object RouteController : Controller {
 
     override fun initRoutes() {
+
+        options("/*") {
+
+            val accessControlRequestHeaders = request
+                    .headers("Access-Control-Request-Headers")
+            if (accessControlRequestHeaders != null) {
+                response.header("Access-Control-Allow-Headers",
+                        accessControlRequestHeaders)
+            }
+
+            val accessControlRequestMethod = request
+                    .headers("Access-Control-Request-Method")
+            if (accessControlRequestMethod != null) {
+                response.header("Access-Control-Allow-Methods",
+                        accessControlRequestMethod)
+            }
+
+            "OK"
+        }
+
+        before { response.header("Access-Control-Allow-Origin", "*") }
 
         /*
          * NOTE: Calling APIs is CASE SENSITIVE. Use of camelCase on path definition is then discouraged.
