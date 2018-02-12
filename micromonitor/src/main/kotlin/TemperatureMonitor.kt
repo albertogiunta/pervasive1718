@@ -14,6 +14,6 @@ object TemperatureMonitorsFactory {
      * */
     fun createSimulatedTemperatureMonitor() = SimulatedMonitor(
             createStaticTemperatureMonitor(),
-            GenerationStrategies.DoubleSinusoidGeneration(0.0, 30.0),
+            GenerationStrategies.DoubleSinusoidGeneration(36.0, 43.0),
             100)
 }

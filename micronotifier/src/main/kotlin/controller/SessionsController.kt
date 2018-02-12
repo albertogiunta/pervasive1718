@@ -4,64 +4,69 @@ import logic.Member
 import org.eclipse.jetty.websocket.api.Session
 import java.util.concurrent.ConcurrentHashMap
 
+/**
+ * A controller interface that manage generic sessions for multiple user
+ *
+ * @param L user type
+ * @param S session type
+ * (ex: websocket,...)
+ * */
 interface SessionsController<L, S> {
 
-    fun openSession(sid: Long)
+    /**
+     * Set a new session for the specified listener
+     * */
+    operator fun set(listener: L, session: S)
 
-    fun setSessionFor(listener: L, session: S)
+    /**
+     * Get the listener's session
+     * */
+    operator fun get(listener: L): S?
 
-    fun getSessionOf(listener: L): S?
-
+    /**
+     * Remove the listener's session and return it if present
+     * */
     fun removeListener(listener: L): S?
 
+    /**
+     * Remove all the listener on a specified session and return them
+     * */
     fun removeListenerOn(session: S): Iterable<L>
 
-    fun closeSession(sid: Long)
-
-    companion object {
-        const val DEFAULT_SESSION_VALUE: Long = -1L
-    }
+    /**
+     * Remove all members and respective session
+     * */
+    fun close()
 }
 
-class NotifierSessionController private constructor() : SessionsController<Member, Session> {
+class NotifierSessionsController private constructor() : SessionsController<Member, Session> {
 
-    val sessionsMap = ConcurrentHashMap<Member, Session>()
+    private val sessionsMap = ConcurrentHashMap<Member, Session>()
 
-    private var SID: Long = SessionsController.DEFAULT_SESSION_VALUE
 
-    override fun openSession(sid: Long) {
-        if (this.SID != SessionsController.DEFAULT_SESSION_VALUE) {
-            //"http://localhost:8080/notifier/api/session/open/$sid".httpPost().responseString()
-            this.SID = sid
-        }
-    }
+    override fun get(listener: Member): Session? = sessionsMap[listener]
 
-    override fun setSessionFor(listener: Member, session: Session) {
+
+    override operator fun set(listener: Member, session: Session) {
         sessionsMap[listener] = session
     }
-
-    override fun getSessionOf(listener: Member): Session? = sessionsMap[listener]
 
     override fun removeListener(listener: Member): Session? = sessionsMap.remove(listener)
 
 
     override fun removeListenerOn(session: Session): Iterable<Member> =
-            sessionsMap.keySet(session).onEach { sessionsMap.remove(it) }
+            sessionsMap.filter { it.value.equals(session) }.keys.toList().onEach { sessionsMap.remove(it) }
 
 
-    override fun closeSession(sid: Long) {
-        if (SID == sid) {
-            //"http://localhost:8080/notifier/api/session/close/$sid".httpDelete().responseString()
-            SID = -1
-            sessionsMap.clear()
-        }
+    override fun close() {
+        sessionsMap.clear()
     }
 
     companion object {
 
-        private lateinit var controller: NotifierSessionController
+        private var controller: NotifierSessionsController = NotifierSessionsController()
 
-        fun singleton() : NotifierSessionController = controller
+        fun singleton(): NotifierSessionsController = controller
 
     }
 }
