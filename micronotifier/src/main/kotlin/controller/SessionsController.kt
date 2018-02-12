@@ -4,36 +4,45 @@ import logic.Member
 import org.eclipse.jetty.websocket.api.Session
 import java.util.concurrent.ConcurrentHashMap
 
+/**
+ * A controller interface that manage generic sessions for multiple user
+ *
+ * @param L user type
+ * @param S session type
+ * (ex: websocket,...)
+ * */
 interface SessionsController<L, S> {
 
-    fun open(sid: Long)
-
+    /**
+     * Set a new session for the specified listener
+     * */
     operator fun set(listener: L, session: S)
 
+    /**
+     * Get the listener's session
+     * */
     operator fun get(listener: L): S?
 
+    /**
+     * Remove the listener's session and return it if present
+     * */
     fun removeListener(listener: L): S?
 
+    /**
+     * Remove all the listener on a specified session and return them
+     * */
     fun removeListenerOn(session: S): Iterable<L>
 
-    fun closeSession(sid: Long)
-
-    companion object {
-        const val DEFAULT_SESSION_VALUE: Long = -1L
-    }
+    /**
+     * Remove all members and respective session
+     * */
+    fun close()
 }
 
 class NotifierSessionsController private constructor() : SessionsController<Member, Session> {
 
     private val sessionsMap = ConcurrentHashMap<Member, Session>()
 
-    private var SID: Long = SessionsController.DEFAULT_SESSION_VALUE
-
-    override fun open(sid: Long) {
-        if (this.SID != SessionsController.DEFAULT_SESSION_VALUE) {
-            this.SID = sid
-        }
-    }
 
     override fun get(listener: Member): Session? = sessionsMap[listener]
 
@@ -46,13 +55,11 @@ class NotifierSessionsController private constructor() : SessionsController<Memb
 
 
     override fun removeListenerOn(session: Session): Iterable<Member> =
-            sessionsMap.keySet(session).onEach { sessionsMap.remove(it) }
+            sessionsMap.filter { it.value.equals(session) }.keys.toList().onEach { sessionsMap.remove(it) }
 
-    override fun closeSession(sid: Long) {
-        if (SID == sid) {
-            SID = -1
-            sessionsMap.clear()
-        }
+
+    override fun close() {
+        sessionsMap.clear()
     }
 
     companion object {

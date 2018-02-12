@@ -75,8 +75,7 @@ fun main(args: Array<String>) {
                 // If a Pattern patterns.Observer is used then both the controllers should be wrapped by a core controller
                 // Where the whole observation behavior is handled
                 when (wrapper.subject) {
-                    SessionOperation.OPEN -> core.sessions.open(wrapper.sid)
-                    SessionOperation.CLOSE -> core.sessions.closeSession(wrapper.sid)
+                    SessionOperation.CLOSE -> core.sessions.close()
                     SessionOperation.ADD -> {
                         val subscription = gson.fromJson(wrapper.body, model.Subscription::class.java)
                         core.sessions[subscription.subject] = session
