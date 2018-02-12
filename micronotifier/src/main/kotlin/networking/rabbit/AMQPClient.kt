@@ -1,29 +1,35 @@
 package networking.rabbit
 
+import BrokerConnector
 import LifeParameters
 import RabbitMQSubscriber
-import BrokerConnector
-import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
-import java.util.concurrent.ConcurrentHashMap
 
 /**
+ *  This RabbitMQ class wrapper work as relay point in order to move (@publishOn)
+ *  the flux of data from AMQP to ReactiveX
+ *
  *  @author XanderC
  *
  */
 class AMQPClient(val broker: BrokerConnector, val topics: Set<LifeParameters>) {
 
     private val amqpSubscriber = RabbitMQSubscriber(broker)
-    val publishSubjects = ConcurrentHashMap<LifeParameters, Subject<String>>()
+    //val publishSubjects = ConcurrentHashMap<LifeParameters, Subject<String>>()
 
     init {
-        with(topics) {
-            forEach { lp ->
-                publishSubjects[lp] = PublishSubject.create<String>()
-                amqpSubscriber.subscribe(lp, amqpSubscriber.createStringConsumer {
-                    publishSubjects[lp]?.onNext(it)
-                })
-            }
+    }
+
+    /**
+     * By calling this method the client will start to publish the data it receives from the topics
+     * that have been passed on the constructor to the publish subjects it has received.
+     *
+     */
+    fun publishOn(publishSubjects: Map<LifeParameters, Subject<String>>) {
+        topics.forEach { lp ->
+            amqpSubscriber.subscribe(lp, amqpSubscriber.createStringConsumer {
+                publishSubjects[lp]?.onNext(it)
+            })
         }
     }
 }
