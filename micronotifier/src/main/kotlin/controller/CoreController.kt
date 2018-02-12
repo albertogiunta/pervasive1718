@@ -14,7 +14,7 @@ class CoreController private constructor(topicSet: Set<LifeParameters>) {
     private val gson = GsonBuilder().create()
 
     init {
-        val channel = subjects.createNewSubjectFor<Pair<Session, String>>(this.toString())
+        val channel = subjects.createNewSubjectFor<Pair<Session, String>>(CoreController::class.java.name)
         val core = this
     }
 

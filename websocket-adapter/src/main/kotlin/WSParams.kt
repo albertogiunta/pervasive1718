@@ -24,6 +24,6 @@ object URIFactory {
     fun getTaskURI(host: String = WSParams.WS_HOST, port: Int = WSParams.WS_TASK_PORT) =
         URI("$host$port${WSParams.WS_PATH_TASK}")
 
-    fun getNotifierURI(host: String = WSParams.WS_HOST, port: Int = WSParams.WS_TASK_PORT) =
+    fun getNotifierURI(host: String = WSParams.WS_HOST, port: Int = WSParams.WS_NOTIFIER_PORT) =
         URI("$host$port${WSParams.WS_PATH_NOTIFIER}")
 }

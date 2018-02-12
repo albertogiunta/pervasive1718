@@ -19,9 +19,7 @@ fun main(args: Array<String>) {
 
     Thread.sleep(5000L)
 
-    val msg2 = PayloadWrapper(-1L, SessionOperation.CLOSE,
-            Subscription(-1L, Member(666, "Mario Rossi"), emptyList()).toJson()
-        ).toJson()
+    val msg2 = PayloadWrapper(-1L, SessionOperation.CLOSE, Member(666, "Mario Rossi").toJson()).toJson()
 
     client.sendMessage(msg2)
 

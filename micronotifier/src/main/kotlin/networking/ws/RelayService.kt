@@ -23,7 +23,8 @@ class RelayService : WSServer<Payload<SessionOperation, String>>() {
 
     private val core = CoreController.singleton()
 
-    private val coreSubject: Subject<Pair<Session, String>> = core.subjects.getSubjectsOf(core.toString())!!
+    private val coreSubject: Subject<Pair<Session, String>> =
+            core.subjects.getSubjectsOf(CoreController::class.java.name)!!
 
     private val gson = GsonBuilder().create()
 

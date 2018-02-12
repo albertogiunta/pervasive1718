@@ -17,8 +17,8 @@ class WSSessionServer : WSServer<SessionPayload>() {
 
     private val sessionController = SessionController.INSTANCE
 
-    override fun closed(session: Session, statusCode: Int, reason: String) {
-        super.closed(session, statusCode, reason)
+    override fun onClose(session: Session, statusCode: Int, reason: String) {
+        super.onClose(session, statusCode, reason)
         sessionController.removeMember(session)
     }
 

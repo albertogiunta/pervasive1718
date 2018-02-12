@@ -1,18 +1,18 @@
 import com.google.gson.GsonBuilder
 import controller.CoreController
+import logic.Member
 import model.PayloadWrapper
 import model.SessionOperation
 import networking.rabbit.AMQPClient
 import networking.ws.RelayService
 import org.eclipse.jetty.websocket.api.Session
-import utils.Logger
 
 fun main(args: Array<String>) {
 
     val gson = GsonBuilder().create()
 
     val core = CoreController.singleton()
-    val coreSubject = core.subjects.getSubjectsOf<Pair<Session, String>>(core.toString())!!
+    val coreSubject = core.subjects.getSubjectsOf<Pair<Session, String>>(CoreController::class.java.name)!!
 
     WSServerInitializer.init(RelayService::class.java, WSParams.WS_NOTIFIER_PORT, WSParams.WS_PATH_NOTIFIER)
 
@@ -84,12 +84,9 @@ fun main(args: Array<String>) {
         // Where the whole observation behavior is handled
         when (wrapper.subject) {
             SessionOperation.CLOSE -> {
-
-                val removed = core.sessions.removeListenerOn(session).onEach {
-                    core.topics.removeListener(it)
-                }
-
-                Logger.info(removed.toString())
+                val listener = gson.fromJson(wrapper.body, Member::class.java)
+                core.sessions.removeListener(listener)
+                core.topics.removeListener(listener)
             }
             SessionOperation.ADD -> {
                 val subscription = gson.fromJson(wrapper.body, model.Subscription::class.java)
