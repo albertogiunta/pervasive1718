@@ -64,10 +64,12 @@ class SimulatedMonitorTest {
         simMon.stopGeneration()
         assertTrue(prevVal != curVal)
 
-        Thread.sleep(refreshRate)
+        Thread.sleep(refreshRate * 2)
         prevVal = curVal
         Thread.sleep(refreshRate)
         curVal = simMon.currentValue()
+        println("Prev val: " + prevVal)
+        println("Curval : " + curVal)
         assertTrue(prevVal == curVal)
     }
 }

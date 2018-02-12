@@ -16,7 +16,7 @@ data class Task(val id: Int, val name: String, var status: Status, @KlaxonDate v
             Task(EmptyTask.emptyTaskId, EmptyTask.emptyTaskName, Status.EMPTY, EmptyTask.emptyTaskStartTime, EmptyTask.emptyTaskEndTime)
 
         fun defaultTask(): Task =
-            Task(1, "task dei cojoni", Status.RUNNING, Timestamp(Date().time), Timestamp(Date().time))
+            Task(1, "Default Task", Status.RUNNING, Timestamp(Date().time), Timestamp(Date().time))
     }
 }
 
