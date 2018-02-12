@@ -1,33 +1,27 @@
 package dao
 
-import Params.Session.ROOM_ID
+import Params.Session.DATE
+import Params.Session.PAT_ID
 import Params.Session.SESSION_ID
 import Params.Session.TABLE_NAME
 import model.Session
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
+import java.sql.Timestamp
 
 interface SessionDao {
 
-    @SqlUpdate("INSERT INTO $TABLE_NAME($SESSION_ID, $ROOM_ID) VALUES (:$SESSION_ID, :$ROOM_ID)")
+    @SqlUpdate("INSERT INTO $TABLE_NAME($SESSION_ID, $PAT_ID, $DATE) VALUES (:$SESSION_ID, :$PAT_ID, :$DATE)")
     fun insertNewSession(@Bind(SESSION_ID) sessionId: Int,
-                         @Bind(ROOM_ID) roomId: Int)
+                         @Bind(PAT_ID) roomId: String,
+                         @Bind(DATE) date: Timestamp)
 
     @SqlQuery("SELECT * FROM $TABLE_NAME")
     fun selectAllSessions(): List<Session>
 
-    @SqlQuery("SELECT * FROM $TABLE_NAME WHERE $SESSION_ID = (:$SESSION_ID)")
-    fun selectSessionBySessionId(@Bind(SESSION_ID) sessionId: Int): List<Session>
-
-    @SqlQuery("SELECT * FROM $TABLE_NAME WHERE $ROOM_ID = (:$ROOM_ID)")
-    fun selectSessionByRoomId(@Bind(ROOM_ID) roomId: Int): List<Session>
-
     @SqlQuery("DELETE FROM $TABLE_NAME WHERE $SESSION_ID = (:$SESSION_ID)")
     fun deleteSessionBySessionId(@Bind(SESSION_ID) sessionId: Int)
-
-    @SqlQuery("DELETE FROM $TABLE_NAME WHERE $ROOM_ID = (:$ROOM_ID)")
-    fun deleteSessionByRoomId(@Bind(ROOM_ID) roomId: Int)
 
 }
 

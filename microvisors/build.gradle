@@ -1,1 +1,5 @@
-dependencies {}
+dependencies {
+
+    compile project(":rest-adapter")
+
+}
