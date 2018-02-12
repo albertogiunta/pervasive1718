@@ -1,6 +1,5 @@
 import com.google.gson.GsonBuilder
 import controller.CoreController
-import io.reactivex.subjects.Subject
 import logic.Member
 import model.PayloadWrapper
 import model.SessionOperation
@@ -33,7 +32,7 @@ fun main(args: Array<String>) {
             }.map { (lp, value) ->
                         LifeParameters.valueOf(lp.toString()) to value.toString().toDouble()
             }.filter {
-                // Check if out of boundaries and notify of the WS
+                        // Check if out of boundaries and notify of the WS
                         false
                     }.doOnNext {
                         utils.Logger.info(it.toString())
@@ -67,7 +66,7 @@ fun main(args: Array<String>) {
         }
     }
 
-    val channel: Subject<Pair<Session, String>> = core.subjects.createNewSubjectFor(core.toString())
+    val channel = core.subjects.getSubjectsOf<Pair<Session, String>>(core.toString())!!
 
     channel.map { (session, json) ->
         session to gson.fromJson(json, PayloadWrapper::class.java)
