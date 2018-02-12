@@ -1,5 +1,6 @@
 var taskList
 
+// Helps finding objects with unique fields
 function findUnique(arr, predicate) {
     var found = {};
     arr.forEach(d => {
@@ -7,44 +8,9 @@ function findUnique(arr, predicate) {
     });
     return Object.keys(found).map(key => found[key]); 
 }
-  
-function updateTable() {
 
-    // Finding unique operators
-    var uniqueOperators = findUnique(taskList, t => t.operatorId);
-
-    // Sorting operators from the busiest to the less busy for avoiding a visual bug.
-    for (var i in uniqueOperators) {
-        var operatorId = uniqueOperators[i].operatorId;
-        uniqueOperators[i].operatorTaskList = taskList.filter(t => t.operatorId == operatorId).sort(function (a, b) {
-            return (a.priority).localeCompare(b.priority)
-        })
-    }
-
-    uniqueOperators.sort(function (a, b ) {
-        return b.operatorTaskList.length - a.operatorTaskList.length
-    })
-    
-    var tableHeaderString = "";
-    for (var i in uniqueOperators) {
-        var operatorId = uniqueOperators[i].operatorId;
-        tableHeaderString = tableHeaderString + "<th id=\""+uniqueOperators[i].operatorId+"\">" + uniqueOperators[i].operatorName + " " + uniqueOperators[i].operatorSurname + "</th>";
-    };
-    document.getElementById("names").innerHTML = tableHeaderString
-    document.getElementById("tasks").innerHTML = ""
-
-    
-    for (var i in uniqueOperators) {
-        var tableBodyString = "<tr>";
-        var operatorId = uniqueOperators[i].operatorId;
-        
-        for (var j in uniqueOperators[i].operatorTaskList) {
-            tableBodyString = tableBodyString + "<td>" + uniqueOperators[i].operatorTaskList[j].name+ "</td>";
-        }
-
-        tableBodyString = tableBodyString + "</tr>";
-        document.getElementById("tasks").innerHTML = document.getElementById("tasks").innerHTML + tableBodyString
-    }
+// Trasposes rows with columns in a table
+function trasposeTable() {
     $("tbody").each(function() {
         var $this = $(this);
         var newrows = [];
@@ -61,6 +27,50 @@ function updateTable() {
             $this.append(this);
         });
     });
+}
+
+// Updates the Task Table
+function updateTable() {
+
+    // Finding unique operators
+    var uniqueOperators = findUnique(taskList, t => t.operatorId);
+
+    // Sorting operators from the busiest to the less busy for avoiding a visual bug.
+    for (var i in uniqueOperators) {
+        var operatorId = uniqueOperators[i].operatorId;
+        uniqueOperators[i].operatorTaskList = taskList.filter(t => t.operatorId == operatorId).sort(function (a, b) {
+            return (a.priority).localeCompare(b.priority)
+        })
+    }
+    uniqueOperators.sort(function (a, b ) {
+        return b.operatorTaskList.length - a.operatorTaskList.length
+    })
+    
+
+    var tableHeaderString = "";
+    // Printing operator names
+    for (var i in uniqueOperators) {
+        var operatorId = uniqueOperators[i].operatorId;
+        tableHeaderString = tableHeaderString + "<th id=\""+uniqueOperators[i].operatorId+"\">" + uniqueOperators[i].operatorName + " " + uniqueOperators[i].operatorSurname + "</th>";
+    };
+    document.getElementById("names").innerHTML = tableHeaderString
+    document.getElementById("tasks").innerHTML = ""
+
+    // Writing all operator's tasks, one operator per time, IN ROW    
+    for (var i in uniqueOperators) {
+        var tableBodyString = "<tr>";
+        var operatorId = uniqueOperators[i].operatorId;
+        
+        for (var j in uniqueOperators[i].operatorTaskList) {
+            tableBodyString = tableBodyString + "<td>" + uniqueOperators[i].operatorTaskList[j].name+ "</td>";
+        }
+
+        tableBodyString = tableBodyString + "</tr>";
+        document.getElementById("tasks").innerHTML = document.getElementById("tasks").innerHTML + tableBodyString
+    }
+
+    // Flip rows with columns
+    trasposeTable()
 }
 
 (function pollService() {

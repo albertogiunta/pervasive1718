@@ -22,7 +22,7 @@ function Graph(paramName, channel, lowerbound, upperbound, color, divClass) {
     }
 
     var x_scale = d3.time.scale()
-        .domain([now - (limit - dataPeriod), now - duration]) // sure? set 2 instead of dataPeriod
+        .domain([now - (limit - dataPeriod), now - duration])
         .range([0, width/1.2])
 
     var y_scale = d3.scale.linear()
