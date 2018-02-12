@@ -1,8 +1,6 @@
 package networking
 
-import WSParams
 import WSServer
-import WSServerInitializer
 import logic.*
 import logic.Serializer.klaxon
 import org.eclipse.jetty.websocket.api.Session
@@ -37,9 +35,4 @@ class WSTaskServer : WSServer<TaskPayload>() {
     fun sendMessage(session: Session, member: Member, operation: TaskOperation, task: Task) {
         sendMessage(session, TaskPayload(member, operation, task))
     }
-}
-
-fun main(args: Array<String>) {
-    WSServerInitializer.init(serverClazz = WSTaskServer::class.java, wsPath = WSParams.WS_PATH_TASK)
-    WSServerInitializer.init(serverClazz = WSTaskServer::class.java, wsPath = WSParams.WS_PATH_SESSION)
 }

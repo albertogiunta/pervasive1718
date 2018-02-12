@@ -54,7 +54,7 @@ class WSLogger(private val user: WSUser) {
 }
 
 object WSServerInitializer {
-    fun init(serverClazz: Class<out WSServer<*>>, wsPort: Int = WSParams.WS_PORT, wsPath: String) {
+    fun init(serverClazz: Class<out WSServer<*>>, wsPort: Int = WSParams.WS_TASK_PORT, wsPath: String) {
         port(wsPort)
         Spark.webSocket(wsPath, serverClazz)
         Spark.init()

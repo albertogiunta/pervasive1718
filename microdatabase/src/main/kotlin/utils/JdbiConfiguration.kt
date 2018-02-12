@@ -1,9 +1,9 @@
+
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.kotlin.KotlinPlugin
 import org.jdbi.v3.postgres.PostgresPlugin
 import org.jdbi.v3.sqlobject.SqlObjectPlugin
 import org.jdbi.v3.sqlobject.kotlin.KotlinSqlObjectPlugin
-import spark.Spark
 import java.util.concurrent.atomic.AtomicBoolean
 
 class JdbiConfiguration private constructor() {
@@ -14,10 +14,6 @@ class JdbiConfiguration private constructor() {
             .installPlugin(SqlObjectPlugin())
             .installPlugin(KotlinPlugin())
             .installPlugin(KotlinSqlObjectPlugin())!!
-
-    init {
-        Spark.port(8080)
-    }
 
     companion object {
         const val DB_URL = "jdbc:postgresql://2.234.121.101:5432/"

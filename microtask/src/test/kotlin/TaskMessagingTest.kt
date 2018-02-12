@@ -25,7 +25,7 @@ class TaskMessagingTest {
             Thread.sleep(1000)
 
             val taskService = ignite()
-            taskService.port(WSParams.WS_PORT)
+            taskService.port(WSParams.WS_TASK_PORT)
             taskService.service.webSocket(WSParams.WS_PATH_TASK, WSTaskServer::class.java)
             taskService.service.init()
 
