@@ -3,4 +3,7 @@ dependencies {
     compile project(":websocket-adapter")
     compile project(":rest-adapter")
 
+    compile project(":microdatabase")
+    compile project(":microtask")
+
 }
