@@ -12,7 +12,7 @@ fun main(args: Array<String>) {
     val gson = GsonBuilder().create()
     val core = CoreController.singleton()
 
-    WSServerInitializer.init(RelayService::class.java, WSParams.WS_PORT, WSParams.WS_PATH_NOTIFIER)
+    WSServerInitializer.init(RelayService::class.java, WSParams.WS_SESSION_PORT, WSParams.WS_PATH_NOTIFIER)
 
     BrokerConnector.init()
     val amqp = AMQPClient(BrokerConnector.INSTANCE, core.topics.activeTopics())

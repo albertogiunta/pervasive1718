@@ -49,5 +49,5 @@ class RelayService : WSServer<Payload<SessionOperation, String>>() {
 fun main(args: Array<String>) {
 
     NotifierTopicsController.init(LifeParameters.values().toSet())
-    WSServerInitializer.init(RelayService::class.java, WSParams.WS_PORT, WSParams.WS_PATH_NOTIFIER)
+    WSServerInitializer.init(RelayService::class.java, WSParams.WS_SESSION_PORT, WSParams.WS_PATH_NOTIFIER)
 }
