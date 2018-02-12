@@ -1,6 +1,5 @@
 import com.google.gson.GsonBuilder
 import controller.CoreController
-import io.reactivex.subjects.Subject
 import logic.Member
 import model.PayloadWrapper
 import model.SessionOperation
@@ -33,11 +32,15 @@ fun main(args: Array<String>) {
             }.map { (lp, value) ->
                         LifeParameters.valueOf(lp.toString()) to value.toString().toDouble()
             }.filter {
-                // Check if out of boundaries and notify of the WS
+                        // Check if out of boundaries and notify of the WS
                         false
                     }.doOnNext {
                         utils.Logger.info(it.toString())
-                    }.subscribe { message ->
+                    }.subscribe { (lp, value) ->
+                        val message = PayloadWrapper(-1L,
+                                model.SessionOperation.NOTIFY,
+                                model.Notification(-1L, setOf(lp), "...").toJson()
+                        )
                         // Do Stuff, if necessary but Subscription is MANDATORY.
                         core.topics[topic]?.forEach { member ->
                             core.sessions[member]?.remote?.sendString(message.toJson()) // Notify the WS, dunno how.
@@ -56,7 +59,11 @@ fun main(args: Array<String>) {
                         LifeParameters.valueOf(lp.toString()) to value.toString().toDouble()
             }.doOnNext {
                         utils.Logger.info(it.toString())
-                    }.subscribe { message ->
+                    }.subscribe { (lp, value) ->
+                        val message = PayloadWrapper(-1L,
+                                model.SessionOperation.UPDATE,
+                                model.Update(-1L, lp, value).toJson()
+                        )
                         // Do stuff with the WebSockets, dispatch only some of the merged values
                         // With one are specified into controller.listenerMap: Member -> Set<LifeParameters>
                         core.topics[topic]?.forEach { member ->
@@ -67,7 +74,7 @@ fun main(args: Array<String>) {
         }
     }
 
-    val channel: Subject<Pair<Session, String>> = core.subjects.createNewSubjectFor(core.toString())
+    val channel = core.subjects.getSubjectsOf<Pair<Session, String>>(core.toString())!!
 
     channel.map { (session, json) ->
         session to gson.fromJson(json, PayloadWrapper::class.java)
@@ -76,8 +83,7 @@ fun main(args: Array<String>) {
                 // If a Pattern patterns.Observer is used then both the controllers should be wrapped by a core controller
                 // Where the whole observation behavior is handled
                 when (wrapper.subject) {
-                    SessionOperation.OPEN -> core.sessions.open(wrapper.sid)
-                    SessionOperation.CLOSE -> core.sessions.closeSession(wrapper.sid)
+                    SessionOperation.CLOSE -> core.sessions.close()
                     SessionOperation.ADD -> {
                         val subscription = gson.fromJson(wrapper.body, model.Subscription::class.java)
                         core.sessions[subscription.subject] = session

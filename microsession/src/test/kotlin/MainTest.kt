@@ -1,3 +1,4 @@
+
 import com.beust.klaxon.JsonReader
 import com.beust.klaxon.Klaxon
 import com.github.kittinunf.fuel.core.FuelError
@@ -10,19 +11,17 @@ import com.github.kittinunf.result.Result
 import com.github.kittinunf.result.success
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import spark.kotlin.port
 import java.io.StringReader
 import java.util.*
 
 class SessionTest {
 
-    private var listResult: MutableList<Session> = mutableListOf()
+    private var listResult: MutableList<SessionDNS> = mutableListOf()
     private val baseUrl = "http://localhost:8000/session"
 
     companion object {
         init {
-            port(8000)
-            RouteController.initRoutes()
+            RouteController.routes(8080)
             Thread.sleep(4000)
         }
     }
@@ -30,10 +29,10 @@ class SessionTest {
     @Test
     fun createNewSessionTest() {
         listResult.clear()
-        val roomId = 0
-        var session = Session(-1, -1, "")
-        "$baseUrl/new/$roomId".httpPost().responseString().third.success { session = Klaxon().parse<Session>(it)!! }
-        assertTrue(session.roomId == roomId)
+        val roomId = ""
+        var session = SessionDNS(-1, "", "")
+        "$baseUrl/new/$roomId".httpPost().responseString().third.success { session = Klaxon().parse<SessionDNS>(it)!! }
+        assertTrue(session.patId == roomId)
     }
 
     @Test
@@ -73,8 +72,8 @@ class SessionTest {
                 reader.beginArray {
                     listResult.clear()
                     while (reader.hasNext()) {
-                        val session = klaxon.parse<Session>(reader)!!
-                        (listResult as ArrayList<Session>).add(session)
+                        val session = klaxon.parse<SessionDNS>(reader)!!
+                        (listResult as ArrayList<SessionDNS>).add(session)
                     }
                 }
             }
