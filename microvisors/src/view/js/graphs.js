@@ -22,8 +22,8 @@ function Graph(paramName, channel, lowerbound, upperbound, color, divClass) {
     }
 
     var x_scale = d3.time.scale()
-        .domain([now - (limit - dataPeriod), now - duration]) // sure? set 2 instead of dataPeriod
-        .range([0, width - 40])
+        .domain([now - (limit - dataPeriod), now - duration])
+        .range([0, width/1.2])
 
     var y_scale = d3.scale.linear()
         .domain([lowerbound, upperbound])
@@ -32,7 +32,7 @@ function Graph(paramName, channel, lowerbound, upperbound, color, divClass) {
     var line = d3.svg.line()
         .interpolate('basis')
         .x(function(d, i) {
-            return x_scale(now - (limit - 8 - i) * duration)
+            return x_scale(now - (limit - 9 - i) * duration)
         })
         .y(function(d) {
             return y_scale(d)
@@ -72,7 +72,7 @@ function Graph(paramName, channel, lowerbound, upperbound, color, divClass) {
 
     svg.append("g")
         .attr("class", "c_y_axis")
-        .attr("transform", "translate(" + 50 + ",0)")
+        .attr("transform", "translate(" + width/8 + ",0)")
         .call(yAxis);
 
     // Naming the axis
