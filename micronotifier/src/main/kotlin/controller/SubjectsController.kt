@@ -24,7 +24,7 @@ class SubjectsController<I, T> private constructor() {
     }
 
     @Synchronized
-    fun <N : T> getSubjectsOf(identifier: I): Subject<N>? = publishSubjects[identifier] as Subject<N>
+    fun <N : T> getSubjectsOf(identifier: I): Subject<N>? = publishSubjects[identifier] as? Subject<N>
 
     companion object {
 
