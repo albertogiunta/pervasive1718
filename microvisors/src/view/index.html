@@ -1,16 +1,5 @@
-<!--
-
-    Copyright (c) 2007-2014, Kaazing Corporation. All rights reserved.
-
--->
-
 <!DOCTYPE html>
 <head>
-	<!--
-
-		Copyright (c) 2007-2014, Kaazing Corporation. All rights reserved.
-
-	-->
 	<!--[if lt IE 7]>
 	<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 	<!--[if IE 7]>
@@ -27,7 +16,7 @@
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<link rel="icon" href="images/favicon.ico">
-		<title>Kaazing | Demos</title>
+		<title>Hermes | Monitors</title>
 		<meta name="description" content="">
 		<meta name="viewport" content="width=device-width">
 
@@ -37,11 +26,13 @@
 
 		<script src="node_modules/jquery/dist/jquery.js"></script>
 		<script src="node_modules/npm-modernizr/modernizr.js"></script>
-
+		<script src="js/d3.v3.min.js"></script>
 		<script type="text/javascript" language="javascript"
 				src="node_modules/kaazing-javascript-gateway-client/WebSocket.js"></script>
 		<script type="text/javascript" language="javascript"
 				src="node_modules/kaazing-javascript-amqp-client/AmqpClient.js"></script>
+		
+		<script type="text/javascript" language="javascript" src="js/graphs.js"></script>
 		<style type="text/css" media="screen">
 			#middle input {
 				width: auto;
@@ -54,9 +45,9 @@
 				margin-right: 0px;
 			}
 		</style>
-		<script type="text/javascript" language="javascript" src="js/amqp.js"></script>
+		
 
-		<title>Real-Time Interactive Guide to AMQP</title>
+		<title>Real-Time Crioprecipitati Hermes' cool GUI</title>
 	</head>
 <body>
 <div class="header-container">
@@ -79,35 +70,15 @@
 		<article>
 			<section>
 				<div id="main_header">
-					<h1>AMQP Messaging Demo for JavaScript</h1>
+					<h1>Real-Time Crioprecipitati Hermes' cool GUI</h1>
 
 					<div id="jms-javascript" class="amqp">
 						<div id="middle">
-
-							<div class="leftPanels">
-
-								<div id="login_div" class="panel">
-									<button id="connectBut">Connect</button>
-									<button id="disconnectBut">Close</button>
-								</div>
-							</div> <!-- .leftPanels -->
-
-							<div class="rightPanels">
-
-								<div id="console_div" class="panel">
-									<div class="info">
-										<div style="float: left;">
-											Log messages
-										</div>
-										<div style="float: right; margin-right: 5px;">
-											Messages received : <span id="receivedMessageCount">0</span>
-										</div>
-										<div class="clearfix"></div>
-									</div>
-									<div id="console"></div>
-								</div>
-
-							</div>  <!-- .rightPanels -->
+								<div class="graph"></div>
+								<script type="text/javascript" language="javascript" src="js/amqp.js"></script>
+								Temperatura: <div class="numParam" id="T"></div>
+								ET CO2: <div class="numParam" id="EtCO2"></div>
+								Saturazione O2: <div class="numParam" id="SpO2"></div>
 						</div> <!-- #middle -->
 					</div>
 				</div>

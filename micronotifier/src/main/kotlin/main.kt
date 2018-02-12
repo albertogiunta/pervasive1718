@@ -1,47 +1,64 @@
-import amqp.AMQPClient
-import core.NotifierControllerImpl
-import io.reactivex.Observable
+import com.google.gson.GsonBuilder
+import controller.NotifierSessionController
+import controller.NotifierTopicController
 import logic.Member
+import networking.rabbit.AMQPClient
+import networking.ws.RelayService
 import utils.Logger
 
 fun main(args: Array<String>) {
 
-    val controller = NotifierControllerImpl(LifeParameters.values().toSet())
+    val topicController = NotifierTopicController.singleton(LifeParameters.values().toSet())
+    val sessionController = NotifierSessionController.singleton()
+
+    WSServerInitializer.init(RelayService::class.java, WSParams.WS_PORT, WSParams.WS_PATH_NOTIFIER)
+
     BrokerConnector.init()
-    val client = AMQPClient(BrokerConnector.INSTANCE, controller)
+    val amqp = AMQPClient(BrokerConnector.INSTANCE, topicController.activeTopics())
+    val gson = GsonBuilder().create()
 
-    controller.addListenerTo(LifeParameters.HEART_RATE, Member(666, "Mario Rossi"))
-    controller.addListenerTo(LifeParameters.TEMPERATURE, Member(666, "Mario Rossi"))
+    topicController.addListenerTo(LifeParameters.HEART_RATE, Member(666, "Mario Rossi"))
+    topicController.addListenerTo(LifeParameters.TEMPERATURE, Member(666, "Mario Rossi"))
+    topicController.addListenerTo(LifeParameters.OXYGEN_SATURATION, Member(777, "Padre Pio"))
 
-    controller.topics().forEach { lp ->
-        client.publishSubjects[lp]
-        ?.doOnNext {
-            // Check if out of boundaries and notify of the WS
-            Logger.info("Do on Next... Something with $it")
-
-            controller.lifeParametersMap[lp]?.forEach{
-                controller.sessionsMap[it] // Notify the WS, dunno how.
+    topicController.activeTopics().forEach { lp ->
+        amqp.publishSubjects[lp]
+                ?.map {
+                    gson.fromJson(it, Pair::class.java).run {
+                        LifeParameters.valueOf(this.first.toString()) to this.second.toString().toDouble()
+                    }
+                }?.filter {
+                // Check if out of boundaries and notify of the WS
+                    false
+            }?.doOnNext {
+//                Logger.info(it)
+                }?.subscribe { message ->
+                    // Do Stuff, if necessary but Subscription is MANDATORY.
+                topicController.topicsMap[lp]?.forEach{
+                    sessionController.sessionsMap[it]?.remote?.sendString(message.toJson()) // Notify the WS, dunno how.
+                }
             }
-        }
-        ?.subscribe {
-            // Do Stuff, if necessary
-            // Subscription is MANDATORY.
-        }
     }
 
-    Observable.combineLatest(client.publishSubjects.values, {
-        // Merge Values Together, possible into a json
-        // prefix, separator, postfix let merge single json key -> values
-        it.joinToString(prefix = "{", separator = ",", postfix = "}")
-    }).subscribe{ message ->
-        // Do stuff with the WebSockets, dispatch only some of the merged values
-        // With one are specified into controller.listenerMap: Member -> Set<LifeParameters>
-        Logger.info(message)
-
-        controller.listenersMap.forEach { k, v -> // Member -> Set<LifeParameters>
-            // Do Stuff
-
-            controller.sessionsMap[k] // Notify the WS, dunno how.
+    amqp.publishSubjects.forEach { _, stream ->
+        stream.map {
+            gson.fromJson(it, Pair::class.java).run {
+                LifeParameters.valueOf(this.first.toString()) to this.second.toString().toDouble()
+            }
+        }.doOnNext{
+                    Logger.info(it.toString())
+        }.subscribe{ message ->
+            // Do stuff with the WebSockets, dispatch only some of the merged values
+            // With one are specified into controller.listenerMap: Member -> Set<LifeParameters>
+                    topicController.listenersMap.forEach { member, itsTopics ->
+                        // Member -> Set<LifeParameters>
+                        when (itsTopics.contains(message.first)) {
+                            true -> {
+                                Logger.info("$member ===> ${message.toJson()}")
+                                sessionController.sessionsMap[member]?.remote?.sendString(message.toJson()) // Notify the WS, dunno how.
+                            }
+                }
+            }
         }
     }
 }

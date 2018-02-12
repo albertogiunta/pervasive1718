@@ -1,7 +1,7 @@
 object EtCO2MonitorsFactory {
     val DEFAULT_INIT_VALUE = 40.0
     val DEFAULT_MIN_BOUND = 0.0
-    val DEFAULT_MAX_BOUND = 50.0
+    val DEFAULT_MAX_BOUND = 15.0
     val DEFAULT_REFRESH_RATE = 1000L
 
     /**

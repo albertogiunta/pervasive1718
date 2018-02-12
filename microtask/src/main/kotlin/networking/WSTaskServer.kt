@@ -18,8 +18,8 @@ class WSTaskServer : WSServer<TaskPayload>() {
 
     private val controller: Controller = TaskController.INSTANCE
 
-    override fun message(session: Session, message: String) {
-        super.message(session, message)
+    override fun onMessage(session: Session, message: String) {
+        super.onMessage(session, message)
 
         val taskPayload = klaxon.parse<TaskPayload>(message)
 

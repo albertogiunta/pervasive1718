@@ -22,8 +22,8 @@ class WSSessionServer : WSServer<SessionPayload>() {
         sessionController.removeMember(session)
     }
 
-    override fun message(session: Session, message: String) {
-        super.message(session, message)
+    override fun onMessage(session: Session, message: String) {
+        super.onMessage(session, message)
 
         val sessionPayload = Serializer.klaxon.parse<SessionPayload>(message)
 
