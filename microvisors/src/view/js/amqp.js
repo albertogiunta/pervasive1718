@@ -25,18 +25,6 @@ $(document).ready(function () {
 	routingKey = "broadcastkey";
 	consumeExchange = ["DIA", "EtCO2", "HR", "SYS", "SpO2", "T"];
 
-	//connectBut = $("#connectBut");
-	//disconnectBut = $("#disconnectBut");
-
-	//logConsole = $("div#console");
-	//receivedMessageCount = $("#receivedMessageCount");
-	//clearBut = $("#clearBut");
-
-	// Add event handlers.
-	//connectBut.click(handleConnect);
-	//disconnectBut.click(handleDisconnect);
-	//clearBut.click(handleClearLog);
-
 	receivedMessageCounter = 0;
 
 	// Add trim() to string, if not present.
@@ -62,20 +50,9 @@ $(document).ready(function () {
 // to Kaazing Gateway.
 //
 var handleConnect = function () {
-	//connectBut.prop("disabled", true);
-	//log("CONNECTING: " + url + " " + username);
-
 	queueName = "queue" + Math.floor(Math.random() * 1000000);
 
 	amqpClient = amqpClientFactory.createAmqpClient();
-	/*amqpClient.addEventListener("close", function () {
-		log("DISCONNECTED");
-		updateGuiState(false);
-	});
-	amqpClient.addEventListener("error", function (e) {
-		log("CONNECTION ERROR:" + e.message);
-		connectBut.prop("disabled", false);
-	});*/
 
 	var credentials = {username: username, password: password};
 	var options = {
@@ -89,16 +66,12 @@ var handleConnect = function () {
 // Event handler invoked when the connection is successfully made.
 //
 var openHandler = function () {
-	// log("CONNECTED");
-	// updateGuiState(true);
-	// log("OPEN: Consume Channel");
 	consumeChannel = amqpClient.openChannel(consumeChannelOpenHandler);
 };
 
 // Event handler when the consume channel is opened.
 //
 var consumeChannelOpenHandler = function (channel) {
-	// log("OPENED: Consume Channel");
 
 	consumeChannel.addEventListener("message", function (message) {
 		handleMessageReceived(message);
@@ -108,7 +81,6 @@ var consumeChannelOpenHandler = function (channel) {
 	// the AmqpChannel.consumeBasic() function means there should be be explicit
 	// acknowledgement when the message is received. If set to true, then no
 	// explicit acknowledgement is required when the message is received.
-	
 	consumeExchange.forEach(function(exchangeName) {
 		myConsumerTag = "client" + Math.floor(Math.random() * 1000000);
 		consumeChannel.declareQueue({queue: queueName})
@@ -120,7 +92,6 @@ var consumeChannelOpenHandler = function (channel) {
 // Event handler when the disconnect button is pressed.
 //
 var handleDisconnect = function () {
-	// log("DISCONNECT");
 	consumeChannel.closeChannel(consumeChannel);
 	amqpClient.disconnect();
 	console.log("handler has been called")
@@ -130,8 +101,6 @@ var handleDisconnect = function () {
 // Event handler when a message has been received from the gateway.
 //
 var handleMessageReceived = function (event) {
-
-	// receivedMessageCount.text(++receivedMessageCounter);
 
 	var body = null;
 
@@ -147,12 +116,11 @@ var handleMessageReceived = function (event) {
 
 	var curGraph = graphs.filter(graph => graph.channel === exchange)[0];
 	if (curGraph !== undefined)
-		curGraph.setData(body);
+		curGraph.setData(JSON.parse(body).second);
 	else {
 		var classId = "#"+exchange;
-		$(classId).text(body);
+		$(classId).text(JSON.parse(body).second);
 	}
-	// log("MESSAGE FROM " + exchange + ": " + body);
 }
 
 // Create a WebSocketFactory which can be used for multiple AMQP clients if
@@ -174,37 +142,6 @@ var createWebSocketFactory = function () {
 	return webSocketFactory;
 }
 
-// Event handler when the user presses the clear log button.
-//
-/*var handleClearLog = function () {
-	logConsole.empty();
-}
-
-// Log a string message to the log console pane.
-//
-var log = function (message) {
-	var div = $('<div>');
-	div.addClass("logMessage");
-	div.html(message);
-	logDiv(div);
-}
-
-// Write a div that's in the correct form to the log console pane.
-//
-var logDiv = function (div) {
-	logConsole.append(div);
-
-	// Make sure the last line is visible.
-	logConsole.scrollTop(logConsole[0].scrollHeight);
-
-	// Only keep the most recent few rows so the log doesn't grow out of control.
-	while (logConsole.children().length > 40) {
-		// Delete two rows to preserve the alternate background colors.
-		logConsole.children().first().remove();
-		logConsole.children().first().remove();
-	}
-}
-*/
 // Convert a string to an ArrayBuffer.
 //
 var stringToArrayBuffer = function (str) {
@@ -229,23 +166,9 @@ function getRandomInt(min, max) {
 	return Math.floor(Math.random() * (max - min)) + min;
 }
 
-// Enable or disable buttons on the screen based on whether we are currently
-// connected or not.
-/*var updateGuiState = function (connected) {
-	connectBut.prop("disabled", connected);
-	disconnectBut.prop("disabled", !connected);
-}*/
-
-
-var printConnectionStatus = function() {
-	console.log(amqpClient)
-}
-
-//setInterval(printConnectionStatus, 1000)
-
-graphs.push(new Graph("Battito cardiaco", "HR", 0, 220, "black"));
+graphs.push(new Graph("Battito cardiaco", "HR", 0, 220, "black", ".graphOne"));
 //graphs.push(new Graph("Temperatura", "T", 0, 45, "red"));
-graphs.push(new Graph("Pressione sistolica", "SYS", 0, 230, "blue"));
-graphs.push(new Graph("Pressione diastolica", "DIA", 0, 150, "green"));
+graphs.push(new Graph("Pressione sistolica", "SYS", 0, 230, "blue", ".graphTwo"));
+graphs.push(new Graph("Pressione diastolica", "DIA", 0, 150, "green", ".graphThree"));
 //graphs.push(new Graph("Saturazione ossigeno", "SpO2", 0, 100, "purple"));
 //graphs.push(new Graph("Fine respirazione CO2", "EtCO2", 0, 15, "gray"));

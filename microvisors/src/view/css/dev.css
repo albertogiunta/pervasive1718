@@ -17,6 +17,26 @@ body {
   background-color: whitesmoke;
   color: #535353; }
 
+.wrapper {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 10px;
+  grid-auto-rows: minmax(100px, auto);
+}
+
+.one {
+  grid-column: 1;
+  grid-row: 1;
+}
+.two { 
+  grid-column: 2;
+  grid-row: 1;
+}
+.three {
+  grid-column: 3;
+  grid-row: 1;
+}
+
 svg {
   padding: 10px;
 }
@@ -86,10 +106,6 @@ textarea {
   background: #ccc;
   color: #000;
   padding: 0.2em 0; }
-
-.wrapper {
-  width: 90%;
-  margin: 0 5%; }
 
 .header-container {
   background: #132b3c; }
@@ -573,9 +589,8 @@ ul.breadcrumbs {
     color: #2c6389; }
 
   .wrapper {
-    width: 1026px;
     /* 1140px - 10% for margins */
-    margin: 0 auto; } }
+    margin: 0 0 } }
 /* ==========================================================================
    Helper classes
    ========================================================================== */

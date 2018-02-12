@@ -1,4 +1,4 @@
-function Graph(paramName, channel, lowerbound, upperbound, color) {
+function Graph(paramName, channel, lowerbound, upperbound, color, divClass) {
     var limit = 60 * 1,
     duration = 2000,
     now = new Date(Date.now() - duration),
@@ -6,8 +6,8 @@ function Graph(paramName, channel, lowerbound, upperbound, color) {
     
     this.paramName = paramName;
     this.channel = channel;
-    var width = 500,
-    height = 200;
+    var width = $(document).width()/4,
+    height = $(document).height()/4;
 
     var healthParam = {
         value: 0,
@@ -38,7 +38,7 @@ function Graph(paramName, channel, lowerbound, upperbound, color) {
             return y_scale(d)
         })
 
-    var svg = d3.select('.graph').append('svg')
+    var svg = d3.select(divClass).append('svg')
         .attr('class', 'chart')
         .attr('width', width)
         .attr('height', height + 50)
