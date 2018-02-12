@@ -86,11 +86,6 @@ h1 {
   margin-top: 0;
   margin-bottom: 0; }
 
-/*
-p {
-    margin-top: 5px;
-}
-*/
 #demo-welcome {
   margin-top: 5px; }
 
@@ -421,13 +416,10 @@ footer .items-wrapper {
   margin-top: 20px; }
 
 #jms-javascript .leftPanels {
-  float: left;
-  width: 300px; }
+  float: left; }
 
 #jms-javascript .rightPanels {
-  float: left;
-  width: 300px;
-  margin-left: 10px; }
+  float: right; }
 
 #jms-javascript #middle .info {
   margin-bottom: 10px;
@@ -929,7 +921,7 @@ table#ticks .change {
   text-align: right; }
 
 table#ticks .graph {
-  width: 101px;
+  width: 33.3%;
   text-align: left;
   padding-left: 20px;
   padding-right: 15px;
@@ -1060,9 +1052,9 @@ table#ticks td.downChange {
 /* ==========================================================================
     INTERMEDIATE Width
    ========================================================================== */
-@media only screen and (min-width: 480px) {
+/*@media only screen and (min-width: 480px) {
   #jms-javascript .rightPanels {
-    width: 400px; } }
+    width: 400px; } }*/
 /* ==========================================================================
     WIDE Width
    ========================================================================== */
@@ -1148,7 +1140,8 @@ table#ticks td.downChange {
     width: auto; }
 
   #jms-javascript .leftPanels {
-    width: 390px; }
+
+  }
 
   #jms-javascript #middle input {
     width: 230px; }
@@ -1156,8 +1149,7 @@ table#ticks td.downChange {
   #jms-javascript #middle input.halfWidth {
     width: 110px; }
 
-  #jms-javascript .rightPanels {
-    width: 500px; } }
+  #jms-javascript .rightPanels {} }
 /* ==========================================================================
     MAXIMAL Width
    ========================================================================== */
