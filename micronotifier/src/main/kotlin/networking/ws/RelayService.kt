@@ -23,7 +23,8 @@ class RelayService : WSServer<Payload<SessionOperation, String>>() {
 
     private val core = CoreController.singleton()
 
-    private val channel: Subject<Pair<Session, String>> = core.subjects.getSubjectsOf(core.toString())!!
+    private val coreSubject: Subject<Pair<Session, String>> =
+            core.subjects.getSubjectsOf(CoreController::class.java.name)!!
 
     private val gson = GsonBuilder().create()
 
@@ -35,19 +36,14 @@ class RelayService : WSServer<Payload<SessionOperation, String>>() {
         }.toMap()
     }
 
-    override fun closed(session: Session, statusCode: Int, reason: String) {
-        super.closed(session, statusCode, reason)
-        core.sessions.removeListenerOn(session)
-    }
-
     override fun onMessage(session: Session, message: String) {
         super.onMessage(session, message)
-        channel.onNext(Pair(session, message))
+        coreSubject.onNext(Pair(session, message))
     }
 }
 
 fun main(args: Array<String>) {
 
     NotifierTopicsController.init(LifeParameters.values().toSet())
-    WSServerInitializer.init(RelayService::class.java, WSParams.WS_SESSION_PORT, WSParams.WS_PATH_NOTIFIER)
+    WSServerInitializer.init(RelayService::class.java, WSParams.WS_NOTIFIER_PORT, WSParams.WS_PATH_NOTIFIER)
 }

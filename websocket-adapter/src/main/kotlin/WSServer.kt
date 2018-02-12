@@ -14,13 +14,13 @@ open class WSServer<in P> {
     private val log = WSLogger(WSLogger.WSUser.SERVER)
 
     @OnWebSocketConnect
-    open fun connected(session: Session) {
+    open fun onConnect(session: Session) {
         log.printStatusMessage("session opened on remote ${session.remote}")
     }
 
     @OnWebSocketClose
-    open fun closed(session: Session, statusCode: Int, reason: String) {
-        log.printStatusMessage("session closed on remote ${session.remote} | exit code $statusCode | info: $reason")
+    open fun onClose(session: Session, statusCode: Int, reason: String) {
+        log.printStatusMessage("session onClose on remote ${session.remote} | exit code $statusCode | info: $reason")
     }
 
     /**

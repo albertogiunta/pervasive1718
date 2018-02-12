@@ -12,7 +12,7 @@ open class WSClient(serverURI: URI) : WebSocketClient(serverURI) {
     }
 
     override fun onClose(code: Int, reason: String, remote: Boolean) {
-        log.printStatusMessage("session closed | exit code $code | info: $reason")
+        log.printStatusMessage("session onClose | exit code $code | info: $reason")
     }
 
     override fun onMessage(message: String) {

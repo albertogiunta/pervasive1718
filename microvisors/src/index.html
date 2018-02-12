@@ -1,38 +1,34 @@
 <!DOCTYPE html>
 <head>
-	<!--[if lt IE 7]>
-	<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-	<!--[if IE 7]>
-	<html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-	<!--[if IE 8]>
-	<html class="no-js lt-ie9"> <![endif]-->
-	<!--[if gt IE 8]><!-->
 	<html class="no-js"> <!--<![endif]-->
 	<head>
 
-		<!-- Required for IE6/IE7 cross-origin support -->
 		<meta name="kaazing:postMessageBridgeURL" content="PostMessageBridge.html">
 
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-		<link rel="icon" href="images/favicon.ico">
+		<link rel="icon" href="view/images/favicon.ico">
 		<title>Hermes | Monitors</title>
 		<meta name="description" content="">
 		<meta name="viewport" content="width=device-width">
 
-		<link rel="stylesheet" href="css/normalize.css">
-		<link rel="stylesheet" href="css/dev.css">
-		<link rel="stylesheet" href="css/demo.css">
+		<link rel="stylesheet" href="view/css/normalize.css">
+		<link rel="stylesheet" href="view/css/dev.css">
+		<link rel="stylesheet" href="view/css/demo.css">
 
-		<script src="node_modules/jquery/dist/jquery.js"></script>
-		<script src="node_modules/npm-modernizr/modernizr.js"></script>
-		<script src="js/d3.v3.min.js"></script>
+		<script src="view/node_modules/jquery/dist/jquery.js"></script>
+		<script src="view/node_modules/npm-modernizr/modernizr.js"></script>
+		<script src="view/js/d3.v3.min.js"></script>
 		<script type="text/javascript" language="javascript"
-				src="node_modules/kaazing-javascript-gateway-client/WebSocket.js"></script>
+				src="view/node_modules/kaazing-javascript-gateway-client/WebSocket.js"></script>
 		<script type="text/javascript" language="javascript"
-				src="node_modules/kaazing-javascript-amqp-client/AmqpClient.js"></script>
+				src="view/node_modules/kaazing-javascript-amqp-client/AmqpClient.js"></script>
 		
-		<script type="text/javascript" language="javascript" src="js/graphs.js"></script>
+		<script type="text/javascript" language="javascript" src="view/js/graphs.js"></script>
+		<script src="../out/production/classes/lib/kotlin.js"></script>
+		<script src="../out/production/classes/microvisors-js.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 		<style type="text/css" media="screen">
 			#middle input {
 				width: auto;
@@ -67,13 +63,37 @@
 							<div class="graphOne"></div>
 							<div class="graphTwo"></div>
 							<div class="graphThree"></div>
-							<script type="text/javascript" language="javascript" src="js/amqp.js"></script>
+							<script type="text/javascript" language="javascript" src="view/js/amqp.js"></script>
 								
 							<div><div>Temperatura: <div class="numParam" id="T"></div></div><br/>
 								<div>ET CO2: <div class="numParam" id="EtCO2"></div></div><br/>
 								<div>Saturazione O2: <div class="numParam" id="SpO2"></div></div></div>
 					</div>
 		</article>
+	</div>
+	<div class="table-responsive">
+		<table class="table">
+			<thead>
+			<tr>
+				<th>#</th>
+				<th>Firstname</th>
+				<th>Lastname</th>
+				<th>Age</th>
+				<th>City</th>
+				<th>Country</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr>
+				<td>1</td>
+				<td>Anna</td>
+				<td>Pitt</td>
+				<td>35</td>
+				<td>New York</td>
+				<td>USA</td>
+			</tr>
+			</tbody>
+		</table>
 	</div>
 </div>
 <div class="footer-container">

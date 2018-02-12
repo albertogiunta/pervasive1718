@@ -9,12 +9,12 @@ class CoreController private constructor(topicSet: Set<LifeParameters>) {
 
     var topics: TopicsController<LifeParameters, Member> = NotifierTopicsController.init(topicSet)
     var sessions: SessionsController<Member, Session> = NotifierSessionsController.singleton()
-    var subjects: SubjectsController<String, Any> = SubjectsController.singleton()
+    var subjects: SubjectsController<String, Any> = NotifierSubjectsController.singleton()
 
     private val gson = GsonBuilder().create()
 
     init {
-        val channel = subjects.createNewSubjectFor<Pair<Session, String>>(this.toString())
+        val channel = subjects.createNewSubjectFor<Pair<Session, String>>(CoreController::class.java.name)
         val core = this
     }
 
