@@ -2,7 +2,6 @@ package controller
 
 import LifeParameters
 import logic.Member
-import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
 
 interface TopicsController<T, L> {
@@ -13,7 +12,7 @@ interface TopicsController<T, L> {
 
     operator fun get(topic: T): Set<L>?
 
-    fun topicsOf(listener: L): Set<T>?
+    fun of(listener: L): Set<T>?
 
     fun removeListener(listener: L)
 
@@ -27,7 +26,7 @@ interface TopicsController<T, L> {
 
 class NotifierTopicsController private constructor(private var topics: Set<LifeParameters>) : TopicsController<LifeParameters, Member> {
 
-    private val topicsMap = ConcurrentHashMap<LifeParameters, MutableSet<Member>>()
+    val topicsMap = mutableMapOf<LifeParameters, MutableSet<Member>>()
 
     init {
         topics.forEach {
@@ -35,12 +34,14 @@ class NotifierTopicsController private constructor(private var topics: Set<LifeP
         }
     }
 
+    @Synchronized
     override fun add(topic: LifeParameters, listener: Member) {
         if (topics.contains(topic)) {
             topicsMap[topic]?.add(listener)
         }
     }
 
+    @Synchronized
     override fun add(topics: Iterable<LifeParameters>, listener: Member) {
 
         val goodies = topics.filter { this.topics.contains(it) }
@@ -50,23 +51,28 @@ class NotifierTopicsController private constructor(private var topics: Set<LifeP
         }
     }
 
+    @Synchronized
     override operator fun get(topic: LifeParameters): Set<Member>? = topicsMap[topic]
 
-    override fun topicsOf(listener: Member): Set<LifeParameters> =
+    @Synchronized
+    override fun of(listener: Member): Set<LifeParameters> =
             topicsMap.filter { e -> e.value.contains(listener) }.keys
 
+    @Synchronized
     override fun removeListener(listener: Member) {
         topicsMap.filter { it.value.contains(listener) }.forEach{
             topicsMap[it.key]?.remove(listener)
         }
     }
 
+    @Synchronized
     override fun removeListenerOn(topics: Iterable<LifeParameters>, listener: Member) {
         topics.forEach {
             topicsMap[it]?.remove(listener)
         }
     }
 
+    @Synchronized
     override fun clearListeners() {
         topicsMap.replaceAll { _, _ -> mutableSetOf()}
     }

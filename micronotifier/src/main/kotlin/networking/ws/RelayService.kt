@@ -9,9 +9,12 @@ import controller.CoreController
 import controller.NotifierTopicsController
 import io.reactivex.subjects.Subject
 import model.Payload
+import model.PayloadWrapper
 import model.SessionOperation
 import org.eclipse.jetty.websocket.api.Session
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketError
 import org.eclipse.jetty.websocket.api.annotations.WebSocket
+import toJson
 import utils.Logger
 
 /**
@@ -36,9 +39,23 @@ class RelayService : WSServer<Payload<SessionOperation, String>>() {
         }.toMap()
     }
 
+    override fun onClose(session: Session, statusCode: Int, reason: String) {
+        super.onClose(session, statusCode, reason)
+        if (core.sessions.has(session)) {
+            val message = PayloadWrapper(-1L, SessionOperation.CLOSE,
+                    core.sessions.getOn(session)!!.toJson()).toJson()
+            coreSubject.onNext(Pair(session, message))
+        }
+    }
+
     override fun onMessage(session: Session, message: String) {
         super.onMessage(session, message)
         coreSubject.onNext(Pair(session, message))
+    }
+
+    @OnWebSocketError
+    fun onError(session : Session, error : Throwable) {
+        Logger.error("[WS Error] @ ${session.remote}", error)
     }
 }
 

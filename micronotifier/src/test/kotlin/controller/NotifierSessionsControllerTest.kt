@@ -89,9 +89,9 @@ class NotifierSessionsControllerTest {
         }
 
         sesCon.set(m1, ses)
-        assertEquals(sesCon.get(m1)!!, ses)
+        assertEquals(sesCon[m1]!!, ses)
+        assertEquals(sesCon.getOn(ses), m1)
     }
-
 
     @Test
     fun removeListener() {
@@ -161,7 +161,7 @@ class NotifierSessionsControllerTest {
             }
         }
 
-        sesCon.set(m1, ses)
+        sesCon[m1] = ses
         assertEquals(sesCon.removeListener(m1)!!, ses)
         assertNull(sesCon.removeListener(m2))
     }
@@ -234,7 +234,7 @@ class NotifierSessionsControllerTest {
             }
         }
 
-        sesCon.set(m1, ses)
+        sesCon[m1] = ses
         val iter = sesCon.removeListenerOn(ses)
         iter.forEach({ println(it) })
         assertTrue(iter.contains(m1))

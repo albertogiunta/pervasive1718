@@ -7,9 +7,9 @@ fun main(args: Array<String>) {
 
     println(URIFactory.getNotifierURI())
 
-    val client = WSClientInitializer.init(WSClient(URIFactory.getNotifierURI()))
+    val client = WSClient(URIFactory.getNotifierURI())
 
-    Thread.sleep(5000L)
+    client.connectBlocking()
 
     val msg1 = PayloadWrapper(-1L, SessionOperation.SUBSCRIBE,
             Subscription(-1L, Member(666, "Mario Rossi"), listOf(LifeParameters.TEMPERATURE)).toJson()
@@ -23,5 +23,5 @@ fun main(args: Array<String>) {
 
     client.sendMessage(msg2)
 
-    client.close()
+    client.closeBlocking()
 }

@@ -6,6 +6,7 @@ import model.SessionOperation
 import networking.rabbit.AMQPClient
 import networking.ws.RelayService
 import org.eclipse.jetty.websocket.api.Session
+import utils.Logger
 
 fun main(args: Array<String>) {
 
@@ -34,8 +35,8 @@ fun main(args: Array<String>) {
             }.map { (lp, value) ->
                         LifeParameters.valueOf(lp.toString()) to value.toString().toDouble()
             }.filter {
-                        // Check if out of boundaries and notify of the WS
-                        false
+                // Check if out of boundaries and notify of the WS
+                false
             }.doOnNext {
                 utils.Logger.info(it.toString())
             }.subscribe { (lp, value) ->
@@ -83,37 +84,29 @@ fun main(args: Array<String>) {
         // If a Pattern patterns.Observer is used then both the controllers should be wrapped by a core controller
         // Where the whole observation behavior is handled
         when (wrapper.subject) {
+
+            SessionOperation.SUBSCRIBE -> {
+                val subscription = gson.fromJson(wrapper.body, model.Subscription::class.java)
+                if (!core.sessions.contains(subscription.subject)) {
+                    Logger.info("Adding Session for ${subscription.subject} @ ${subscription.body}")
+                    core.sessions[subscription.subject] = session
+                }
+                Logger.info("Subscribing ${subscription.subject} @ ${subscription.body}")
+                core.topics.removeListener(subscription.subject)
+                core.topics.add(subscription.body, subscription.subject)
+            }
             SessionOperation.CLOSE -> {
                 val listener = gson.fromJson(wrapper.body, Member::class.java)
+                Logger.info("Closing Session for $listener")
                 core.sessions.removeListener(listener)
                 core.topics.removeListener(listener)
             }
-            SessionOperation.ADD -> {
-                val subscription = gson.fromJson(wrapper.body, model.Subscription::class.java)
-                core.sessions[subscription.subject] = session
-                core.topics.add(subscription.body, subscription.subject)
-            }
-            SessionOperation.REMOVE -> {
-                val subscription = gson.fromJson(wrapper.body, model.Subscription::class.java)
-                core.topics.removeListener(subscription.subject)
-            }
-            SessionOperation.SUBSCRIBE -> {
-                val subscription = gson.fromJson(wrapper.body, model.Subscription::class.java)
-                core.topics.removeListener(subscription.subject)
-                core.topics.add(subscription.body, subscription.subject)
-            }
-            SessionOperation.UNSUBSCRIBE -> {
-                val subscription = gson.fromJson(wrapper.body, model.Subscription::class.java)
-                core.topics.removeListenerOn(subscription.body, subscription.subject)
-            }
-
-            else -> { // Do Nothing at all
+            else -> {
+                Logger.info("NOPE...")
+                // Do Nothing at all
             }
         }
     }
 
-//    core.topics.add(LifeParameters.HEART_RATE, Member(666, "Mario Rossi"))
-//    core.topics.add(LifeParameters.TEMPERATURE, Member(666, "Mario Rossi"))
-//    core.topics.add(LifeParameters.OXYGEN_SATURATION, Member(777, "Padre Pio"))
 }
 

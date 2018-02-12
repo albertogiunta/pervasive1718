@@ -4,7 +4,6 @@ import LifeParameters
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import utils.Logger
-import java.util.concurrent.ConcurrentHashMap
 
 interface SubjectsController <I, T> {
 
@@ -17,7 +16,7 @@ interface SubjectsController <I, T> {
 @Suppress("UNCHECKED_CAST")
 class NotifierSubjectsController private constructor() : SubjectsController<String, Any>{
 
-    private val publishSubjects = ConcurrentHashMap<String, Subject<out Any>>()
+    private val publishSubjects = mutableMapOf<String, Subject<out Any>>()
 
     init {
     }

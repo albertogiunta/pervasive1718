@@ -29,8 +29,8 @@ class NotifierTopicsControllerTest {
     @Test
     fun addMultipleAndGet() {
         controller.add(LifeParameters.values().asList(), m1)
-        assertTrue(controller.topicsOf(m1).containsAll(LifeParameters.values().asList()) &&
-                controller.topicsOf(m2).isEmpty())
+        assertTrue(controller.of(m1).containsAll(LifeParameters.values().asList()) &&
+                controller.of(m2).isEmpty())
     }
 
     @Test
@@ -38,14 +38,14 @@ class NotifierTopicsControllerTest {
         controller.add(LifeParameters.TEMPERATURE, m1)
         controller.removeListener(m1)
 
-        assertTrue(controller.topicsOf(m1).isEmpty())
+        assertTrue(controller.of(m1).isEmpty())
     }
 
     @Test
     fun removeListenerOn() {
         controller.add(LifeParameters.TEMPERATURE, m1)
         controller.removeListenerOn(LifeParameters.values().asIterable(), m1)
-        assertTrue(controller.topicsOf(m1).isEmpty())
+        assertTrue(controller.of(m1).isEmpty())
     }
 
     @Test
@@ -54,7 +54,7 @@ class NotifierTopicsControllerTest {
         controller.add(LifeParameters.values().asIterable(), m2)
         controller.clearListeners()
 
-        assertTrue(controller.topicsOf(m1).isEmpty() && controller.topicsOf(m2).isEmpty())
+        assertTrue(controller.of(m1).isEmpty() && controller.of(m2).isEmpty())
     }
 
     @Test
