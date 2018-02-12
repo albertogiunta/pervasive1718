@@ -1,35 +1,27 @@
 package controller
 
 import LifeParameters
+import com.google.gson.GsonBuilder
 import logic.Member
 import org.eclipse.jetty.websocket.api.Session
-import java.util.concurrent.atomic.AtomicBoolean
 
 class CoreController private constructor(topicSet: Set<LifeParameters>) {
 
     var topics: TopicsController<LifeParameters, Member> = NotifierTopicsController.init(topicSet)
     var sessions: SessionsController<Member, Session> = NotifierSessionsController.singleton()
-    var subjects: SubjectsController<String, String> = SubjectsController.singleton()
+    var subjects: SubjectsController<String, Any> = SubjectsController.singleton()
+
+    private val gson = GsonBuilder().create()
+
+    init {
+        val channel = subjects.createNewSubjectFor<Pair<Session, String>>(this.toString())
+        val core = this
+    }
 
     companion object {
-        private lateinit var instance: CoreController
-        private val isInitialized: AtomicBoolean = AtomicBoolean(false)
+        private var instance: CoreController = CoreController(LifeParameters.values().toSet())
 
-        fun init(topics: Set<LifeParameters>): CoreController {
-            if (!isInitialized.getAndSet(true)) {
-                instance = CoreController(topics)
-            }
-            return instance
-        }
-
-        @Throws(Exception::class)
-        fun singleton(): CoreController {
-            if (!isInitialized.get()) {
-                throw Exception("SINGLETON not Initialized")
-            } else return instance
-        }
-
-        fun singleton(topics: Set<LifeParameters>): CoreController = init(topics)
+        fun singleton(): CoreController = instance
     }
 }
 

@@ -1,23 +1,26 @@
 import com.google.gson.GsonBuilder
 import controller.CoreController
+import io.reactivex.subjects.Subject
 import logic.Member
+import model.PayloadWrapper
+import model.SessionOperation
 import networking.rabbit.AMQPClient
-import utils.Logger
+import networking.ws.RelayService
+import org.eclipse.jetty.websocket.api.Session
 
 fun main(args: Array<String>) {
 
     val gson = GsonBuilder().create()
-
-    CoreController.init(LifeParameters.values().toSet())
     val core = CoreController.singleton()
 
-//    WSServerInitializer.init(RelayService::class.java, WSParams.WS_PORT, WSParams.WS_PATH_NOTIFIER)
+    WSServerInitializer.init(RelayService::class.java, WSParams.WS_PORT, WSParams.WS_PATH_NOTIFIER)
 
     BrokerConnector.init()
     val amqp = AMQPClient(BrokerConnector.INSTANCE, core.topics.activeTopics())
-    core.topics.activeTopics().forEach { core.subjects.createNewSubjectFor(it.toString()) }
 
-    val publishSubjects = core.topics.activeTopics().map { it to core.subjects.getSubjectsOf(it.toString()) }.toMap()
+    val publishSubjects = core.topics.activeTopics().map {
+        it to core.subjects.getSubjectsOf<String>(it.toString())!!
+    }.toMap()
 
     amqp.publishOn(publishSubjects)
 
@@ -26,14 +29,14 @@ fun main(args: Array<String>) {
     with(publishSubjects) {
         this.forEach { topic, subject ->
             subject.map {
-                gson.fromJson(it, Pair::class.java).run {
-                    LifeParameters.valueOf(this.first.toString()) to this.second.toString().toDouble()
-                }
+                gson.fromJson(it, kotlin.Pair::class.java)
+            }.map { (lp, value) ->
+                        LifeParameters.valueOf(lp.toString()) to value.toString().toDouble()
             }.filter {
                 // Check if out of boundaries and notify of the WS
                         false
                     }.doOnNext {
-                        Logger.info(it.toString())
+                        utils.Logger.info(it.toString())
                     }.subscribe { message ->
                         // Do Stuff, if necessary but Subscription is MANDATORY.
                         core.topics[topic]?.forEach { member ->
@@ -48,21 +51,56 @@ fun main(args: Array<String>) {
     with(publishSubjects) {
         this.forEach { topic, subject ->
             subject.map {
-                gson.fromJson(it, Pair::class.java).run {
-                    LifeParameters.valueOf(this.first.toString()) to this.second.toString().toDouble()
-                }
+                gson.fromJson(it, kotlin.Pair::class.java)
+            }.map { (lp, value) ->
+                        LifeParameters.valueOf(lp.toString()) to value.toString().toDouble()
             }.doOnNext {
-                        Logger.info(it.toString())
+                        utils.Logger.info(it.toString())
                     }.subscribe { message ->
                         // Do stuff with the WebSockets, dispatch only some of the merged values
                         // With one are specified into controller.listenerMap: Member -> Set<LifeParameters>
                         core.topics[topic]?.forEach { member ->
-                            Logger.info("$member ===> ${message.toJson()}")
+                            utils.Logger.info("$member ===> ${message.toJson()}")
                             core.sessions[member]?.remote?.sendString(message.toJson()) // Notify the WS, dunno how.
                         }
                     }
         }
     }
+
+    val channel: Subject<Pair<Session, String>> = core.subjects.createNewSubjectFor(core.toString())
+
+    channel.map { (session, json) ->
+        session to gson.fromJson(json, PayloadWrapper::class.java)
+    }.subscribe { (session, wrapper) ->
+                // Probably this should be moved into the controller => Pattern patterns.Observer
+                // If a Pattern patterns.Observer is used then both the controllers should be wrapped by a core controller
+                // Where the whole observation behavior is handled
+                when (wrapper.subject) {
+                    SessionOperation.OPEN -> core.sessions.open(wrapper.sid)
+                    SessionOperation.CLOSE -> core.sessions.closeSession(wrapper.sid)
+                    SessionOperation.ADD -> {
+                        val subscription = gson.fromJson(wrapper.body, model.Subscription::class.java)
+                        core.sessions[subscription.subject] = session
+                        core.topics.add(subscription.body, subscription.subject)
+                    }
+                    SessionOperation.REMOVE -> {
+                        val subscription = gson.fromJson(wrapper.body, model.Subscription::class.java)
+                        core.topics.removeListener(subscription.subject)
+                    }
+                    SessionOperation.SUBSCRIBE -> {
+                        val subscription = gson.fromJson(wrapper.body, model.Subscription::class.java)
+                        core.topics.removeListener(subscription.subject)
+                        core.topics.add(subscription.body, subscription.subject)
+                    }
+                    SessionOperation.UNSUBSCRIBE -> {
+                        val subscription = gson.fromJson(wrapper.body, model.Subscription::class.java)
+                        core.topics.removeListenerOn(subscription.body, subscription.subject)
+                    }
+
+                    else -> { // Do Nothing at all
+                    }
+                }
+            }
 
     core.topics.add(LifeParameters.HEART_RATE, Member(666, "Mario Rossi"))
     core.topics.add(LifeParameters.TEMPERATURE, Member(666, "Mario Rossi"))
