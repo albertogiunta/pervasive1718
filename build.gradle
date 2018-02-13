@@ -14,8 +14,11 @@ buildscript {
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.github.rholder:gradle-one-jar:1.0.4'
     }
 }
+
+
 
 subprojects {
     group 'com.crioprecipitati'
@@ -23,7 +26,6 @@ subprojects {
 
     apply plugin: 'java'
     apply plugin: 'kotlin'
-
     sourceCompatibility = 1.8
 
     repositories {
@@ -35,7 +37,6 @@ subprojects {
 
     dependencies {
 
-        compile project(":commons")
 
         // utility
         compile "org.slf4j:slf4j-simple:$slf4j_version"
@@ -56,4 +57,5 @@ subprojects {
     compileTestKotlin {
         kotlinOptions.jvmTarget = "1.8"
     }
+
 }

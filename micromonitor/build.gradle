@@ -1,3 +1,15 @@
 dependencies {
     compile project(":pubsub-adapter")
+
+    compile project(":commons")
+
+}
+
+jar {
+    manifest {
+        attributes(
+                'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+                'Main-Class': 'Dodo'
+        )
+    }
 }

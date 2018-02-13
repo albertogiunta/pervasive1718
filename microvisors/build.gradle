@@ -2,4 +2,7 @@ dependencies {
 
     compile project(":rest-adapter")
 
+    compile project(":commons")
+
+
 }

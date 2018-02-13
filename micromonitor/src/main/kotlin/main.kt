@@ -1,6 +1,8 @@
+
 fun main(argv: Array<String>) {
+
     val OBSERVATION_REFRESH_TIME = 1000L
-    
+
     val tempMonitor = TemperatureMonitorsFactory.createSimulatedTemperatureMonitor()
 
     val systolicMonitor = HeartMonitorsFactory.createSimulatedSystolicPressureMonitor()

@@ -3,6 +3,9 @@ dependencies {
     compile project(":pubsub-adapter")
     compile project(":rest-adapter")
 
+    compile project(":commons")
+
+
     // jdbi
     compile "org.jdbi:jdbi3-core:$jdbi_version"
     compile "org.jdbi:jdbi3-postgres:$jdbi_version"
@@ -10,4 +13,6 @@ dependencies {
     compile "org.jdbi:jdbi3-sqlobject:$jdbi_version"
     compile "org.jdbi:jdbi3-kotlin:$jdbi_version"
     compile "org.jdbi:jdbi3-kotlin-sqlobject:$jdbi_version"
+
 }
+

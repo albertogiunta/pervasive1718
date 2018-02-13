@@ -6,4 +6,7 @@ dependencies {
     compile project(":microdatabase")
     compile project(":microtask")
 
+    compile project(":commons")
+
+
 }

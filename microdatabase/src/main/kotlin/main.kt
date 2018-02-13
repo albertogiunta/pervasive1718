@@ -3,9 +3,7 @@ import controllers.RouteController
 import spark.kotlin.ignite
 
 fun main(args: Array<String>) {
-
     MicroDatabase.init(8100)
-
 }
 
 object MicroDatabase {
@@ -18,5 +16,4 @@ object MicroDatabase {
         }
         JdbiConfiguration.init()
     }
-
 }
