@@ -61,7 +61,7 @@ object SessionApi {
             }
 
             // TODO attach to subset of microservices
-            MicroTask.init(buildPort(clientSessionPort, newSessionId), buildPort(taskPort, newSessionId))
+            MicroTaskBootstrap.init(buildPort(clientSessionPort, newSessionId), buildPort(taskPort, newSessionId))
 
             sessions.last().toJson()
         }
