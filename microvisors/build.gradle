@@ -1,5 +1,17 @@
 dependencies {
 
     compile project(":rest-adapter")
+    compile project(":commons")
 
+}
+
+task microVisorsJar(type: Jar) {
+    baseName = 'runMicroVisors'
+    manifest {
+        attributes 'Implementation-Title': 'microvisors',
+                'Implementation-Version': 1.0,
+                'Main-Class': 'MainKt'
+    }
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
 }

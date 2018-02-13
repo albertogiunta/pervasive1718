@@ -89,7 +89,7 @@ object SessionApi {
 
             Thread({
                 MicroDatabase.init(buildPort(dbPort, newSessionId))
-                MicroTask.init(buildPort(clientSessionPort, newSessionId), buildPort(taskPort, newSessionId))
+                MicroTaskBootstrap.init(buildPort(clientSessionPort, newSessionId), buildPort(taskPort, newSessionId))
                 Thread.sleep(5000)
                 "$dbUrl/api/session/add".httpPost().body(newSession.toString()).responseString()
                 println("finito dentro thread")

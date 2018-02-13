@@ -32,10 +32,22 @@ subprojects {
     }
 
     apply plugin: "kotlin"
+    apply plugin: 'java'
+    apply plugin: 'eclipse'
+
+    task fatJar(type: Jar) {
+        manifest {
+            attributes 'Implementation-Title': 'Gradle Jar File Example',
+                    'Implementation-Version': "1.0",
+                    'Main-Class': 'com.crioprecipitati.micromonitor.src.main.kotlin.main'
+        }
+        baseName = project.name + '-all'
+        from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+        with jar
+    }
+
 
     dependencies {
-
-        compile project(":commons")
 
         // utility
         compile "org.slf4j:slf4j-simple:$slf4j_version"
@@ -57,3 +69,18 @@ subprojects {
         kotlinOptions.jvmTarget = "1.8"
     }
 }
+
+task generatePervasiveJars {
+    doFirst {
+        println("Resetting JDK log level to INFO...")
+        java.util.logging.Logger.getLogger("").setLevel(java.util.logging.Level.INFO);
+    }
+    println "Starting Pervasive Project Jars Creation..."
+    dependsOn 'microdatabase:microDatabaseJar'
+    dependsOn 'micromonitor:microMonitorJar'
+    dependsOn 'micronotifier:microNotifierJar'
+    dependsOn 'microsession:microSessionJar'
+    dependsOn 'microtask:microTaskJar'
+    dependsOn 'microvisors:microVisorsJar'
+}
+

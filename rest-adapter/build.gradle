@@ -2,5 +2,5 @@ dependencies {
 
     compile "com.sparkjava:spark-kotlin:$spark_version"
     compile "com.github.kittinunf.fuel:fuel:$fuel_version"
-
+    compile project(":commons")
 }
