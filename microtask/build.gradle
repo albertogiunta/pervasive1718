@@ -1,5 +1,7 @@
 dependencies {
+
     // local
+    compile project(":commons")
     compile project(":pubsub-adapter")
     compile project(":websocket-adapter")
     compile project(":rest-adapter")

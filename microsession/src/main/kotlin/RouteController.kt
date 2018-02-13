@@ -1,10 +1,11 @@
+@file:Suppress("UNUSED_PARAMETER")
+
 import DefaultPorts.clientSessionPort
 import DefaultPorts.dbPort
 import DefaultPorts.maxSimultaneousSessions
 import DefaultPorts.taskPort
 import com.github.kittinunf.fuel.httpDelete
 import com.github.kittinunf.fuel.httpPost
-import org.gradle.tooling.GradleConnector
 import spark.Request
 import spark.Response
 import spark.Spark.path
@@ -12,7 +13,6 @@ import spark.Spark.port
 import spark.kotlin.delete
 import spark.kotlin.get
 import spark.kotlin.post
-import java.io.File
 
 interface Controller {
 
@@ -67,30 +67,10 @@ object SessionApi {
             val newSession = SessionDNS(newSessionId, patId, taskUrl)
             sessions.add(newSession)
 
-            Thread({
-                val connection = GradleConnector.newConnector()
-                    .forProjectDirectory(File("/Users/albertogiunta/IdeaProjects/pervasive1718"))
-                    .connect()
-                try {
-                    val build = connection.newBuild()
-                    build.forTasks("run")
-                    build.setStandardOutput(System.out)
-                    build.run()
-                } finally {
-                    connection.close()
-                }
-            }).start()
-
-            Thread.sleep(15000)
-
-            Thread({
-                MicroTask.init(buildPort(clientSessionPort, newSessionId), buildPort(taskPort, newSessionId))
-            }).start()
+            MicroTask.init(buildPort(clientSessionPort, newSessionId), buildPort(taskPort, newSessionId))
 
             val url = "$dbUrl/api/session/add"
-            println(url)
-            println(newSession.toJson())
-            println(url.httpPost().body(newSession.toJson()).responseString().third)
+            url.httpPost().body(newSession.toJson()).responseString()
 
             sessions.last().toJson()
         }

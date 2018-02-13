@@ -1,16 +1,10 @@
 dependencies {
 
-    compile project(":websocket-adapter")
-    compile project(":rest-adapter")
-
-    compile project(":microdatabase")
+    // local
+    compile project(":commons")
     compile project(":microtask")
-
-    compile 'org.gradle:gradle-tooling-api:2.1'
+    compile project(":microdatabase")
+    compile project(":rest-adapter")
+    compile project(":websocket-adapter")
 
 }
-
-//apply plugin: 'application'
-//sourceSets.main.java.srcDirs = ['src.main.kotlin']
-//mainClassName = 'MicroDatabaseMain'
-//defaultTasks 'run'
