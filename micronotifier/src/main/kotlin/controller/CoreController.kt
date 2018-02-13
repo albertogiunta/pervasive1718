@@ -15,7 +15,10 @@ class CoreController private constructor(topicSet: Set<LifeParameters>) {
 
     init {
         val channel = subjects.createNewSubjectFor<Pair<Session, String>>(CoreController::class.java.name)
-        val core = this
+
+        val publishSubjects = topics.activeTopics().map {
+            it to subjects.createNewSubjectFor<String>(it.toString())
+        }.toMap()
     }
 
     companion object {
