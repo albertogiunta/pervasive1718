@@ -1,0 +1,1 @@
+fun SessionDNS.toSessionForDB(): SessionForDB = SessionForDB(this.sessionId, this.patId)

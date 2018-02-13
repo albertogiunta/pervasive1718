@@ -45,6 +45,7 @@ object Params {
         const val LOG_TIME = "logtime"
         const val HEALTH_PARAMETER_ID = "healthparameterid"
         const val HEALTH_PARAMETER_VALUE = "healthparametervalue"
+        const val SESSION_ID = "sessionid"
     }
 
     object Operator {
@@ -70,6 +71,7 @@ object Params {
         const val END_TIME = "endtime"
         const val ACTIVITY_ID = "activityid"
         const val STATUS_ID = "statusid"
+        const val SESSION_ID = "sessionid"
     }
 
     object TaskStatus {

@@ -2,14 +2,12 @@
 
 package controllers.api
 
-import BrokerConnector
 import JdbiConfiguration
 import KlaxonDate
-import LifeParameters
 import Params
-import RabbitMQSubscriber
 import badRequest
 import com.beust.klaxon.Klaxon
+import controllers.SubscriberController
 import dao.SessionDao
 import dateConverter
 import model.Session
@@ -28,18 +26,12 @@ object SessionApi {
     fun addSession(request: Request, response: Response): String {
         val session: Session = Klaxon().fieldConverter(KlaxonDate::class, dateConverter).parse<Session>(request.body())
                 ?: return response.badRequest()
+
         JdbiConfiguration.INSTANCE.jdbi.useExtension<SessionDao, SQLException>(SessionDao::class.java) {
-            it.insertNewSession(session.sessionId, session.patId, session.date)
+            it.insertNewSession(session.id, session.patId, session.date)
         }
 
-        BrokerConnector.init()
-        val subscriber = RabbitMQSubscriber(BrokerConnector.INSTANCE)
-        LifeParameters.values().forEach { param ->
-            subscriber.subscribe(param, subscriber.createStringConsumer {
-                println("receveived param $param value $it")
-                LogApi.addLogEntry(param, it.toDouble())
-            })
-        }
+        SubscriberController.startListeningMonitorsForSession(session.id)
 
         return response.okCreated()
     }
@@ -57,9 +49,14 @@ object SessionApi {
      * Deletes a session based on the session ID
      */
     fun removeSessionBySessionId(request: Request, response: Response): String {
+        val sessionId = request.params(Params.Session.SESSION_ID).toInt()
+
         JdbiConfiguration.INSTANCE.jdbi.useExtension<SessionDao, SQLException>(SessionDao::class.java) {
-            it.deleteSessionBySessionId(request.params(Params.Session.SESSION_ID).toInt())
+            it.deleteSessionBySessionId(sessionId)
         }
+
+        SubscriberController.stopListeningMonitorsForSession(sessionId)
+
         return response.ok()
     }
 }
