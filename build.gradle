@@ -1,3 +1,5 @@
+import java.util.logging.Level
+
 buildscript {
     ext.kotlin_version = '1.2.21'
     ext.jdbi_version = '3.0.1'
@@ -23,6 +25,7 @@ subprojects {
 
     apply plugin: 'java'
     apply plugin: 'kotlin'
+    apply plugin: 'eclipse'
 
     sourceCompatibility = 1.8
 
@@ -30,22 +33,6 @@ subprojects {
         jcenter()
         mavenCentral()
     }
-
-    apply plugin: "kotlin"
-    apply plugin: 'java'
-    apply plugin: 'eclipse'
-
-    task fatJar(type: Jar) {
-        manifest {
-            attributes 'Implementation-Title': 'Gradle Jar File Example',
-                    'Implementation-Version': "1.0",
-                    'Main-Class': 'com.crioprecipitati.micromonitor.src.main.kotlin.main'
-        }
-        baseName = project.name + '-all'
-        from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-        with jar
-    }
-
 
     dependencies {
 
@@ -73,7 +60,7 @@ subprojects {
 task generatePervasiveJars {
     doFirst {
         println("Resetting JDK log level to INFO...")
-        java.util.logging.Logger.getLogger("").setLevel(java.util.logging.Level.INFO);
+        java.util.logging.Logger.getLogger("").setLevel(Level.INFO);
     }
     println "Starting Pervasive Project Jars Creation..."
     dependsOn 'microdatabase:microDatabaseJar'
