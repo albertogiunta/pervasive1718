@@ -21,7 +21,7 @@ class SessionTest {
 
     companion object {
         init {
-            RouteController.routes(8080)
+            RouteController.initRoutes(8080)
             Thread.sleep(4000)
         }
     }

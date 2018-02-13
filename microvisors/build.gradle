@@ -1,5 +1,7 @@
 dependencies {
 
+    // local
+    compile project(":commons")
     compile project(":rest-adapter")
     compile project(":commons")
 

@@ -3,12 +3,13 @@
 package controllers.api
 
 import JdbiConfiguration
+import KlaxonDate
 import Params
 import badRequest
 import com.beust.klaxon.Klaxon
+import controllers.SessionController
 import dao.TaskDao
 import dateConverter
-import KlaxonDate
 import model.Task
 import okCreated
 import spark.Request
@@ -31,7 +32,8 @@ object TaskApi {
                 task.startTime,
                 task.endTime,
                 task.activityId,
-                task.statusId)
+                task.statusId,
+                SessionController.getCurrentSession())
         }
         return response.okCreated()
     }

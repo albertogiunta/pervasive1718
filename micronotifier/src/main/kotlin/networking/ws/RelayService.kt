@@ -33,10 +33,6 @@ class RelayService : WSServer<Payload<SessionOperation, String>>() {
 
     init {
         Logger.info(core.topics.activeTopics().toString())
-
-        val publishSubjects = core.topics.activeTopics().map {
-            it to core.subjects.createNewSubjectFor<String>(it.toString())
-        }.toMap()
     }
 
     override fun onClose(session: Session, statusCode: Int, reason: String) {

@@ -7,6 +7,7 @@ import KlaxonDate
 import Params
 import badRequest
 import com.beust.klaxon.Klaxon
+import controllers.SubscriberController
 import dao.SessionDao
 import dateConverter
 import model.Session
@@ -17,7 +18,6 @@ import spark.Response
 import toJson
 import java.sql.SQLException
 
-
 object SessionApi {
 
     /**
@@ -26,9 +26,13 @@ object SessionApi {
     fun addSession(request: Request, response: Response): String {
         val session: Session = Klaxon().fieldConverter(KlaxonDate::class, dateConverter).parse<Session>(request.body())
                 ?: return response.badRequest()
+
         JdbiConfiguration.INSTANCE.jdbi.useExtension<SessionDao, SQLException>(SessionDao::class.java) {
-            it.insertNewSession(session.sessionId, session.patId, session.date)
+            it.insertNewSession(session.id, session.patId, session.date)
         }
+
+        SubscriberController.startListeningMonitorsForSession(session.id)
+
         return response.okCreated()
     }
 
@@ -45,9 +49,14 @@ object SessionApi {
      * Deletes a session based on the session ID
      */
     fun removeSessionBySessionId(request: Request, response: Response): String {
+        val sessionId = request.params(Params.Session.SESSION_ID).toInt()
+
         JdbiConfiguration.INSTANCE.jdbi.useExtension<SessionDao, SQLException>(SessionDao::class.java) {
-            it.deleteSessionBySessionId(request.params(Params.Session.SESSION_ID).toInt())
+            it.deleteSessionBySessionId(sessionId)
         }
+
+        SubscriberController.stopListeningMonitorsForSession(sessionId)
+
         return response.ok()
     }
 }
