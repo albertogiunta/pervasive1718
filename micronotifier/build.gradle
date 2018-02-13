@@ -1,11 +1,10 @@
 dependencies {
 
-    compile project(":pubsub-adapter")
+    // local
     compile project(":commons")
+    compile project(":pubsub-adapter")
     compile project(":microtask")
     compile project(":websocket-adapter")
     compile project(":rest-adapter")
 
-    compile "com.sparkjava:spark-kotlin:$spark_version"
-    compile "org.java-websocket:Java-WebSocket:1.3.7"
 }

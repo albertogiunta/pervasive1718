@@ -1,4 +1,4 @@
-object Const {
+object DefaultPorts {
     const val sessionPort = 8000
     const val dbPort = 8100
     const val taskPort = 8200

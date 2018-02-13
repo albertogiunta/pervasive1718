@@ -17,7 +17,7 @@ val dateConverter = object : Converter<Timestamp> {
             throw KlaxonException("Couldn't parse date: ${jv.string}")
         }
 
-    override fun toJson(o: Timestamp) = """ { "date" : $o } """
+    override fun toJson(value: Timestamp) = """ { "date" : $value } """
 
 
 }

@@ -2,9 +2,12 @@
 
 package controllers.api
 
+import BrokerConnector
 import JdbiConfiguration
 import KlaxonDate
+import LifeParameters
 import Params
+import RabbitMQSubscriber
 import badRequest
 import com.beust.klaxon.Klaxon
 import dao.SessionDao
@@ -17,7 +20,6 @@ import spark.Response
 import toJson
 import java.sql.SQLException
 
-
 object SessionApi {
 
     /**
@@ -29,6 +31,16 @@ object SessionApi {
         JdbiConfiguration.INSTANCE.jdbi.useExtension<SessionDao, SQLException>(SessionDao::class.java) {
             it.insertNewSession(session.sessionId, session.patId, session.date)
         }
+
+        BrokerConnector.init()
+        val subscriber = RabbitMQSubscriber(BrokerConnector.INSTANCE)
+        LifeParameters.values().forEach { param ->
+            subscriber.subscribe(param, subscriber.createStringConsumer {
+                println("receveived param $param value $it")
+                LogApi.addLogEntry(param, it.toDouble())
+            })
+        }
+
         return response.okCreated()
     }
 

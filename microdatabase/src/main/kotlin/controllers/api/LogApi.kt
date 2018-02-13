@@ -3,6 +3,7 @@
 package controllers.api
 
 import JdbiConfiguration
+import LifeParameters
 import Params
 import badRequest
 import com.beust.klaxon.Klaxon
@@ -30,6 +31,21 @@ object LogApi {
                 log.healthParameterValue)
         }
         return response.okCreated()
+    }
+
+    /**
+     * Insert a new entry in the Log table
+     */
+    fun addLogEntry(param: LifeParameters, value: Double) {
+        val log = Log(name = LifeParameters.HEART_RATE.longName, healthParameterId = LifeParameters.HEART_RATE.id, healthParameterValue = value)
+        JdbiConfiguration.INSTANCE.jdbi.useExtension<LogDao, SQLException>(LogDao::class.java)
+        {
+            it.insertNewLogEntry(
+                log.name,
+                log.logTime,
+                log.healthParameterId,
+                log.healthParameterValue)
+        }
     }
 
     /**

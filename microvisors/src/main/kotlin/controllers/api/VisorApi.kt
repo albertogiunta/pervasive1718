@@ -1,10 +1,12 @@
+@file:Suppress("UNUSED_VARIABLE", "UNUSED_PARAMETER")
+
 package controllers.api
 
 import badRequest
 import com.beust.klaxon.Klaxon
 import logic.TaskManager
-import ok
 import model.VisibleTask
+import ok
 import okCreated
 import spark.Request
 import spark.Response
@@ -37,6 +39,6 @@ object VisorApi {
      */
     fun getAllTasks(request: Request, response: Response): String {
         return taskManager.getAllTasks()
-                .toJson()
+            .toJson()
     }
 }
