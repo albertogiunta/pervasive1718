@@ -20,12 +20,6 @@ object RouteController {
          */
         path("/api") {
 
-            path("/${Params.Session.TABLE_NAME}") {
-                post("/add", applicationJsonRequestType) { SessionApi.addSession(request, response) }
-                get("/all", applicationJsonRequestType) { SessionApi.getAllSessions(request, response) }
-                delete("/close/:id", applicationJsonRequestType) { SessionApi.removeSessionBySessionId(request, response) }
-            }
-
             path("/${Params.Activity.TABLE_NAME}") {
                 post("/add", applicationJsonRequestType) { ActivityApi.addActivity(request, response) }
                 get("/all", applicationJsonRequestType) { ActivityApi.getAllActivities(request, response) }
@@ -70,6 +64,12 @@ object RouteController {
                 post("/add", applicationJsonRequestType) { OperatorApi.addOperator(request, response) }
                 get("/all", applicationJsonRequestType) { OperatorApi.getAllOperators(request, response) }
                 get("/:id", applicationJsonRequestType) { OperatorApi.getOperatorById(request, response) }
+            }
+
+            path("/${Params.Session.TABLE_NAME}") {
+                post("/add", applicationJsonRequestType) { SessionApi.addSession(request, response) }
+                get("/all", applicationJsonRequestType) { SessionApi.getAllSessions(request, response) }
+                delete("/close/:id", applicationJsonRequestType) { SessionApi.removeSessionBySessionId(request, response) }
             }
 
             path("/${Params.Task.TABLE_NAME}") {
