@@ -14,13 +14,13 @@ interface SessionDao {
 
     @SqlUpdate("INSERT INTO $TABLE_NAME($SESSION_ID, $PAT_ID, $DATE) VALUES (:$SESSION_ID, :$PAT_ID, :$DATE)")
     fun insertNewSession(@Bind(SESSION_ID) sessionId: Int,
-                         @Bind(PAT_ID) roomId: String,
+                         @Bind(PAT_ID) patId: String,
                          @Bind(DATE) date: Timestamp)
 
     @SqlQuery("SELECT * FROM $TABLE_NAME")
     fun selectAllSessions(): List<Session>
 
-    @SqlQuery("DELETE FROM $TABLE_NAME WHERE $SESSION_ID = (:$SESSION_ID)")
+    @SqlUpdate("DELETE FROM $TABLE_NAME WHERE $SESSION_ID = (:$SESSION_ID)")
     fun deleteSessionBySessionId(@Bind(SESSION_ID) sessionId: Int)
 
 }

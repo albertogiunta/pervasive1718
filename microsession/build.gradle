@@ -6,4 +6,11 @@ dependencies {
     compile project(":microdatabase")
     compile project(":microtask")
 
+    compile 'org.gradle:gradle-tooling-api:2.1'
+
 }
+
+//apply plugin: 'application'
+//sourceSets.main.java.srcDirs = ['src.main.kotlin']
+//mainClassName = 'MicroDatabaseMain'
+//defaultTasks 'run'

@@ -2,10 +2,11 @@ import networking.WSSessionServer
 import networking.WSTaskServer
 import spark.kotlin.ignite
 
-fun main(args: Array<String>) {
-
-    MicroTask.init(WSParams.WS_SESSION_PORT, WSParams.WS_TASK_PORT)
-
+object MicroTaskMain {
+    @JvmStatic
+    fun main(args: Array<String>) {
+        MicroTask.init(WSParams.WS_SESSION_PORT, WSParams.WS_TASK_PORT)
+    }
 }
 
 object MicroTask {

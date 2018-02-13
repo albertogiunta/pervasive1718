@@ -1,17 +1,18 @@
-import Const.clientSessionPort
-import Const.dbPort
-import Const.maxSimultaneousSessions
-import Const.taskPort
+import DefaultPorts.clientSessionPort
+import DefaultPorts.dbPort
+import DefaultPorts.maxSimultaneousSessions
+import DefaultPorts.taskPort
 import com.github.kittinunf.fuel.httpDelete
 import com.github.kittinunf.fuel.httpPost
+import org.gradle.tooling.GradleConnector
 import spark.Request
 import spark.Response
-import spark.RouteGroup
 import spark.Spark.path
 import spark.Spark.port
 import spark.kotlin.delete
 import spark.kotlin.get
 import spark.kotlin.post
+import java.io.File
 
 interface Controller {
 
@@ -23,27 +24,6 @@ interface Controller {
 }
 
 object RouteController {
-
-    fun routes(localPort: Int): RouteGroup {
-
-//        port(localPort)
-
-        return RouteGroup {
-
-            path("/session") {
-
-                // la fa il leader, ritorna il riferimento di [MT], crea una websocket per mandargli i membri mano a mano che arrivano, ti ritorna anche l'id della sessione
-                post("/new/:patId", Controller.applicationJsonRequestType) { SessionApi.createNewSession(request, response) }
-
-                // la fa il leader, deve sapere quale chiudere (la prende dalla new)
-                delete("/close/:patId", Controller.applicationJsonRequestType) { SessionApi.closeSessionById(request, response) }
-
-                // la fanno i membri, e deve restituire la lista di interventi disponibili
-                get("/all", Controller.applicationJsonRequestType) { SessionApi.listAllSessions(request, response) }
-            }
-
-        }
-    }
 
     fun initRoutes(localPort: Int) {
 
@@ -88,12 +68,29 @@ object SessionApi {
             sessions.add(newSession)
 
             Thread({
-                MicroDatabase.init(buildPort(dbPort, newSessionId))
-                MicroTask.init(buildPort(clientSessionPort, newSessionId), buildPort(taskPort, newSessionId))
-                Thread.sleep(5000)
-                "$dbUrl/api/session/add".httpPost().body(newSession.toString()).responseString()
-                println("finito dentro thread")
+                val connection = GradleConnector.newConnector()
+                    .forProjectDirectory(File("/Users/albertogiunta/IdeaProjects/pervasive1718"))
+                    .connect()
+                try {
+                    val build = connection.newBuild()
+                    build.forTasks("run")
+                    build.setStandardOutput(System.out)
+                    build.run()
+                } finally {
+                    connection.close()
+                }
             }).start()
+
+            Thread.sleep(15000)
+
+            Thread({
+                MicroTask.init(buildPort(clientSessionPort, newSessionId), buildPort(taskPort, newSessionId))
+            }).start()
+
+            val url = "$dbUrl/api/session/add"
+            println(url)
+            println(newSession.toJson())
+            println(url.httpPost().body(newSession.toJson()).responseString().third)
 
             sessions.last().toJson()
         }

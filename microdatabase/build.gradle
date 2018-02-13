@@ -11,3 +11,8 @@ dependencies {
     compile "org.jdbi:jdbi3-kotlin:$jdbi_version"
     compile "org.jdbi:jdbi3-kotlin-sqlobject:$jdbi_version"
 }
+
+//apply plugin: 'application'
+//sourceSets.main.java.srcDirs = ['src.main.kotlin']
+//mainClassName = 'MicroDatabaseMain'
+//defaultTasks 'run'

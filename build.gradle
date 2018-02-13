@@ -12,17 +12,72 @@ buildscript {
     repositories {
         mavenCentral()
     }
+
     dependencies {
+        classpath 'com.github.rholder:gradle-one-jar:1.0.4'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
+configurations {
+    fatJarBuild
+}
+
+apply plugin: 'java'
+apply plugin: 'kotlin'
+apply plugin: 'gradle-one-jar'
+apply plugin: 'application'
+apply plugin: 'eclipse'
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'com.crioprecipitati.micromonitor.src.main.kotlin.RunMicroMonitor'
+    }
+    baseName = project.name + '-all'
+    doFirst {
+        from {
+            configurations.runtime.collect {
+                it.isDirectory() ? it : zipTree(it)
+            }
+
+            configurations.compile.collect {
+                it.isDirectory() ? it : zipTree(it)
+            }
+        }
+    }
+    with jar
+}
+
+//task generateMMJar(type: OneJar) {
+//    sourceSets{
+//        main.kotlin.srcDirs += "micromonitor/src/main/kotlin"
+//    }
+//
+//    mainClass = 'com.crioprecipitati.micromonitor.src.main.kotlin.RunMicroMonitor'
+//    targetConfiguration = configurations.fatJarBuild
+//
+//    doFirst {
+//        from {
+//            configurations.runtime.collect {
+//                it.isDirectory() ? it : zipTree(it)
+//            }
+//
+//            configurations.compile.collect {
+//                it.isDirectory() ? it : zipTree(it)
+//            }
+//        }
+//    }
+//
+//    archiveName = 'MicroMonitor.jar'
+//}
+
 subprojects {
-    group 'com.crioprecipitati'
-    version '0.1'
 
     apply plugin: 'java'
     apply plugin: 'kotlin'
+
+    group 'com.crioprecipitati'
+    version '0.1'
 
     sourceCompatibility = 1.8
 
@@ -30,8 +85,6 @@ subprojects {
         jcenter()
         mavenCentral()
     }
-
-    apply plugin: "kotlin"
 
     dependencies {
 
@@ -42,6 +95,8 @@ subprojects {
         compile "com.google.code.gson:gson:$gson_version"
         compile "com.beust:klaxon:$klaxon_version"
         compile "io.reactivex.rxjava2:rxkotlin:$rxkotlin_version"
+
+        compile 'ch.qos.logback:logback-classic:1.1.2'
 
         //kotlin
         compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
@@ -57,3 +112,8 @@ subprojects {
         kotlinOptions.jvmTarget = "1.8"
     }
 }
+
+//task runExample(type: JavaExec) {
+//    main ='com.crioprecipitati.microsession.src.main.kotlin.main'
+//    classpath = sourceSets.main.runtimeClasspath
+//}

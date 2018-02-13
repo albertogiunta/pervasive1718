@@ -2,9 +2,9 @@ object Params {
 
     object Session {
         const val TABLE_NAME = "session"
-        const val SESSION_ID = "sessionId"
-        const val PAT_ID = "patId"
-        const val DATE = "timestamp"
+        const val SESSION_ID = "id"
+        const val PAT_ID = "cf"
+        const val DATE = "date"
     }
 
     object Activity {
