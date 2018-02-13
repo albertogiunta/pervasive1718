@@ -13,20 +13,19 @@ fun main(args: Array<String>) {
     val gson = GsonBuilder().create()
 
     val core = CoreController.singleton()
-    val coreSubject = core.subjects.getSubjectsOf<Pair<Session, String>>(CoreController::class.java.name)!!
 
     WSServerInitializer.init(RelayService::class.java, WSParams.WS_NOTIFIER_PORT, WSParams.WS_PATH_NOTIFIER)
 
     BrokerConnector.init()
     val amqp = AMQPClient(BrokerConnector.INSTANCE, core.topics.activeTopics())
 
+    val coreSubject = core.subjects.getSubjectsOf<Pair<Session, String>>(CoreController::class.java.name)!!
     val publishSubjects = core.topics.activeTopics().map {
         it to core.subjects.getSubjectsOf<String>(it.toString())!!
     }.toMap()
 
     amqp.publishOn(publishSubjects)
 
-    // This should be placed into the WS Class
     // Check OUT OF BOUND Heath Parameters
     with(publishSubjects) {
         this.forEach { topic, subject ->
@@ -52,7 +51,6 @@ fun main(args: Array<String>) {
         }
     }
 
-    // This should be pushed into the WS Class
     // Simple relays received Health Values to Listeners
     with(publishSubjects) {
         this.forEach { topic, subject ->
@@ -80,9 +78,7 @@ fun main(args: Array<String>) {
     coreSubject.map { (session, json) ->
         session to gson.fromJson(json, PayloadWrapper::class.java)
     }.subscribe { (session, wrapper) ->
-        // Probably this should be moved into the controller => Pattern patterns.Observer
-        // If a Pattern patterns.Observer is used then both the controllers should be wrapped by a core controller
-        // Where the whole observation behavior is handled
+
         when (wrapper.subject) {
 
             SessionOperation.SUBSCRIBE -> {

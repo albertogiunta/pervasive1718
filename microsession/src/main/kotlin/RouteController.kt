@@ -1,49 +1,21 @@
-import Const.clientSessionPort
-import Const.dbPort
-import Const.maxSimultaneousSessions
-import Const.taskPort
+@file:Suppress("UNUSED_PARAMETER")
+
+import DefaultPorts.clientSessionPort
+import DefaultPorts.dbPort
+import DefaultPorts.maxSimultaneousSessions
+import DefaultPorts.taskPort
+import RestParams.applicationJsonRequestType
 import com.github.kittinunf.fuel.httpDelete
 import com.github.kittinunf.fuel.httpPost
 import spark.Request
 import spark.Response
-import spark.RouteGroup
 import spark.Spark.path
 import spark.Spark.port
 import spark.kotlin.delete
 import spark.kotlin.get
 import spark.kotlin.post
 
-interface Controller {
-
-    // TODO metti in commons insieme a quello di microdb
-    companion object {
-        const val applicationJsonRequestType = "application/json"
-    }
-
-}
-
 object RouteController {
-
-    fun routes(localPort: Int): RouteGroup {
-
-//        port(localPort)
-
-        return RouteGroup {
-
-            path("/session") {
-
-                // la fa il leader, ritorna il riferimento di [MT], crea una websocket per mandargli i membri mano a mano che arrivano, ti ritorna anche l'id della sessione
-                post("/new/:patId", Controller.applicationJsonRequestType) { SessionApi.createNewSession(request, response) }
-
-                // la fa il leader, deve sapere quale chiudere (la prende dalla new)
-                delete("/close/:patId", Controller.applicationJsonRequestType) { SessionApi.closeSessionById(request, response) }
-
-                // la fanno i membri, e deve restituire la lista di interventi disponibili
-                get("/all", Controller.applicationJsonRequestType) { SessionApi.listAllSessions(request, response) }
-            }
-
-        }
-    }
 
     fun initRoutes(localPort: Int) {
 
@@ -52,19 +24,18 @@ object RouteController {
         path("/session") {
 
             // la fa il leader, ritorna il riferimento di [MT], crea una websocket per mandargli i membri mano a mano che arrivano, ti ritorna anche l'id della sessione
-            post("/new/:patId", Controller.applicationJsonRequestType) { SessionApi.createNewSession(request, response) }
+            post("/new/:patId", applicationJsonRequestType) { SessionApi.createNewSession(request, response) }
 
             // la fa il leader, deve sapere quale chiudere (la prende dalla new)
-            delete("/close/:patId", Controller.applicationJsonRequestType) { SessionApi.closeSessionById(request, response) }
+            delete("/close/:patId", applicationJsonRequestType) { SessionApi.closeSessionById(request, response) }
 
             // la fanno i membri, e deve restituire la lista di interventi disponibili
-            get("/all", Controller.applicationJsonRequestType) { SessionApi.listAllSessions(request, response) }
+            get("/all", applicationJsonRequestType) { SessionApi.listAllSessions(request, response) }
 
         }
     }
 }
 
-data class SessionDNS(val sessionId: Int, val patId: String, val microTaskAddress: String)
 
 object SessionApi {
 
@@ -84,16 +55,13 @@ object SessionApi {
                 taskUrl = createMicroTaskAddress(this)
             }
 
-            val newSession = SessionDNS(newSessionId, patId, taskUrl)
-            sessions.add(newSession)
+            with(SessionDNS(newSessionId, patId, taskUrl)) {
+                sessions.add(this)
+                "$dbUrl/api/session/add".httpPost().body(this.toSessionForDB().toJson()).responseString()
+            }
 
-            Thread({
-                MicroDatabase.init(buildPort(dbPort, newSessionId))
-                MicroTask.init(buildPort(clientSessionPort, newSessionId), buildPort(taskPort, newSessionId))
-                Thread.sleep(5000)
-                "$dbUrl/api/session/add".httpPost().body(newSession.toString()).responseString()
-                println("finito dentro thread")
-            }).start()
+            // TODO attach to subset of microservices
+            MicroTaskBootstrap.init(buildPort(clientSessionPort, newSessionId), buildPort(taskPort, newSessionId))
 
             sessions.last().toJson()
         }
@@ -103,8 +71,11 @@ object SessionApi {
         val patId = request.params("patId")
         val sessionId = sessions.first { it.patId == patId }
 
-        "$dbUrl/close/$sessionId".httpDelete().responseString()
         sessions.removeAll { it.patId == patId }
+
+        "$dbUrl/close/$sessionId".httpDelete().responseString()
+
+        // TODO detach to subset of microservices
 
         return response.ok()
     }

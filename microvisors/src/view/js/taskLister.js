@@ -88,7 +88,6 @@ function updateTable() {
             updateTable()
         },
         error: function(error){
-            console.log(error)
         }
       });
     setTimeout(pollService, 1000);

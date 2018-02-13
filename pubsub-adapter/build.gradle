@@ -1,8 +1,10 @@
 dependencies {
 
+    // local
     compile project(":commons")
-
 
     // rabbitmq
     compile "com.rabbitmq:amqp-client:$rabbitmq_version"
+    compile project(":commons")
+
 }

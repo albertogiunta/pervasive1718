@@ -4,6 +4,7 @@ import Params.Task.ACTIVITY_ID
 import Params.Task.END_TIME
 import Params.Task.ID
 import Params.Task.OPERATOR_ID
+import Params.Task.SESSION_ID
 import Params.Task.START_TIME
 import Params.Task.STATUS_ID
 import Params.Task.TABLE_NAME
@@ -15,12 +16,13 @@ import java.sql.Timestamp
 
 interface TaskDao {
 
-    @SqlUpdate("INSERT INTO $TABLE_NAME($OPERATOR_ID, $START_TIME, $END_TIME, $ACTIVITY_ID, $STATUS_ID) VALUES (:$OPERATOR_ID, :$START_TIME, :$END_TIME, :$ACTIVITY_ID, :$STATUS_ID)")
+    @SqlUpdate("INSERT INTO $TABLE_NAME($OPERATOR_ID, $START_TIME, $END_TIME, $ACTIVITY_ID, $STATUS_ID, $SESSION_ID) VALUES (:$OPERATOR_ID, :$START_TIME, :$END_TIME, :$ACTIVITY_ID, :$STATUS_ID, :$SESSION_ID)")
     fun insertNewTask(@Bind(OPERATOR_ID) operatorId: Int,
                       @Bind(START_TIME) startTime: Timestamp,
                       @Bind(END_TIME) endTime: Timestamp,
                       @Bind(ACTIVITY_ID) activityId: Int,
-                      @Bind(STATUS_ID) statusId: Int)
+                      @Bind(STATUS_ID) statusId: Int,
+                      @Bind(SESSION_ID) sessionId: Int)
 
     @SqlQuery("SELECT * FROM $TABLE_NAME")
     fun selectAllTasks(): List<Task>

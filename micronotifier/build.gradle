@@ -4,10 +4,33 @@ dependencies {
     compile project(":microtask")
     compile project(":websocket-adapter")
     compile project(":rest-adapter")
+    compile project(":commons")
 
     compile project(":commons")
 
 
     compile "com.sparkjava:spark-kotlin:$spark_version"
     compile "org.java-websocket:Java-WebSocket:1.3.7"
+}
+
+task microNotifierJar(type: Jar) {
+    baseName = 'runMicroNotifier'
+    manifest {
+        attributes 'Implementation-Title': 'micronotifier',
+                'Implementation-Version': 1.0,
+                'Main-Class': 'NotifierKt'
+    }
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+task microNotifierWsClientJar(type: Jar) {
+    baseName = 'micronotifierwsclient'
+    manifest {
+        attributes 'Implementation-Title': 'Gradle Jar File Example',
+                'Implementation-Version': 1.0,
+                'Main-Class': 'WsClientKt'
+    }
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
 }

@@ -2,9 +2,9 @@ object Params {
 
     object Session {
         const val TABLE_NAME = "session"
-        const val SESSION_ID = "sessionId"
-        const val PAT_ID = "patId"
-        const val DATE = "timestamp"
+        const val SESSION_ID = "id"
+        const val PAT_ID = "cf"
+        const val DATE = "date"
     }
 
     object Activity {
@@ -45,6 +45,7 @@ object Params {
         const val LOG_TIME = "logtime"
         const val HEALTH_PARAMETER_ID = "healthparameterid"
         const val HEALTH_PARAMETER_VALUE = "healthparametervalue"
+        const val SESSION_ID = "sessionid"
     }
 
     object Operator {
@@ -70,6 +71,7 @@ object Params {
         const val END_TIME = "endtime"
         const val ACTIVITY_ID = "activityid"
         const val STATUS_ID = "statusid"
+        const val SESSION_ID = "sessionid"
     }
 
     object TaskStatus {

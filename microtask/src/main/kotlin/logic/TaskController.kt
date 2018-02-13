@@ -33,10 +33,10 @@ class TaskController private constructor(private val ws: WSTaskServer,
         }
     }
 
-    override fun changeTaskStatus(newTask: Task) {
-        with(taskMemberAssociationList.first { it.task.id == newTask.id }) {
-            task.status = newTask.status
-            ws.sendMessage(sessionController.members[member]!!, TaskPayload(member, TaskOperation.CHANGE_TASK_STATUS, task))
+    override fun changeTaskStatus(task: Task) {
+        with(taskMemberAssociationList.first { it.task.id == task.id }) {
+            this.task.status = task.status
+            ws.sendMessage(sessionController.members[member]!!, TaskPayload(member, TaskOperation.CHANGE_TASK_STATUS, this.task))
         }
     }
 }

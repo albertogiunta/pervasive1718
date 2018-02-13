@@ -2,11 +2,19 @@ dependencies {
 
     compile project(":websocket-adapter")
     compile project(":rest-adapter")
-
+    compile project(":commons")
     compile project(":microdatabase")
     compile project(":microtask")
 
-    compile project(":commons")
+}
 
-
+task microSessionJar(type: Jar) {
+    baseName = 'runMicroSession'
+    manifest {
+        attributes 'Implementation-Title': 'microsession',
+                'Implementation-Version': 1.0,
+                'Main-Class': 'MainKt'
+    }
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
 }
