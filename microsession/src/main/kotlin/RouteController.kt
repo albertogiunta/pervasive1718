@@ -56,11 +56,11 @@ object SessionApi {
 
             with(SessionDNS(newSessionId, patId, taskUrl)) {
                 sessions.add(this)
-                "$dbUrl/api/session/add".httpPost().body(this.toSessionForDB().toJson()).responseString()
+                "$dbUrl/api/session/add".httpPost().body(GsonInitializer.toJson(this.toSessionForDB())).responseString()
             }
 
             // TODO attach to subset of microservices
-            sessions.last().toJson()
+            GsonInitializer.toJson(sessions.last())
         }
     }
 
@@ -78,7 +78,7 @@ object SessionApi {
     }
 
     fun listAllSessions(request: Request, response: Response): String {
-        return sessions.toJson()
+        return GsonInitializer.toJson(sessions)
     }
 
     private fun buildPort(port: Int, id: Int): Int = port + (id % maxSimultaneousSessions)
