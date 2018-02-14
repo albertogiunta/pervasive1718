@@ -1,5 +1,4 @@
 import Connection.ADDRESS
-import Connection.DB_PORT
 import Connection.PORT_SEPARATOR
 import Connection.PROTOCOL
 import Connection.PROTOCOL_SEPARATOR
@@ -10,23 +9,23 @@ import com.github.kittinunf.fuel.core.Request
 import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.result.Result
+import config.Services
 import logic.Member
 import logic.Status
-import config.Services
 import logic.TaskController
+import logic.VisibleTask
 import networking.WSTaskServer
-import org.junit.Assert.assertTrue
+import org.junit.Assert
 import org.junit.Test
 import spark.kotlin.ignite
 import java.io.StringReader
 import java.sql.Timestamp
 import java.util.*
-import kotlin.collections.ArrayList
 
-class MTtoDBTest {
+class MTtoMVTest {
 
-    private val readTask:String = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR$DB_PORT/${Connection.API}/task/all"
-    private lateinit var listResult:ArrayList<model.Task>
+    private val getAllTaskVisor: String = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.VISORS.port}/${Connection.API}/all"
+    private lateinit var listResult: ArrayList<VisibleTask>
 
     companion object {
         private var taskController: TaskController
@@ -40,20 +39,16 @@ class MTtoDBTest {
 
             taskController = TaskController.INSTANCE
 
+            //MicroserviceBootUtils.startMicroservice(MicroservicesPaths.microVisors).killAtParentDeath()
             //MicroserviceBootUtils.startMicroservice(MicroservicesPaths.microDatabase).killAtParentDeath()
             //MicroserviceBootUtils.startMicroservice(MicroservicesPaths.microSession).killAtParentDeath()
-            Thread.sleep(5000)
             //MicroSessionBootstrap.init(Services.SESSION.port)da vedere come farli
-	        //MicroDatabaseBootstrap.init(Connection.DB_PORT.toInt())
+            //MicroDatabaseBootstrap.init(Connection.DB_PORT.toInt())
         }
     }
 
-
     @Test
     fun addTask(){
-        //MicroserviceBootUtils.startMicroservice(MicroservicesPaths.microDatabase).killAtParentDeath()
-        //MicroserviceBootUtils.startMicroservice(MicroservicesPaths.microSession).killAtParentDeath()
-        Thread.sleep(5000)
         Thread.sleep(4000)
         addLeaderThread(memberId = -1).start()
         Thread.sleep(4000)
@@ -62,24 +57,22 @@ class MTtoDBTest {
         addMemberThread(memberId = member.id).start()
         Thread.sleep(3000)
 
-        val task = logic.Task(24,member.id, Timestamp(Date().time), Timestamp(Date().time+1000),1, Status.RUNNING.id)
+        val task = logic.Task(32,member.id, Timestamp(Date().time), Timestamp(Date().time+1000),1, Status.RUNNING.id)
 
         addTaskThread(task, member).start()
         Thread.sleep(4000)
 
-        handlingGetResponse(readTask.httpGet().responseString())
+        handlingGetResponse(getAllTaskVisor.httpGet().responseString())
         Thread.sleep(2000)
         println(listResult)
 
-        assertTrue(listResult.firstOrNull { it.id == task.id } != null)
+        Assert.assertTrue(listResult.firstOrNull { it.id == task.id } != null)
 
     }
 
 
     @Test
     fun removeTask(){
-        //MicroserviceBootUtils.startMicroservice(MicroservicesPaths.microDatabase).killAtParentDeath()
-        //MicroserviceBootUtils.startMicroservice(MicroservicesPaths.microSession).killAtParentDeath()
         Thread.sleep(5000)
         addLeaderThread(memberId = -1).start()
         Thread.sleep(3000)
@@ -88,7 +81,7 @@ class MTtoDBTest {
         addMemberThread(memberId = member.id).start()
         Thread.sleep(3000)
 
-        val task = logic.Task(25,member.id, Timestamp(Date().time), Timestamp(Date().time+1000),1, Status.RUNNING.id)
+        val task = logic.Task(35,member.id, Timestamp(Date().time), Timestamp(Date().time+1000),1, Status.RUNNING.id)
 
         addTaskThread(task, member).start()
         Thread.sleep(3000)
@@ -96,37 +89,11 @@ class MTtoDBTest {
         removeTaskThread(task).start()
         Thread.sleep(3000)
 
-        handlingGetResponse(readTask.httpGet().responseString())
+        handlingGetResponse(getAllTaskVisor.httpGet().responseString())
         Thread.sleep(1000)
         println(listResult)
 
-        assertTrue(listResult.firstOrNull { it.id == task.id } == null)
-    }
-
-    @Test
-    fun changeTaskStatus(){
-        //MicroserviceBootUtils.startMicroservice(MicroservicesPaths.microDatabase).killAtParentDeath()
-        //MicroserviceBootUtils.startMicroservice(MicroservicesPaths.microSession).killAtParentDeath()
-        Thread.sleep(5000)
-        addLeaderThread(memberId = -1).start()
-        Thread.sleep(3000)
-
-        val member = Member(3,"Member")
-        addMemberThread(memberId = member.id).start()
-        Thread.sleep(3000)
-
-        val task = logic.Task(26,member.id, Timestamp(Date().time), Timestamp(Date().time+1000),1, Status.RUNNING.id)
-
-        addTaskThread(task, member).start()
-        Thread.sleep(3000)
-
-        task.statusId = Status.FINISHED.id
-        changeTaskStatus(task).start()
-        Thread.sleep(3000)
-
-        handlingGetResponse(readTask.httpGet().responseString())
-        Thread.sleep(4000)
-        assertTrue(listResult.firstOrNull{it.id == task.id}!!.statusId == Status.FINISHED.id)
+        Assert.assertTrue(listResult.firstOrNull { it.id == task.id } == null)
     }
 
     private fun handlingGetResponse(triplet: Triple<Request, Response, Result<String, FuelError>>) {
@@ -136,7 +103,7 @@ class MTtoDBTest {
                 listResult = arrayListOf()
                 reader.beginArray {
                     while (reader.hasNext()) {
-                        val task = klaxon.parse<model.Task>(reader)!!
+                        val task = klaxon.parse<VisibleTask>(reader)!!
                         (listResult).add(task)
                     }
                 }
@@ -145,5 +112,4 @@ class MTtoDBTest {
             println(String(it.errorData))
         })
     }
-
 }
