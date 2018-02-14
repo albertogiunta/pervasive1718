@@ -13,10 +13,10 @@ enum class TaskOperation {
 }
 
 enum class Status(val id: Int) {
-    RUNNING(0),
+    RUNNING(2),
     SUSPENDED(1),
-    MONITORING(2),
+    MONITORING(5),
     FINISHED(3),
     ELIMINATED(4),
-    EMPTY(5)
+    EMPTY(6)
 }

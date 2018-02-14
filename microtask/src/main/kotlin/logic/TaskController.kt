@@ -65,7 +65,7 @@ class TaskController private constructor(private val ws: WSTaskServer,
                 it.task.statusId = task.statusId
                 ws.sendMessage(members[member]!!, TaskPayload(member, TaskOperation.CHANGE_TASK_STATUS, this.task))
                 ws.sendMessage(leader.second, TaskPayload(member, TaskOperation.CHANGE_TASK_STATUS, this.task))
-                "$dbUrl/${it.task.id}/${it.task.statusId}".httpPut().responseString()
+                "$dbUrl/${it.task.id}/status/${it.task.statusId}".httpPut().responseString()
             } ?: ws.sendMessage(session, TaskPayload(Member.emptyMember(), TaskOperation.ERROR_CHANGING_STATUS, task))
         }
     }

@@ -15,11 +15,8 @@ import logic.Status
 import config.Services
 import logic.TaskController
 import networking.WSTaskServer
-import org.junit.After
 import org.junit.Assert.assertTrue
-import org.junit.FixMethodOrder
 import org.junit.Test
-import org.junit.runners.MethodSorters
 import spark.kotlin.ignite
 import java.io.StringReader
 import java.sql.Timestamp
@@ -50,15 +47,15 @@ class MTtoDBTest {
 
     @Test
     fun addTask(){
-        Thread.sleep(2000)
+        Thread.sleep(4000)
         addLeaderThread(memberId = -1).start()
-        Thread.sleep(3000)
+        Thread.sleep(4000)
 
         val member = Member(4,"Member")
         addMemberThread(memberId = member.id).start()
         Thread.sleep(3000)
 
-        val task = logic.Task(41,"Task assegnato", Status.RUNNING, Timestamp(Date().time), Timestamp(Date().time+1000))
+        val task = logic.Task(21,member.id, Timestamp(Date().time), Timestamp(Date().time+1000),1, Status.RUNNING.id)
 
         addTaskThread(task, member).start()
         Thread.sleep(3000)
@@ -77,11 +74,11 @@ class MTtoDBTest {
         addLeaderThread(memberId = -1).start()
         Thread.sleep(3000)
 
-        val member = Member(3,"Member")
+        val member = Member(5,"Member")
         addMemberThread(memberId = member.id).start()
         Thread.sleep(3000)
 
-        val task = logic.Task(52,"Task assegnato", Status.RUNNING, Timestamp(Date().time), Timestamp(Date().time+1000))
+        val task = logic.Task(22,member.id, Timestamp(Date().time), Timestamp(Date().time+1000),1, Status.RUNNING.id)
 
         addTaskThread(task, member).start()
         Thread.sleep(3000)
@@ -105,18 +102,18 @@ class MTtoDBTest {
         addMemberThread(memberId = member.id).start()
         Thread.sleep(3000)
 
-        val task = logic.Task(52,"Task assegnato", Status.RUNNING, Timestamp(Date().time), Timestamp(Date().time+1000))
+        val task = logic.Task(23,member.id, Timestamp(Date().time), Timestamp(Date().time+1000),1, Status.RUNNING.id)
 
         addTaskThread(task, member).start()
         Thread.sleep(3000)
 
-        task.status = Status.FINISHED
+        task.statusId = Status.FINISHED.id
         changeTaskStatus(task).start()
         Thread.sleep(3000)
 
         handlingGetResponse(readTask.httpGet().responseString())
-        Thread.sleep(1000)
-        //assertTrue(listResult.firstOrNull{it.id == task.id}!!.statusId == ?)
+        Thread.sleep(4000)
+        assertTrue(listResult.firstOrNull{it.id == task.id}!!.statusId == Status.FINISHED.id)
     }
 
     private fun handlingGetResponse(triplet: Triple<Request, Response, Result<String, FuelError>>) {
