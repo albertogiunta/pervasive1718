@@ -1,4 +1,4 @@
-import logic.Member
+import model.Member
 import model.PayloadWrapper
 import model.SessionOperation
 import model.Subscription

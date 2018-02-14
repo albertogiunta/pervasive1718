@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder
 import controller.logic.Notification
 import controller.logic.Relay
 import controller.logic.Subscription
-import logic.Member
+import model.Member
 import org.eclipse.jetty.websocket.api.Session
 
 class CoreController private constructor(topicSet: Set<LifeParameters>) {

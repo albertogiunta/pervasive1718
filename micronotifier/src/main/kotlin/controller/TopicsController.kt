@@ -1,7 +1,7 @@
 package controller
 
 import LifeParameters
-import logic.Member
+import model.Member
 import java.util.concurrent.atomic.AtomicBoolean
 
 interface TopicsController<T, L> {

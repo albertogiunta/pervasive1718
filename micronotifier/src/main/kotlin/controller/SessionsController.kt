@@ -1,6 +1,6 @@
 package controller
 
-import logic.Member
+import model.Member
 import org.eclipse.jetty.websocket.api.Session
 
 /**
