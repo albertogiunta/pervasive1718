@@ -12,19 +12,18 @@ data class VisibleTask(val id: Int, val name: String, val priority: Priority, va
 
 enum class Priority { HIGH, LOW }
 
-data class Task constructor(val id: Int, val name: String, var status: Status, @KlaxonDate val startTime: Timestamp, @KlaxonDate val endTime: Timestamp) {
+data class Task @JvmOverloads constructor(var id: Int = 0, var operatorId: Int, @KlaxonDate var startTime: Timestamp, @KlaxonDate var endTime: Timestamp, var activityId: Int, var statusId: Int) {
     companion object {
-
         fun emptyTask(): Task =
-            Task(EmptyTask.emptyTaskId, EmptyTask.emptyTaskName, Status.EMPTY, EmptyTask.emptyTaskStartTime, EmptyTask.emptyTaskEndTime)
+            Task(EmptyTask.emptyTaskId, EmptyTask.emptyTaskStatusId, EmptyTask.emptyTaskStartTime, EmptyTask.emptyTaskEndTime, EmptyTask.emptyTaskActivityId, EmptyTask.emptyTaskStatusId)
 
         fun defaultTask(): Task =
-            Task(1, "Default Task", Status.RUNNING, Timestamp(Date().time), Timestamp(Date().time+1000))
+            Task(1, Status.RUNNING.id, Timestamp(Date().time), Timestamp(Date().time + 1000), 1, 1)
     }
 }
 
 fun Task.toVisibleTask(member: Member) =
-    VisibleTask(this.id, this.name, Priority.HIGH, member.id, member.name, member.name)
+    VisibleTask(this.id, "il name del task va tolto", Priority.HIGH, member.id, member.name, member.name)
 
 data class Member(val id: Int, val name: String) {
     companion object {
