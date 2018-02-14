@@ -1,6 +1,5 @@
 @file:Suppress("UNUSED_PARAMETER")
 
-import DefaultPorts.clientSessionPort
 import DefaultPorts.dbPort
 import DefaultPorts.maxSimultaneousSessions
 import DefaultPorts.taskPort
@@ -61,7 +60,7 @@ object SessionApi {
             }
 
             // TODO attach to subset of microservices
-            MicroTaskBootstrap.init(buildPort(clientSessionPort, newSessionId), buildPort(taskPort, newSessionId))
+            MicroTaskBootstrap.init( buildPort(taskPort, newSessionId))
 
             sessions.last().toJson()
         }
