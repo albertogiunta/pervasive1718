@@ -14,7 +14,7 @@ class WSTaskServer : WSServer<TaskPayload>() {
         TaskController.init(this)
     }
 
-    private val controller: Controller = TaskController.INSTANCE
+    private val controller = TaskController.INSTANCE
 
     override fun onMessage(session: Session, message: String) {
         super.onMessage(session, message)
@@ -24,9 +24,11 @@ class WSTaskServer : WSServer<TaskPayload>() {
         taskPayload?.let {
             with(taskPayload) {
                 when (taskOperation) {
-                    TaskOperation.ADD_TASK -> controller.addTask(task, member)
-                    TaskOperation.REMOVE_TASK -> controller.removeTask(task)
-                    TaskOperation.CHANGE_TASK_STATUS -> controller.changeTaskStatus(task)
+                    TaskOperation.ADD_LEADER -> controller.addLeader(member, session) // done by leader
+                    TaskOperation.ADD_MEMBER -> controller.addMember(member, session) // done by member
+                    TaskOperation.ADD_TASK -> controller.addTask(task, member) // done by leader
+                    TaskOperation.REMOVE_TASK -> controller.removeTask(task) // done by leader
+                    TaskOperation.CHANGE_TASK_STATUS -> controller.changeTaskStatus(task, session) // done by both
                 }
             }
         }

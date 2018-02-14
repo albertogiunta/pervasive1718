@@ -42,8 +42,6 @@ data class AssociationImpl(override val task: Task, override val member: Member)
 
 data class TaskPayload(val member: Member, val taskOperation: TaskOperation, val task: Task)
 
-data class SessionPayload(val member: Member, val sessionOperation: SessionOperation, val sessionId: Int)
-
 object Serializer {
 
     val klaxon = Klaxon().fieldConverter(KlaxonDate::class, dateConverter)
