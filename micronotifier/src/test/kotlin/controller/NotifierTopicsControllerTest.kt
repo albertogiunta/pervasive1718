@@ -1,7 +1,7 @@
 package controller
 
 import LifeParameters
-import logic.Member
+import model.Member
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before

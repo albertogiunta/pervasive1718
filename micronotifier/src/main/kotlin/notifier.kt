@@ -1,3 +1,4 @@
+import config.Services
 import controller.CoreController
 import networking.rabbit.AMQPClient
 import networking.ws.RelayService
@@ -6,7 +7,7 @@ fun main(args: Array<String>) {
 
     val core = CoreController.singleton()
 
-    WSServerInitializer.init(RelayService::class.java, WSParams.WS_NOTIFIER_PORT, WSParams.WS_PATH_NOTIFIER)
+    WSServerInitializer.init(RelayService::class.java, Services.NOTIFIER.port, Services.NOTIFIER.wsPath)
 
     BrokerConnector.init()
     val amqp = AMQPClient(BrokerConnector.INSTANCE, core.topics.activeTopics())
