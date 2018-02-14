@@ -4,7 +4,8 @@ dependencies {
     compile project(":pubsub-adapter")
     compile project(":websocket-adapter")
     compile project(":rest-adapter")
-    compile project(":microsession")
+    testCompile project(":microsession")
+    testCompile project(":microdatabase")
 }
 
 task microTaskJar(type: Jar) {
