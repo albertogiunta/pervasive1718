@@ -12,13 +12,15 @@ interface Controller {
         const val applicationJsonRequestType = "application/json"
     }
 
-    fun initRoutes()
+    fun initRoutes(localPort: Int)
 
 }
 
 object RouteController : Controller {
 
-    override fun initRoutes() {
+    override fun initRoutes(localPort: Int) {
+
+        port(localPort)
 
         options("/*") {
 

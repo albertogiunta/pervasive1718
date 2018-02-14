@@ -28,7 +28,7 @@ object SessionApi {
                 ?: return response.badRequest()
 
         JdbiConfiguration.INSTANCE.jdbi.useExtension<SessionDao, SQLException>(SessionDao::class.java) {
-            it.insertNewSession(session.id, session.patId, session.date)
+            it.insertNewSession(session.id, session.cf, session.date)
         }
 
         SubscriberController.startListeningMonitorsForSession(session.id)

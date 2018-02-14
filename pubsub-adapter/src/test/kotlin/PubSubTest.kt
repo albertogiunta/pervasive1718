@@ -1,4 +1,4 @@
-import BrokerConnector.Companion.LOCAL_HOST
+import BrokerConnector.Companion.REMOTE_HOST
 import org.junit.AfterClass
 import org.junit.Assert
 import org.junit.Test
@@ -15,7 +15,7 @@ class PubSubTest {
         private val connector: BrokerConnector
 
         init {
-            BrokerConnector.init(LOCAL_HOST)
+            BrokerConnector.init(REMOTE_HOST)
             connector = BrokerConnector.INSTANCE
         }
 

@@ -4,7 +4,7 @@ import KlaxonDate
 import java.sql.Timestamp
 import java.util.*
 
-data class Session @JvmOverloads constructor(val id: Int = 0, val patId: String, @KlaxonDate val date: Timestamp = Timestamp(Date().time))
+data class Session @JvmOverloads constructor(val id: Int = 0, val cf: String, @KlaxonDate val date: Timestamp = Timestamp(Date().time))
 
 data class Activity(val id: Int = 0, val name: String, val activityTypeId: Int, val acronym: String, val boundaryId: Int)
 
