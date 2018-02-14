@@ -9,7 +9,7 @@ import java.sql.Timestamp
 import java.util.*
 
 
-data class Task(val id: Int, val name: String, var status: Status, @KlaxonDate val startTime: Timestamp, @KlaxonDate val endTime: Timestamp) {
+data class Task constructor(val id: Int, val name: String, var status: Status, @KlaxonDate val startTime: Timestamp, @KlaxonDate val endTime: Timestamp) {
     companion object {
 
         fun emptyTask(): Task =

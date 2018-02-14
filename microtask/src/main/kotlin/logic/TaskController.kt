@@ -1,7 +1,11 @@
 package logic
 
+import com.github.kittinunf.fuel.httpDelete
+import com.github.kittinunf.fuel.httpPost
+import com.github.kittinunf.fuel.httpPut
 import networking.WSTaskServer
 import org.eclipse.jetty.websocket.api.Session
+import toJson
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -10,6 +14,9 @@ class TaskController private constructor(private val ws: WSTaskServer,
 
     lateinit var leader: Pair<Member, Session>
     val members: ConcurrentHashMap<Member, Session> = ConcurrentHashMap()
+
+    val dbUrl = "http://localhost:8100/api/task"
+//    val visorUrl = "http://localhost:8300/api/task" // TODO fai richieste al visore
 
     companion object {
         lateinit var INSTANCE: TaskController
@@ -35,6 +42,7 @@ class TaskController private constructor(private val ws: WSTaskServer,
         if (members.containsKey(member)) {
             taskMemberAssociationList.add(TaskMemberAssociation.create(task, member))
             ws.sendMessage(members[member]!!, TaskPayload(member, TaskOperation.ADD_TASK, task))
+            "$dbUrl/add".httpPost().body(task.toJson()).responseString()
         }
     }
 
@@ -43,6 +51,7 @@ class TaskController private constructor(private val ws: WSTaskServer,
             this?.let {
                 taskMemberAssociationList.remove(this)
                 ws.sendMessage(members[member]!!, TaskPayload(member, TaskOperation.REMOVE_TASK, Task.emptyTask()))
+                "$dbUrl/${it.task.id}".httpDelete().responseString()
             }
                     ?: ws.sendMessage(leader.second, TaskPayload(Member.emptyMember(), TaskOperation.ERROR_REMOVING_TASK, task))
         }
@@ -51,9 +60,10 @@ class TaskController private constructor(private val ws: WSTaskServer,
     fun changeTaskStatus(task: Task, session: Session) {
         with(taskMemberAssociationList.firstOrNull { it.task.id == task.id }) {
             this?.let {
-                this.task.status = task.status
+                it.task.status = task.status
                 ws.sendMessage(members[member]!!, TaskPayload(member, TaskOperation.CHANGE_TASK_STATUS, this.task))
                 ws.sendMessage(leader.second, TaskPayload(member, TaskOperation.CHANGE_TASK_STATUS, this.task))
+                "$dbUrl/${it.task.id}/${it.task.status}".httpPut().responseString()
             } ?: ws.sendMessage(session, TaskPayload(Member.emptyMember(), TaskOperation.ERROR_CHANGING_STATUS, task))
         }
     }

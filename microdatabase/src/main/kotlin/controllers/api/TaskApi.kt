@@ -7,7 +7,6 @@ import KlaxonDate
 import Params
 import badRequest
 import com.beust.klaxon.Klaxon
-import controllers.SessionController
 import dao.TaskDao
 import dateConverter
 import model.Task
@@ -32,8 +31,25 @@ object TaskApi {
                 task.startTime,
                 task.endTime,
                 task.activityId,
-                task.statusId,
-                SessionController.getCurrentSession())
+                task.statusId)
+        }
+        return response.okCreated()
+    }
+
+    fun updateTaskStatus(request: Request, response: Response): String {
+        JdbiConfiguration.INSTANCE.jdbi.useExtension<TaskDao, SQLException>(TaskDao::class.java)
+        {
+            it.updateTaskStatus(
+                request.params(Params.Task.ID).toInt(),
+                request.params(Params.Task.STATUS_ID).toInt())
+        }
+        return response.okCreated()
+    }
+
+    fun removeTaskStatus(request: Request, response: Response): String {
+        JdbiConfiguration.INSTANCE.jdbi.useExtension<TaskDao, SQLException>(TaskDao::class.java)
+        {
+            it.removeTask(request.params(Params.Task.ID).toInt())
         }
         return response.okCreated()
     }

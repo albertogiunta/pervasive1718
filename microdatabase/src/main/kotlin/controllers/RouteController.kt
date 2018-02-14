@@ -8,6 +8,7 @@ import spark.Spark.port
 import spark.kotlin.delete
 import spark.kotlin.get
 import spark.kotlin.post
+import spark.kotlin.put
 
 object RouteController {
 
@@ -74,6 +75,8 @@ object RouteController {
 
             path("/${Params.Task.TABLE_NAME}") {
                 post("/add", applicationJsonRequestType) { TaskApi.addTask(request, response) }
+                put("/:id/status/:statusId", applicationJsonRequestType) { TaskApi.updateTaskStatus(request, response) }
+                delete("/:id", applicationJsonRequestType) { TaskApi.removeTaskStatus(request, response) }
                 get("/all", applicationJsonRequestType) { TaskApi.getAllTasks(request, response) }
                 get("/:id", applicationJsonRequestType) { TaskApi.getTaskById(request, response) }
             }

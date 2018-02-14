@@ -7,7 +7,6 @@ import LifeParameters
 import Params
 import badRequest
 import com.beust.klaxon.Klaxon
-import controllers.SessionController
 import dao.LogDao
 import model.Log
 import okCreated
@@ -29,8 +28,7 @@ object LogApi {
                 log.name,
                 log.logTime,
                 log.healthParameterId,
-                log.healthParameterValue,
-                SessionController.getCurrentSession())
+                log.healthParameterValue)
         }
         return response.okCreated()
     }
@@ -46,8 +44,7 @@ object LogApi {
                 log.name,
                 log.logTime,
                 log.healthParameterId,
-                log.healthParameterValue,
-                SessionController.getCurrentSession())
+                log.healthParameterValue)
         }
     }
 
