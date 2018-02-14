@@ -12,6 +12,7 @@ import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.result.Result
 import logic.Member
 import logic.Status
+import config.Services
 import logic.TaskController
 import networking.WSTaskServer
 import org.junit.After
@@ -35,16 +36,15 @@ class MTtoDBTest {
 
         init {
             val taskService = ignite()
-            taskService.port(WSParams.WS_TASK_PORT)
-            taskService.service.webSocket(WSParams.WS_PATH_TASK, WSTaskServer::class.java)
+            taskService.port(Services.TASK_HANDLER.port)
+            taskService.service.webSocket(Services.TASK_HANDLER.wsPath, WSTaskServer::class.java)
             taskService.service.init()
             Thread.sleep(3000)
 
             taskController = TaskController.INSTANCE
 
-            //MicroSessionBootstrap.init(DefaultPorts.sessionPort) da vedere come farli
-            //MicroDatabaseBootstrap.init(Connection.DB_PORT.toInt())
-
+            //MicroSessionBootstrap.init(Services.SESSION.port)da vedere come farli
+	//MicroDatabaseBootstrap.init(Connection.DB_PORT.toInt())
         }
     }
 

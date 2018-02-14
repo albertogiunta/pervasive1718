@@ -1,3 +1,5 @@
+import config.Services
+
 object Params {
 
     object Session {
@@ -81,13 +83,13 @@ object Params {
     }
 }
 
-object Connection{
-    const val LOCAL_HOST = "127.0.0.1"
-    const val REMOTE_HOST = "2.234.121.101"
-    const val ADDRESS = LOCAL_HOST
-    const val PROTOCOL = "http"
-    const val DB_PORT = "8100"
-    const val API = "api"
-    const val PROTOCOL_SEPARATOR = "://"
-    const val PORT_SEPARATOR =":"
+object Connection {
+    val LOCAL_HOST = "127.0.0.1"
+    val REMOTE_HOST = "2.234.121.101"
+    val ADDRESS = LOCAL_HOST
+    val PROTOCOL = Services.Utils.Protocols.http
+    val DB_PORT = Services.DATA_BASE.port
+    val API = "api"
+    val PROTOCOL_SEPARATOR = "://"
+    val PORT_SEPARATOR =":"
 }

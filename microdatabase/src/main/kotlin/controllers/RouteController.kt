@@ -1,7 +1,8 @@
 package controllers
 
 import Params
-import RestParams.applicationJsonRequestType
+import config.Services
+//import RestParams.applicationJsonRequestType
 import controllers.api.*
 import spark.Spark.path
 import spark.Spark.port
@@ -14,6 +15,8 @@ object RouteController {
 
     fun init(localPort: Int) {
 
+        val applicationJson = Services.Utils.RESTParams.applicationJson
+
         port(localPort)
 
         /**
@@ -22,69 +25,69 @@ object RouteController {
         path("/api") {
 
             path("/${Params.Activity.TABLE_NAME}") {
-                post("/add", applicationJsonRequestType) { ActivityApi.addActivity(request, response) }
-                get("/all", applicationJsonRequestType) { ActivityApi.getAllActivities(request, response) }
-                get("/:id", applicationJsonRequestType) { ActivityApi.getActivityById(request, response) }
+                post("/add", applicationJson) { ActivityApi.addActivity(request, response) }
+                get("/all", applicationJson) { ActivityApi.getAllActivities(request, response) }
+                get("/:id", applicationJson) { ActivityApi.getActivityById(request, response) }
             }
 
             path("/${Params.ActivityType.TABLE_NAME}") {
-                post("/add", applicationJsonRequestType) { ActivityTypeApi.addActivityType(request, response) }
-                get("/all", applicationJsonRequestType) { ActivityTypeApi.getAllActivityTypes(request, response) }
-                get("/:id", applicationJsonRequestType) { ActivityTypeApi.getActivityTypeById(request, response) }
+                post("/add", applicationJson) { ActivityTypeApi.addActivityType(request, response) }
+                get("/all", applicationJson) { ActivityTypeApi.getAllActivityTypes(request, response) }
+                get("/:id", applicationJson) { ActivityTypeApi.getActivityTypeById(request, response) }
             }
 
             path("/${Params.Boundary.TABLE_NAME}") {
-                post("/add", applicationJsonRequestType) { BoundaryApi.addBoundary(request, response) }
-                get("/all", applicationJsonRequestType) { BoundaryApi.getAllBoundaries(request, response) }
-                get("/:id", applicationJsonRequestType) { BoundaryApi.getBoundaryById(request, response) }
+                post("/add", applicationJson) { BoundaryApi.addBoundary(request, response) }
+                get("/all", applicationJson) { BoundaryApi.getAllBoundaries(request, response) }
+                get("/:id", applicationJson) { BoundaryApi.getBoundaryById(request, response) }
             }
 
             path("/${Params.HealthParameter.TABLE_NAME}") {
-                post("/add", applicationJsonRequestType) { HealthParameterApi.addHealthParameter(request, response) }
-                get("/all", applicationJsonRequestType) { HealthParameterApi.getAllHealthParameters(request, response) }
-                get("/:id", applicationJsonRequestType) { HealthParameterApi.getHealthParameterById(request, response) }
+                post("/add", applicationJson) { HealthParameterApi.addHealthParameter(request, response) }
+                get("/all", applicationJson) { HealthParameterApi.getAllHealthParameters(request, response) }
+                get("/:id", applicationJson) { HealthParameterApi.getHealthParameterById(request, response) }
             }
 
             path("/${Params.Role.TABLE_NAME}") {
-                post("/add", applicationJsonRequestType) { RoleApi.addRole(request, response) }
-                get("/all", applicationJsonRequestType) { RoleApi.getAllRoles(request, response) }
-                get("/:id", applicationJsonRequestType) { RoleApi.getRoleById(request, response) }
+                post("/add", applicationJson) { RoleApi.addRole(request, response) }
+                get("/all", applicationJson) { RoleApi.getAllRoles(request, response) }
+                get("/:id", applicationJson) { RoleApi.getRoleById(request, response) }
             }
 
             path("/${Params.Log.TABLE_NAME}") {
-                post("/add", applicationJsonRequestType) { LogApi.addLogEntry(request, response) }
-                get("/all", applicationJsonRequestType) { LogApi.getAllLogEntries(request, response) }
+                post("/add", applicationJson) { LogApi.addLogEntry(request, response) }
+                get("/all", applicationJson) { LogApi.getAllLogEntries(request, response) }
 
                 path("/${Params.HealthParameter.TABLE_NAME}") {
-                    get("/:${Params.Log.HEALTH_PARAMETER_ID}", applicationJsonRequestType) { LogApi.getAllLogEntriesByHealthParameterId(request, response) }
-                    get("/:${Params.Log.HEALTH_PARAMETER_ID}/minthreshold/:${Params.Log.HEALTH_PARAMETER_VALUE}", applicationJsonRequestType) { LogApi.getAllLogEntriesByHealthParameterIdAboveValue(request, response) }
+                    get("/:${Params.Log.HEALTH_PARAMETER_ID}", applicationJson) { LogApi.getAllLogEntriesByHealthParameterId(request, response) }
+                    get("/:${Params.Log.HEALTH_PARAMETER_ID}/minthreshold/:${Params.Log.HEALTH_PARAMETER_VALUE}", applicationJson) { LogApi.getAllLogEntriesByHealthParameterIdAboveValue(request, response) }
                 }
             }
 
             path("/${Params.Operator.TABLE_NAME}") {
-                post("/add", applicationJsonRequestType) { OperatorApi.addOperator(request, response) }
-                get("/all", applicationJsonRequestType) { OperatorApi.getAllOperators(request, response) }
-                get("/:id", applicationJsonRequestType) { OperatorApi.getOperatorById(request, response) }
+                post("/add", applicationJson) { OperatorApi.addOperator(request, response) }
+                get("/all", applicationJson) { OperatorApi.getAllOperators(request, response) }
+                get("/:id", applicationJson) { OperatorApi.getOperatorById(request, response) }
             }
 
             path("/${Params.Session.TABLE_NAME}") {
-                post("/add", applicationJsonRequestType) { SessionApi.addSession(request, response) }
-                get("/all", applicationJsonRequestType) { SessionApi.getAllSessions(request, response) }
-                delete("/close/:id", applicationJsonRequestType) { SessionApi.removeSessionBySessionId(request, response) }
+                post("/add", applicationJson) { SessionApi.addSession(request, response) }
+                get("/all", applicationJson) { SessionApi.getAllSessions(request, response) }
+                delete("/close/:id", applicationJson) { SessionApi.removeSessionBySessionId(request, response) }
             }
 
             path("/${Params.Task.TABLE_NAME}") {
-                post("/add", applicationJsonRequestType) { TaskApi.addTask(request, response) }
-                put("/:id/status/:statusId", applicationJsonRequestType) { TaskApi.updateTaskStatus(request, response) }
-                delete("/:id", applicationJsonRequestType) { TaskApi.removeTaskStatus(request, response) }
-                get("/all", applicationJsonRequestType) { TaskApi.getAllTasks(request, response) }
-                get("/:id", applicationJsonRequestType) { TaskApi.getTaskById(request, response) }
+                post("/add", applicationJson) { TaskApi.addTask(request, response) }
+                put("/:id/status/:statusId", applicationJson) { TaskApi.updateTaskStatus(request, response) }
+                delete("/:id", applicationJson) { TaskApi.removeTaskStatus(request, response) }
+                get("/all", applicationJson) { TaskApi.getAllTasks(request, response) }
+                get("/:id", applicationJson) { TaskApi.getTaskById(request, response) }
             }
 
             path("/${Params.TaskStatus.TABLE_NAME}") {
-                post("/add", applicationJsonRequestType) { TaskStatusApi.addTaskStatus(request, response) }
-                get("/all", applicationJsonRequestType) { TaskStatusApi.getAllTaskStatuss(request, response) }
-                get("/:id", applicationJsonRequestType) { TaskStatusApi.getTaskStatusById(request, response) }
+                post("/add", applicationJson) { TaskStatusApi.addTaskStatus(request, response) }
+                get("/all", applicationJson) { TaskStatusApi.getAllTaskStatuss(request, response) }
+                get("/:id", applicationJson) { TaskStatusApi.getTaskStatusById(request, response) }
             }
         }
     }

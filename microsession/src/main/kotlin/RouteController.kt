@@ -1,11 +1,9 @@
 @file:Suppress("UNUSED_PARAMETER")
 
-import DefaultPorts.dbPort
-import DefaultPorts.maxSimultaneousSessions
-import DefaultPorts.taskPort
-import RestParams.applicationJsonRequestType
 import com.github.kittinunf.fuel.httpDelete
 import com.github.kittinunf.fuel.httpPost
+import config.Services
+import config.Services.Utils
 import spark.Request
 import spark.Response
 import spark.Spark.path
@@ -23,13 +21,13 @@ object RouteController {
         path("/session") {
 
             // la fa il leader, ritorna il riferimento di [MT], crea una websocket per mandargli i membri mano a mano che arrivano, ti ritorna anche l'id della sessione
-            post("/new/:patId", applicationJsonRequestType) { SessionApi.createNewSession(request, response) }
+            post("/new/:patId", Utils.RESTParams.applicationJson) { SessionApi.createNewSession(request, response) }
 
             // la fa il leader, deve sapere quale chiudere (la prende dalla new)
-            delete("/close/:patId", applicationJsonRequestType) { SessionApi.closeSessionById(request, response) }
+            delete("/close/:patId", Utils.RESTParams.applicationJson) { SessionApi.closeSessionById(request, response) }
 
             // la fanno i membri, e deve restituire la lista di interventi disponibili
-            get("/all", applicationJsonRequestType) { SessionApi.listAllSessions(request, response) }
+            get("/all", Utils.RESTParams.applicationJson) { SessionApi.listAllSessions(request, response) }
 
         }
     }
@@ -56,21 +54,22 @@ object SessionApi {
 
             with(SessionDNS(newSessionId, patId, taskUrl)) {
                 sessions.add(this)
-                "$dbUrl/api/session/add".httpPost().body(this.toSessionForDB().toJson()).responseString()
+                "$dbUrl/api/session/add".httpPost().body(GsonInitializer.toJson(this.toSessionForDB())).responseString()
             }
 
             // TODO attach to subset of microservices
-            sessions.last().toJson()
+            GsonInitializer.toJson(sessions.last())
         }
     }
 
     fun closeSessionById(request: Request, response: Response): String {
         val patId = request.params("patId")
-        val sessionId = sessions.first { it.patId == patId }
+        val session = sessions.first { it.patId == patId }
+        val sessionId = session.sessionId
 
         sessions.removeAll { it.patId == patId }
 
-        "$dbUrl/close/$sessionId".httpDelete().responseString()
+        "$dbUrl/api/session/close/$sessionId".httpDelete().responseString()
 
         // TODO detach to subset of microservices
 
@@ -78,12 +77,12 @@ object SessionApi {
     }
 
     fun listAllSessions(request: Request, response: Response): String {
-        return sessions.toJson()
+        return GsonInitializer.toJson(sessions)
     }
 
-    private fun buildPort(port: Int, id: Int): Int = port + (id % maxSimultaneousSessions)
+    private fun buildPort(port: Int, id: Int): Int = port + (id % Utils.maxSimultaneousSessions)
 
-    private fun createMicroTaskAddress(id: Int) = "http://localhost:${buildPort(taskPort, id)}"
+    private fun createMicroTaskAddress(id: Int) = "http://localhost:${buildPort(Services.TASK_HANDLER.port, id)}"
 
-    private fun createMicroDatabaseAddress(id: Int) = "http://localhost:${buildPort(dbPort, id)}"
+    private fun createMicroDatabaseAddress(id: Int) = "http://localhost:${buildPort(Services.DATA_BASE.port, id)}"
 }

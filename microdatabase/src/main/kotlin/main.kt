@@ -1,3 +1,3 @@
 fun main(args: Array<String>) {
-    MicroDatabaseBootstrap.init(8100)
+    MicroDatabaseBootstrap.init(Connection.DB_PORT)
 }
