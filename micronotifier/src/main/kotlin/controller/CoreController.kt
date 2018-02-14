@@ -2,6 +2,9 @@ package controller
 
 import LifeParameters
 import com.google.gson.GsonBuilder
+import controller.logic.Notification
+import controller.logic.Relay
+import controller.logic.Subscription
 import logic.Member
 import org.eclipse.jetty.websocket.api.Session
 
@@ -14,11 +17,15 @@ class CoreController private constructor(topicSet: Set<LifeParameters>) {
     private val gson = GsonBuilder().create()
 
     init {
-        val channel = subjects.createNewSubjectFor<Pair<Session, String>>(CoreController::class.java.name)
+        subjects.createNewSubjectFor<Pair<Session, String>>(CoreController::class.java.name)
 
-        val publishSubjects = topics.activeTopics().map {
+        topics.activeTopics().map {
             it to subjects.createNewSubjectFor<String>(it.toString())
-        }.toMap()
+        }
+
+        Relay.run(this)
+        Notification.run(this)
+        Subscription.run(this)
     }
 
     companion object {
