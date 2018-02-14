@@ -29,7 +29,6 @@ object VisorApi {
      * Removes a task
      */
     fun removeTask(request: Request, response: Response): String {
-        val task: VisibleTask = Klaxon().parse<VisibleTask>(request.body()) ?: return response.badRequest()
         taskManager.removeTask(request.params("taskId").toInt())
         return response.ok()
     }
