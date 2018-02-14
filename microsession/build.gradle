@@ -1,11 +1,6 @@
 dependencies {
-
     compile project(":websocket-adapter")
     compile project(":rest-adapter")
-    compile project(":commons")
-    compile project(":microdatabase")
-    compile project(":microtask")
-
 }
 
 task microSessionJar(type: Jar) {

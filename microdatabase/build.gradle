@@ -2,7 +2,6 @@ dependencies {
     // local
     compile project(":pubsub-adapter")
     compile project(":rest-adapter")
-    compile project(":commons")
 
     // jdbi
     compile "org.jdbi:jdbi3-core:$jdbi_version"
