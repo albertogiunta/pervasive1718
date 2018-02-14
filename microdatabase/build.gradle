@@ -21,4 +21,5 @@ task microDatabaseJar(type: Jar) {
     }
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
+    archiveName microDatabaseJarName
 }
