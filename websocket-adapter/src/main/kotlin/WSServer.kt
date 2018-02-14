@@ -40,7 +40,7 @@ open class WSServer<in P> {
      *
      */
     open fun sendMessage(session: Session, payload: P) {
-        sendMessage(session, payload.toJson())
+        sendMessage(session, payload.asJson())
     }
 
     private fun sendMessage(session: Session, message: String) {

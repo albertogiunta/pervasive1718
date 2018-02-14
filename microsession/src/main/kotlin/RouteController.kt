@@ -66,11 +66,12 @@ object SessionApi {
 
     fun closeSessionById(request: Request, response: Response): String {
         val patId = request.params("patId")
-        val sessionId = sessions.first { it.patId == patId }
+        val session = sessions.first { it.patId == patId }
+        val sessionId = session.sessionId
 
         sessions.removeAll { it.patId == patId }
 
-        "$dbUrl/close/$sessionId".httpDelete().responseString()
+        "$dbUrl/api/session/close/$sessionId".httpDelete().responseString()
 
         // TODO detach to subset of microservices
 
