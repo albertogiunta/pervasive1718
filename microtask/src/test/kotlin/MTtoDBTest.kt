@@ -40,8 +40,8 @@ class MTtoDBTest {
 
             taskController = TaskController.INSTANCE
 
-            MicroserviceBootUtils.startMicroservice(MicroservicesPaths.microDatabase).killAtParentDeath()
-            MicroserviceBootUtils.startMicroservice(MicroservicesPaths.microSession).killAtParentDeath()
+            //MicroserviceBootUtils.startMicroservice(MicroservicesPaths.microDatabase).killAtParentDeath()
+            //MicroserviceBootUtils.startMicroservice(MicroservicesPaths.microSession).killAtParentDeath()
             Thread.sleep(5000)
             //MicroSessionBootstrap.init(Services.SESSION.port)da vedere come farli
 	        //MicroDatabaseBootstrap.init(Connection.DB_PORT.toInt())
