@@ -1,11 +1,11 @@
 package config
 
-enum class Services(val port: Int, val wsPath: String, val executableName: String) {
-    SESSION(8000, "/session", "microsession.jar"),
-    DATA_BASE(8100, "/", "microdb.jar"),
-    TASK_HANDLER(8200, "/task", "microtask.jar"),
-    NOTIFIER(8300, "/notifier", "microservice-notifier-0.1.jar"),
-    VISORS(8400, "/", "microvisors.jar");
+enum class Services(val port: Int, val wsPath: String, val executableName: String, val module : String) {
+    SESSION(8000, "/session", "microsession.jar", "microsession"),
+    DATA_BASE(8100, "/", "microdb.jar", "microdatabase"),
+    TASK_HANDLER(8200, "/task", "microtask.jar", "microtask"),
+    NOTIFIER(8300, "/notifier", "microservice-notifier-0.1.jar", "micronotifier"),
+    VISORS(8400, "/", "microvisors.jar", "microvisors");
 
     object Utils {
         const val maxSimultaneousSessions = 10

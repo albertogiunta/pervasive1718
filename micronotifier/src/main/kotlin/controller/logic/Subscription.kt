@@ -5,6 +5,7 @@ import controller.CoreController
 import model.Member
 import model.PayloadWrapper
 import model.SessionOperation
+import model.Subscription
 import org.eclipse.jetty.websocket.api.Session
 import utils.Logger
 
@@ -19,27 +20,28 @@ object Subscription {
         coreSubject.map { (session, json) ->
             session to gson.fromJson(json, PayloadWrapper::class.java)
         }.subscribe { (session, wrapper) ->
-            when (wrapper.subject) {
-
-                SessionOperation.SUBSCRIBE -> {
-                    val subscription = gson.fromJson(wrapper.body, model.Subscription::class.java)
-                    if (!core.sessions.contains(subscription.subject)) {
-                        Logger.info("Adding Session for ${subscription.subject} @ ${subscription.body}")
-                        core.sessions[subscription.subject] = session
+            with(wrapper) {
+                when (subject) {
+                    SessionOperation.SUBSCRIBE -> {
+                        val msg = subject.objectify(body) as Subscription
+                        if (!core.sessions.contains(msg.subject)) {
+                            Logger.info("Adding Session for ${msg.subject} @ ${msg.body}")
+                            core.sessions[msg.subject] = session
+                        }
+                        Logger.info("Subscribing ${msg.subject} @ ${msg.body}")
+                        core.topics.removeListener(msg.subject)
+                        core.topics.add(msg.body, msg.subject)
                     }
-                    Logger.info("Subscribing ${subscription.subject} @ ${subscription.body}")
-                    core.topics.removeListener(subscription.subject)
-                    core.topics.add(subscription.body, subscription.subject)
-                }
-                SessionOperation.CLOSE -> {
-                    val listener = gson.fromJson(wrapper.body, Member::class.java)
-                    Logger.info("Closing Session for $listener")
-                    core.sessions.removeListener(listener)
-                    core.topics.removeListener(listener)
-                }
-                else -> {
-                    Logger.info("NOPE...")
-                    // Do Nothing at all
+                    SessionOperation.CLOSE -> {
+                        val listener = subject.objectify(body) as Member
+                        Logger.info("Closing Session for $listener")
+                        core.sessions.removeListener(listener)
+                        core.topics.removeListener(listener)
+                    }
+                    else -> {
+                        Logger.info("NOPE...")
+                        // Do Nothing at all
+                    }
                 }
             }
         }
