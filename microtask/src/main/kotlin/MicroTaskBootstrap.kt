@@ -1,18 +1,10 @@
-import networking.WSSessionServer
 import networking.WSTaskServer
 import spark.kotlin.ignite
 
+
 object MicroTaskBootstrap {
 
-    fun init(sessionPort: Int, taskPort: Int) {
-
-        with(ignite()) {
-            port(sessionPort)
-            service.webSocket(WSParams.WS_PATH_SESSION, WSSessionServer::class.java)
-            service.init()
-        }
-
-        Thread.sleep(1000)
+    fun init(taskPort: Int) {
 
         with(ignite()) {
             port(taskPort)

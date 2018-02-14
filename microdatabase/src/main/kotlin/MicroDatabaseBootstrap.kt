@@ -1,5 +1,4 @@
 import controllers.RouteController
-import spark.kotlin.ignite
 
 object MicroDatabaseBootstrap {
 
