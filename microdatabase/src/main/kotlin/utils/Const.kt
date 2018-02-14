@@ -86,7 +86,7 @@ object Connection{
     const val REMOTE_HOST = "2.234.121.101"
     const val ADDRESS = LOCAL_HOST
     const val PROTOCOL = "http"
-    const val API_PORT = "8080"
+    const val DB_PORT = "8100"
     const val API = "api"
     const val PROTOCOL_SEPARATOR = "://"
     const val PORT_SEPARATOR =":"

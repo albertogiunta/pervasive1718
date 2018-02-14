@@ -1,9 +1,9 @@
 import Connection.ADDRESS
-import Connection.API_PORT
-import Connection.LOCAL_HOST
+import Connection.DB_PORT
 import Connection.PORT_SEPARATOR
 import Connection.PROTOCOL
 import Connection.PROTOCOL_SEPARATOR
+import Connection.REMOTE_HOST
 import Params.Log.TABLE_NAME
 import com.beust.klaxon.JsonReader
 import com.beust.klaxon.Klaxon
@@ -22,18 +22,22 @@ import java.util.*
 
 class DatabaseSubscriberTest {
     companion object {
-        //Remember to start the RabbitMQ broker on the specified host
-        // otherwise the system throw a ConnectionException
+        /* Remember to start the RabbitMQ broker on the specified host
+         * otherwise the system throw a ConnectionException.
+         * For this reason, use REMOTE_HOST as default.
+         *
+         **/
         private val connector: BrokerConnector
-        private val addString: String = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR$API_PORT/${Connection.API}/$TABLE_NAME/add"
-        private val allString: String = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR$API_PORT/${Connection.API}/$TABLE_NAME/all"
-        private val readString: String = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR$API_PORT/${Connection.API}/$TABLE_NAME/${Params.HealthParameter.TABLE_NAME}/"
+        private val addString: String = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR$DB_PORT/${Connection.API}/$TABLE_NAME/add"
+        private val allString: String = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR$DB_PORT/${Connection.API}/$TABLE_NAME/all"
+        private val readString: String = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR$DB_PORT/${Connection.API}/$TABLE_NAME/${Params.HealthParameter.TABLE_NAME}/"
 
         lateinit var listResult: List<Log>
 
         init {
-            BrokerConnector.init(LOCAL_HOST)
+            BrokerConnector.init(REMOTE_HOST)
             connector = BrokerConnector.INSTANCE
+            MicroDatabaseBootstrap.init(DB_PORT.toInt())
         }
 
         @AfterClass
@@ -51,6 +55,7 @@ class DatabaseSubscriberTest {
         val json = JsonObject()
         json.addProperty("healthParameterId", randomId)
         json.addProperty("healthParameterValue", 1212)
+        println(addString)
         sub.subscribe(LifeParameters.HEART_RATE, sub.createStringConsumer {
             json.addProperty(Params.Log.NAME, it)
             makePost(addString, json)
@@ -66,6 +71,8 @@ class DatabaseSubscriberTest {
 
         Thread.sleep(4000)
         handlingGetResponse(makeGet(readString + randomId))
+
+        sub.unsubscribe(LifeParameters.HEART_RATE)
 
         println(listResult)
         assert(listResult.firstOrNull { it.healthParameterId == randomId } != null)
