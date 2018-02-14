@@ -60,7 +60,7 @@ subprojects {
 task generatePervasiveJars {
     doFirst {
         println("Resetting JDK log level to INFO...")
-        java.util.logging.Logger.getLogger("").setLevel(Level.INFO);
+        java.util.logging.Logger.getLogger("").setLevel(Level.INFO)
     }
     println "Starting Pervasive Project Jars Creation..."
     dependsOn 'microdatabase:microDatabaseJar'
