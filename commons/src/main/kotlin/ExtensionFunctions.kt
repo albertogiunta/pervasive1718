@@ -1,8 +1,9 @@
 import GsonInitializer.gson
-import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 
 object GsonInitializer {
-    val gson = Gson()
+    val gson = GsonBuilder().create()
+    fun toJson(src: Any): String = gson.toJson(src)
 }
 
-fun Any.toJson(): String = gson.toJson(this)
+fun Any.toJson(): String = GsonInitializer.toJson(this)
