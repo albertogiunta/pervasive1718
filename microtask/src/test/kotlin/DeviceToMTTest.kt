@@ -116,39 +116,5 @@ class DeviceToMTTest {
         assertTrue(taskController.taskMemberAssociationList.first { it.task.id == taskChanged.id }.task.status == Status.FINISHED)
     }
 
-    private fun addLeaderThread(memberId: Int): Thread {
-        return Thread({
-            initializeConnectionWithTaskWSClient()
-                    .send(TaskPayload(Member(memberId, "Leader"), TaskOperation.ADD_LEADER, Task.emptyTask()).toJson())
-        })
-    }
-    private fun addMemberThread(memberId: Int): Thread {
-        return Thread({
-            initializeConnectionWithTaskWSClient()
-                .send(TaskPayload(Member(memberId, "Member"), TaskOperation.ADD_MEMBER, Task.emptyTask()).toJson())
-        })
-    }
 
-    private fun addTaskThread(task: Task, member: Member): Thread {
-        return Thread({
-            initializeConnectionWithTaskWSClient().send(TaskPayload(member, TaskOperation.ADD_TASK, task).toJson())
-        })
-    }
-
-    private fun removeTaskThread(task: Task): Thread {
-        return Thread({
-            initializeConnectionWithTaskWSClient().send(TaskPayload(emptyMember(), TaskOperation.REMOVE_TASK, task).toJson())
-        })
-    }
-
-    private fun changeTaskStatus(task: Task): Thread {
-        return Thread({
-            initializeConnectionWithTaskWSClient().send(TaskPayload(emptyMember(), TaskOperation.CHANGE_TASK_STATUS, task).toJson())
-        })
-    }
-
-
-    private fun initializeConnectionWithTaskWSClient(): WSClient {
-        return WSClientInitializer.init(WSClient(URIFactory.getTaskURI())).also { Thread.sleep(1000) }
-    }
 }
