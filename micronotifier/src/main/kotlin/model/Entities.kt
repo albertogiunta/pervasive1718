@@ -1,5 +1,6 @@
 package model
 
+import GsonInitializer
 import LifeParameters
 import com.google.gson.GsonBuilder
 import toJson
@@ -18,15 +19,14 @@ interface Payload<T, D> {
     }
 }
 
-enum class SessionOperation(val path: String) {
-    OPEN("/open"),
-    CLOSE("/close"),
-    ADD("/add"),
-    REMOVE("/remove"),
-    SUBSCRIBE("/subscribe"),
-    UNSUBSCRIBE("/unsubscribe"),
-    UPDATE("/update"),
-    NOTIFY("/notify")
+enum class SessionOperation(val path: String, private val xxx: (String) -> Any) {
+
+    CLOSE("/close", {GsonInitializer.gson.fromJson(it, model.Member::class.java)}),
+    SUBSCRIBE("/subscribe", {GsonInitializer.gson.fromJson(it, model.Subscription::class.java)}),
+    UPDATE("/update", {GsonInitializer.gson.fromJson(it, model.Update::class.java)}),
+    NOTIFY("/notify", {GsonInitializer.gson.fromJson(it, model.Notification::class.java)});
+
+    fun objectify(json: String) : Any = xxx(json)
 }
 
 data class PayloadWrapper(override val sid: Long,
@@ -64,5 +64,6 @@ fun main(args: Array<String>) {
     println(json)
     val wrapper = gson.fromJson(json, PayloadWrapper::class.java)
     println(wrapper.toString())
-    println(gson.fromJson(wrapper.body, Notification::class.java))
+
+    val n : Notification = wrapper.subject.objectify(wrapper.body) as Notification
 }

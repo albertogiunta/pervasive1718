@@ -6,9 +6,13 @@ import java.net.URL
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class MicroServiceManager (val workingDir: File){
+class MicroServiceManager (val workingDir: String, val projectName: String = "pervasive1718"){
 
     val sessionsMap = mutableMapOf<String, Map<Services, Pair<Process, URL>>>()
+
+    val joiner = StringJoiner(
+            System.getProperty("file.separator")
+    )
 
     val instanceHandler = object : InstanceHandler<Services, String> {
         override fun new(service: Services, sessionID: String): Pair<Process, URL> {
@@ -18,7 +22,14 @@ class MicroServiceManager (val workingDir: File){
                     "/session/$sessionID${service.wsPath}"
             )
 
-            return "java -jar ${service.executableName} ${service.port}".runCommand(workingDir) to url
+            val workingModule =  joiner
+                    .add(workingDir.replaceAfter(projectName, ""))
+                    .add(service.module)
+                    .add("build")
+                    .add("libs")
+                    .toString()
+
+            return "java -jar ${service.executableName} ${service.port}".runCommand(File(workingModule)) to url
         }
     }
 
@@ -56,14 +67,9 @@ interface InstanceHandler<X, Y> {
 }
 
 fun main(args: Array<String>) {
-    val joiner = StringJoiner(
-            System.getProperty("file.separator"),
-            System.getProperty("file.separator"),
-            System.getProperty("file.separator")
-    )
-    val w = File("${System.getProperty("user.dir")}${joiner.add("micronotifier").add("build").add("libs")}")
 
-    println(w)
+    val w = System.getProperty("user.dir")
+
     val m = MicroServiceManager(w)
 
     val e = m.instanceHandler.new(Services.NOTIFIER, "666")
