@@ -69,7 +69,6 @@ class DatabaseSubscriberTest {
 
         println(listResult)
         assert(listResult.firstOrNull { it.healthParameterId == randomId } != null)
-
     }
 
     @Test

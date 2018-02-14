@@ -43,8 +43,7 @@ class TaskController private constructor(private val ws: WSTaskServer,
             this?.let {
                 taskMemberAssociationList.remove(this)
                 ws.sendMessage(members[member]!!, TaskPayload(member, TaskOperation.REMOVE_TASK, Task.emptyTask()))
-            }
-                    ?: ws.sendMessage(leader.second, TaskPayload(Member.emptyMember(), TaskOperation.ERROR_REMOVING_TASK, task))
+            }?: ws.sendMessage(leader.second, TaskPayload(Member.emptyMember(), TaskOperation.ERROR_REMOVING_TASK, task))
         }
     }
 

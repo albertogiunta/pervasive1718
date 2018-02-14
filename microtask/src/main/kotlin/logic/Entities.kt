@@ -16,7 +16,7 @@ data class Task(val id: Int, val name: String, var status: Status, @KlaxonDate v
             Task(EmptyTask.emptyTaskId, EmptyTask.emptyTaskName, Status.EMPTY, EmptyTask.emptyTaskStartTime, EmptyTask.emptyTaskEndTime)
 
         fun defaultTask(): Task =
-            Task(1, "Default Task", Status.RUNNING, Timestamp(Date().time), Timestamp(Date().time))
+            Task(1, "Default Task", Status.RUNNING, Timestamp(Date().time), Timestamp(Date().time+1000))
     }
 }
 
@@ -24,7 +24,7 @@ data class Member(val id: Int, val name: String) {
     companion object {
         fun emptyMember(): Member = Member(EmptyMember.emptyMemberId, EmptyMember.emptyMemberName)
 
-        fun defaultMember(): Member = Member(1, "Member")
+        fun defaultMember(): Member = Member(-52, "Member")
     }
 }
 
