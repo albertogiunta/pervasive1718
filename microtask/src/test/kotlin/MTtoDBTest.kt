@@ -1,3 +1,4 @@
+import config.Services
 import logic.TaskController
 import networking.WSTaskServer
 import org.junit.Test
@@ -10,14 +11,14 @@ class MTtoDBTest {
 
         init {
             val taskService = ignite()
-            taskService.port(DefaultPorts.taskPort)
-            taskService.service.webSocket(WSParams.WS_PATH_TASK, WSTaskServer::class.java)
+            taskService.port(Services.TASK_HANDLER.port)
+            taskService.service.webSocket(Services.TASK_HANDLER.wsPath, WSTaskServer::class.java)
             taskService.service.init()
             Thread.sleep(1000)
 
             taskController = TaskController.INSTANCE
 
-            MicroSessionBootstrap.init(DefaultPorts.sessionPort)
+            MicroSessionBootstrap.init(Services.SESSION.port)
 
         }
     }

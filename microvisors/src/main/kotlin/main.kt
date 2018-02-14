@@ -1,7 +1,7 @@
-import DefaultPorts.visorsPort
+import config.Services
 import controllers.RouteController
 
 fun main(args: Array<String>) {
 
-    RouteController.initRoutes(visorsPort)
+    RouteController.initRoutes(Services.VISORS.port)
 }
