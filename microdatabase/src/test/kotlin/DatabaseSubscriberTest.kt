@@ -147,8 +147,7 @@ class DatabaseSubscriberTest {
                     }
                 }
             }
-        }
-            , failure = {
+        }, failure = {
                 println(String(it.errorData))
             })
     }

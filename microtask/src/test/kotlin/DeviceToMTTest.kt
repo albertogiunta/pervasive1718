@@ -1,6 +1,5 @@
 
 import logic.*
-import logic.Member.Companion.emptyMember
 import networking.WSTaskServer
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -60,7 +59,7 @@ class DeviceToMTTest {
         addMemberThread(memberId = member.id).start()
         Thread.sleep(3000)
 
-        val task = Task(1,"Task assegnato",Status.RUNNING, Timestamp(Date().time), Timestamp(Date().time+1))
+        val task = Task(6,1, Timestamp(Date().time), Timestamp(Date().time+1),1, Status.RUNNING.id)
 
         addTaskThread(task, member).start()
         Thread.sleep(4000)
@@ -82,12 +81,13 @@ class DeviceToMTTest {
         addMemberThread(memberId = member.id).start()
         Thread.sleep(3000)
 
-        addTaskThread(Task.defaultTask(), Member.defaultMember()).start()
+        val task = logic.Task(3,1, Timestamp(Date().time), Timestamp(Date().time+1000),1, Status.RUNNING.id)
+        addTaskThread(task, Member.defaultMember()).start()
         Thread.sleep(3000)
 
         assertTrue(taskController.taskMemberAssociationList.size == 1)
 
-        removeTaskThread(Task.defaultTask()).start()
+        removeTaskThread(task).start()
         Thread.sleep(3000)
         assertTrue(taskController.taskMemberAssociationList.isEmpty())
     }
@@ -104,16 +104,17 @@ class DeviceToMTTest {
         addMemberThread(memberId = member.id).start()
         Thread.sleep(1000)
 
-        addTaskThread(Task.defaultTask(), Member.defaultMember()).start()
+        val task = logic.Task(4,1, Timestamp(Date().time), Timestamp(Date().time+1000),1, Status.RUNNING.id)
+        addTaskThread(task, Member.defaultMember()).start()
         Thread.sleep(1000)
 
-        val taskChanged = Task.defaultTask().apply { this.status = Status.FINISHED }
+        val taskChanged = task.apply { this.statusId = Status.FINISHED.id }
 
         changeTaskStatus(taskChanged).start()
         Thread.sleep(3000)
         println(taskController.members)
 
-        assertTrue(taskController.taskMemberAssociationList.first { it.task.id == taskChanged.id }.task.status == Status.FINISHED)
+        assertTrue(taskController.taskMemberAssociationList.first { it.task.id == taskChanged.id }.task.statusId == Status.FINISHED.id)
     }
 
 
