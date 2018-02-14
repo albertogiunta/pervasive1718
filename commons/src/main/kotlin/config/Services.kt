@@ -1,7 +1,7 @@
 package config
 
 enum class Services(val port: Int, val wsPath: String, val executableName: String) {
-    SESSION(8000, "/session", "microsession.jar"),
+    SESSION(8500, "/session", "microsession.jar"),
     DATA_BASE(8100, "/", "microdb.jar"),
     TASK_HANDLER(8200, "/task", "microtask.jar"),
     NOTIFIER(8300, "/notifier", "microservice-notifier-0.1.jar"),

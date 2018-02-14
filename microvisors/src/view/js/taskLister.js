@@ -5,9 +5,8 @@ function findUnique(arr, predicate) {
     var found = {};
     arr.forEach(d => {
       found[predicate(d)] = d;
-})
-    return Object.keys(found).map(key = > found[key];
-)
+    })
+    return Object.keys(found).map(key => found[key])
 }
 
 // Trasposes rows with columns in a table
@@ -19,7 +18,7 @@ function trasposeTable() {
             var i = 0;
             $(this).find("td").each(function(){
                 i++;
-                if(newrows[i] === undefined) { newrows[i] = $("<tr></tr>"); }
+                if(newrows[i] === undefined) { newrows[i] = $("<tr></tr>") }
                 newrows[i].append($(this));
             });
         });
@@ -34,17 +33,15 @@ function trasposeTable() {
 function updateTable() {
 
     // Finding unique operators
-    var uniqueOperators = findUnique(taskList, t = > t.operatorId;
-)
+    var uniqueOperators = findUnique(taskList, t => t.operatorId)
 
     // Sorting operators from the busiest to the less busy for avoiding a visual bug.
     for (var i in uniqueOperators) {
         var operatorId = uniqueOperators[i].operatorId;
-        uniqueOperators[i].operatorTaskList = taskList.filter(t = > t.operatorId == operatorId;
-    ).
-        sort(function (a, b) {
-            return (a.priority).localeCompare(b.priority)
-        })
+        uniqueOperators[i].operatorTaskList = taskList.filter(t => t.operatorId == operatorId)
+            .sort(function (a, b) {
+                return (a.priority).localeCompare(b.priority)
+            })
     }
     uniqueOperators.sort(function (a, b ) {
         return b.operatorTaskList.length - a.operatorTaskList.length
@@ -79,7 +76,7 @@ function updateTable() {
 
 (function pollService() {
     $.ajax({
-        url: 'http://localhost:4567/api/all',
+        url: 'http://localhost:8400/api/all',
         type: "GET",
         contentType: "application/json",
         dataType: 'json',
