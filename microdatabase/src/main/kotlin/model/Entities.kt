@@ -20,6 +20,6 @@ data class Role(val id: Int = 0, val name: String) // leader, collaboratore, ane
 
 data class Boundary(val id: Int = 0, val healthParameterId: Int, val activityId: Int, val upperBound: Double, val lowerBound: Double)
 
-data class Task @JvmOverloads constructor(val id: Int = 0, val operatorId: Int, @KlaxonDate val startTime: Timestamp, @KlaxonDate val endTime: Timestamp, val activityId: Int, val statusId: Int, val sessionId: Int = 0)
+data class Task @JvmOverloads constructor(val id: Int = 0, val operatorId: Int, @KlaxonDate val startTime: Timestamp, @KlaxonDate val endTime: Timestamp, val activityId: Int, val statusId: Int)
 
 data class TaskStatus(val id: Int = 0, val name: String) // sospseso, in corso, terminato, eliminato
