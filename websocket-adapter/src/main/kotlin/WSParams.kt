@@ -1,15 +1,17 @@
+import config.Services
+import config.Services.Utils
 import java.net.URI
 
 object WSParams {
 
-    const val WS_HOST = "ws://localhost:"
-    const val WS_SESSION_PORT = 8000
-    const val WS_TASK_PORT = 8081
-    const val WS_NOTIFIER_PORT = 8082
-    const val WS_PATH_DEFAULT = "/"
-    const val WS_PATH_TASK = "/task"
-    const val WS_PATH_SESSION = "/session"
-    const val WS_PATH_NOTIFIER = "/notifier"
+    val WS_HOST = Utils.WSParams.defaultWSRoot
+    val WS_SESSION_PORT = Services.SESSION.port
+    val WS_TASK_PORT = Services.TASK_HANDLER.port
+    val WS_NOTIFIER_PORT = Services.NOTIFIER.port
+    val WS_PATH_DEFAULT = Utils.defaultWSPath
+    val WS_PATH_TASK = Services.TASK_HANDLER.wsPath
+    val WS_PATH_SESSION = Services.SESSION.wsPath
+    val WS_PATH_NOTIFIER = Services.NOTIFIER.wsPath
 
 }
 

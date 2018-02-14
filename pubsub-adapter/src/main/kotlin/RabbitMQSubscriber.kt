@@ -33,7 +33,7 @@ class RabbitMQSubscriber(val connector: BrokerConnector) : Subscriber<LifeParame
 
     override fun subscribedTopics(): Set<LifeParameters> {
         val set = HashSet<LifeParameters>()
-        subscribedChannel.keys.forEach { set.add(LifeParametersUtils.getByAcronym(it)) }
+        subscribedChannel.keys.forEach { set.add(LifeParameters.Utils.getByAcronym(it)) }
         return set
     }
 
