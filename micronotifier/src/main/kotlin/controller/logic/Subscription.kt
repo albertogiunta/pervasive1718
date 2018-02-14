@@ -2,7 +2,7 @@ package controller.logic
 
 import com.google.gson.GsonBuilder
 import controller.CoreController
-import logic.Member
+import model.Member
 import model.PayloadWrapper
 import model.SessionOperation
 import org.eclipse.jetty.websocket.api.Session

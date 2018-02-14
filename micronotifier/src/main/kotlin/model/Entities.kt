@@ -2,7 +2,6 @@ package model
 
 import LifeParameters
 import com.google.gson.GsonBuilder
-import logic.Member
 import toJson
 import java.time.ZonedDateTime
 import java.util.*
