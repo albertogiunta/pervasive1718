@@ -8,6 +8,9 @@ import utils.EmptyTask
 import java.sql.Timestamp
 import java.util.*
 
+data class VisibleTask(val id: Int, val name: String, val priority: Priority, val operatorId: Int, val operatorName: String, val operatorSurname: String)
+
+enum class Priority { HIGH, LOW }
 
 data class Task constructor(val id: Int, val name: String, var status: Status, @KlaxonDate val startTime: Timestamp, @KlaxonDate val endTime: Timestamp) {
     companion object {
@@ -19,6 +22,9 @@ data class Task constructor(val id: Int, val name: String, var status: Status, @
             Task(1, "Default Task", Status.RUNNING, Timestamp(Date().time), Timestamp(Date().time+1000))
     }
 }
+
+fun Task.toVisibleTask(member: Member) =
+    VisibleTask(this.id, this.name, Priority.HIGH, member.id, member.name, member.name)
 
 data class Member(val id: Int, val name: String) {
     companion object {
