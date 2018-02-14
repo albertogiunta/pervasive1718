@@ -5,5 +5,16 @@ dependencies {
     compile project(":pubsub-adapter")
     compile project(":websocket-adapter")
     compile project(":rest-adapter")
+    compile project(":commons")
+}
 
+task microTaskJar(type: Jar) {
+    baseName = 'runMicroTask'
+    manifest {
+        attributes 'Implementation-Title': 'microtask',
+                'Implementation-Version': 1.0,
+                'Main-Class': 'MainKt'
+    }
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
 }

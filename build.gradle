@@ -1,3 +1,5 @@
+import java.util.logging.Level
+
 buildscript {
     ext.kotlin_version = '1.2.21'
     ext.jdbi_version = '3.0.1'
@@ -8,25 +10,22 @@ buildscript {
     ext.klaxon_version = '2.1.4'
     ext.rxkotlin_version = '2.2.0'
     ext.fuel_version = '1.12.0'
-    ext.ws_version = '1.3.7'
 
     repositories {
         mavenCentral()
     }
-
     dependencies {
-        classpath 'com.github.rholder:gradle-one-jar:1.0.4'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
 subprojects {
+    group 'com.crioprecipitati'
+    version '0.1'
 
     apply plugin: 'java'
     apply plugin: 'kotlin'
-
-    group 'com.crioprecipitati'
-    version '0.1'
+    apply plugin: 'eclipse'
 
     sourceCompatibility = 1.8
 
@@ -57,3 +56,18 @@ subprojects {
         kotlinOptions.jvmTarget = "1.8"
     }
 }
+
+task generatePervasiveJars {
+    doFirst {
+        println("Resetting JDK log level to INFO...")
+        java.util.logging.Logger.getLogger("").setLevel(Level.INFO);
+    }
+    println "Starting Pervasive Project Jars Creation..."
+    dependsOn 'microdatabase:microDatabaseJar'
+    dependsOn 'micromonitor:microMonitorJar'
+    dependsOn 'micronotifier:microNotifierJar'
+    dependsOn 'microsession:microSessionJar'
+    dependsOn 'microtask:microTaskJar'
+    dependsOn 'microvisors:microVisorsJar'
+}
+

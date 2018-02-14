@@ -1,9 +1,8 @@
 dependencies {
-
     // local
-    compile project(":commons")
     compile project(":pubsub-adapter")
     compile project(":rest-adapter")
+    compile project(":commons")
 
     // jdbi
     compile "org.jdbi:jdbi3-core:$jdbi_version"
@@ -12,5 +11,15 @@ dependencies {
     compile "org.jdbi:jdbi3-sqlobject:$jdbi_version"
     compile "org.jdbi:jdbi3-kotlin:$jdbi_version"
     compile "org.jdbi:jdbi3-kotlin-sqlobject:$jdbi_version"
+}
 
+task microDatabaseJar(type: Jar) {
+    baseName = 'runMicroDatabase'
+    manifest {
+        attributes 'Implementation-Title': 'microdatabase',
+                'Implementation-Version': 1.0,
+                'Main-Class': 'MainKt'
+    }
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
 }

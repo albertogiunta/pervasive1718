@@ -1,14 +1,8 @@
 import networking.WSTaskServer
 import spark.kotlin.ignite
 
-object MicroTaskMain {
-    @JvmStatic
-    fun main(args: Array<String>) {
-        MicroTask.init(WSParams.WS_TASK_PORT)
-    }
-}
 
-object MicroTask {
+object MicroTaskBootstrap {
 
     fun init(taskPort: Int) {
 
@@ -20,5 +14,4 @@ object MicroTask {
 
         Thread.sleep(1000)
     }
-
 }

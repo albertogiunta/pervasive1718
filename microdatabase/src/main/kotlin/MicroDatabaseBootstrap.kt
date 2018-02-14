@@ -1,13 +1,8 @@
 import controllers.RouteController
+import spark.kotlin.ignite
 
-object MicroDatabaseMain {
-    @JvmStatic
-    fun main(args: Array<String>) {
-        MicroDatabase.init(8100)
-    }
-}
+object MicroDatabaseBootstrap {
 
-object MicroDatabase {
     fun init(localPort: Int) {
         RouteController.init(localPort)
         JdbiConfiguration.init()
