@@ -11,10 +11,10 @@ fun Process.killAtParentDeath(): Process {
 }
 
 object MicroservicesPaths {
-    val microMonitor = System.getProperty("user.dir")
-            .dropLastWhile { it != '/' } + "micromonitor/build/libs/runMicroMonitor-0.1.jar"
-    val microDatabase = System.getProperty("user.dir").dropLastWhile { it != '/' } + "microdatabase/build/libs/runMicroMonitor-0.1.jar"
-    val microTask = System.getProperty("user.dir").dropLastWhile { it != '/' } + "microtask/build/libs/runMicroMonitor-0.1.jar"
-    val microNotifier = System.getProperty("user.dir").dropLastWhile { it != '/' } + "micronotifier/build/libs/runMicroMonitor-0.1.jar"
-    val microVisors = System.getProperty("user.dir").dropLastWhile { it != '/' } + "microvisors/build/libs/runMicroMonitor-0.1.jar"
+    val microMonitor = System.getProperty("user.dir").dropLastWhile { it != '/' } + "micromonitor/build/libs/runMicroMonitor-0.1.jar"
+    val microDatabase = System.getProperty("user.dir").dropLastWhile { it != '/' } + "microdatabase/build/libs/runMicroDatabase-0.1.jar"
+    val microTask = System.getProperty("user.dir").dropLastWhile { it != '/' } + "microtask/build/libs/runMicroTask-0.1.jar"
+    val microNotifier = System.getProperty("user.dir").dropLastWhile { it != '/' } + "micronotifier/build/libs/runMicroNotifier-0.1.jar"
+    val microVisors = System.getProperty("user.dir").dropLastWhile { it != '/' } + "microvisors/build/libs/runMicroVisors-0.1.jar"
+    val microSession = System.getProperty("user.dir").dropLastWhile { it != '/' } + "microsession/build/libs/runMicroSession-0.1.jar"
 }
