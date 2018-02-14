@@ -41,7 +41,7 @@ subprojects {
         compile "com.google.code.gson:gson:$gson_version"
         compile "com.beust:klaxon:$klaxon_version"
         compile "io.reactivex.rxjava2:rxkotlin:$rxkotlin_version"
-
+        compile "commons-cli:commons-cli:1.4"
         //kotlin
         compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
 
