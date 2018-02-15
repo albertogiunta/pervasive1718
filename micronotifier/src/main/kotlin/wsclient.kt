@@ -1,3 +1,4 @@
+import config.ConfigLoader
 import model.Member
 import model.PayloadWrapper
 import model.SessionOperation
@@ -5,7 +6,7 @@ import model.Subscription
 import utils.toJson
 
 fun main(args: Array<String>) {
-
+    ConfigLoader().load()
     println(URIFactory.getNotifierURI())
 
     val client = WSClient(URIFactory.getNotifierURI())
@@ -14,7 +15,7 @@ fun main(args: Array<String>) {
 
     val msg1 = PayloadWrapper(-1L, SessionOperation.SUBSCRIBE,
             Subscription(-1L, Member(666, "Mario Rossi"), listOf(LifeParameters.TEMPERATURE)).toJson()
-        ).toJson()
+    ).toJson()
 
     client.sendMessage(msg1)
 

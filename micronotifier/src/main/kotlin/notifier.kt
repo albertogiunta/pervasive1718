@@ -1,3 +1,4 @@
+import config.ConfigLoader
 import config.Services
 import controller.CoreController
 import networking.rabbit.AMQPClient
@@ -5,7 +6,7 @@ import networking.ws.RelayService
 import utils.Logger
 
 fun main(args: Array<String>) {
-
+    ConfigLoader().load()
     var port = 0
 
     Logger.info("Args: ${args.toList()}")
@@ -22,6 +23,5 @@ fun main(args: Array<String>) {
     }.toMap()
 
     amqp.publishOn(publishSubjects)
-
 }
 
