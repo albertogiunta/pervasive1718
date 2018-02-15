@@ -51,7 +51,6 @@ object SessionApi {
         dbUrl = createMicroDatabaseAddress(currentBoot)
         taskUrl = createMicroTaskAddress(currentBoot)
 
-        println(dbUrl)
 
         // TODO attach to subset of microservices
 
@@ -64,6 +63,7 @@ object SessionApi {
                 if (error.exception.message == "Connection refused (Connection refused)") {
                     return response.hostNotFound(dbUrl)
                 }
+                println(error)
                 return response.badRequest()
             })
 

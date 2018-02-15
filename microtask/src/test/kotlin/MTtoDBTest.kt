@@ -3,28 +3,22 @@ import Connection.DB_PORT
 import Connection.PORT_SEPARATOR
 import Connection.PROTOCOL
 import Connection.PROTOCOL_SEPARATOR
-import com.beust.klaxon.JsonReader
 import com.beust.klaxon.Klaxon
-import com.github.kittinunf.fuel.core.FuelError
-import com.github.kittinunf.fuel.core.Request
-import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.fuel.httpGet
-import com.github.kittinunf.result.Result
+import com.github.kittinunf.fuel.httpPost
 import logic.Member
 import logic.Status
 import config.Services
 import logic.TaskController
-import model.Task
 import networking.WSTaskServer
 import org.junit.AfterClass
 import org.junit.Assert.assertTrue
+import org.junit.BeforeClass
 import org.junit.Test
 import process.MicroServiceManager
 import spark.kotlin.ignite
-import java.io.StringReader
 import java.sql.Timestamp
 import java.util.*
-import kotlin.collections.ArrayList
 
 class MTtoDBTest {
 
@@ -34,6 +28,9 @@ class MTtoDBTest {
     companion object {
         private var taskController: TaskController
         private val manager = MicroServiceManager(System.getProperty("user.dir"))
+        private val newSession: String ="$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.SESSION.port}/session/new/hytgfred12"
+        private val klaxon = Klaxon().fieldConverter(KlaxonDate::class, dateConverter)
+        private lateinit var session: SessionDNS
 
         init {
             val taskService = ignite()
@@ -58,7 +55,15 @@ class MTtoDBTest {
             manager.closeSession("666")
         }
 
+        @BeforeClass
+        @JvmStatic
+        fun getSession(){
+            println(newSession)
+            newSession.httpPost().responseString().third.fold(success = {session = klaxon.parse<SessionDNS>(it)!!}, failure ={ println(it)})
+        }
+
     }
+
 
 
     @Test
@@ -71,7 +76,7 @@ class MTtoDBTest {
         addMemberThread(memberId = member.id).start()
         Thread.sleep(3000)
 
-        val task = logic.Task(40,member.id, Timestamp(Date().time), Timestamp(Date().time+1000),1, Status.RUNNING.id)
+        val task = logic.Task(40,member.id, Timestamp(Date().time), Timestamp(Date().time+1000),1, Status.RUNNING.id,session.sessionId)
 
         addTaskThread(task, member).start()
         Thread.sleep(4000)
@@ -95,7 +100,7 @@ class MTtoDBTest {
         addMemberThread(memberId = member.id).start()
         Thread.sleep(3000)
 
-        val task = logic.Task(41,member.id, Timestamp(Date().time), Timestamp(Date().time+1000),1, Status.RUNNING.id)
+        val task = logic.Task(41,member.id, Timestamp(Date().time), Timestamp(Date().time+1000),1, Status.RUNNING.id,session.sessionId)
 
         addTaskThread(task, member).start()
         Thread.sleep(3000)
@@ -120,7 +125,7 @@ class MTtoDBTest {
         addMemberThread(memberId = member.id).start()
         Thread.sleep(3000)
 
-        val task = logic.Task(42,member.id, Timestamp(Date().time), Timestamp(Date().time+1000),1, Status.RUNNING.id)
+        val task = logic.Task(42,member.id, Timestamp(Date().time), Timestamp(Date().time+1000),1, Status.RUNNING.id,session.sessionId)
 
         addTaskThread(task, member).start()
         Thread.sleep(3000)

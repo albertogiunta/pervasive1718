@@ -8,6 +8,7 @@ import com.github.kittinunf.fuel.core.FuelError
 import com.github.kittinunf.fuel.core.Request
 import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.fuel.httpGet
+import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.result.Result
 import config.Services
 import logic.Member
@@ -17,6 +18,7 @@ import logic.VisibleTask
 import networking.WSTaskServer
 import org.junit.AfterClass
 import org.junit.Assert
+import org.junit.BeforeClass
 import org.junit.Test
 import process.MicroServiceManager
 import spark.kotlin.ignite
@@ -25,13 +27,15 @@ import java.sql.Timestamp
 import java.util.*
 
 class MTtoMVTest {
-
-    private val getAllTaskVisor: String = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.VISORS.port}/${Connection.API}/all"
-    private lateinit var listResult: List<VisibleTask>
+        private lateinit var listResult: List<VisibleTask>
 
     companion object {
         private var taskController: TaskController
         private val manager = MicroServiceManager(System.getProperty("user.dir"))
+        private val getAllTaskVisor: String = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.VISORS.port}/${Connection.API}/all"
+        private val newSession: String ="$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.SESSION.port}/session/new/hytgfred12"
+        private val klaxon = Klaxon().fieldConverter(KlaxonDate::class, dateConverter)
+        private lateinit var session: SessionDNS
 
         init {
             val taskService = ignite()
@@ -49,14 +53,22 @@ class MTtoMVTest {
             Thread.sleep(3000)
             manager.newService(Services.VISORS,"666")
             Thread.sleep(3000)
+            }
+
+            @AfterClass
+            @JvmStatic
+            fun destroyAll() {
+                manager.closeSession("666")
+            }
+
+            @BeforeClass
+            @JvmStatic
+            fun getSession(){
+                newSession.httpPost().responseString().third.fold(success = {session = klaxon.parse<SessionDNS>(it)!!}, failure ={ println(it)})
+            }
         }
 
-        @AfterClass
-        @JvmStatic
-        fun destroyAll() {
-            manager.closeSession("666")
-        }
-    }
+
 
     @Test
     fun addTask(){
@@ -68,7 +80,7 @@ class MTtoMVTest {
         addMemberThread(memberId = member.id).start()
         Thread.sleep(3000)
 
-        val task = logic.Task(32,member.id, Timestamp(Date().time), Timestamp(Date().time+1000),1, Status.RUNNING.id)
+        val task = logic.Task(32,member.id, Timestamp(Date().time), Timestamp(Date().time+1000),1, Status.RUNNING.id,session.sessionId)
 
         addTaskThread(task, member).start()
         Thread.sleep(4000)
@@ -92,7 +104,7 @@ class MTtoMVTest {
         addMemberThread(memberId = member.id).start()
         Thread.sleep(3000)
 
-        val task = logic.Task(35,member.id, Timestamp(Date().time), Timestamp(Date().time+1000),1, Status.RUNNING.id)
+        val task = logic.Task(35,member.id, Timestamp(Date().time), Timestamp(Date().time+1000),1, Status.RUNNING.id,session.sessionId)
 
         addTaskThread(task, member).start()
         Thread.sleep(3000)

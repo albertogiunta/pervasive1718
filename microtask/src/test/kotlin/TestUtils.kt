@@ -8,7 +8,6 @@ import logic.Member
 import logic.Task
 import logic.TaskOperation
 import logic.TaskPayload
-import model.Log
 import java.io.StringReader
 import java.util.ArrayList
 
@@ -56,8 +55,8 @@ inline fun <reified A> handlingGetResponse(triplet: Triple<Request, Response, Re
             listResult = arrayListOf()
             reader.beginArray {
                 while (reader.hasNext()) {
-                    val log = klaxon.parse<A>(reader)!!
-                    (listResult as ArrayList<A>).add(log)
+                    val data = klaxon.parse<A>(reader)!!
+                    (listResult as ArrayList<A>).add(data)
                 }
             }
         }
