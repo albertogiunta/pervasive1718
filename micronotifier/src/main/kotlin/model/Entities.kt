@@ -4,6 +4,7 @@ import GsonInitializer
 import LifeParameters
 import com.google.gson.GsonBuilder
 import toJson
+import java.lang.ClassCastException
 import java.time.ZonedDateTime
 import java.util.*
 
@@ -19,14 +20,21 @@ interface Payload<T, D> {
     }
 }
 
-enum class SessionOperation(val path: String, private val xxx: (String) -> Any) {
+@Suppress("PROTECTED_CALL_FROM_PUBLIC_INLINE")
+enum class SessionOperation(val path: String, protected val xxx: (String) -> Any) {
 
-    CLOSE("/close", {GsonInitializer.gson.fromJson(it, model.Member::class.java)}),
+    CLOSE("/close", {GsonInitializer.gson.fromJson(it, model.Subscription::class.java)}),
     SUBSCRIBE("/subscribe", {GsonInitializer.gson.fromJson(it, model.Subscription::class.java)}),
     UPDATE("/update", {GsonInitializer.gson.fromJson(it, model.Update::class.java)}),
     NOTIFY("/notify", {GsonInitializer.gson.fromJson(it, model.Notification::class.java)});
 
-    fun objectify(json: String) : Any = xxx(json)
+    @Throws(ClassCastException::class)
+    inline fun <reified X> objectify(json: String) : X {
+        val bundle = xxx(json)
+        if (bundle is X){
+            return bundle
+        } else throw ClassCastException("Class Cast Error")
+    }
 }
 
 data class PayloadWrapper(override val sid: Long,
@@ -34,7 +42,6 @@ data class PayloadWrapper(override val sid: Long,
                           override val body: String,
                           override val time: String = Payload.getTime()) :
         Payload<SessionOperation, String>
-
 
 data class Notification(override val sid: Long,
                         override val subject: Set<LifeParameters>,
@@ -66,4 +73,8 @@ fun main(args: Array<String>) {
     println(wrapper.toString())
 
     val n : Notification = wrapper.subject.objectify(wrapper.body) as Notification
+
+    val j = n.toJson()
+
+    println(SessionOperation.NOTIFY.objectify<Notification>(j))
 }

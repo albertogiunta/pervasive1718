@@ -7,19 +7,21 @@ fun main(args: Array<String>) {
 
     println(URIFactory.getNotifierURI())
 
+    val member = Member(666, "Mario Rossi")
+
     val client = WSClient(URIFactory.getNotifierURI())
 
     client.connectBlocking()
 
     val msg1 = PayloadWrapper(-1L, SessionOperation.SUBSCRIBE,
-            Subscription(-1L, Member(666, "Mario Rossi"), listOf(LifeParameters.TEMPERATURE)).toJson()
+            Subscription(-1L, member, listOf(LifeParameters.TEMPERATURE)).toJson()
         ).toJson()
 
     client.sendMessage(msg1)
 
     Thread.sleep(5000L)
 
-    val msg2 = PayloadWrapper(-1L, SessionOperation.CLOSE, Member(666, "Mario Rossi").toJson()).toJson()
+    val msg2 = PayloadWrapper(-1L, SessionOperation.CLOSE, member.toJson()).toJson()
 
     client.sendMessage(msg2)
 
