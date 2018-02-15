@@ -21,9 +21,9 @@ object SessionApi {
      * Retrieves all the session
      */
     fun addSession(request: Request, response: Response): String {
-        var session = Session(cf = "", date = Timestamp(Date().time))
+        var session = Session(cf = "", startDate = Timestamp(Date().time))
         JdbiConfiguration.INSTANCE.jdbi.useExtension<SessionDao, SQLException>(SessionDao::class.java)
-        { session = it.insertNewSession(request.params(Params.Session.PAT_ID), Timestamp(Date().time)) }
+        { session = it.insertNewSession(request.params(Params.Session.PAT_ID), request.params(Params.Session.INSTANCE_ID).toInt(), Timestamp(Date().time)) }
 
         SubscriberController.startListeningMonitorsForSession(session.id)
 
@@ -40,13 +40,23 @@ object SessionApi {
     }
 
     /**
+     * Retrieves all the open sessions
+     */
+    fun getAllOpenSessions(request: Request, response: Response): String {
+        return JdbiConfiguration.INSTANCE.jdbi.withExtension<List<Session>, SessionDao, SQLException>(SessionDao::class.java)
+        { it.selectAllOpenSessions() }
+            .toJson()
+    }
+
+
+    /**
      * Deletes a session based on the session ID
      */
-    fun removeSessionBySessionId(request: Request, response: Response): String {
+    fun closeSessionBySessionId(request: Request, response: Response): String {
         val sessionId = request.params(Params.Session.SESSION_ID).toInt()
 
         JdbiConfiguration.INSTANCE.jdbi.useExtension<SessionDao, SQLException>(SessionDao::class.java)
-        { it.deleteSessionBySessionId(sessionId) }
+        { it.closeSessionBySessionId(sessionId, Timestamp(Date().time)) }
 
         SubscriberController.stopListeningMonitorsForSession(sessionId)
 

@@ -12,13 +12,13 @@ data class VisibleTask(val id: Int, val name: String, val priority: Priority, va
 
 enum class Priority { HIGH, LOW }
 
-data class Task @JvmOverloads constructor(var id: Int = 0, var operatorId: Int, @KlaxonDate var startTime: Timestamp, @KlaxonDate var endTime: Timestamp, var activityId: Int, var statusId: Int) {
+data class Task @JvmOverloads constructor(var id: Int = 0, var operatorId: Int, @KlaxonDate var startTime: Timestamp, @KlaxonDate var endTime: Timestamp, var activityId: Int, var statusId: Int, var sessionId: Int) {
     companion object {
         fun emptyTask(): Task =
-            Task(EmptyTask.emptyTaskId,EmptyTask.emptyTaskOperatorId, EmptyTask.emptyTaskStartTime, EmptyTask.emptyTaskEndTime, EmptyTask.emptyTaskActivityId, EmptyTask.emptyTaskStatusId)
+            Task(EmptyTask.emptyTaskId,EmptyTask.emptyTaskOperatorId, EmptyTask.emptyTaskStartTime, EmptyTask.emptyTaskEndTime, EmptyTask.emptyTaskActivityId, EmptyTask.emptyTaskStatusId,EmptyTask.emptySessionId)
 
         fun defaultTask(): Task =
-            Task(1, 1, Timestamp(Date().time), Timestamp(Date().time + 1000), 1, Status.RUNNING.id)
+            Task(1, 1, Timestamp(Date().time), Timestamp(Date().time + 1000), 1, Status.RUNNING.id,1)
     }
 }
 

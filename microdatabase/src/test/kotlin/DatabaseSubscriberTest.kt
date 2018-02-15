@@ -37,7 +37,7 @@ class DatabaseSubscriberTest {
         init {
             BrokerConnector.init(REMOTE_HOST)
             connector = BrokerConnector.INSTANCE
-            MicroDatabaseBootstrap.init(DB_PORT.toInt())
+            MicroDatabaseBootstrap.init(DB_PORT)
         }
 
         @AfterClass

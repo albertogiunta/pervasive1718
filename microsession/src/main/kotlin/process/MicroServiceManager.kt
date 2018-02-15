@@ -10,20 +10,17 @@ class MicroServiceManager (val workingDir: String, val projectName: String = "pe
 
     val sessionsMap = mutableMapOf<String, Map<Services, Pair<Process, URL>>>()
 
-    val joiner = StringJoiner(
-            System.getProperty("file.separator")
-    )
-
     val instanceHandler = object : InstanceHandler<Services, String> {
         override fun new(service: Services, sessionID: String): Pair<Process, URL> {
+
+            val dir = workingDir.replaceAfter(projectName,"")
             val url = URL(
                     Services.Utils.Protocols.http,
                     Services.Utils.defaultHost, service.port,
                     "/session/$sessionID${service.wsPath}"
             )
-
-            val workingModule =  joiner
-                    .add(workingDir.replaceAfter(projectName, ""))
+            val workingModule = StringJoiner(System.getProperty("file.separator"))
+                    .add(dir)
                     .add(service.module)
                     .add("build")
                     .add("libs")
@@ -34,13 +31,18 @@ class MicroServiceManager (val workingDir: String, val projectName: String = "pe
     }
 
     fun newSession(sessionID: String) {
-        if (!sessionsMap.containsKey(sessionID)) {
-            val map = mutableMapOf<Services, Pair<Process, URL>>()
+        Services.values().forEach { newService(it,sessionID) }
+    }
 
-            map[Services.NOTIFIER] = instanceHandler.new(Services.NOTIFIER, sessionID)
+    fun newService(service: Services, sessionID: String){
 
-            sessionsMap[sessionID] = map.toMap()
+        lateinit var map: MutableMap<Services, Pair<Process, URL>>
+        when(!sessionsMap.containsKey(sessionID)){
+            true -> map = mutableMapOf()
+            false -> map = sessionsMap[sessionID]!!.toMutableMap()
         }
+        map[service] = instanceHandler.new(service,sessionID)
+        sessionsMap[sessionID] = map.toMap()
     }
 
     fun closeSession(sessionID: String) {
@@ -52,9 +54,9 @@ class MicroServiceManager (val workingDir: String, val projectName: String = "pe
         }
     }
 
-    private fun String.runCommand(workingDir: File) : Process =
+    private fun String.runCommand(dir: File) : Process =
         ProcessBuilder(*split(" ").toTypedArray())
-                .directory(workingDir)
+                .directory(dir)
                 .redirectOutput(ProcessBuilder.Redirect.INHERIT)
                 .redirectError(ProcessBuilder.Redirect.INHERIT)
                 .start()
