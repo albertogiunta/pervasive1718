@@ -27,7 +27,12 @@ object BoundaryApi {
                 boundary.healthParameterId,
                 boundary.activityId,
                 boundary.upperBound,
-                boundary.lowerBound)
+                boundary.lowerBound,
+                boundary.lightWarningOffset,
+                boundary.status,
+                boundary.itsGood,
+                boundary.minAge,
+                boundary.maxAge)
         }
         return response.okCreated()
     }

@@ -1,6 +1,6 @@
 package config
 
-import GsonInitializer
+import utils.GsonInitializer
 import java.io.File
 import java.io.InputStream
 

@@ -18,7 +18,7 @@ data class Operator(val id: Int = 0, val name: String, val surname: String, val 
 
 data class Role(val id: Int = 0, val name: String) // leader, collaboratore, anestesista
 
-data class Boundary(val id: Int = 0, val healthParameterId: Int, val activityId: Int, val upperBound: Double, val lowerBound: Double)
+data class Boundary(val id: Int = 0, val healthParameterId: Int, val activityId: Int, val upperBound: Double, val lowerBound: Double, val lightWarningOffset: Double, val status: String, val itsGood: Boolean, val minAge: Double, val maxAge: Double)
 
 data class TaskStatus(val id: Int = 0, val name: String) // sospseso, in corso, terminato, eliminato
 

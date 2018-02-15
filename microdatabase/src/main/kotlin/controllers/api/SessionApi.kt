@@ -23,7 +23,7 @@ object SessionApi {
     fun addSession(request: Request, response: Response): String {
         var session = Session(cf = "", startDate = Timestamp(Date().time))
         JdbiConfiguration.INSTANCE.jdbi.useExtension<SessionDao, SQLException>(SessionDao::class.java)
-        { session = it.insertNewSession(request.params(Params.Session.PAT_ID), request.params(Params.Session.INSTANCE_ID).toInt(), Timestamp(Date().time)) }
+        { session = it.insertNewSession(request.params(Params.Session.PAT_ID), Timestamp(Date().time), request.params(Params.Session.INSTANCE_ID).toInt()) }
 
         SubscriberController.startListeningMonitorsForSession(session.id)
 

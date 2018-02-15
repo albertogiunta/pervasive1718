@@ -7,7 +7,7 @@ import java.net.URL
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class MicroServiceManager (val workingDir: String, val projectName: String = "Progetto"){
+class MicroServiceManager (val workingDir: String, val projectName: String = "pervasive1718"){
 
     val sessionsMap = mutableMapOf<String, Map<Services, Pair<Process, URL>>>()
 
