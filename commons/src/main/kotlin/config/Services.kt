@@ -53,7 +53,7 @@ class Services(var port: Int, val wsPath: String, val executableName: String, va
             const val https = "https"
         }
 
-        fun defaultHostHttpPrefix(serv: Services) = "${Protocols.http}://$defaultHost:${serv.port}"
+        fun defaultHostHttpPrefix(serv: Services) = "${Protocols.http}://$defaultHost:${serv.port}${Services.SESSION.wsPath}"
 
         object WSParams {
             const val defaultWSRoot = "${Protocols.websocket}://$defaultHost:"

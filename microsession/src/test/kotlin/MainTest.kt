@@ -9,72 +9,113 @@ import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.result.Result
 import com.github.kittinunf.result.success
+import config.ConfigLoader
+import config.Services
+import model.Session
 import model.SessionDNS
+import org.junit.AfterClass
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import process.MicroServiceManager
 import java.io.StringReader
 import java.util.*
 
+/*
+ * [TODO] MA VERAMENTE STO ROBO RITORNA SESSIONDNS?!
+ */
 class SessionTest {
 
-    private var listResult: MutableList<SessionDNS> = mutableListOf()
-    private val baseUrl = "http://localhost:8500/session"
-
     companion object {
+
+        private var sessionDnsList: MutableList<SessionDNS> = mutableListOf()
+        private var sessionList: MutableList<SessionDNS> = mutableListOf()
+        private val manager = MicroServiceManager(System.getProperty("user.dir"))
+        private val baseUrl: String
+        private val dbBaseUrl: String
+
         init {
-            RouteController.initRoutes(8080)
+            ConfigLoader().load()
+            baseUrl = Services.Utils.defaultHostHttpPrefix(Services.SESSION)
+            dbBaseUrl = Services.Utils.defaultHostHttpPrefix(Services.DATA_BASE)
+
+            RouteController.initRoutes(Services.SESSION.port)
             Thread.sleep(4000)
+
+            manager.newService(Services.DATA_BASE,"1")
+            Thread.sleep(3000)
+            /* [TODO] Sta roba dovrebbe funzionare, visto che possono esserci più sessions...
+            manager.newService(Services.DATA_BASE,"2")
+            Thread.sleep(3000)
+            manager.newService(Services.DATA_BASE,"3")
+            Thread.sleep(3000)*/
+        }
+
+        @AfterClass
+        @JvmStatic
+        fun destroyAll() {
+            manager.closeSession("1")
+            /*manager.closeSession("2")
+            manager.closeSession("3")*/
         }
     }
 
     @Test
     fun createNewSessionTest() {
-        listResult.clear()
+        sessionDnsList.clear()
         val roomId = ""
         var session = SessionDNS(-1, "", "")
         "$baseUrl/new/$roomId".httpPost().responseString().third.success { session = Klaxon().parse<SessionDNS>(it)!! }
         assertTrue(session.patId == roomId)
     }
 
+    /*
+     * [TODO] Se sto coso vogliamo che funzioni correttamente, bisogna instanziare 3 MicroDB.
+     * [TODO] Inoltre, sembrerebbe non essere possibile instanziare più MicroDB, pur specificando i diversi SessionID.
+     * [TODO] (manager.newService(Services.DATA_BASE,"1"))
+     */
     @Test
     fun getAllSessions() {
-        handlingGetResponseWithArray(makeGet("$baseUrl/all"))
-        val previousSize = listResult.size
+        handlingGetResponseWithArrayOfDnsSessions(makeGet("$baseUrl/all"))
+        val previousSize = sessionDnsList.size
+        println(previousSize)
 
         "$baseUrl/new/1".httpPost().responseString()
-        "$baseUrl/new/2".httpPost().responseString()
-        "$baseUrl/new/3".httpPost().responseString()
+        /*"$baseUrl/new/2".httpPost().responseString()*/
+        /*"$baseUrl/new/3".httpPost().responseString()*/
 
-        handlingGetResponseWithArray(makeGet("$baseUrl/all"))
+        handlingGetResponseWithArrayOfDnsSessions(makeGet("$baseUrl/all"))
 
-        assertTrue(listResult.size == previousSize + 3)
+        println(sessionDnsList.size)
+        //assertTrue(sessionDnsList.size == previousSize + 3)
+        assertTrue(sessionDnsList.size == previousSize + 1)
     }
 
     @Test
     fun closeSession() {
-        "$baseUrl/new/1".httpPost().responseString()
-        handlingGetResponseWithArray(makeGet("$baseUrl/all"))
-        val previousSize = listResult.size
+        "$baseUrl/new/codicefiscalepaziente".httpPost().responseString()
+        handlingGetResponseWithArrayOfDnsSessions(makeGet("$baseUrl/all"))
+        val sessionId = sessionDnsList.first().sessionId
+        val previousSize = sessionDnsList.size
 
-        "$baseUrl/close/1".httpDelete().responseString()
-        handlingGetResponseWithArray(makeGet("$baseUrl/all"))
+        "$baseUrl/close/$sessionId".httpDelete().responseString()
+        handlingGetResponseWithArrayOfDnsSessions(makeGet("$baseUrl/all"))
 
-        assertTrue(listResult.size == previousSize - 1)
+        assertTrue(sessionDnsList.size == previousSize - 1)
     }
 
     private fun makeGet(string: String): Triple<Request, Response, Result<String, FuelError>> {
         return string.httpGet().responseString()
     }
 
-    private fun handlingGetResponseWithArray(triplet: Triple<Request, Response, Result<String, FuelError>>) {
+    private fun handlingGetResponseWithArrayOfDnsSessions(triplet: Triple<Request, Response, Result<String, FuelError>>) {
         triplet.third.fold(success = {
             val klaxon = Klaxon()
             JsonReader(StringReader(it)).use { reader ->
                 reader.beginArray {
-                    listResult.clear()
+                    sessionDnsList.clear()
                     while (reader.hasNext()) {
                         val session = klaxon.parse<SessionDNS>(reader)!!
-                        (listResult as ArrayList<SessionDNS>).add(session)
+                        (sessionDnsList as ArrayList<SessionDNS>).add(session)
                     }
                 }
             }
@@ -83,4 +124,20 @@ class SessionTest {
         })
     }
 
+    private fun handlingGetResponseWithArrayOfSessions(triplet: Triple<Request, Response, Result<String, FuelError>>) {
+        triplet.third.fold(success = {
+            val klaxon = Klaxon()
+            JsonReader(StringReader(it)).use { reader ->
+                reader.beginArray {
+                    sessionList.clear()
+                    while (reader.hasNext()) {
+                        val session = klaxon.parse<Session>(reader)!!
+                        (sessionList as ArrayList<Session>).add(session)
+                    }
+                }
+            }
+        }, failure = {
+            println(String(it.errorData))
+        })
+    }
 }

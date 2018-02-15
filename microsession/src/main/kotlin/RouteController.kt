@@ -91,7 +91,7 @@ object SessionApi {
         )
     }
 
-    fun listAllSessions(request: Request, response: Response): String = GsonInitializer.toJson(sessions)
+    fun listAllSessions(request: Request, response: Response): String = GsonInitializer.toJson(sessions.map { x -> x.first })
 
     private fun buildPort(port: Int, id: Int): Int = port + id
 
