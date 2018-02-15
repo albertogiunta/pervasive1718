@@ -55,13 +55,16 @@ object SessionApi {
 
         // TODO attach to subset of microservices
 
-        "$dbUrl/api/session/add/$patId/sessionid/$currentBoot".httpPost().responseString().third.fold(
+        "$dbUrl/api/session/add/$patId/instanceid/$currentBoot".httpPost().responseString().third.fold(
             success = {
                 val session = Klaxon().fieldConverter(KlaxonDate::class, dateConverter).parse<Session>(it)
                         ?: return response.badRequest().also { println("klaxon couldn't parse session") }
                 sessions.add(Pair(SessionDNS(session.id, session.cf, taskUrl), currentBoot))
             }, failure = { error ->
-                return error.toJson()
+                if (error.exception.message == "Connection refused (Connection refused)") {
+                    return response.hostNotFound(dbUrl)
+                }
+                return response.badRequest()
             })
 
         return sessions.last().first.toJson()

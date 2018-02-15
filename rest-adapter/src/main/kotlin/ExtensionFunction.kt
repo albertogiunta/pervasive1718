@@ -29,3 +29,18 @@ fun Response.notFound(): String {
     this.body(ResponseMessage(201, "Resource not found").toJson())
     return this.body()
 }
+
+fun Response.hostNotFound(): String {
+    this.status(404)
+    this.type("application/json")
+    this.body(ResponseMessage(502, "Host Not Found").toJson())
+    return this.body()
+}
+
+fun Response.hostNotFound(host: String): String {
+    this.status(404)
+    this.type("application/json")
+    this.body(ResponseMessage(502, "Host Not Found for host: $host").toJson())
+    return this.body()
+}
+
