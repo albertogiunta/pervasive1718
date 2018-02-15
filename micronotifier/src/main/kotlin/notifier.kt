@@ -2,13 +2,8 @@ import config.Services
 import controller.CoreController
 import networking.rabbit.AMQPClient
 import networking.ws.RelayService
-import utils.Logger
 
 fun main(args: Array<String>) {
-
-    var port = 0
-
-    Logger.info("Args: ${args.toList()}")
 
     val core = CoreController.singleton()
 
