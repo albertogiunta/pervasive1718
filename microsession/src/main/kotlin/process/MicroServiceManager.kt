@@ -2,12 +2,13 @@ package process
 
 import config.ConfigLoader
 import config.Services
+import utils.PathGetter
 import java.io.File
 import java.net.URL
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class MicroServiceManager (val workingDir: String, val projectName: String = "pervasive1718"){
+class MicroServiceManager(val workingDir: String, val projectName: String = PathGetter.getConfigPath()) {
 
     val sessionsMap = mutableMapOf<String, Map<Services, Pair<Process, URL>>>()
 
