@@ -15,18 +15,12 @@ import java.sql.Timestamp
 
 interface SessionDao {
 
-    @SqlUpdate("INSERT INTO $TABLE_NAME($SESSION_ID, $PAT_ID, $START_DATE, $END_DATE, $INSTANCE_ID) VALUES (:$SESSION_ID, :$PAT_ID, :$START_DATE, :$END_DATE, :$INSTANCE_ID)")
-    fun insertNewSession(@Bind(SESSION_ID) sessionId: Int,
-                         @Bind(PAT_ID) patId: String,
-                         @Bind(START_DATE) startDate: Timestamp,
-                         @Bind(END_DATE) endDate: Timestamp,
-                         @Bind(INSTANCE_ID) microServiceInstanceId: Int)
-
     @SqlUpdate("INSERT INTO $TABLE_NAME($PAT_ID, $START_DATE, $INSTANCE_ID) VALUES (:$PAT_ID, :$START_DATE, :$INSTANCE_ID)")
     @GetGeneratedKeys
     fun insertNewSession(@Bind(PAT_ID) patId: String,
-                         @Bind(INSTANCE_ID) microServiceInstanceId: Int,
-                         @Bind(START_DATE) startDate: Timestamp): Session
+                         @Bind(START_DATE) startDate: Timestamp,
+                         @Bind(INSTANCE_ID) microServiceInstanceId: Int): Session
+
 
     @SqlUpdate("UPDATE $TABLE_NAME SET $END_DATE = (:$END_DATE) WHERE $SESSION_ID = (:$SESSION_ID)")
     fun closeSessionBySessionId(@Bind(SESSION_ID) sessionId: Int,

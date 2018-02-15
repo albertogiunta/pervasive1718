@@ -33,6 +33,11 @@ object Params {
         const val ACTIVITY_ID = "activityid"
         const val UPPERBOUND = "upperbound"
         const val LOWERBOUND = "lowerbound"
+        const val LIGHT_WARNING_OFFSET = "lightwarning_offset"
+        const val STATUS = "status"
+        const val ITS_GOOD = "itsgood"
+        const val MIN_AGE = "minage"
+        const val MAX_AGE = "maxage"
     }
 
     object HealthParameter {
