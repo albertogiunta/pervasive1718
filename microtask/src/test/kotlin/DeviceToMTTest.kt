@@ -1,10 +1,15 @@
 
 import logic.*
+import model.Member
+import model.Status
+import model.Task
 import networking.WSTaskServer
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import process.MicroServiceManager
 import spark.kotlin.ignite
+import utils.*
 import java.sql.Timestamp
 import java.util.*
 
@@ -12,6 +17,7 @@ class DeviceToMTTest {
 
     companion object {
         private var taskController: TaskController
+        private val manager = MicroServiceManager(System.getProperty("user.dir"))
 
         init {
             val taskService = ignite()
@@ -21,8 +27,8 @@ class DeviceToMTTest {
             Thread.sleep(1000)
 
             taskController = TaskController.INSTANCE
-
         }
+
     }
 
     @Test
@@ -59,7 +65,7 @@ class DeviceToMTTest {
         addMemberThread(memberId = member.id).start()
         Thread.sleep(3000)
 
-        val task = Task(6,1, Timestamp(Date().time), Timestamp(Date().time+1),1, Status.RUNNING.id)
+        val task = Task(6, -1, member.id, Timestamp(Date().time), Timestamp(Date().time+1),1, Status.RUNNING.id)
 
         addTaskThread(task, member).start()
         Thread.sleep(4000)
@@ -81,7 +87,7 @@ class DeviceToMTTest {
         addMemberThread(memberId = member.id).start()
         Thread.sleep(3000)
 
-        val task = logic.Task(3,1, Timestamp(Date().time), Timestamp(Date().time+1000),1, Status.RUNNING.id)
+        val task = Task(3, -1, member.id, Timestamp(Date().time), Timestamp(Date().time+1000),1, Status.RUNNING.id)
         addTaskThread(task, Member.defaultMember()).start()
         Thread.sleep(3000)
 
@@ -104,7 +110,7 @@ class DeviceToMTTest {
         addMemberThread(memberId = member.id).start()
         Thread.sleep(1000)
 
-        val task = logic.Task(4,1, Timestamp(Date().time), Timestamp(Date().time+1000),1, Status.RUNNING.id)
+        val task = Task(4, -1, member.id, Timestamp(Date().time), Timestamp(Date().time+1000),1, Status.RUNNING.id)
         addTaskThread(task, Member.defaultMember()).start()
         Thread.sleep(1000)
 

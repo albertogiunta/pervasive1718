@@ -1,4 +1,7 @@
+import config.ConfigLoader
+
 fun main(argv: Array<String>) {
+    ConfigLoader().load()
 
     val OBSERVATION_REFRESH_TIME = 1000L
 

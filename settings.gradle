@@ -1,4 +1,18 @@
 rootProject.name = 'pervasive1718'
+
+println("Load Config From Json")
+def jsonFile = file('config.json')
+def jsonText = jsonFile.text
+def parsedJson = new groovy.json.JsonSlurper().parseText(jsonText)
+
+gradle.ext.microMonitorJarName = parsedJson.microMonitor.jarName
+gradle.ext.microVisorsJarName = parsedJson.microVisors.jarName
+gradle.ext.microTaskJarName = parsedJson.microTask.jarName
+gradle.ext.microDatabaseJarName = parsedJson.microDatabase.jarName
+gradle.ext.microSessionJarName = parsedJson.microSession.jarName
+gradle.ext.microNotifierJarName = parsedJson.microNotifier.jarName
+
+
 include 'commons'
 include 'pubsub-adapter'
 include 'microdatabase'
@@ -10,4 +24,9 @@ include 'microvisors'
 include 'websocket-adapter'
 include 'rest-adapter'
 include 'microvisors-js'
+
+
+
+
+
 

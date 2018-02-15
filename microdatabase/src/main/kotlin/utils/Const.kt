@@ -6,7 +6,9 @@ object Params {
         const val TABLE_NAME = "session"
         const val SESSION_ID = "id"
         const val PAT_ID = "cf"
-        const val DATE = "date"
+        const val START_DATE = "startdate"
+        const val END_DATE = "enddate"
+        const val INSTANCE_ID = "microserviceinstanceid"
     }
 
     object Activity {
@@ -31,6 +33,11 @@ object Params {
         const val ACTIVITY_ID = "activityid"
         const val UPPERBOUND = "upperbound"
         const val LOWERBOUND = "lowerbound"
+        const val LIGHT_WARNING_OFFSET = "lightwarning_offset"
+        const val STATUS = "status"
+        const val ITS_GOOD = "itsgood"
+        const val MIN_AGE = "minage"
+        const val MAX_AGE = "maxage"
     }
 
     object HealthParameter {

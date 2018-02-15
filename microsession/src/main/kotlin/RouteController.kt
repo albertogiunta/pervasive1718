@@ -5,6 +5,8 @@ import com.github.kittinunf.fuel.httpDelete
 import com.github.kittinunf.fuel.httpPost
 import config.Services
 import config.Services.Utils
+import model.Session
+import model.SessionDNS
 import spark.Request
 import spark.Response
 import spark.Spark.path
@@ -12,6 +14,10 @@ import spark.Spark.port
 import spark.kotlin.delete
 import spark.kotlin.get
 import spark.kotlin.post
+import utils.GsonInitializer
+import utils.KlaxonDate
+import utils.dateConverter
+import utils.toJson
 
 object RouteController {
 
@@ -25,7 +31,7 @@ object RouteController {
             post("/new/:patId", Utils.RESTParams.applicationJson) { SessionApi.createNewSession(request, response) }
 
             // la fa il leader, deve sapere quale chiudere (la prende dalla new)
-            delete("/close/:patId", Utils.RESTParams.applicationJson) { SessionApi.closeSessionById(request, response) }
+            delete("/close/:sessionId", Utils.RESTParams.applicationJson) { SessionApi.closeSessionById(request, response) }
 
             // la fanno i membri, e deve restituire la lista di interventi disponibili
             get("/all", Utils.RESTParams.applicationJson) { SessionApi.listAllSessions(request, response) }
@@ -51,30 +57,31 @@ object SessionApi {
         dbUrl = createMicroDatabaseAddress(currentBoot)
         taskUrl = createMicroTaskAddress(currentBoot)
 
-        println(dbUrl)
 
         // TODO attach to subset of microservices
 
-        "$dbUrl/api/session/add/$patId".httpPost().responseString().third.fold(
+        "$dbUrl/api/session/add/$patId/instanceid/$currentBoot".httpPost().responseString().third.fold(
             success = {
                 val session = Klaxon().fieldConverter(KlaxonDate::class, dateConverter).parse<Session>(it)
                         ?: return response.badRequest().also { println("klaxon couldn't parse session") }
                 sessions.add(Pair(SessionDNS(session.id, session.cf, taskUrl), currentBoot))
             }, failure = { error ->
-                return error.toJson()
+                if (error.exception.message == "Connection refused (Connection refused)") {
+                    return response.resourceNotAvailable(dbUrl)
+                }
+                return response.internalServerError(error.exception.message.toString())
             })
 
         return sessions.last().first.toJson()
     }
 
     fun closeSessionById(request: Request, response: Response): String {
-        val patId = request.params("patId")
-        val session = sessions.first { it.first.patId == patId }
-        val sessionId = session.first.sessionId
+        val sessionId = request.params("sessionId").toInt()
+        val session = sessions.first { it.first.sessionId == sessionId }
 
         boots[session.second] = false
 
-        sessions.removeAll { it.first.patId == patId }
+        sessions.removeAll { it.first.sessionId == sessionId }
 
         // TODO detach to subset of microservices
 

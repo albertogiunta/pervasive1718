@@ -3,17 +3,17 @@
 package controllers.api
 
 import JdbiConfiguration
-import KlaxonDate
+import utils.KlaxonDate
 import Params
 import badRequest
 import com.beust.klaxon.Klaxon
 import dao.TaskDao
-import dateConverter
+import utils.dateConverter
 import model.Task
 import okCreated
 import spark.Request
 import spark.Response
-import toJson
+import utils.toJson
 import java.sql.SQLException
 
 object TaskApi {
@@ -27,6 +27,8 @@ object TaskApi {
         JdbiConfiguration.INSTANCE.jdbi.useExtension<TaskDao, SQLException>(TaskDao::class.java)
         {
             it.insertNewTask(
+                task.id,
+                task.sessionId,
                 task.operatorId,
                 task.startTime,
                 task.endTime,

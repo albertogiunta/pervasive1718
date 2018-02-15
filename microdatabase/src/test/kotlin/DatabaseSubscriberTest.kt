@@ -17,6 +17,9 @@ import com.google.gson.JsonObject
 import model.Log
 import org.junit.AfterClass
 import org.junit.Test
+import utils.KlaxonDate
+import utils.dateConverter
+import utils.handlingGetResponse
 import java.io.StringReader
 import java.util.*
 
@@ -37,7 +40,7 @@ class DatabaseSubscriberTest {
         init {
             BrokerConnector.init(REMOTE_HOST)
             connector = BrokerConnector.INSTANCE
-            MicroDatabaseBootstrap.init(DB_PORT.toInt())
+            MicroDatabaseBootstrap.init(DB_PORT)
         }
 
         @AfterClass
@@ -70,7 +73,7 @@ class DatabaseSubscriberTest {
         pub.start()
 
         Thread.sleep(4000)
-        handlingGetResponse(makeGet(readString + randomId))
+        listResult = handlingGetResponse(makeGet(readString + randomId))
 
         sub.unsubscribe(LifeParameters.HEART_RATE)
 
@@ -81,7 +84,7 @@ class DatabaseSubscriberTest {
     @Test
     fun writeMultipleData() {
 
-        handlingGetResponse(makeGet(allString))
+        listResult = handlingGetResponse(makeGet(allString))
         val initialListSize = listResult.size
 
         val json = JsonObject()
@@ -113,7 +116,7 @@ class DatabaseSubscriberTest {
         Thread.sleep(50000)
 
 
-        handlingGetResponse(makeGet(allString))
+        listResult = handlingGetResponse(makeGet(allString))
 
         println(listResult.size)
         println(initialListSize)
@@ -133,22 +136,5 @@ class DatabaseSubscriberTest {
 
     private fun makeGet(string: String): Triple<Request, Response, Result<String, FuelError>> {
         return string.httpGet().responseString()
-    }
-
-    private fun handlingGetResponse(triplet: Triple<Request, Response, Result<String, FuelError>>) {
-        triplet.third.fold(success = {
-            val klaxon = Klaxon().fieldConverter(KlaxonDate::class, dateConverter)
-            JsonReader(StringReader(it)).use { reader ->
-                listResult = arrayListOf()
-                reader.beginArray {
-                    while (reader.hasNext()) {
-                        val log = klaxon.parse<Log>(reader)!!
-                        (listResult as ArrayList<Log>).add(log)
-                    }
-                }
-            }
-        }, failure = {
-                println(String(it.errorData))
-            })
     }
 }

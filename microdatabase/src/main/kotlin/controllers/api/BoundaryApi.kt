@@ -11,7 +11,7 @@ import model.Boundary
 import okCreated
 import spark.Request
 import spark.Response
-import toJson
+import utils.toJson
 import java.sql.SQLException
 
 object BoundaryApi {
@@ -27,7 +27,12 @@ object BoundaryApi {
                 boundary.healthParameterId,
                 boundary.activityId,
                 boundary.upperBound,
-                boundary.lowerBound)
+                boundary.lowerBound,
+                boundary.lightWarningOffset,
+                boundary.status,
+                boundary.itsGood,
+                boundary.minAge,
+                boundary.maxAge)
         }
         return response.okCreated()
     }

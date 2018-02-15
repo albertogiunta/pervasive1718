@@ -1,10 +1,12 @@
+import config.ConfigLoader
 import model.Member
 import model.PayloadWrapper
 import model.SessionOperation
 import model.Subscription
+import utils.toJson
 
 fun main(args: Array<String>) {
-
+    ConfigLoader().load()
     println(URIFactory.getNotifierURI())
 
     val member = Member(666, "Mario Rossi")

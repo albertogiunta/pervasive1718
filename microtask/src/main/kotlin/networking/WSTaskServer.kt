@@ -2,9 +2,13 @@ package networking
 
 import WSServer
 import logic.*
-import logic.Serializer.klaxon
-import  KlaxonDate
-import dateConverter
+import model.Member
+import model.Serializer.klaxon
+import model.Task
+import model.TaskOperation
+import model.TaskPayload
+import  utils.KlaxonDate
+import utils.dateConverter
 import org.eclipse.jetty.websocket.api.Session
 import org.eclipse.jetty.websocket.api.annotations.WebSocket
 
@@ -21,7 +25,7 @@ class WSTaskServer : WSServer<TaskPayload>() {
     override fun onMessage(session: Session, message: String) {
         super.onMessage(session, message)
 
-        val taskPayload = klaxon.fieldConverter(KlaxonDate::class,dateConverter).parse<TaskPayload>(message)
+        val taskPayload = klaxon.fieldConverter(KlaxonDate::class, dateConverter).parse<TaskPayload>(message)
 
         taskPayload?.let {
             with(taskPayload) {

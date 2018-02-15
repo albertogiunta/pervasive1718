@@ -11,6 +11,7 @@ buildscript {
     ext.rxkotlin_version = '2.2.0'
     ext.fuel_version = '1.12.0'
 
+
     repositories {
         mavenCentral()
     }
@@ -63,6 +64,7 @@ task generatePervasiveJars {
         java.util.logging.Logger.getLogger("").setLevel(Level.INFO)
     }
     println "Starting Pervasive Project Jars Creation..."
+
     dependsOn 'microdatabase:microDatabaseJar'
     dependsOn 'micromonitor:microMonitorJar'
     dependsOn 'micronotifier:microNotifierJar'
@@ -70,4 +72,5 @@ task generatePervasiveJars {
     dependsOn 'microtask:microTaskJar'
     dependsOn 'microvisors:microVisorsJar'
 }
+
 

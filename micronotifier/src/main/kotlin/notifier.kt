@@ -1,9 +1,11 @@
+import config.ConfigLoader
 import config.Services
 import controller.CoreController
 import networking.rabbit.AMQPClient
 import networking.ws.RelayService
 
 fun main(args: Array<String>) {
+    ConfigLoader().load()
 
     val core = CoreController.singleton()
 

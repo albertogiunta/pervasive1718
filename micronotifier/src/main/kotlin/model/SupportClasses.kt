@@ -1,9 +1,9 @@
 package model
 
-import GsonInitializer
+import utils.GsonInitializer
 import LifeParameters
 import com.google.gson.GsonBuilder
-import toJson
+import utils.toJson
 import java.lang.ClassCastException
 import java.time.ZonedDateTime
 import java.util.*
