@@ -1,4 +1,4 @@
-
+import config.ConfigLoader
 import logic.*
 import model.Member
 import model.Status
@@ -20,6 +20,7 @@ class DeviceToMTTest {
         private val manager = MicroServiceManager(System.getProperty("user.dir"))
 
         init {
+            ConfigLoader().load()
             val taskService = ignite()
             taskService.port(WSParams.WS_TASK_PORT)
             taskService.service.webSocket(WSParams.WS_PATH_TASK, WSTaskServer::class.java)

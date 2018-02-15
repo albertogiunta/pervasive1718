@@ -1,5 +1,4 @@
 import Connection.ADDRESS
-import Connection.DB_PORT
 import Connection.PORT_SEPARATOR
 import Connection.PROTOCOL
 import Connection.PROTOCOL_SEPARATOR
@@ -14,6 +13,8 @@ import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.result.Result
 import com.google.gson.JsonObject
+import config.ConfigLoader
+import config.Services
 import model.Log
 import org.junit.AfterClass
 import org.junit.Test
@@ -24,6 +25,7 @@ import java.io.StringReader
 import java.util.*
 
 class DatabaseSubscriberTest {
+
     companion object {
         /* Remember to start the RabbitMQ broker on the specified host
          * otherwise the system throw a ConnectionException.
@@ -31,16 +33,22 @@ class DatabaseSubscriberTest {
          *
          **/
         private val connector: BrokerConnector
-        private val addString: String = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR$DB_PORT/${Connection.API}/$TABLE_NAME/add"
-        private val allString: String = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR$DB_PORT/${Connection.API}/$TABLE_NAME/all"
-        private val readString: String = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR$DB_PORT/${Connection.API}/$TABLE_NAME/${Params.HealthParameter.TABLE_NAME}/"
+        private val addString: String
+        private val allString: String
+        private val readString: String
 
         lateinit var listResult: List<Log>
 
         init {
+
+            ConfigLoader("../config.json").load()
+            addString = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.DATA_BASE.port}/${Connection.API}/$TABLE_NAME/add"
+            allString = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.DATA_BASE.port}/${Connection.API}/$TABLE_NAME/all"
+            readString = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.DATA_BASE.port}/${Connection.API}/$TABLE_NAME/${Params.HealthParameter.TABLE_NAME}/"
+
             BrokerConnector.init(REMOTE_HOST)
             connector = BrokerConnector.INSTANCE
-            MicroDatabaseBootstrap.init(DB_PORT)
+            MicroDatabaseBootstrap.init(Services.DATA_BASE.port)
         }
 
         @AfterClass

@@ -5,6 +5,7 @@ import Connection.PROTOCOL_SEPARATOR
 import com.beust.klaxon.Klaxon
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpPost
+import config.ConfigLoader
 import config.Services
 import logic.TaskController
 import model.*
@@ -20,17 +21,22 @@ import java.sql.Timestamp
 import java.util.*
 
 class MTtoMVTest {
-        private lateinit var listResult: List<VisibleTask>
+
+    private lateinit var listResult: List<VisibleTask>
 
     companion object {
+        private val getAllTaskVisor: String
+        private val newSession: String
         private var taskController: TaskController
         private val manager = MicroServiceManager(System.getProperty("user.dir"))
-        private val getAllTaskVisor: String = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.VISORS.port}/${Connection.API}/all"
-        private val newSession: String ="$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.SESSION.port}/session/new/hytgfred12"
         private val klaxon = Klaxon().fieldConverter(KlaxonDate::class, dateConverter)
         private lateinit var session: SessionDNS
 
         init {
+            ConfigLoader().load()
+            getAllTaskVisor = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.VISORS.port}/${Connection.API}/all"
+            newSession ="$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.SESSION.port}/session/new/hytgfred12"
+
             val taskService = ignite()
             taskService.port(Services.TASK_HANDLER.port)
             taskService.service.webSocket(Services.TASK_HANDLER.wsPath, WSTaskServer::class.java)
@@ -39,29 +45,26 @@ class MTtoMVTest {
 
             taskController = TaskController.INSTANCE
 
-
             manager.newService(Services.SESSION,"666")
             Thread.sleep(3000)
             manager.newService(Services.DATA_BASE,"666")
             Thread.sleep(3000)
             manager.newService(Services.VISORS,"666")
             Thread.sleep(3000)
-            }
-
-            @AfterClass
-            @JvmStatic
-            fun destroyAll() {
-                manager.closeSession("666")
-            }
-
-            @BeforeClass
-            @JvmStatic
-            fun getSession(){
-                newSession.httpPost().responseString().third.fold(success = {session = klaxon.parse<SessionDNS>(it)!!}, failure ={ println(it)})
-            }
         }
 
+        @AfterClass
+        @JvmStatic
+        fun destroyAll() {
+            manager.closeSession("666")
+        }
 
+        @BeforeClass
+        @JvmStatic
+        fun getSession(){
+            newSession.httpPost().responseString().third.fold(success = {session = klaxon.parse<SessionDNS>(it)!!}, failure ={ println(it)})
+        }
+    }
 
     @Test
     fun addTask(){
@@ -85,7 +88,6 @@ class MTtoMVTest {
         Assert.assertTrue(listResult.firstOrNull { it.id == task.id } != null)
 
     }
-
 
     @Test
     fun removeTask(){
@@ -111,6 +113,4 @@ class MTtoMVTest {
 
         Assert.assertTrue(listResult.firstOrNull { it.id == task.id } == null)
     }
-
-
 }

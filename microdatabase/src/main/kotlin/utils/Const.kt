@@ -95,7 +95,6 @@ object Connection {
     val REMOTE_HOST = "2.234.121.101"
     val ADDRESS = LOCAL_HOST
     val PROTOCOL = Services.Utils.Protocols.http
-    val DB_PORT = Services.DATA_BASE.port
     val API = "api"
     val PROTOCOL_SEPARATOR = "://"
     val PORT_SEPARATOR =":"

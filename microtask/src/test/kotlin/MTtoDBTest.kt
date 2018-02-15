@@ -1,11 +1,11 @@
 import Connection.ADDRESS
-import Connection.DB_PORT
 import Connection.PORT_SEPARATOR
 import Connection.PROTOCOL
 import Connection.PROTOCOL_SEPARATOR
 import com.beust.klaxon.Klaxon
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpPost
+import config.ConfigLoader
 import model.Status
 import config.Services
 import logic.TaskController
@@ -25,17 +25,21 @@ import java.util.*
 
 class MTtoDBTest {
 
-    private val readTask:String = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR$DB_PORT/${Connection.API}/task/all"
     private lateinit var listResult:List<model.Task>
 
     companion object {
+        private val readTask : String
+        private val newSession: String
         private var taskController: TaskController
         private val manager = MicroServiceManager(System.getProperty("user.dir"))
-        private val newSession: String ="$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.SESSION.port}/session/new/hytgfred12"
         private val klaxon = Klaxon().fieldConverter(KlaxonDate::class, dateConverter)
         private lateinit var session: SessionDNS
 
         init {
+            ConfigLoader().load()
+            readTask = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.DATA_BASE.port}/${Connection.API}/task/all"
+            newSession = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.SESSION.port}/session/new/hytgfred12"
+
             val taskService = ignite()
             taskService.port(Services.TASK_HANDLER.port)
             taskService.service.webSocket(Services.TASK_HANDLER.wsPath, WSTaskServer::class.java)

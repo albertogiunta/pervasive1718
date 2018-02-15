@@ -11,7 +11,6 @@ class ConfigLoader(val configPath: String = "config.json") {
     private val inputStream: InputStream = File(configPath).inputStream()
     private val inputString = inputStream.bufferedReader().use { it.readText() }
     val loadedConfig = GsonInitializer.gson.fromJson(inputString, Config::class.java)
-
     fun load() {
         Services.loadServicesConfig(loadedConfig)
     }
