@@ -6,7 +6,9 @@ object Params {
         const val TABLE_NAME = "session"
         const val SESSION_ID = "id"
         const val PAT_ID = "cf"
-        const val DATE = "date"
+        const val START_DATE = "startdate"
+        const val END_DATE = "enddate"
+        const val INSTANCE_ID = "microserviceinstanceid"
     }
 
     object Activity {
