@@ -3,20 +3,17 @@
 package controllers.api
 
 import JdbiConfiguration
-import KlaxonDate
 import Params
-import badRequest
-import com.beust.klaxon.Klaxon
 import controllers.SubscriberController
 import dao.SessionDao
-import dateConverter
 import model.Session
 import ok
-import okCreated
 import spark.Request
 import spark.Response
 import toJson
 import java.sql.SQLException
+import java.sql.Timestamp
+import java.util.*
 
 object SessionApi {
 
@@ -24,16 +21,13 @@ object SessionApi {
      * Retrieves all the session
      */
     fun addSession(request: Request, response: Response): String {
-        val session: Session = Klaxon().fieldConverter(KlaxonDate::class, dateConverter).parse<Session>(request.body())
-                ?: return response.badRequest()
-
-        JdbiConfiguration.INSTANCE.jdbi.useExtension<SessionDao, SQLException>(SessionDao::class.java) {
-            it.insertNewSession(session.id, session.cf, session.date)
-        }
+        var session = Session(cf = "", date = Timestamp(Date().time))
+        JdbiConfiguration.INSTANCE.jdbi.useExtension<SessionDao, SQLException>(SessionDao::class.java)
+        { session = it.insertNewSession(request.params(Params.Session.PAT_ID), Timestamp(Date().time)) }
 
         SubscriberController.startListeningMonitorsForSession(session.id)
 
-        return response.okCreated()
+        return session.toJson()
     }
 
     /**
@@ -51,9 +45,8 @@ object SessionApi {
     fun removeSessionBySessionId(request: Request, response: Response): String {
         val sessionId = request.params(Params.Session.SESSION_ID).toInt()
 
-        JdbiConfiguration.INSTANCE.jdbi.useExtension<SessionDao, SQLException>(SessionDao::class.java) {
-            it.deleteSessionBySessionId(sessionId)
-        }
+        JdbiConfiguration.INSTANCE.jdbi.useExtension<SessionDao, SQLException>(SessionDao::class.java)
+        { it.deleteSessionBySessionId(sessionId) }
 
         SubscriberController.stopListeningMonitorsForSession(sessionId)
 

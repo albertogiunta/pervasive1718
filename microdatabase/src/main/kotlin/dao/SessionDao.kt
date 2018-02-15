@@ -6,6 +6,7 @@ import Params.Session.SESSION_ID
 import Params.Session.TABLE_NAME
 import model.Session
 import org.jdbi.v3.sqlobject.customizer.Bind
+import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
 import java.sql.Timestamp
@@ -16,6 +17,11 @@ interface SessionDao {
     fun insertNewSession(@Bind(SESSION_ID) sessionId: Int,
                          @Bind(PAT_ID) patId: String,
                          @Bind(DATE) date: Timestamp)
+
+    @SqlUpdate("INSERT INTO $TABLE_NAME($PAT_ID, $DATE) VALUES (:$PAT_ID, :$DATE)")
+    @GetGeneratedKeys
+    fun insertNewSession(@Bind(PAT_ID) patId: String,
+                         @Bind(DATE) date: Timestamp): Session
 
     @SqlQuery("SELECT * FROM $TABLE_NAME")
     fun selectAllSessions(): List<Session>
