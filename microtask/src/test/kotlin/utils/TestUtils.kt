@@ -1,15 +1,18 @@
+package utils
+
 import com.beust.klaxon.JsonReader
 import com.beust.klaxon.Klaxon
 import com.github.kittinunf.fuel.core.FuelError
 import com.github.kittinunf.fuel.core.Request
 import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.result.Result
-import logic.Member
-import logic.Task
-import logic.TaskOperation
-import logic.TaskPayload
+import model.Member
+import model.Task
+import model.TaskOperation
+import model.TaskPayload
 import java.io.StringReader
 import java.util.ArrayList
+import WSClient
 
 fun addLeaderThread(memberId: Int): Thread {
     return Thread({
@@ -45,23 +48,4 @@ fun changeTaskStatus(task: Task): Thread {
 
 fun initializeConnectionWithTaskWSClient(): WSClient {
     return WSClientInitializer.init(WSClient(URIFactory.getTaskURI())).also { Thread.sleep(1000) }
-}
-
-inline fun <reified A> handlingGetResponse(triplet: Triple<Request, Response, Result<String, FuelError>>):List<A> {
-    lateinit var listResult : List<A>
-    triplet.third.fold(success = {
-        val klaxon = Klaxon().fieldConverter(KlaxonDate::class, dateConverter)
-        JsonReader(StringReader(it)).use { reader ->
-            listResult = arrayListOf()
-            reader.beginArray {
-                while (reader.hasNext()) {
-                    val data = klaxon.parse<A>(reader)!!
-                    (listResult as ArrayList<A>).add(data)
-                }
-            }
-        }
-    }, failure = {
-        println(String(it.errorData))
-    })
-    return listResult
 }

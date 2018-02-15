@@ -1,6 +1,6 @@
 @file:Suppress("UNUSED_PARAMETER")
 
-package logic
+package model
 
 enum class TaskOperation {
     ADD_LEADER,

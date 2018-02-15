@@ -10,7 +10,7 @@ import model.Session
 import ok
 import spark.Request
 import spark.Response
-import toJson
+import utils.toJson
 import java.sql.SQLException
 import java.sql.Timestamp
 import java.util.*

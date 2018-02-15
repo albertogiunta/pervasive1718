@@ -3,6 +3,7 @@ import model.Member
 import model.PayloadWrapper
 import model.SessionOperation
 import model.Subscription
+import utils.toJson
 
 fun main(args: Array<String>) {
     ConfigLoader().load()

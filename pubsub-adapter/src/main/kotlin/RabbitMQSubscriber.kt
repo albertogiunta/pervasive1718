@@ -52,7 +52,6 @@ class RabbitMQSubscriber(val connector: BrokerConnector) : Subscriber<LifeParame
 }
 
 fun main(argv: Array<String>) {
-    //BrokerConnector.init("127.0.0.1")
     BrokerConnector.init()
     val sub = RabbitMQSubscriber(BrokerConnector.INSTANCE)
 
@@ -60,6 +59,4 @@ fun main(argv: Array<String>) {
         println(X)
     }
     LifeParameters.values().forEach { X -> sub.subscribe(X, consumer) }
-    //LifeParameters.values().forEach { X -> sub.unsubscribe(X) }
-    //BrokerConnector.INSTANCE.close()
 }

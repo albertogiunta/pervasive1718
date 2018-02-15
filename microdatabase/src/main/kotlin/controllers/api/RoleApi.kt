@@ -11,7 +11,7 @@ import model.Role
 import okCreated
 import spark.Request
 import spark.Response
-import toJson
+import utils.toJson
 import java.sql.SQLException
 
 object RoleApi {

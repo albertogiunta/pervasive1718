@@ -3,7 +3,7 @@ package controller.logic
 import com.google.gson.GsonBuilder
 import controller.CoreController
 import model.PayloadWrapper
-import toJson
+import utils.toJson
 
 object Notification {
 

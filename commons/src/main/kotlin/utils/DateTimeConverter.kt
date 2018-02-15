@@ -1,3 +1,5 @@
+package utils
+
 import com.beust.klaxon.Converter
 import com.beust.klaxon.JsonValue
 import com.beust.klaxon.KlaxonException
@@ -18,6 +20,4 @@ val dateConverter = object : Converter<Timestamp> {
         }
 
     override fun toJson(value: Timestamp) = """ { "date" : $value } """
-
-
 }

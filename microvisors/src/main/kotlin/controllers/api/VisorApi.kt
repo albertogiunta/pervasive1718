@@ -10,7 +10,7 @@ import ok
 import okCreated
 import spark.Request
 import spark.Response
-import toJson
+import utils.toJson
 
 object VisorApi {
 

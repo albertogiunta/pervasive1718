@@ -1,6 +1,8 @@
-package utils
+package model
 
-import logic.Status
+import com.beust.klaxon.Klaxon
+import utils.KlaxonDate
+import utils.dateConverter
 import java.sql.Timestamp
 import java.util.*
 
@@ -17,4 +19,8 @@ object EmptyTask{
 object EmptyMember{
     const val emptyMemberId : Int = -2
     const val emptyMemberName: String = "empty member"
+}
+
+object Serializer {
+    val klaxon = Klaxon().fieldConverter(KlaxonDate::class, dateConverter)
 }
