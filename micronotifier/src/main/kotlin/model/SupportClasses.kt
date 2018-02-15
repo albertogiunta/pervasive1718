@@ -1,11 +1,8 @@
 package model
 
-import GsonInitializer
+import utils.GsonInitializer
 import LifeParameters
-import com.google.gson.GsonBuilder
-import toJson
 import java.time.ZonedDateTime
-import java.util.*
 
 interface Payload<T, D> {
 
@@ -21,10 +18,10 @@ interface Payload<T, D> {
 
 enum class SessionOperation(val path: String, private val xxx: (String) -> Any) {
 
-    CLOSE("/close", {GsonInitializer.gson.fromJson(it, model.Member::class.java)}),
-    SUBSCRIBE("/subscribe", {GsonInitializer.gson.fromJson(it, model.Subscription::class.java)}),
-    UPDATE("/update", {GsonInitializer.gson.fromJson(it, model.Update::class.java)}),
-    NOTIFY("/notify", {GsonInitializer.gson.fromJson(it, model.Notification::class.java)});
+    CLOSE("/close", { GsonInitializer.gson.fromJson(it, model.Member::class.java)}),
+    SUBSCRIBE("/subscribe", { GsonInitializer.gson.fromJson(it, model.Subscription::class.java)}),
+    UPDATE("/update", { GsonInitializer.gson.fromJson(it, model.Update::class.java)}),
+    NOTIFY("/notify", { GsonInitializer.gson.fromJson(it, model.Notification::class.java)});
 
     fun objectify(json: String) : Any = xxx(json)
 }
@@ -53,17 +50,3 @@ data class Subscription(override val sid: Long,
                         override val body: List<LifeParameters>,
                         override val time: String = Payload.getTime()) :
         Payload<Member, List<LifeParameters>>
-
-fun main(args: Array<String>) {
-
-    val gson = GsonBuilder().create()
-    val sid = Random().nextLong()
-
-    val json = PayloadWrapper(sid, SessionOperation.NOTIFY, Notification(sid, emptySet(), "DEAD").toJson()).toJson()
-
-    println(json)
-    val wrapper = gson.fromJson(json, PayloadWrapper::class.java)
-    println(wrapper.toString())
-
-    val n : Notification = wrapper.subject.objectify(wrapper.body) as Notification
-}

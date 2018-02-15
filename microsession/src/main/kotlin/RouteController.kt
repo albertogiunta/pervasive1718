@@ -5,6 +5,8 @@ import com.github.kittinunf.fuel.httpDelete
 import com.github.kittinunf.fuel.httpPost
 import config.Services
 import config.Services.Utils
+import model.Session
+import model.SessionDNS
 import spark.Request
 import spark.Response
 import spark.Spark.path
@@ -12,6 +14,10 @@ import spark.Spark.port
 import spark.kotlin.delete
 import spark.kotlin.get
 import spark.kotlin.post
+import utils.GsonInitializer
+import utils.KlaxonDate
+import utils.dateConverter
+import utils.toJson
 
 object RouteController {
 
@@ -61,10 +67,9 @@ object SessionApi {
                 sessions.add(Pair(SessionDNS(session.id, session.cf, taskUrl), currentBoot))
             }, failure = { error ->
                 if (error.exception.message == "Connection refused (Connection refused)") {
-                    return response.hostNotFound(dbUrl)
+                    return response.resourceNotAvailable(dbUrl)
                 }
-                println(error)
-                return response.badRequest()
+                return response.internalServerError(error.exception.message.toString())
             })
 
         return sessions.last().first.toJson()

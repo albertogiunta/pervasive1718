@@ -1,4 +1,5 @@
 import spark.Response
+import utils.toJson
 
 data class ResponseMessage(val id: Int, val message: String)
 
@@ -26,21 +27,20 @@ fun Response.badRequest(): String {
 fun Response.notFound(): String {
     this.status(404)
     this.type("application/json")
-    this.body(ResponseMessage(201, "Resource not found").toJson())
+    this.body(ResponseMessage(404, "Resource not found").toJson())
     return this.body()
 }
 
-fun Response.hostNotFound(): String {
-    this.status(404)
+fun Response.internalServerError(error: String): String {
+    this.status(500)
     this.type("application/json")
-    this.body(ResponseMessage(502, "Host Not Found").toJson())
+    this.body(ResponseMessage(500, "Internal server error. Details: $error").toJson())
     return this.body()
 }
 
-fun Response.hostNotFound(host: String): String {
-    this.status(404)
+fun Response.resourceNotAvailable(host: String): String {
+    this.status(503)
     this.type("application/json")
-    this.body(ResponseMessage(502, "Host Not Found for host: $host").toJson())
+    this.body(ResponseMessage(503, "Service $host not available.").toJson())
     return this.body()
 }
-

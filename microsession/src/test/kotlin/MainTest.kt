@@ -9,6 +9,7 @@ import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.result.Result
 import com.github.kittinunf.result.success
+import model.SessionDNS
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.io.StringReader
@@ -17,7 +18,7 @@ import java.util.*
 class SessionTest {
 
     private var listResult: MutableList<SessionDNS> = mutableListOf()
-    private val baseUrl = "http://localhost:8000/session"
+    private val baseUrl = "http://localhost:8500/session"
 
     companion object {
         init {

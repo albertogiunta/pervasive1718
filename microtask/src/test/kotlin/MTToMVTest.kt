@@ -2,19 +2,12 @@ import Connection.ADDRESS
 import Connection.PORT_SEPARATOR
 import Connection.PROTOCOL
 import Connection.PROTOCOL_SEPARATOR
-import com.beust.klaxon.JsonReader
 import com.beust.klaxon.Klaxon
-import com.github.kittinunf.fuel.core.FuelError
-import com.github.kittinunf.fuel.core.Request
-import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpPost
-import com.github.kittinunf.result.Result
 import config.Services
-import logic.Member
-import logic.Status
 import logic.TaskController
-import logic.VisibleTask
+import model.*
 import networking.WSTaskServer
 import org.junit.AfterClass
 import org.junit.Assert
@@ -22,7 +15,7 @@ import org.junit.BeforeClass
 import org.junit.Test
 import process.MicroServiceManager
 import spark.kotlin.ignite
-import java.io.StringReader
+import utils.*
 import java.sql.Timestamp
 import java.util.*
 
@@ -80,7 +73,7 @@ class MTtoMVTest {
         addMemberThread(memberId = member.id).start()
         Thread.sleep(3000)
 
-        val task = logic.Task(32,member.id, Timestamp(Date().time), Timestamp(Date().time+1000),1, Status.RUNNING.id,session.sessionId)
+        val task = Task(32, session.sessionId, member.id, Timestamp(Date().time), Timestamp(Date().time+1000),1, Status.RUNNING.id)
 
         addTaskThread(task, member).start()
         Thread.sleep(4000)
@@ -104,7 +97,7 @@ class MTtoMVTest {
         addMemberThread(memberId = member.id).start()
         Thread.sleep(3000)
 
-        val task = logic.Task(35,member.id, Timestamp(Date().time), Timestamp(Date().time+1000),1, Status.RUNNING.id,session.sessionId)
+        val task = Task(35, session.sessionId, member.id, Timestamp(Date().time), Timestamp(Date().time+1000),1, Status.RUNNING.id)
 
         addTaskThread(task, member).start()
         Thread.sleep(3000)

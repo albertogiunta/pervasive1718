@@ -61,7 +61,7 @@ CREATE TABLE Session (
 );
 
 CREATE TABLE Task (
-    ID BigSerial NOT NULL,
+    ID BigInt NOT NULL,
     SessionID BigInt NOT NULL,
     OperatorID BigInt,
     StartTime TIMESTAMP,

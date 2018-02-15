@@ -11,7 +11,7 @@ import model.TaskStatus
 import okCreated
 import spark.Request
 import spark.Response
-import toJson
+import utils.toJson
 import java.sql.SQLException
 
 object TaskStatusApi {

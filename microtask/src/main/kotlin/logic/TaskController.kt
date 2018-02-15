@@ -3,9 +3,11 @@ package logic
 import com.github.kittinunf.fuel.httpDelete
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.fuel.httpPut
+import model.*
 import networking.WSTaskServer
 import org.eclipse.jetty.websocket.api.Session
-import toJson
+import utils.toJson
+import utils.toVisibleTask
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
 
