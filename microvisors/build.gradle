@@ -14,5 +14,5 @@ task microVisorsJar(type: Jar) {
     }
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
-    archiveName microVisorsJarName
+    archiveName gradle.ext.microVisorsJarName
 }
