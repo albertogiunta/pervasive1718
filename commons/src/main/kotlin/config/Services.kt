@@ -1,7 +1,7 @@
 package config
 
 
-/*Remeber to load the configuration with ConfigLoader*/
+/*Remember to load the configuration with ConfigLoader*/
 class Services(var port: Int, val wsPath: String, val executableName: String, val module: String) {
 
     companion object {
@@ -52,6 +52,8 @@ class Services(var port: Int, val wsPath: String, val executableName: String, va
             const val http = "http"
             const val https = "https"
         }
+
+        fun defaultHostHttpPrefix(serv: Services) = "${Protocols.http}://$defaultHost:${serv.port}"
 
         object WSParams {
             const val defaultWSRoot = "${Protocols.websocket}://$defaultHost:"
