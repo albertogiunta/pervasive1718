@@ -25,7 +25,7 @@ object RouteController {
             post("/new/:patId", Utils.RESTParams.applicationJson) { SessionApi.createNewSession(request, response) }
 
             // la fa il leader, deve sapere quale chiudere (la prende dalla new)
-            delete("/close/:patId", Utils.RESTParams.applicationJson) { SessionApi.closeSessionById(request, response) }
+            delete("/close/:sessionId", Utils.RESTParams.applicationJson) { SessionApi.closeSessionById(request, response) }
 
             // la fanno i membri, e deve restituire la lista di interventi disponibili
             get("/all", Utils.RESTParams.applicationJson) { SessionApi.listAllSessions(request, response) }
@@ -71,13 +71,12 @@ object SessionApi {
     }
 
     fun closeSessionById(request: Request, response: Response): String {
-        val patId = request.params("patId")
-        val session = sessions.first { it.first.patId == patId }
-        val sessionId = session.first.sessionId
+        val sessionId = request.params("sessionId").toInt()
+        val session = sessions.first { it.first.sessionId == sessionId }
 
         boots[session.second] = false
 
-        sessions.removeAll { it.first.patId == patId }
+        sessions.removeAll { it.first.sessionId == sessionId }
 
         // TODO detach to subset of microservices
 
