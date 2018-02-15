@@ -6,11 +6,11 @@ import Connection.PROTOCOL_SEPARATOR
 import com.beust.klaxon.Klaxon
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpPost
-import model.Status
 import config.Services
 import logic.TaskController
 import model.Member
 import model.SessionDNS
+import model.Status
 import model.Task
 import networking.WSTaskServer
 import org.junit.AfterClass

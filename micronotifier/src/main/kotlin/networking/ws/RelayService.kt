@@ -14,8 +14,8 @@ import model.SessionOperation
 import org.eclipse.jetty.websocket.api.Session
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketError
 import org.eclipse.jetty.websocket.api.annotations.WebSocket
-import utils.toJson
 import utils.Logger
+import utils.toJson
 
 /**
  * A WS class which

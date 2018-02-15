@@ -7,7 +7,7 @@ import com.github.kittinunf.fuel.core.Request
 import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.result.Result
 import java.io.StringReader
-import java.util.ArrayList
+import java.util.*
 
 inline fun <reified A> handlingGetResponse(triplet: Triple<Request, Response, Result<String, FuelError>>):List<A> {
     lateinit var listResult : List<A>

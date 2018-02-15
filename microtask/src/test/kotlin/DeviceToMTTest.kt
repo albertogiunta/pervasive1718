@@ -1,5 +1,5 @@
 
-import logic.*
+import logic.TaskController
 import model.Member
 import model.Status
 import model.Task

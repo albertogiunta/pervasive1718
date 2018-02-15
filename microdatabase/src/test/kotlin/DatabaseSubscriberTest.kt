@@ -5,8 +5,6 @@ import Connection.PROTOCOL
 import Connection.PROTOCOL_SEPARATOR
 import Connection.REMOTE_HOST
 import Params.Log.TABLE_NAME
-import com.beust.klaxon.JsonReader
-import com.beust.klaxon.Klaxon
 import com.github.kittinunf.fuel.core.FuelError
 import com.github.kittinunf.fuel.core.Request
 import com.github.kittinunf.fuel.core.Response
@@ -17,10 +15,7 @@ import com.google.gson.JsonObject
 import model.Log
 import org.junit.AfterClass
 import org.junit.Test
-import utils.KlaxonDate
-import utils.dateConverter
 import utils.handlingGetResponse
-import java.io.StringReader
 import java.util.*
 
 class DatabaseSubscriberTest {
