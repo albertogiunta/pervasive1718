@@ -1,0 +1,26 @@
+{
+    "microSession": {
+        "port": 8000,
+        "jarName": "MicroSession.jar"
+    },
+    "microDatabase": {
+        "port": 8100,
+        "jarName": "MicroDatabase.jar"
+    },
+    "microTask": {
+        "port": 8200,
+        "jarName": "MicroTask.jar"
+    },
+    "microNotifier": {
+        "port": 8300,
+        "jarName": "MicroNotifier.jar"
+    },
+    "microVisors": {
+        "port": 8400,
+        "jarName": "MicroVisors.jar"
+    },
+    "microMonitor": {
+        "port": 8500,
+        "jarName": "MicroMonitor.jar"
+    }
+}
