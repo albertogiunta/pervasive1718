@@ -15,8 +15,10 @@ import logic.Status
 import logic.TaskController
 import logic.VisibleTask
 import networking.WSTaskServer
+import org.junit.AfterClass
 import org.junit.Assert
 import org.junit.Test
+import process.MicroServiceManager
 import spark.kotlin.ignite
 import java.io.StringReader
 import java.sql.Timestamp
@@ -29,6 +31,7 @@ class MTtoMVTest {
 
     companion object {
         private var taskController: TaskController
+        private val manager = MicroServiceManager(System.getProperty("user.dir"))
 
         init {
             val taskService = ignite()
@@ -39,11 +42,19 @@ class MTtoMVTest {
 
             taskController = TaskController.INSTANCE
 
-            //MicroserviceBootUtils.startMicroservice(MicroservicesPaths.microVisors).killAtParentDeath()
-            //MicroserviceBootUtils.startMicroservice(MicroservicesPaths.microDatabase).killAtParentDeath()
-            //MicroserviceBootUtils.startMicroservice(MicroservicesPaths.microSession).killAtParentDeath()
-            //MicroSessionBootstrap.init(Services.SESSION.port)da vedere come farli
-            //MicroDatabaseBootstrap.init(Connection.DB_PORT.toInt())
+
+            manager.newService(Services.SESSION,"666")
+            Thread.sleep(3000)
+            manager.newService(Services.DATA_BASE,"666")
+            Thread.sleep(3000)
+            manager.newService(Services.VISORS,"666")
+            Thread.sleep(3000)
+        }
+
+        @AfterClass
+        @JvmStatic
+        fun destroyAll() {
+            manager.closeSession("666")
         }
     }
 

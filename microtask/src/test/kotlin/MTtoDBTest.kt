@@ -15,8 +15,10 @@ import logic.Status
 import config.Services
 import logic.TaskController
 import networking.WSTaskServer
+import org.junit.AfterClass
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import process.MicroServiceManager
 import spark.kotlin.ignite
 import java.io.StringReader
 import java.sql.Timestamp
@@ -30,6 +32,7 @@ class MTtoDBTest {
 
     companion object {
         private var taskController: TaskController
+        private val manager = MicroServiceManager(System.getProperty("user.dir"))
 
         init {
             val taskService = ignite()
@@ -40,20 +43,25 @@ class MTtoDBTest {
 
             taskController = TaskController.INSTANCE
 
-            //MicroserviceBootUtils.startMicroservice(MicroservicesPaths.microDatabase).killAtParentDeath()
-            //MicroserviceBootUtils.startMicroservice(MicroservicesPaths.microSession).killAtParentDeath()
-            Thread.sleep(5000)
-            //MicroSessionBootstrap.init(Services.SESSION.port)da vedere come farli
-	        //MicroDatabaseBootstrap.init(Connection.DB_PORT.toInt())
+
+            manager.newService(Services.SESSION,"666")
+            Thread.sleep(3000)
+            manager.newService(Services.DATA_BASE,"666")
+            Thread.sleep(3000)
+
         }
+
+        @AfterClass
+        @JvmStatic
+        fun destroyAll() {
+            manager.closeSession("666")
+        }
+
     }
 
 
     @Test
     fun addTask(){
-        //MicroserviceBootUtils.startMicroservice(MicroservicesPaths.microDatabase).killAtParentDeath()
-        //MicroserviceBootUtils.startMicroservice(MicroservicesPaths.microSession).killAtParentDeath()
-        Thread.sleep(5000)
         Thread.sleep(4000)
         addLeaderThread(memberId = -1).start()
         Thread.sleep(4000)
@@ -62,7 +70,7 @@ class MTtoDBTest {
         addMemberThread(memberId = member.id).start()
         Thread.sleep(3000)
 
-        val task = logic.Task(24,member.id, Timestamp(Date().time), Timestamp(Date().time+1000),1, Status.RUNNING.id)
+        val task = logic.Task(40,member.id, Timestamp(Date().time), Timestamp(Date().time+1000),1, Status.RUNNING.id)
 
         addTaskThread(task, member).start()
         Thread.sleep(4000)
@@ -78,8 +86,6 @@ class MTtoDBTest {
 
     @Test
     fun removeTask(){
-        //MicroserviceBootUtils.startMicroservice(MicroservicesPaths.microDatabase).killAtParentDeath()
-        //MicroserviceBootUtils.startMicroservice(MicroservicesPaths.microSession).killAtParentDeath()
         Thread.sleep(5000)
         addLeaderThread(memberId = -1).start()
         Thread.sleep(3000)
@@ -88,7 +94,7 @@ class MTtoDBTest {
         addMemberThread(memberId = member.id).start()
         Thread.sleep(3000)
 
-        val task = logic.Task(25,member.id, Timestamp(Date().time), Timestamp(Date().time+1000),1, Status.RUNNING.id)
+        val task = logic.Task(41,member.id, Timestamp(Date().time), Timestamp(Date().time+1000),1, Status.RUNNING.id)
 
         addTaskThread(task, member).start()
         Thread.sleep(3000)
@@ -105,8 +111,6 @@ class MTtoDBTest {
 
     @Test
     fun changeTaskStatus(){
-        //MicroserviceBootUtils.startMicroservice(MicroservicesPaths.microDatabase).killAtParentDeath()
-        //MicroserviceBootUtils.startMicroservice(MicroservicesPaths.microSession).killAtParentDeath()
         Thread.sleep(5000)
         addLeaderThread(memberId = -1).start()
         Thread.sleep(3000)
@@ -115,7 +119,7 @@ class MTtoDBTest {
         addMemberThread(memberId = member.id).start()
         Thread.sleep(3000)
 
-        val task = logic.Task(26,member.id, Timestamp(Date().time), Timestamp(Date().time+1000),1, Status.RUNNING.id)
+        val task = logic.Task(42,member.id, Timestamp(Date().time), Timestamp(Date().time+1000),1, Status.RUNNING.id)
 
         addTaskThread(task, member).start()
         Thread.sleep(3000)
@@ -145,5 +149,9 @@ class MTtoDBTest {
             println(String(it.errorData))
         })
     }
+
+
+
+
 
 }
