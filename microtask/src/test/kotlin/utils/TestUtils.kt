@@ -1,18 +1,12 @@
 package utils
 
-import com.beust.klaxon.JsonReader
-import com.beust.klaxon.Klaxon
-import com.github.kittinunf.fuel.core.FuelError
-import com.github.kittinunf.fuel.core.Request
-import com.github.kittinunf.fuel.core.Response
-import com.github.kittinunf.result.Result
+import URIFactory
+import WSClient
+import WSClientInitializer
 import model.Member
 import model.Task
 import model.TaskOperation
 import model.TaskPayload
-import java.io.StringReader
-import java.util.ArrayList
-import WSClient
 
 fun addLeaderThread(memberId: Int): Thread {
     return Thread({
