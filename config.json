@@ -1,6 +1,6 @@
 {
     "microSession": {
-        "port": 8000,
+        "port": 8500,
         "jarName": "MicroSession.jar"
     },
     "microDatabase": {
@@ -20,7 +20,7 @@
         "jarName": "MicroVisors.jar"
     },
     "microMonitor": {
-        "port": 8500,
+        "port": 8600,
         "jarName": "MicroMonitor.jar"
     }
 }
