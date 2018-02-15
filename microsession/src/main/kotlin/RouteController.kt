@@ -1,5 +1,6 @@
 @file:Suppress("UNUSED_PARAMETER")
 
+import com.beust.klaxon.Klaxon
 import com.github.kittinunf.fuel.httpDelete
 import com.github.kittinunf.fuel.httpPost
 import config.Services
@@ -36,51 +37,56 @@ object RouteController {
 
 object SessionApi {
 
-    private val sessions = mutableListOf<SessionDNS>()
-    private lateinit var dbUrl: String
-    private lateinit var taskUrl: String
+    private val boots = BooleanArray(5)
+    private val sessions = mutableListOf<Pair<SessionDNS, Int>>()
+    private var dbUrl: String = ""
+    private var taskUrl: String = ""
+
+    private fun nextFreeSessionNumber() = boots.indexOfFirst { !it }.also { boots[it] = true }
 
     fun createNewSession(request: Request, response: Response): String {
         val patId = request.params("patId")
-        val newSessionId = if (sessions.isEmpty()) 0 else sessions.last().sessionId + 1
 
-        return if (sessions.find { it.patId == patId } != null) {
-            response.badRequest()
-        } else {
-            with(newSessionId) {
-                dbUrl = createMicroDatabaseAddress(this)
-                taskUrl = createMicroTaskAddress(this)
-            }
+        val currentBoot = nextFreeSessionNumber()
+        dbUrl = createMicroDatabaseAddress(currentBoot)
+        taskUrl = createMicroTaskAddress(currentBoot)
 
-            with(SessionDNS(newSessionId, patId, taskUrl)) {
-                sessions.add(this)
-                "$dbUrl/api/session/add".httpPost().body(GsonInitializer.toJson(this.toSessionForDB())).responseString()
-            }
+        println(dbUrl)
 
-            // TODO attach to subset of microservices
-            GsonInitializer.toJson(sessions.last())
-        }
+        // TODO attach to subset of microservices
+
+        "$dbUrl/api/session/add/$patId".httpPost().responseString().third.fold(
+            success = {
+                val session = Klaxon().fieldConverter(KlaxonDate::class, dateConverter).parse<Session>(it)
+                        ?: return response.badRequest().also { println("klaxon couldn't parse session") }
+                sessions.add(Pair(SessionDNS(session.id, session.cf, taskUrl), currentBoot))
+            }, failure = { error ->
+                return error.toJson()
+            })
+
+        return sessions.last().first.toJson()
     }
 
     fun closeSessionById(request: Request, response: Response): String {
         val patId = request.params("patId")
-        val session = sessions.first { it.patId == patId }
-        val sessionId = session.sessionId
+        val session = sessions.first { it.first.patId == patId }
+        val sessionId = session.first.sessionId
 
-        sessions.removeAll { it.patId == patId }
+        boots[session.second] = false
 
-        "$dbUrl/api/session/close/$sessionId".httpDelete().responseString()
+        sessions.removeAll { it.first.patId == patId }
 
         // TODO detach to subset of microservices
 
-        return response.ok()
+        "$dbUrl/api/session/close/$sessionId".httpDelete().responseString().third.fold(
+            success = { return response.ok() },
+            failure = { return it.toJson() }
+        )
     }
 
-    fun listAllSessions(request: Request, response: Response): String {
-        return GsonInitializer.toJson(sessions)
-    }
+    fun listAllSessions(request: Request, response: Response): String = GsonInitializer.toJson(sessions)
 
-    private fun buildPort(port: Int, id: Int): Int = port + (id % Utils.maxSimultaneousSessions)
+    private fun buildPort(port: Int, id: Int): Int = port + id
 
     private fun createMicroTaskAddress(id: Int) = "http://localhost:${buildPort(Services.TASK_HANDLER.port, id)}"
 

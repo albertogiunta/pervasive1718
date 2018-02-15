@@ -71,7 +71,7 @@ object RouteController {
             }
 
             path("/${Params.Session.TABLE_NAME}") {
-                post("/add", applicationJson) { SessionApi.addSession(request, response) }
+                post("/add/:cf", applicationJson) { SessionApi.addSession(request, response) }
                 get("/all", applicationJson) { SessionApi.getAllSessions(request, response) }
                 delete("/close/:id", applicationJson) { SessionApi.removeSessionBySessionId(request, response) }
             }
