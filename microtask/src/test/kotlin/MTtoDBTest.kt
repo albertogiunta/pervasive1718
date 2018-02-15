@@ -14,6 +14,7 @@ import logic.Member
 import logic.Status
 import config.Services
 import logic.TaskController
+import model.Task
 import networking.WSTaskServer
 import org.junit.AfterClass
 import org.junit.Assert.assertTrue
@@ -28,7 +29,7 @@ import kotlin.collections.ArrayList
 class MTtoDBTest {
 
     private val readTask:String = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR$DB_PORT/${Connection.API}/task/all"
-    private lateinit var listResult:ArrayList<model.Task>
+    private lateinit var listResult:List<model.Task>
 
     companion object {
         private var taskController: TaskController
@@ -75,7 +76,7 @@ class MTtoDBTest {
         addTaskThread(task, member).start()
         Thread.sleep(4000)
 
-        handlingGetResponse(readTask.httpGet().responseString())
+        listResult = handlingGetResponse(readTask.httpGet().responseString())
         Thread.sleep(2000)
         println(listResult)
 
@@ -102,7 +103,7 @@ class MTtoDBTest {
         removeTaskThread(task).start()
         Thread.sleep(3000)
 
-        handlingGetResponse(readTask.httpGet().responseString())
+        listResult = handlingGetResponse(readTask.httpGet().responseString())
         Thread.sleep(1000)
         println(listResult)
 
@@ -128,27 +129,11 @@ class MTtoDBTest {
         changeTaskStatus(task).start()
         Thread.sleep(3000)
 
-        handlingGetResponse(readTask.httpGet().responseString())
+        listResult = handlingGetResponse(readTask.httpGet().responseString())
         Thread.sleep(4000)
         assertTrue(listResult.firstOrNull{it.id == task.id}!!.statusId == Status.FINISHED.id)
     }
 
-    private fun handlingGetResponse(triplet: Triple<Request, Response, Result<String, FuelError>>) {
-        triplet.third.fold(success = {
-            val klaxon = Klaxon().fieldConverter(KlaxonDate::class, dateConverter)
-            JsonReader(StringReader(it)).use { reader ->
-                listResult = arrayListOf()
-                reader.beginArray {
-                    while (reader.hasNext()) {
-                        val task = klaxon.parse<model.Task>(reader)!!
-                        (listResult).add(task)
-                    }
-                }
-            }
-        }, failure = {
-            println(String(it.errorData))
-        })
-    }
 
 
 

@@ -27,7 +27,7 @@ import java.util.*
 class MTtoMVTest {
 
     private val getAllTaskVisor: String = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.VISORS.port}/${Connection.API}/all"
-    private lateinit var listResult: ArrayList<VisibleTask>
+    private lateinit var listResult: List<VisibleTask>
 
     companion object {
         private var taskController: TaskController
@@ -73,7 +73,7 @@ class MTtoMVTest {
         addTaskThread(task, member).start()
         Thread.sleep(4000)
 
-        handlingGetResponse(getAllTaskVisor.httpGet().responseString())
+        listResult = handlingGetResponse(getAllTaskVisor.httpGet().responseString())
         Thread.sleep(2000)
         println(listResult)
 
@@ -100,27 +100,12 @@ class MTtoMVTest {
         removeTaskThread(task).start()
         Thread.sleep(3000)
 
-        handlingGetResponse(getAllTaskVisor.httpGet().responseString())
+        listResult = handlingGetResponse(getAllTaskVisor.httpGet().responseString())
         Thread.sleep(1000)
         println(listResult)
 
         Assert.assertTrue(listResult.firstOrNull { it.id == task.id } == null)
     }
 
-    private fun handlingGetResponse(triplet: Triple<Request, Response, Result<String, FuelError>>) {
-        triplet.third.fold(success = {
-            val klaxon = Klaxon().fieldConverter(KlaxonDate::class, dateConverter)
-            JsonReader(StringReader(it)).use { reader ->
-                listResult = arrayListOf()
-                reader.beginArray {
-                    while (reader.hasNext()) {
-                        val task = klaxon.parse<VisibleTask>(reader)!!
-                        (listResult).add(task)
-                    }
-                }
-            }
-        }, failure = {
-            println(String(it.errorData))
-        })
-    }
+
 }
