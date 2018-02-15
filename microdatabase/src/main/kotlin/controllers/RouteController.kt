@@ -1,8 +1,8 @@
 package controllers
 
+//import RestParams.applicationJsonRequestType
 import Params
 import config.Services
-//import RestParams.applicationJsonRequestType
 import controllers.api.*
 import spark.Spark.path
 import spark.Spark.port
@@ -71,9 +71,10 @@ object RouteController {
             }
 
             path("/${Params.Session.TABLE_NAME}") {
-                post("/add/:cf", applicationJson) { SessionApi.addSession(request, response) }
+                post("/add/:${Params.Session.PAT_ID}/instanceid/:${Params.Session.INSTANCE_ID}", applicationJson) { SessionApi.addSession(request, response) }
                 get("/all", applicationJson) { SessionApi.getAllSessions(request, response) }
-                delete("/close/:id", applicationJson) { SessionApi.removeSessionBySessionId(request, response) }
+                get("/all/open", applicationJson) { SessionApi.getAllOpenSessions(request, response) }
+                delete("/close/:id", applicationJson) { SessionApi.closeSessionBySessionId(request, response) }
             }
 
             path("/${Params.Task.TABLE_NAME}") {

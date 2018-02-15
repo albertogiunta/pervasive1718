@@ -55,7 +55,7 @@ object SessionApi {
 
         // TODO attach to subset of microservices
 
-        "$dbUrl/api/session/add/$patId".httpPost().responseString().third.fold(
+        "$dbUrl/api/session/add/$patId/sessionid/$currentBoot".httpPost().responseString().third.fold(
             success = {
                 val session = Klaxon().fieldConverter(KlaxonDate::class, dateConverter).parse<Session>(it)
                         ?: return response.badRequest().also { println("klaxon couldn't parse session") }

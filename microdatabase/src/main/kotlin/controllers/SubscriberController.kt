@@ -27,7 +27,11 @@ object SubscriberController {
     }
 
     fun stopListeningMonitorsForSession(sessionId: Int) {
-        SessionController.detachSession()
-        LifeParameters.values().forEach { subscriber.unsubscribe(it) }
+        try {
+            SessionController.detachSession()
+            LifeParameters.values().forEach { subscriber.unsubscribe(it) }
+        } catch (e: Exception) {
+            println("Got exception in amq unsubscribe $e")
+        }
     }
 }
