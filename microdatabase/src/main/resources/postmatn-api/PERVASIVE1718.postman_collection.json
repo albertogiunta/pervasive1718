@@ -602,16 +602,19 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n\t\"sessionId\": 1,\n\t\"patId\": \"ciaonegrande\"\n}"
+                  "raw": ""
                 },
                 "url": {
-                  "raw": "{{prefix}}/session/add",
+                  "raw": "{{prefix}}/session/add/nonhaivisto/instanceid/0",
                   "host": [
                     "{{prefix}}"
                   ],
                   "path": [
                     "session",
-                    "add"
+                    "add",
+                    "nonhaivisto",
+                    "instanceid",
+                    "0"
                   ]
                 },
                 "description": ""
@@ -653,6 +656,27 @@
                   "path": [
                     "session",
                     "all"
+                  ]
+                },
+                "description": ""
+              },
+              "response": []
+            },
+            {
+              "name": "GET ALL OPEN SESSIONS",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "body": {},
+                "url": {
+                  "raw": "{{prefix}}/session/all/open",
+                  "host": [
+                    "{{prefix}}"
+                  ],
+                  "path": [
+                    "session",
+                    "all",
+                    "open"
                   ]
                 },
                 "description": ""
@@ -728,6 +752,48 @@
                   "path": [
                     "task",
                     "add"
+                  ]
+                },
+                "description": ""
+              },
+              "response": []
+            },
+            {
+              "name": "CHANGE TASK STATUS ID",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {},
+                "url": {
+                  "raw": "{{prefix}}/task/1/status/3",
+                  "host": [
+                    "{{prefix}}"
+                  ],
+                  "path": [
+                    "task",
+                    "1",
+                    "status",
+                    "3"
+                  ]
+                },
+                "description": ""
+              },
+              "response": []
+            },
+            {
+              "name": "DELETE TASK",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "body": {},
+                "url": {
+                  "raw": "{{prefix}}/task/1",
+                  "host": [
+                    "{{prefix}}"
+                  ],
+                  "path": [
+                    "task",
+                    "1"
                   ]
                 },
                 "description": ""
