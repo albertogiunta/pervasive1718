@@ -1,5 +1,6 @@
 package process
 
+import config.ConfigLoader
 import config.Services
 import java.io.File
 import java.net.URL
@@ -69,6 +70,8 @@ interface InstanceHandler<X, Y> {
 }
 
 fun main(args: Array<String>) {
+
+    ConfigLoader().load()
 
     val w = System.getProperty("user.dir")
 
