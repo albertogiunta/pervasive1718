@@ -2,7 +2,6 @@ import config.ConfigLoader
 import config.Services
 import controllers.RouteController
 import model.Bootstrapper
-import utils.toJson
 import java.awt.Desktop
 import java.io.File
 import java.net.URI

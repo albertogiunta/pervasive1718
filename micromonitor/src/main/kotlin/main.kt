@@ -1,3 +1,3 @@
 fun main(argv: Array<String>) {
-    MicroMonitorMain.main(argv)
+    MicroMonitorBootstrap.main(argv)
 }
