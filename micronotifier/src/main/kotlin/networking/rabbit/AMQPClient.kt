@@ -27,7 +27,7 @@ class AMQPClient(val broker: BrokerConnector, val topics: Set<LifeParameters>) {
      */
     fun publishOn(publishSubjects: Map<LifeParameters, Subject<String>>) {
         topics.forEach { lp ->
-            amqpSubscriber.subscribe(lp, amqpSubscriber.createStringConsumer {
+            amqpSubscriber.subscribe(lp.acronym, amqpSubscriber.createStringConsumer {
                 publishSubjects[lp]?.onNext(it)
             })
         }

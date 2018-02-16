@@ -50,8 +50,13 @@ $(document).ready(function () {
 // to Kaazing Gateway.
 //
 var handleConnect = function () {
-	queueName = "queue" + Math.floor(Math.random() * 1000000);
+	
+	consumeExchange.forEach(function(element, index, consumeExchange) {
+		consumeExchange[index] = element+sessionExchange
+	});
 
+	queueName = "queue" + Math.floor(Math.random() * 1000000);
+	
 	amqpClient = amqpClientFactory.createAmqpClient();
 
 	var credentials = {username: username, password: password};

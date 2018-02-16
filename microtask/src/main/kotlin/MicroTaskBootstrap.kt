@@ -1,16 +1,14 @@
+import config.Services
 import networking.WSTaskServer
 import spark.kotlin.ignite
+import utils.calculatePort
 
 
 object MicroTaskBootstrap {
 
     fun init(taskPort: Int) {
 
-        with(ignite()) {
-            port(taskPort)
-            service.webSocket(WSParams.WS_PATH_TASK, WSTaskServer::class.java)
-            service.init()
-        }
+        WSServerInitializer.init(WSTaskServer::class.java, wsPath = WSParams.WS_PATH_TASK, wsPort = taskPort)
 
         Thread.sleep(1000)
     }

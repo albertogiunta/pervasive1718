@@ -45,11 +45,11 @@ class MTtoMVTest {
 
             taskController = TaskController.INSTANCE
 
-            manager.newService(Services.SESSION,"666")
+            manager.newService(Services.SESSION, "1")
             Thread.sleep(3000)
-            manager.newService(Services.DATA_BASE,"666")
+            manager.newService(Services.DATA_BASE, "1")
             Thread.sleep(3000)
-            manager.newService(Services.VISORS,"666")
+            manager.newService(Services.VISORS, "1")
             Thread.sleep(3000)
         }
 
