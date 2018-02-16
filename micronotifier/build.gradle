@@ -10,7 +10,7 @@ dependencies {
 }
 
 task microNotifierJar(type: Jar) {
-    baseName = 'microservice-notifier'
+    baseName = 'runMicroNotifier'
     manifest {
         attributes 'Implementation-Title': 'micronotifier',
                 'Implementation-Version': 1.0,
