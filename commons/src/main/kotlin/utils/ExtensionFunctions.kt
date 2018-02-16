@@ -1,5 +1,6 @@
 package utils
 
+import LifeParameters
 import com.google.gson.GsonBuilder
 import config.Services
 import model.Member
@@ -19,3 +20,5 @@ fun Task.toVisibleTask(member: Member) =
         VisibleTask(this.id, "il name del task va tolto", Priority.HIGH, member.id, member.name, member.name)
 
 fun Services.calculatePort(args: Array<String>) = if ( args.isEmpty()) this.port else args[0].toInt()
+
+fun LifeParameters.acronymWithPort(port: Int) = this.acronym + port

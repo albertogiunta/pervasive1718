@@ -32,7 +32,7 @@ class PubSubTest {
 
         val sub = Thread({
             val sub = RabbitMQSubscriber(connector)
-            sub.subscribe(LifeParameters.HEART_RATE, sub.createStringConsumer { X -> subReceivedMessages.add(X) })
+            sub.subscribe(LifeParameters.HEART_RATE.acronym, sub.createStringConsumer { X -> subReceivedMessages.add(X) })
         })
         sub.start()
 
@@ -40,7 +40,7 @@ class PubSubTest {
 
         val pub = Thread({
             val pub = RabbitMQPublisher(connector)
-            pub.publish("Test 1", LifeParameters.HEART_RATE)
+            pub.publish("Test 1", LifeParameters.HEART_RATE.acronym)
         })
         pub.start()
 
@@ -57,13 +57,13 @@ class PubSubTest {
         val sub1Code = Runnable {
             val sub = RabbitMQSubscriber(connector)
             LifeParameters.values().forEach { X ->
-                sub.subscribe(X, sub.createStringConsumer { sub1ReceivedMessages.add(it) })
+                sub.subscribe(X.acronym, sub.createStringConsumer { sub1ReceivedMessages.add(it) })
             }
         }
         val sub2Code = Runnable {
             val sub = RabbitMQSubscriber(connector)
             LifeParameters.values().forEach { X ->
-                sub.subscribe(X, sub.createStringConsumer { sub2ReceivedMessages.add(it) })
+                sub.subscribe(X.acronym, sub.createStringConsumer { sub2ReceivedMessages.add(it) })
             }
         }
 
@@ -77,7 +77,7 @@ class PubSubTest {
         val pub = Thread({
             val pub = RabbitMQPublisher(connector)
             for (i in 0 until 10) {
-                pub.publish(i.toString(), LifeParameters.HEART_RATE)
+                pub.publish(i.toString(), LifeParameters.HEART_RATE.acronym)
             }
         })
         pub.start()
@@ -103,13 +103,13 @@ class PubSubTest {
         val sub1Code = Runnable {
             val sub = RabbitMQSubscriber(connector)
             LifeParameters.values().forEach { X ->
-                sub.subscribe(X, sub.createStringConsumer { sub1ReceivedMessages.add(it) })
+                sub.subscribe(X.acronym, sub.createStringConsumer { sub1ReceivedMessages.add(it) })
             }
         }
         val sub2Code = Runnable {
             val sub = RabbitMQSubscriber(connector)
             LifeParameters.values().forEach { X ->
-                sub.subscribe(X, sub.createStringConsumer { sub2ReceivedMessages.add(it) })
+                sub.subscribe(X.acronym, sub.createStringConsumer { sub2ReceivedMessages.add(it) })
             }
         }
 
@@ -123,7 +123,7 @@ class PubSubTest {
         val pub = Thread({
             val pub = RabbitMQPublisher(connector)
             for (i in 0 until 10) {
-                LifeParameters.values().forEach { X -> pub.publish(i.toString(), X) }
+                LifeParameters.values().forEach { X -> pub.publish(i.toString(), X.acronym) }
             }
         })
         pub.start()
@@ -146,9 +146,9 @@ class PubSubTest {
 
         val sub = Thread({
             val sub = RabbitMQSubscriber(connector)
-            sub.subscribe(LifeParameters.HEART_RATE, sub.createStringConsumer { X -> subReceivedMessages.add(X) })
+            sub.subscribe(LifeParameters.HEART_RATE.acronym, sub.createStringConsumer { X -> subReceivedMessages.add(X) })
             Thread.sleep(3000)
-            sub.unsubscribe(LifeParameters.HEART_RATE)
+            sub.unsubscribe(LifeParameters.HEART_RATE.acronym)
         })
         sub.start()
 
@@ -157,7 +157,7 @@ class PubSubTest {
         val pub = Thread({
             val pub = RabbitMQPublisher(connector)
             for (i in 0 until 5) {
-                pub.publish(i.toString(), LifeParameters.HEART_RATE)
+                pub.publish(i.toString(), LifeParameters.HEART_RATE.acronym)
                 Thread.sleep(1000)
             }
         })
@@ -175,7 +175,7 @@ class PubSubTest {
         val pub = Thread({
             val pub = RabbitMQPublisher(connector)
             for (i in 0 until 10) {
-                pub.publish(i.toString(), LifeParameters.HEART_RATE)
+                pub.publish(i.toString(), LifeParameters.HEART_RATE.acronym)
             }
         })
         pub.start()
@@ -185,7 +185,7 @@ class PubSubTest {
 
         val sub = Thread({
             val sub = RabbitMQSubscriber(connector)
-            sub.subscribe(LifeParameters.HEART_RATE, sub.createStringConsumer { X -> subReceivedMessages.add(X) })
+            sub.subscribe(LifeParameters.HEART_RATE.acronym, sub.createStringConsumer { X -> subReceivedMessages.add(X) })
         })
         sub.start()
 
@@ -202,17 +202,17 @@ class PubSubTest {
         val sub1Code = Runnable {
             val sub = RabbitMQSubscriber(connector)
             val consumer = sub.createStringConsumer { X -> sub1ReceivedMessages.add(X) }
-            sub.subscribe(LifeParameters.HEART_RATE, consumer)
-            sub.subscribe(LifeParameters.DIASTOLIC_BLOOD_PRESSURE, consumer)
-            sub.subscribe(LifeParameters.END_TIDAL_CARBON_DIOXIDE, consumer)
+            sub.subscribe(LifeParameters.HEART_RATE.acronym, consumer)
+            sub.subscribe(LifeParameters.DIASTOLIC_BLOOD_PRESSURE.acronym, consumer)
+            sub.subscribe(LifeParameters.END_TIDAL_CARBON_DIOXIDE.acronym, consumer)
         }
 
         val sub2Code = Runnable {
             val sub = RabbitMQSubscriber(connector)
             val consumer = sub.createStringConsumer { X -> sub2ReceivedMessages.add(X) }
-            sub.subscribe(LifeParameters.OXYGEN_SATURATION, consumer)
-            sub.subscribe(LifeParameters.SYSTOLIC_BLOOD_PRESSURE, consumer)
-            sub.subscribe(LifeParameters.TEMPERATURE, consumer)
+            sub.subscribe(LifeParameters.OXYGEN_SATURATION.acronym, consumer)
+            sub.subscribe(LifeParameters.SYSTOLIC_BLOOD_PRESSURE.acronym, consumer)
+            sub.subscribe(LifeParameters.TEMPERATURE.acronym, consumer)
         }
 
         val sub1 = Thread(sub1Code)
@@ -225,7 +225,7 @@ class PubSubTest {
         val pub = Thread({
             val pub = RabbitMQPublisher(connector)
             for (i in 0 until 10) {
-                LifeParameters.values().forEach { X -> pub.publish(X.acronym + i.toString(), X) }
+                LifeParameters.values().forEach { X -> pub.publish(X.acronym + i.toString(), X.acronym) }
             }
         })
         pub.start()
@@ -250,17 +250,17 @@ class PubSubTest {
         val sub1Code = Runnable {
             val sub = RabbitMQSubscriber(connector)
             val consumer = sub.createStringConsumer { X -> sub1ReceivedMessages.add(X) }
-            sub.subscribe(LifeParameters.HEART_RATE, consumer)
-            sub.subscribe(LifeParameters.DIASTOLIC_BLOOD_PRESSURE, consumer)
-            sub.subscribe(LifeParameters.END_TIDAL_CARBON_DIOXIDE, consumer)
+            sub.subscribe(LifeParameters.HEART_RATE.acronym, consumer)
+            sub.subscribe(LifeParameters.DIASTOLIC_BLOOD_PRESSURE.acronym, consumer)
+            sub.subscribe(LifeParameters.END_TIDAL_CARBON_DIOXIDE.acronym, consumer)
         }
 
         val sub2Code = Runnable {
             val sub = RabbitMQSubscriber(connector)
             val consumer = sub.createStringConsumer { X -> sub2ReceivedMessages.add(X) }
-            sub.subscribe(LifeParameters.HEART_RATE, consumer)
-            sub.subscribe(LifeParameters.SYSTOLIC_BLOOD_PRESSURE, consumer)
-            sub.subscribe(LifeParameters.TEMPERATURE, consumer)
+            sub.subscribe(LifeParameters.HEART_RATE.acronym, consumer)
+            sub.subscribe(LifeParameters.SYSTOLIC_BLOOD_PRESSURE.acronym, consumer)
+            sub.subscribe(LifeParameters.TEMPERATURE.acronym, consumer)
         }
 
         val sub1 = Thread(sub1Code)
@@ -273,7 +273,7 @@ class PubSubTest {
         val pub = Thread({
             val pub = RabbitMQPublisher(connector)
             for (i in 0 until 10) {
-                LifeParameters.values().forEach { X -> pub.publish(X.acronym + i.toString(), X) }
+                LifeParameters.values().forEach { X -> pub.publish(X.acronym + i.toString(), X.acronym) }
                 overlappedElement.add(LifeParameters.HEART_RATE.acronym + i.toString())
             }
         })
@@ -297,11 +297,11 @@ class PubSubTest {
     fun subscribedChannel() {
         val sub = RabbitMQSubscriber(connector)
         LifeParameters.values().forEach { X ->
-            sub.subscribe(X, sub.createStringConsumer { println(it) })
+            sub.subscribe(X.acronym, sub.createStringConsumer { println(it) })
         }
 
         println(sub.subscribedTopics())
-        println(LifeParameters.values().toSet())
-        Assert.assertTrue(sub.subscribedTopics() == LifeParameters.values().toSet())
+        println(LifeParameters.values().map { x -> x.acronym }.toSet())
+        Assert.assertTrue(sub.subscribedTopics() == LifeParameters.values().map { x -> x.acronym }.toSet())
     }
 }
