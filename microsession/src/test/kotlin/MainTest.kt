@@ -11,7 +11,6 @@ import com.github.kittinunf.result.Result
 import com.github.kittinunf.result.success
 import config.ConfigLoader
 import config.Services
-import model.Session
 import model.SessionDNS
 import org.junit.AfterClass
 import org.junit.Assert.assertTrue
@@ -28,7 +27,7 @@ class SessionTest {
     companion object {
 
         private var sessionDnsList: MutableList<SessionDNS> = mutableListOf()
-        private val manager = MicroServiceManager(System.getProperty("user.dir"))
+        private val manager = MicroServiceManager()
         private val baseUrl: String
         private val dbBaseUrl: String
 
@@ -38,23 +37,22 @@ class SessionTest {
             dbBaseUrl = Services.Utils.defaultHostHttpPrefix(Services.DATA_BASE)
 
             RouteController.initRoutes(Services.SESSION.port)
-            Thread.sleep(4000)
+            Thread.sleep(500)
 
+            manager.newService(Services.DATA_BASE,"0")
+            Thread.sleep(500)
             manager.newService(Services.DATA_BASE,"1")
-            Thread.sleep(3000)
-            /* [TODO] Sta roba dovrebbe funzionare, visto che possono esserci più sessions...
+            Thread.sleep(500)
             manager.newService(Services.DATA_BASE,"2")
-            Thread.sleep(3000)
-            manager.newService(Services.DATA_BASE,"3")
-            Thread.sleep(3000)*/
+            Thread.sleep(500)
         }
 
         @AfterClass
         @JvmStatic
         fun destroyAll() {
+            manager.closeSession("0")
             manager.closeSession("1")
-            /*manager.closeSession("2")
-            manager.closeSession("3")*/
+            manager.closeSession("2")
         }
     }
 
@@ -79,14 +77,15 @@ class SessionTest {
         println(previousSize)
 
         "$baseUrl/new/1".httpPost().responseString()
-        /*"$baseUrl/new/2".httpPost().responseString()*/
-        /*"$baseUrl/new/3".httpPost().responseString()*/
+        Thread.sleep(500)
+        "$baseUrl/new/2".httpPost().responseString()
+        Thread.sleep(500)
+        "$baseUrl/new/3".httpPost().responseString()
 
         handlingGetResponseWithArrayOfDnsSessions(makeGet("$baseUrl/all"))
 
         println(sessionDnsList.size)
-        //assertTrue(sessionDnsList.size == previousSize + 3)
-        assertTrue(sessionDnsList.size == previousSize + 1)
+        assertTrue(sessionDnsList.size == previousSize + 3)
     }
 
     @Test

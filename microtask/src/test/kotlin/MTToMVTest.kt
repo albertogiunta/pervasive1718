@@ -28,7 +28,7 @@ class MTtoMVTest {
         private val getAllTaskVisor: String
         private val newSession: String
         private var taskController: TaskController
-        private val manager = MicroServiceManager(System.getProperty("user.dir"))
+        private val manager = MicroServiceManager()
         private val klaxon = Klaxon().fieldConverter(KlaxonDate::class, dateConverter)
         private lateinit var session: SessionDNS
 

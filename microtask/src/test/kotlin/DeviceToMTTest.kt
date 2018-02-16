@@ -17,7 +17,7 @@ class DeviceToMTTest {
 
     companion object {
         private var taskController: TaskController
-        private val manager = MicroServiceManager(System.getProperty("user.dir"))
+        private val manager = MicroServiceManager()
 
         init {
             ConfigLoader().load()
