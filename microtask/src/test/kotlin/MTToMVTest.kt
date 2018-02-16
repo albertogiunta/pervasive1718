@@ -25,7 +25,7 @@ class MTtoMVTest {
     private lateinit var listResult: List<VisibleTask>
 
     companion object {
-        private val startArguments = arrayOf("2")
+        private val startArguments = arrayOf("1")
         private val getAllTaskVisor: String
         private val newSession: String
         private var taskController: TaskController
@@ -38,34 +38,32 @@ class MTtoMVTest {
             getAllTaskVisor = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.VISORS.port}/${Connection.API}/all"
             newSession ="$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.SESSION.port}/session/new/hytgfred12"
 
-            val taskService = ignite()
-            taskService.port(Services.TASK_HANDLER.port)
-            taskService.service.webSocket(Services.TASK_HANDLER.wsPath, WSTaskServer::class.java)
-            taskService.service.init()
-            Thread.sleep(3000)
-
-            taskController = TaskController.INSTANCE
-
-            manager.newService(Services.SESSION, "1")
-            Thread.sleep(3000)
             manager.newService(Services.DATA_BASE, "1")
+            Thread.sleep(3000)
+            manager.newService(Services.SESSION, "1")
             Thread.sleep(3000)
             manager.newService(Services.VISORS, "1")
             Thread.sleep(3000)
+            manager.newService(Services.TASK_HANDLER, "1")
+            Thread.sleep(3000)
+
+            newSession.httpPost().responseString().third.fold(success = {session = klaxon.parse<SessionDNS>(it)!!}, failure ={ println(it)})
+
+
+            /*val taskService = ignite()
+            taskService.port(Services.TASK_HANDLER.port)
+            taskService.service.webSocket(Services.TASK_HANDLER.wsPath, WSTaskServer::class.java)
+            taskService.service.init()
+            Thread.sleep(3000)*/
+
+            taskController = TaskController.INSTANCE
         }
 
         @AfterClass
         @JvmStatic
         fun destroyAll() {
-            manager.closeSession("666")
+            manager.closeSession("1")
         }
-
-        @BeforeClass
-        @JvmStatic
-        fun getSession(){
-            newSession.httpPost().responseString().third.fold(success = {session = klaxon.parse<SessionDNS>(it)!!}, failure ={ println(it)})
-        }
-
     }
 
 
@@ -111,5 +109,4 @@ class MTtoMVTest {
         Thread.sleep(4000)
 
     }
-
 }
