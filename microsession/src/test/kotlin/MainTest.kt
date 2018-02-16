@@ -65,11 +65,6 @@ class SessionTest {
         assertTrue(session.patId == roomId)
     }
 
-    /*
-     * [TODO] Se sto coso vogliamo che funzioni correttamente, bisogna instanziare 3 MicroDB.
-     * [TODO] Inoltre, sembrerebbe non essere possibile instanziare più MicroDB, pur specificando i diversi SessionID.
-     * [TODO] (manager.newService(Services.DATA_BASE,"1"))
-     */
     @Test
     fun getAllSessions() {
         handlingGetResponseWithArrayOfDnsSessions(makeGet("$baseUrl/all"))
