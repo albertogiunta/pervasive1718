@@ -14,16 +14,16 @@ class MicroServiceManager {
 
     val instanceHandler = object : InstanceHandler<Services, String> {
 
-        override fun new(service: Services, sessionID: String): Pair<Process, URL> {
+        override fun new(service: Services, slotId: String): Pair<Process, URL> {
 
             val dir = PathGetter.getRootPath()
 
-            val dynamicPort = service.port + sessionID.toInt()
+            val dynamicPort = service.port + slotId.toInt()
 
             val url = URL(
                     Services.Utils.Protocols.http,
                     Services.Utils.defaultHost, dynamicPort,
-                    "/session/$sessionID${service.wsPath}"
+                    "/session/$slotId${service.wsPath}"
             )
 
             val workingModule = StringJoiner(System.getProperty("file.separator"))
@@ -37,27 +37,27 @@ class MicroServiceManager {
         }
     }
 
-    fun newSession(sessionID: String) {
-        Services.values().forEach { newService(it,sessionID) }
+    fun newSession(slotId: String) {
+        Services.values().forEach { newService(it,slotId) }
     }
 
-    fun newService(service: Services, sessionID: String){
+    fun newService(service: Services, slotId: String){
 
         lateinit var map: MutableMap<Services, Pair<Process, URL>>
-        when(!sessionsMap.containsKey(sessionID)){
+        when(!sessionsMap.containsKey(slotId)){
             true -> map = mutableMapOf()
-            false -> map = sessionsMap[sessionID]!!.toMutableMap()
+            false -> map = sessionsMap[slotId]!!.toMutableMap()
         }
-        map[service] = instanceHandler.new(service,sessionID)
-        sessionsMap[sessionID] = map.toMap()
+        map[service] = instanceHandler.new(service,slotId)
+        sessionsMap[slotId] = map.toMap()
     }
 
-    fun closeSession(sessionID: String) {
-        if (sessionsMap.containsKey(sessionID)) {
-            sessionsMap[sessionID]!!.forEach { _, (process, _) ->
+    fun closeSession(slotId: String) {
+        if (sessionsMap.containsKey(slotId)) {
+            sessionsMap[slotId]!!.forEach { _, (process, _) ->
                 process.destroy()
             }
-            sessionsMap.remove(sessionID)
+            sessionsMap.remove(slotId)
         }
     }
 
@@ -72,7 +72,7 @@ class MicroServiceManager {
 
 interface InstanceHandler<X, Y> {
 
-    fun new(service: X, sessionID: Y) : Pair<Process, URL>
+    fun new(service: X, slotId: Y) : Pair<Process, URL>
 }
 
 fun main(args: Array<String>) {
