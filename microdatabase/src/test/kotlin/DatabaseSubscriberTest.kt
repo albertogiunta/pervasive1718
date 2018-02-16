@@ -27,6 +27,7 @@ class DatabaseSubscriberTest {
          * For this reason, use REMOTE_HOST as default.
          *
          **/
+        private val startArguments = arrayOf("2")
         private val connector: BrokerConnector
         private val addString: String
         private val allString: String
@@ -35,15 +36,14 @@ class DatabaseSubscriberTest {
         lateinit var listResult: List<Log>
 
         init {
-
-            ConfigLoader("../config.json").load()
+            ConfigLoader("../config.json").load(startArguments)
             addString = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.DATA_BASE.port}/${Connection.API}/$TABLE_NAME/add"
             allString = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.DATA_BASE.port}/${Connection.API}/$TABLE_NAME/all"
             readString = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.DATA_BASE.port}/${Connection.API}/$TABLE_NAME/${Params.HealthParameter.TABLE_NAME}/"
 
             BrokerConnector.init(LifeParameters.values().map { it.acronym }.toList(), REMOTE_HOST)
             connector = BrokerConnector.INSTANCE
-            MicroDatabaseBootstrap.init(Services.DATA_BASE.port)
+            MicroDatabaseBootstrap.init()
         }
 
         @AfterClass

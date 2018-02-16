@@ -13,11 +13,11 @@ import spark.kotlin.put
 
 object RouteController {
 
-    fun init(localPort: Int) {
+    fun init() {
 
         val applicationJson = Services.Utils.RESTParams.applicationJson
 
-        port(localPort)
+        port(Services.DATA_BASE.port)
 
         /**
          * NOTE: Calling APIs is CASE SENSITIVE. Use of camelCase on path definition is then discouraged.

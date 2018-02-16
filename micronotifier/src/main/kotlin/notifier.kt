@@ -7,7 +7,7 @@ import utils.acronymWithSession
 
 fun main(args: Array<String>) {
 
-    ConfigLoader().load()
+    ConfigLoader().load(args)
 
     val core = CoreController.singleton()
 

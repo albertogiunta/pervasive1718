@@ -6,11 +6,11 @@ import com.beust.klaxon.Klaxon
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpPost
 import config.ConfigLoader
-import model.Status
 import config.Services
 import logic.TaskController
 import model.Member
 import model.SessionDNS
+import model.Status
 import model.Task
 import networking.WSTaskServer
 import org.junit.AfterClass
@@ -28,6 +28,7 @@ class MTtoDBTest {
     private lateinit var listResult:List<model.Task>
 
     companion object {
+        private val startArguments = arrayOf("2")
         private val readTask : String
         private val newSession: String
         private var taskController: TaskController
@@ -36,7 +37,7 @@ class MTtoDBTest {
         private lateinit var session: SessionDNS
 
         init {
-            ConfigLoader().load()
+            ConfigLoader().load(startArguments)
             readTask = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.DATA_BASE.port}/${Connection.API}/task/all"
             newSession = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.SESSION.port}/session/new/hytgfred12"
 

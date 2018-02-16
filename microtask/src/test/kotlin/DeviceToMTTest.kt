@@ -1,5 +1,5 @@
 import config.ConfigLoader
-import logic.*
+import logic.TaskController
 import model.Member
 import model.Status
 import model.Task
@@ -16,11 +16,12 @@ import java.util.*
 class DeviceToMTTest {
 
     companion object {
+        private val startArguments = arrayOf("2")
         private var taskController: TaskController
         private val manager = MicroServiceManager()
 
         init {
-            ConfigLoader().load()
+            ConfigLoader().load(startArguments)
             val taskService = ignite()
             taskService.port(WSParams.WS_TASK_PORT)
             taskService.service.webSocket(WSParams.WS_PATH_TASK, WSTaskServer::class.java)

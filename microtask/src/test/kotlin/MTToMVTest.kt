@@ -25,6 +25,7 @@ class MTtoMVTest {
     private lateinit var listResult: List<VisibleTask>
 
     companion object {
+        private val startArguments = arrayOf("2")
         private val getAllTaskVisor: String
         private val newSession: String
         private var taskController: TaskController
@@ -33,7 +34,7 @@ class MTtoMVTest {
         private lateinit var session: SessionDNS
 
         init {
-            ConfigLoader().load()
+            ConfigLoader().load(startArguments)
             getAllTaskVisor = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.VISORS.port}/${Connection.API}/all"
             newSession ="$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.SESSION.port}/session/new/hytgfred12"
 

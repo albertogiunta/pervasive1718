@@ -1,26 +1,17 @@
 package controllers
 
+import config.Services
+import config.Services.Utils.RESTParams
 import controllers.api.VisorApi
-import spark.Request
-import spark.Response
 import spark.Spark.path
 import spark.kotlin.*
 
-interface Controller {
 
-    companion object {
-        const val applicationJsonRequestType = "application/json"
-    }
+object RouteController {
 
-    fun initRoutes(localPort: Int)
+    fun initRoutes() {
 
-}
-
-object RouteController : Controller {
-
-    override fun initRoutes(localPort: Int) {
-
-        port(localPort)
+        port(Services.VISORS.port)
 
         options("/*") {
 
@@ -47,9 +38,9 @@ object RouteController : Controller {
          * NOTE: Calling APIs is CASE SENSITIVE. Use of camelCase on path definition is then discouraged.
          */
         path("/api") {
-                get("/all", Controller.applicationJsonRequestType) { VisorApi.getAllTasks(request, response)}
-                post("/add", Controller.applicationJsonRequestType) { VisorApi.addTask(request, response) }
-                delete("/remove/:taskId", Controller.applicationJsonRequestType) { VisorApi.removeTask(request, response) }
+            get("/all", RESTParams.applicationJson) { VisorApi.getAllTasks(request, response) }
+            post("/add", RESTParams.applicationJson) { VisorApi.addTask(request, response) }
+            delete("/remove/:taskId", RESTParams.applicationJson) { VisorApi.removeTask(request, response) }
         }
     }
 }
