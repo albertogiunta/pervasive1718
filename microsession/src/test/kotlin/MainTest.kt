@@ -28,7 +28,6 @@ class SessionTest {
     companion object {
 
         private var sessionDnsList: MutableList<SessionDNS> = mutableListOf()
-        private var sessionList: MutableList<SessionDNS> = mutableListOf()
         private val manager = MicroServiceManager(System.getProperty("user.dir"))
         private val baseUrl: String
         private val dbBaseUrl: String
@@ -116,23 +115,6 @@ class SessionTest {
                     while (reader.hasNext()) {
                         val session = klaxon.parse<SessionDNS>(reader)!!
                         (sessionDnsList as ArrayList<SessionDNS>).add(session)
-                    }
-                }
-            }
-        }, failure = {
-            println(String(it.errorData))
-        })
-    }
-
-    private fun handlingGetResponseWithArrayOfSessions(triplet: Triple<Request, Response, Result<String, FuelError>>) {
-        triplet.third.fold(success = {
-            val klaxon = Klaxon()
-            JsonReader(StringReader(it)).use { reader ->
-                reader.beginArray {
-                    sessionList.clear()
-                    while (reader.hasNext()) {
-                        val session = klaxon.parse<Session>(reader)!!
-                        (sessionList as ArrayList<Session>).add(session)
                     }
                 }
             }
