@@ -9,14 +9,12 @@ import utils.acronymWithSession
 
 object SubscriberController {
 
-    private val subscriber: RabbitMQSubscriber
+    private lateinit var subscriber: RabbitMQSubscriber
 
-    init {
-        BrokerConnector.init(LifeParameters.values().map { it.acronymWithSession(argv) }.toList())
-        subscriber = RabbitMQSubscriber(BrokerConnector.INSTANCE)
-    }
 
     fun startListeningMonitorsForSession(sessionId: Int) {
+        BrokerConnector.init(LifeParameters.values().map { it.acronymWithSession(sessionId) }.toList())
+        subscriber = RabbitMQSubscriber(BrokerConnector.INSTANCE)
         if (SessionController.attachSession(sessionId)) {
             LifeParameters.values().forEach { param ->
                 subscriber.subscribe(param.acronym, subscriber.createStringConsumer { value ->
@@ -27,7 +25,7 @@ object SubscriberController {
         }
     }
 
-    fun stopListeningMonitorsForSession(sessionId: Int) {
+    fun stopListeningMonitorsForSession() {
         try {
             SessionController.detachSession()
             LifeParameters.values().forEach { subscriber.unsubscribe(it.acronym) }

@@ -23,3 +23,5 @@ fun Services.calculatePort(args: Array<String>) = if ( args.isEmpty()) this.port
 
 fun LifeParameters.acronymWithSession(args: Array<String>) =
         this.acronym + (if (args.isEmpty()) "" else args[0].toInt())
+
+fun LifeParameters.acronymWithSession(sessionID: Int) = this.acronym + sessionID

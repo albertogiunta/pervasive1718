@@ -58,7 +58,7 @@ object SessionApi {
         JdbiConfiguration.INSTANCE.jdbi.useExtension<SessionDao, SQLException>(SessionDao::class.java)
         { it.closeSessionBySessionId(sessionId, Timestamp(Date().time)) }
 
-        SubscriberController.stopListeningMonitorsForSession(sessionId)
+        SubscriberController.stopListeningMonitorsForSession()
 
         return response.ok()
     }

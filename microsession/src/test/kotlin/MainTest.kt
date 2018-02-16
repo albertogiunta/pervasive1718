@@ -12,49 +12,47 @@ import com.github.kittinunf.result.success
 import config.ConfigLoader
 import config.Services
 import model.SessionDNS
-import org.junit.AfterClass
+import org.junit.After
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Test
 import process.MicroServiceManager
 import java.io.StringReader
 import java.util.*
 
-/*
- * [TODO] MA VERAMENTE STO ROBO RITORNA SESSIONDNS?!
- */
+
 class SessionTest {
 
-    companion object {
 
-        private var sessionDnsList: MutableList<SessionDNS> = mutableListOf()
-        private val manager = MicroServiceManager()
-        private val baseUrl: String
-        private val dbBaseUrl: String
+    private var sessionDnsList: MutableList<SessionDNS> = mutableListOf()
+    private var manager = MicroServiceManager()
+    private lateinit var baseUrl: String
+    private lateinit var dbBaseUrl: String
 
-        init {
-            ConfigLoader().load()
-            baseUrl = Services.Utils.defaultHostHttpPrefix(Services.SESSION)
-            dbBaseUrl = Services.Utils.defaultHostHttpPrefix(Services.DATA_BASE)
+    @Before
+    fun setUp() {
+        ConfigLoader().load()
+        baseUrl = Services.Utils.defaultHostHttpPrefix(Services.SESSION)
+        dbBaseUrl = Services.Utils.defaultHostHttpPrefix(Services.DATA_BASE)
 
-            RouteController.initRoutes(Services.SESSION.port)
-            Thread.sleep(500)
+        RouteController.initRoutes(Services.SESSION.port)
+        Thread.sleep(1500)
 
-            manager.newService(Services.DATA_BASE,"0")
-            Thread.sleep(500)
-            manager.newService(Services.DATA_BASE,"1")
-            Thread.sleep(500)
-            manager.newService(Services.DATA_BASE,"2")
-            Thread.sleep(500)
-        }
-
-        @AfterClass
-        @JvmStatic
-        fun destroyAll() {
-            manager.closeSession("0")
-            manager.closeSession("1")
-            manager.closeSession("2")
-        }
+        manager.newService(Services.DATA_BASE, "0")
+        Thread.sleep(1500)
+        manager.newService(Services.DATA_BASE, "1")
+        Thread.sleep(1500)
+        manager.newService(Services.DATA_BASE, "2")
+        Thread.sleep(1500)
     }
+
+    @After
+    fun destroyAll() {
+        manager.closeSession("0")
+        manager.closeSession("1")
+        manager.closeSession("2")
+    }
+
 
     @Test
     fun createNewSessionTest() {

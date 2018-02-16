@@ -1,7 +1,7 @@
 import config.ConfigLoader
 import utils.acronymWithSession
 
-object MicroMonitorMain {
+object MicroMonitorBootstrap {
 
     @JvmStatic
     fun main(argv: Array<String>) {
