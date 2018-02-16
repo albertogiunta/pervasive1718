@@ -1,15 +1,11 @@
 import config.ConfigLoader
-import config.Services
 import utils.acronymWithPort
-import utils.calculatePort
 
 object MicroMonitorMain {
 
     @JvmStatic
     fun main(argv: Array<String>) {
         ConfigLoader().load()
-
-        val port = Services.MONITOR.calculatePort(argv)
 
         val OBSERVATION_REFRESH_TIME = 1000L
 
@@ -22,8 +18,9 @@ object MicroMonitorMain {
         val spO2Monitor = SpO2MonitorsFactory.createSimulatedSpO2Monitor()
         val etCO2 = EtCO2MonitorsFactory.createSimulatedEtCO2Monitor()
 
+
         //BrokerConnector.init("127.0.0.1")
-        BrokerConnector.init()
+        BrokerConnector.initWithChannelIdentifier(port)
         val pub = RabbitMQPublisher(BrokerConnector.INSTANCE)
 
         val obsTempGen = ObservableMonitor<Double>(tempMonitor)
