@@ -1,5 +1,6 @@
 package config
 
+import utils.calculatePort
 
 
 /*Remember to load the configuration with ConfigLoader*/
