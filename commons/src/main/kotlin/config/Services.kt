@@ -1,6 +1,7 @@
 package config
 
 
+
 /*Remember to load the configuration with ConfigLoader*/
 class Services(var port: Int, val wsPath: String, val executableName: String, val module: String) {
 
@@ -40,6 +41,15 @@ class Services(var port: Int, val wsPath: String, val executableName: String, va
         }
 
         fun values(): Array<Services> = arrayOf(SESSION, DATA_BASE, TASK_HANDLER, NOTIFIER, VISORS, MONITOR)
+
+        fun updatePortWithSession(args: Array<String>) {
+            Services.DATA_BASE.port = Services.DATA_BASE.calculatePort(args)
+            Services.SESSION.port = Services.SESSION.calculatePort(args)
+            Services.TASK_HANDLER.port = Services.TASK_HANDLER.calculatePort(args)
+            Services.NOTIFIER.port = Services.NOTIFIER.calculatePort(args)
+            Services.VISORS.port = Services.VISORS.calculatePort(args)
+            Services.MONITOR.port = Services.MONITOR.calculatePort(args)
+        }
     }
 
     object Utils {

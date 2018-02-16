@@ -6,7 +6,7 @@ import model.Subscription
 import utils.toJson
 
 fun main(args: Array<String>) {
-    ConfigLoader().load()
+    ConfigLoader().load(args)
     println(URIFactory.getNotifierURI())
 
     val member = Member(666, "Mario Rossi")

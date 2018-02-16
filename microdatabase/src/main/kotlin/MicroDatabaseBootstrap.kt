@@ -2,8 +2,8 @@ import controllers.RouteController
 
 object MicroDatabaseBootstrap {
 
-    fun init(localPort: Int) {
-        RouteController.init(localPort)
+    fun init() {
+        RouteController.init()
         JdbiConfiguration.init()
     }
 }

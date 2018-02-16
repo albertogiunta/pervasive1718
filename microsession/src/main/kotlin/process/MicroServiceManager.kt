@@ -77,7 +77,7 @@ interface InstanceHandler<X, Y> {
 
 fun main(args: Array<String>) {
 
-    ConfigLoader().load()
+    ConfigLoader().load(args)
 
     val w = System.getProperty("user.dir")
 

@@ -23,6 +23,7 @@ import java.util.*
 
 class SessionTest {
 
+    private val startArguments = arrayOf("2")
 
     private var sessionDnsList: MutableList<SessionDNS> = mutableListOf()
     private var manager = MicroServiceManager()
@@ -31,11 +32,11 @@ class SessionTest {
 
     @Before
     fun setUp() {
-        ConfigLoader().load()
+        ConfigLoader().load(startArguments)
         baseUrl = Services.Utils.defaultHostHttpPrefix(Services.SESSION)
         dbBaseUrl = Services.Utils.defaultHostHttpPrefix(Services.DATA_BASE)
 
-        RouteController.initRoutes(Services.SESSION.port)
+        RouteController.initRoutes()
         Thread.sleep(1500)
 
         manager.newService(Services.DATA_BASE, "0")

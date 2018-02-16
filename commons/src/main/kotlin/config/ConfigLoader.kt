@@ -12,8 +12,9 @@ class ConfigLoader(val configPath: String = PathGetter.getConfigPath()) {
     private val inputStream: InputStream = File(configPath).inputStream()
     private val inputString = inputStream.bufferedReader().use { it.readText() }
     val loadedConfig = GsonInitializer.gson.fromJson(inputString, Config::class.java)
-    fun load() {
+    fun load(args: Array<String>) {
         Services.loadServicesConfig(loadedConfig)
+        Services.updatePortWithSession(args)
     }
 }
 

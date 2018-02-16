@@ -21,9 +21,9 @@ import utils.toJson
 
 object RouteController {
 
-    fun initRoutes(localPort: Int) {
+    fun initRoutes() {
 
-        port(localPort)
+        port(Services.SESSION.port)
 
         path("/session") {
 
