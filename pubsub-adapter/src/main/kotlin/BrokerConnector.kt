@@ -7,7 +7,6 @@
 import com.rabbitmq.client.Channel
 import com.rabbitmq.client.Connection
 import com.rabbitmq.client.ConnectionFactory
-import utils.acronymWithPort
 import java.util.concurrent.atomic.AtomicBoolean
 
 class BrokerConnector private constructor(topics: List<String>, host: String) {
@@ -44,7 +43,7 @@ class BrokerConnector private constructor(topics: List<String>, host: String) {
 
         lateinit var INSTANCE: BrokerConnector
         val isInitialized = AtomicBoolean()
-        fun init(topics: List<String>, host: String) {
+        fun init(topics: List<String>, host: String = REMOTE_HOST) {
             if (!isInitialized.getAndSet(true)) {
                 INSTANCE = BrokerConnector(topics, host)
 
@@ -53,15 +52,6 @@ class BrokerConnector private constructor(topics: List<String>, host: String) {
                     password = "zeronegativo"
                 }
             }
-        }
-
-        fun init(host: String = REMOTE_HOST) {
-            init(LifeParameters.values().map { it.acronym }.toList(), host)
-        }
-
-
-        fun initWithChannelIdentifier(channelId: Int, host: String = REMOTE_HOST) {
-            init(LifeParameters.values().map { it.acronymWithPort(channelId) }.toList(), host)
         }
     }
 }

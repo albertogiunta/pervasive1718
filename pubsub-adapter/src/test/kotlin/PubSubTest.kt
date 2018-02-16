@@ -15,7 +15,7 @@ class PubSubTest {
         private val connector: BrokerConnector
 
         init {
-            BrokerConnector.init(REMOTE_HOST)
+            BrokerConnector.init(LifeParameters.values().map { it.acronym }.toList(), REMOTE_HOST)
             connector = BrokerConnector.INSTANCE
         }
 

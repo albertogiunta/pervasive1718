@@ -5,13 +5,14 @@ import LifeParameters
 import RabbitMQSubscriber
 import controllers.SessionController.getCurrentSession
 import controllers.api.LogApi
+import utils.acronymWithSession
 
 object SubscriberController {
 
     private val subscriber: RabbitMQSubscriber
 
     init {
-        BrokerConnector.init()
+        BrokerConnector.init(LifeParameters.values().map { it.acronymWithSession(argv) }.toList())
         subscriber = RabbitMQSubscriber(BrokerConnector.INSTANCE)
     }
 

@@ -3,8 +3,7 @@ import config.Services
 import controller.CoreController
 import networking.rabbit.AMQPClient
 import networking.ws.RelayService
-import utils.acronymWithPort
-import utils.calculatePort
+import utils.acronymWithSession
 
 fun main(args: Array<String>) {
 
@@ -14,11 +13,11 @@ fun main(args: Array<String>) {
 
     WSServerInitializer.init(RelayService::class.java, Services.NOTIFIER.port, Services.NOTIFIER.wsPath)
 
-    BrokerConnector.init()
+    BrokerConnector.init(LifeParameters.values().map { it.acronymWithSession(args) }.toList())
     val amqp = AMQPClient(
             BrokerConnector.INSTANCE,
             core.topics.activeTopics().map {
-                it to it.acronymWithPort(Services.MONITOR.calculatePort(args))
+                it to it.acronymWithSession(args)
             }.toMap())
 
     val publishSubjects = core.topics.activeTopics().map {

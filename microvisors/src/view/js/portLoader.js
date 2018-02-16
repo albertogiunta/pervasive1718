@@ -1,1 +1,1 @@
-var sessionExchange = 8400
+var sessionExchange = 8400;

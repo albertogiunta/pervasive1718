@@ -52,7 +52,7 @@ class RabbitMQSubscriber(val connector: BrokerConnector) : Subscriber<String, Co
 }
 
 fun main(argv: Array<String>) {
-    BrokerConnector.init()
+    BrokerConnector.init(LifeParameters.values().map { it.acronym }.toList())
     val sub = RabbitMQSubscriber(BrokerConnector.INSTANCE)
 
     val consumer = sub.createStringConsumer { X ->

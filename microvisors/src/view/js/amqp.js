@@ -50,14 +50,14 @@ $(document).ready(function () {
 // to Kaazing Gateway.
 //
 var handleConnect = function () {
-	
-	consumeExchange.forEach(function(element, index, consumeExchange) {
-		consumeExchange[index] = element+sessionExchange
-	});
+
+    consumeExchange.forEach(function (element, index, consumeExchange) {
+        consumeExchange[index] = element + sessionExchange
+    });
 
 	queueName = "queue" + Math.floor(Math.random() * 1000000);
-	
-	amqpClient = amqpClientFactory.createAmqpClient();
+
+    amqpClient = amqpClientFactory.createAmqpClient();
 
 	var credentials = {username: username, password: password};
 	var options = {
@@ -66,7 +66,7 @@ var handleConnect = function () {
 		credentials: credentials
 	};
 	amqpClient.connect(options, openHandler);
-}
+};
 
 // Event handler invoked when the connection is successfully made.
 //
@@ -100,8 +100,8 @@ var handleDisconnect = function () {
 	consumeChannel.closeChannel(consumeChannel);
 	amqpClient.disconnect();
 	console.log("handler has been called")
-	
-}
+
+};
 
 // Event handler when a message has been received from the gateway.
 //
@@ -119,14 +119,16 @@ var handleMessageReceived = function (event) {
 	}
 	var exchange = event.args.exchange;
 
-	var curGraph = graphs.filter(graph => graph.channel === exchange)[0];
+    var curGraph = graphs.filter(graph = > graph.channel === exchange;
+)
+    [0];
 	if (curGraph !== undefined)
 		curGraph.setData(body);
 	else {
 		var classId = "#"+exchange;
 		$(classId).text(body);
 	}
-}
+};
 
 // Create a WebSocketFactory which can be used for multiple AMQP clients if
 // required. This lets you defined the attributes of a WebSocket connection
@@ -142,10 +144,10 @@ var createWebSocketFactory = function () {
 		// Yeah, nobody needs to hide this stuff.
 		var credentials = new PasswordAuthentication("admin", "admin");
 		callback(credentials);
-	}
+    };
 	webSocketFactory.setChallengeHandler(basicHandler);
 	return webSocketFactory;
-}
+};
 
 // Convert a string to an ArrayBuffer.
 //
@@ -156,13 +158,13 @@ var stringToArrayBuffer = function (str) {
 		bufView[i] = str.charCodeAt(i);
 	}
 	return buf;
-}
+};
 
 // Convert an ArrayBuffer to a string.
 //
 var arrayBufferToString = function (buf) {
 	return String.fromCharCode.apply(null, new Uint8Array(buf));
-}
+};
 
 
 // Returns a random integer between min (inclusive) and max (exclusive).

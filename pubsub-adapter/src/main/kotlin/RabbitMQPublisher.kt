@@ -13,7 +13,7 @@ class RabbitMQPublisher(val connector: BrokerConnector) : Publisher<String, Stri
 }
 
 fun main(argv: Array<String>) {
-    BrokerConnector.init()
+    BrokerConnector.init(LifeParameters.values().map { it.acronym }.toList())
     val pub = RabbitMQPublisher(BrokerConnector.INSTANCE)
     while (true) {//for (i in 0 until 10) {
         pub.publish("Prova", LifeParameters.HEART_RATE.acronym)

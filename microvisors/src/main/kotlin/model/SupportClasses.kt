@@ -1,3 +1,3 @@
 package model
 
-data class Bootstrapper (val port: Int)
+data class Bootstrapper(val port: Int)

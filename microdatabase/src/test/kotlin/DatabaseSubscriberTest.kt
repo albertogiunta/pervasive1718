@@ -41,7 +41,7 @@ class DatabaseSubscriberTest {
             allString = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.DATA_BASE.port}/${Connection.API}/$TABLE_NAME/all"
             readString = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.DATA_BASE.port}/${Connection.API}/$TABLE_NAME/${Params.HealthParameter.TABLE_NAME}/"
 
-            BrokerConnector.init(REMOTE_HOST)
+            BrokerConnector.init(LifeParameters.values().map { it.acronym }.toList(), REMOTE_HOST)
             connector = BrokerConnector.INSTANCE
             MicroDatabaseBootstrap.init(Services.DATA_BASE.port)
         }
