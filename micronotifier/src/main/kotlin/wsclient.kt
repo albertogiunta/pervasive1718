@@ -17,7 +17,7 @@ fun main(args: Array<String>) {
     client.connectBlocking()
 
     val msg1 = PayloadWrapper(-1L, SessionOperation.SUBSCRIBE,
-            Subscription(-1L, member, listOf(LifeParameters.TEMPERATURE)).toJson()
+            Subscription(-1L, member, LifeParameters.values().toList()).toJson()
         ).toJson()
 
     client.sendMessage(msg1)

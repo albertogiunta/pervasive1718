@@ -77,13 +77,13 @@ insert into boundary (healthparameterid, activityid, lowerbound, upperbound, min
 values(1, null, 95.0, 140.0, 13.0, 999.9, 5.0, 'Normale', true);
 
 insert into boundary (healthparameterid, activityid, lowerbound, upperbound, minage, maxage, lightwarning_offset, status, itsgood)
-values(1, null, 140.0, 159.0, 13.0, 999.9, 1.0, 'Ipertensione 1', true);
+values(1, null, 140.0, 159.0, 13.0, 999.9, 1.0, 'Ipertensione 1', false);
 
 insert into boundary (healthparameterid, activityid, lowerbound, upperbound, minage, maxage, lightwarning_offset, status, itsgood)
-values(1, null, 160.0, 179.0, 13.0, 999.9, 1.0, 'Ipertensione 2', true);
+values(1, null, 160.0, 179.0, 13.0, 999.9, 1.0, 'Ipertensione 2', false);
 
 insert into boundary (healthparameterid, activityid, lowerbound, upperbound, minage, maxage, lightwarning_offset, status, itsgood)
-values(1, null, 180.0, 666.66, 13.0, 999.9, 1.0, 'Ipertensione 3', true);
+values(1, null, 180.0, 666.66, 13.0, 999.9, 1.0, 'Ipertensione 3', false);
 
 -- Pressione Arteriosa DIA ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -100,10 +100,21 @@ insert into boundary (healthparameterid, activityid, lowerbound, upperbound, min
 values(2, null, 60.0, 90.0, 13.0, 999.9, 5.0, 'Normale', true);
 
 insert into boundary (healthparameterid, activityid, lowerbound, upperbound, minage, maxage, lightwarning_offset, status, itsgood)
-values(2, null, 90.0, 99.0, 13.0, 999.9, 1.0, 'Ipertensione 1', true);
+values(2, null, 90.0, 99.0, 13.0, 999.9, 1.0, 'Ipertensione 1', false);
 
 insert into boundary (healthparameterid, activityid, lowerbound, upperbound, minage, maxage, lightwarning_offset, status, itsgood)
-values(2, null, 100.0, 109.0, 13.0, 999.9, 1.0, 'Ipertensione 2', true);
+values(2, null, 100.0, 109.0, 13.0, 999.9, 1.0, 'Ipertensione 2', false);
 
 insert into boundary (healthparameterid, activityid, lowerbound, upperbound, minage, maxage, lightwarning_offset, status, itsgood)
-values(2, null, 110.0, 666.6, 13.0, 999.9, 5.0, 'Ipertensione 3', true);
+values(2, null, 110.0, 666.6, 13.0, 999.9, 5.0, 'Ipertensione 3', false);
+
+-- CO2 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+insert into boundary (healthparameterid, activityid, lowerbound, upperbound, minage, maxage, lightwarning_offset, status, itsgood)
+values(6, null, 5.0, 6.0, 0.0, 999.9, 0.1, 'Normale', true);
+
+insert into boundary (healthparameterid, activityid, lowerbound, upperbound, minage, maxage, lightwarning_offset, status, itsgood)
+values(6, null, 0.0, 5.0, 0.0, 999.9, 0.1, 'Troppo Bassa', false);
+
+insert into boundary (healthparameterid, activityid, lowerbound, upperbound, minage, maxage, lightwarning_offset, status, itsgood)
+values(6, null, 6.0, 100.0, 0.0, 999.9, 0.1, 'Troppo Alta', false);
