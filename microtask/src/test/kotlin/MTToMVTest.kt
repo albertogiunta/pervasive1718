@@ -65,53 +65,51 @@ class MTtoMVTest {
         fun getSession(){
             newSession.httpPost().responseString().third.fold(success = {session = klaxon.parse<SessionDNS>(it)!!}, failure ={ println(it)})
         }
+
     }
+
 
     @Test
     fun addTask(){
-        Thread.sleep(4000)
-        addLeaderThread(memberId = -1).start()
-        Thread.sleep(4000)
+        var taskId = 32
 
-        val member = Member(4,"Member")
-        addMemberThread(memberId = member.id).start()
-        Thread.sleep(3000)
-
-        val task = Task(32, session.sessionId, member.id, Timestamp(Date().time), Timestamp(Date().time+1000),1, Status.RUNNING.id)
-
-        addTaskThread(task, member).start()
-        Thread.sleep(4000)
-
+        commonCode(4, taskId)
         listResult = handlingGetResponse(getAllTaskVisor.httpGet().responseString())
         Thread.sleep(2000)
         println(listResult)
 
-        Assert.assertTrue(listResult.firstOrNull { it.id == task.id } != null)
+        Assert.assertTrue(listResult.firstOrNull { it.id == taskId } != null)
 
     }
 
     @Test
     fun removeTask(){
+        var taskId = 35
+        commonCode(5, 35)
+        listResult = handlingGetResponse(getAllTaskVisor.httpGet().responseString())
+        Thread.sleep(1000)
+        println(listResult)
+
+        Assert.assertTrue(listResult.firstOrNull { it.id == taskId } == null)
+    }
+
+    fun commonCode(memberId: Int, taskID: Int) {
         Thread.sleep(5000)
         addLeaderThread(memberId = -1).start()
-        Thread.sleep(3000)
+        Thread.sleep(4000)
 
-        val member = Member(5,"Member")
+        val member = Member(memberId, "Member")
         addMemberThread(memberId = member.id).start()
         Thread.sleep(3000)
 
-        val task = Task(35, session.sessionId, member.id, Timestamp(Date().time), Timestamp(Date().time+1000),1, Status.RUNNING.id)
+        val task = Task(taskID, session.sessionId, member.id, Timestamp(Date().time), Timestamp(Date().time + 1000), 1, Status.RUNNING.id)
 
         addTaskThread(task, member).start()
         Thread.sleep(3000)
 
         removeTaskThread(task).start()
-        Thread.sleep(3000)
+        Thread.sleep(4000)
 
-        listResult = handlingGetResponse(getAllTaskVisor.httpGet().responseString())
-        Thread.sleep(1000)
-        println(listResult)
-
-        Assert.assertTrue(listResult.firstOrNull { it.id == task.id } == null)
     }
+
 }
