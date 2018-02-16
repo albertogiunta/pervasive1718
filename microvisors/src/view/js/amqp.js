@@ -119,9 +119,7 @@ var handleMessageReceived = function (event) {
 	}
 	var exchange = event.args.exchange;
 
-    var curGraph = graphs.filter(graph = > graph.channel === exchange;
-)
-    [0];
+    var curGraph = graphs.filter(graph => graph.channel === exchange)[0];
 	if (curGraph !== undefined)
 		curGraph.setData(body);
 	else {
