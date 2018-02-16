@@ -21,4 +21,5 @@ fun Task.toVisibleTask(member: Member) =
 
 fun Services.calculatePort(args: Array<String>) = if ( args.isEmpty()) this.port else args[0].toInt()
 
-fun LifeParameters.acronymWithSession(args: Array<String>) = this.acronym + (if ( args.isEmpty()) "" else args[0].toInt())
+fun LifeParameters.acronymWithSession(args: Array<String>) =
+    this.acronym + (if (args.isEmpty()) "" else args[0].toInt())
