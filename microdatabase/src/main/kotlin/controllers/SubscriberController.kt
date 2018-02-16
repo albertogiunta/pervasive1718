@@ -18,7 +18,7 @@ object SubscriberController {
     fun startListeningMonitorsForSession(sessionId: Int) {
         if (SessionController.attachSession(sessionId)) {
             LifeParameters.values().forEach { param ->
-                subscriber.subscribe(param, subscriber.createStringConsumer { value ->
+                subscriber.subscribe(param.acronym, subscriber.createStringConsumer { value ->
                     println("Saving param $param value $value to session ${getCurrentSession()}")
                     LogApi.addLogEntry(param, value.toDouble())
                 })
@@ -29,7 +29,7 @@ object SubscriberController {
     fun stopListeningMonitorsForSession(sessionId: Int) {
         try {
             SessionController.detachSession()
-            LifeParameters.values().forEach { subscriber.unsubscribe(it) }
+            LifeParameters.values().forEach { subscriber.unsubscribe(it.acronym) }
         } catch (e: Exception) {
             println("Got exception in amq unsubscribe $e")
         }

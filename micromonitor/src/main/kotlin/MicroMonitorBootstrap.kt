@@ -1,15 +1,11 @@
 import config.ConfigLoader
-import config.Services
-import utils.acronymWithPort
-import utils.calculatePort
+import utils.acronymWithSession
 
-object MicroMonitorMain {
+object MicroMonitorBootstrap {
 
     @JvmStatic
     fun main(argv: Array<String>) {
         ConfigLoader().load()
-
-        val port = Services.MONITOR.calculatePort(argv)
 
         val OBSERVATION_REFRESH_TIME = 1000L
 
@@ -26,34 +22,34 @@ object MicroMonitorMain {
         BrokerConnector.init()
         val pub = RabbitMQPublisher(BrokerConnector.INSTANCE)
 
-        val obsTempGen = ObservableMonitor<Double>(tempMonitor)
+        val obsTempGen = ObservableMonitor(tempMonitor)
         obsTempGen.createObservable(OBSERVATION_REFRESH_TIME).subscribe({
-            pub.publish("" + it, obsTempGen.measuredParameter.acronymWithPort(port))
+            pub.publish("" + it, obsTempGen.measuredParameter.acronymWithSession(argv))
         })
 
-        val obsSysGen = ObservableMonitor<Double>(systolicMonitor)
+        val obsSysGen = ObservableMonitor(systolicMonitor)
         obsSysGen.createObservable(OBSERVATION_REFRESH_TIME).subscribe({
-            pub.publish("" + it, obsSysGen.measuredParameter.acronymWithPort(port))
+            pub.publish("" + it, obsSysGen.measuredParameter.acronymWithSession(argv))
         })
 
-        val obsDiaGen = ObservableMonitor<Double>(diastolicMonitor)
+        val obsDiaGen = ObservableMonitor(diastolicMonitor)
         obsDiaGen.createObservable(OBSERVATION_REFRESH_TIME).subscribe({
-            pub.publish("" + it, obsDiaGen.measuredParameter.acronymWithPort(port))
+            pub.publish("" + it, obsDiaGen.measuredParameter.acronymWithSession(argv))
         })
 
-        val obsHrGen = ObservableMonitor<Double>(heartRateMonitor)
+        val obsHrGen = ObservableMonitor(heartRateMonitor)
         obsHrGen.createObservable(OBSERVATION_REFRESH_TIME).subscribe({
-            pub.publish("" + it, obsHrGen.measuredParameter.acronymWithPort(port))
+            pub.publish("" + it, obsHrGen.measuredParameter.acronymWithSession(argv))
         })
 
         val obsSpO2Gen = ObservableMonitor(spO2Monitor)
         obsSpO2Gen.createObservable(OBSERVATION_REFRESH_TIME).subscribe({
-            pub.publish("" + it, obsSpO2Gen.measuredParameter.acronymWithPort(port))
+            pub.publish("" + it, obsSpO2Gen.measuredParameter.acronymWithSession(argv))
         })
 
         val obsEtCO2Gen = ObservableMonitor(etCO2)
         obsEtCO2Gen.createObservable(OBSERVATION_REFRESH_TIME).subscribe({
-            pub.publish("" + it, obsEtCO2Gen.measuredParameter.acronymWithPort(port))
+            pub.publish("" + it, obsEtCO2Gen.measuredParameter.acronymWithSession(argv))
         })
     }
 

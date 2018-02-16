@@ -62,7 +62,7 @@ class DatabaseSubscriberTest {
         json.addProperty("healthParameterId", randomId)
         json.addProperty("healthParameterValue", 1212)
         println(addString)
-        sub.subscribe(LifeParameters.HEART_RATE, sub.createStringConsumer {
+        sub.subscribe(LifeParameters.HEART_RATE.acronym, sub.createStringConsumer {
             json.addProperty(Params.Log.NAME, it)
             makePost(addString, json)
         })
@@ -71,14 +71,14 @@ class DatabaseSubscriberTest {
 
         val pub = Thread({
             val pub = RabbitMQPublisher(connector)
-            pub.publish("Test 1", LifeParameters.HEART_RATE)
+            pub.publish("Test 1", LifeParameters.HEART_RATE.acronym)
         })
         pub.start()
 
         Thread.sleep(4000)
         listResult = handlingGetResponse(makeGet(readString + randomId))
 
-        sub.unsubscribe(LifeParameters.HEART_RATE)
+        sub.unsubscribe(LifeParameters.HEART_RATE.acronym)
 
         println(listResult)
         assert(listResult.firstOrNull { it.healthParameterId == randomId } != null)
@@ -96,7 +96,7 @@ class DatabaseSubscriberTest {
         val subCode = Thread {
             val sub = RabbitMQSubscriber(connector)
             LifeParameters.values().forEach { X ->
-                sub.subscribe(X, sub.createStringConsumer {
+                sub.subscribe(X.acronym, sub.createStringConsumer {
                     json.addProperty(Params.Log.NAME, it)
                     makePost(addString, json)
                 })
@@ -111,7 +111,7 @@ class DatabaseSubscriberTest {
             LifeParameters.values().forEach {
                 for (i in 0 until 3) {
                     Thread.sleep(1000)
-                    pub.publish(i.toString(), it)
+                    pub.publish(i.toString(), it.acronym)
                 }
             }
         })
