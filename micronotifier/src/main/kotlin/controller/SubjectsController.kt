@@ -14,12 +14,11 @@ interface SubjectsController <I, T> {
 }
 
 @Suppress("UNCHECKED_CAST")
-class NotifierSubjectsController private constructor() : SubjectsController<String, Any>{
+class NotifierSubjectsController : SubjectsController<String, Any>{
 
     private val publishSubjects = mutableMapOf<String, Subject<out Any>>()
 
-    init {
-    }
+    init { }
 
     @Synchronized
     override fun <N : Any> createNewSubjectFor(identifier: String): Subject<N> {
@@ -32,37 +31,31 @@ class NotifierSubjectsController private constructor() : SubjectsController<Stri
 
     @Synchronized
     override fun <N : Any> getSubjectsOf(identifier: String): Subject<N>? = publishSubjects[identifier] as? Subject<N>
-
-    companion object {
-
-        private var instance: SubjectsController<String, Any> = NotifierSubjectsController()
-
-        fun singleton(): SubjectsController<String, Any> = instance
-    }
 }
 
 fun main(args: Array<String>) {
 
     //NotifierSubjectsController.init()
 
-    val dumb = NotifierSessionsController.singleton()
-    val dumber = NotifierTopicsController.singleton(LifeParameters.values().toSet())
+    val dumber = NotifierTopicsController(LifeParameters.values().toSet())
 
-    NotifierSubjectsController.singleton().createNewSubjectFor<String>(dumb.toString())
-    NotifierSubjectsController.singleton().createNewSubjectFor<String>(dumber.toString())
-    NotifierSubjectsController.singleton().createNewSubjectFor<String>(LifeParameters.TEMPERATURE.toString())
-    NotifierSubjectsController.singleton().createNewSubjectFor<String>(LifeParameters.OXYGEN_SATURATION.toString())
-    NotifierSubjectsController.singleton().createNewSubjectFor<String>(LifeParameters.HEART_RATE.toString())
-    NotifierSubjectsController.singleton().createNewSubjectFor<String>(LifeParameters.DIASTOLIC_BLOOD_PRESSURE.toString())
-    NotifierSubjectsController.singleton().createNewSubjectFor<String>(LifeParameters.SYSTOLIC_BLOOD_PRESSURE.toString())
-    NotifierSubjectsController.singleton().createNewSubjectFor<String>(LifeParameters.END_TIDAL_CARBON_DIOXIDE.toString())
+    val dumb = NotifierSubjectsController()
 
-    Logger.info(NotifierSubjectsController.singleton().getSubjectsOf<String>(dumb.toString()).toString())
-    Logger.info(NotifierSubjectsController.singleton().getSubjectsOf<String>(dumber.toString()).toString())
-    Logger.info(NotifierSubjectsController.singleton().getSubjectsOf<String>(LifeParameters.TEMPERATURE.toString()).toString())
-    Logger.info(NotifierSubjectsController.singleton().getSubjectsOf<String>(LifeParameters.OXYGEN_SATURATION.toString()).toString())
-    Logger.info(NotifierSubjectsController.singleton().getSubjectsOf<String>(LifeParameters.HEART_RATE.toString()).toString())
-    Logger.info(NotifierSubjectsController.singleton().getSubjectsOf<String>(LifeParameters.DIASTOLIC_BLOOD_PRESSURE.toString()).toString())
-    Logger.info(NotifierSubjectsController.singleton().getSubjectsOf<String>(LifeParameters.SYSTOLIC_BLOOD_PRESSURE.toString()).toString())
-    Logger.info(NotifierSubjectsController.singleton().getSubjectsOf<String>(LifeParameters.END_TIDAL_CARBON_DIOXIDE.toString()).toString())
+    dumb.createNewSubjectFor<String>(dumb.toString())
+    dumb.createNewSubjectFor<String>(dumber.toString())
+    dumb.createNewSubjectFor<String>(LifeParameters.TEMPERATURE.toString())
+    dumb.createNewSubjectFor<String>(LifeParameters.OXYGEN_SATURATION.toString())
+    dumb.createNewSubjectFor<String>(LifeParameters.HEART_RATE.toString())
+    dumb.createNewSubjectFor<String>(LifeParameters.DIASTOLIC_BLOOD_PRESSURE.toString())
+    dumb.createNewSubjectFor<String>(LifeParameters.SYSTOLIC_BLOOD_PRESSURE.toString())
+    dumb.createNewSubjectFor<String>(LifeParameters.END_TIDAL_CARBON_DIOXIDE.toString())
+
+    Logger.info(dumb.getSubjectsOf<String>(dumb.toString()).toString())
+    Logger.info(dumb.getSubjectsOf<String>(dumber.toString()).toString())
+    Logger.info(dumb.getSubjectsOf<String>(LifeParameters.TEMPERATURE.toString()).toString())
+    Logger.info(dumb.getSubjectsOf<String>(LifeParameters.OXYGEN_SATURATION.toString()).toString())
+    Logger.info(dumb.getSubjectsOf<String>(LifeParameters.HEART_RATE.toString()).toString())
+    Logger.info(dumb.getSubjectsOf<String>(LifeParameters.DIASTOLIC_BLOOD_PRESSURE.toString()).toString())
+    Logger.info(dumb.getSubjectsOf<String>(LifeParameters.SYSTOLIC_BLOOD_PRESSURE.toString()).toString())
+    Logger.info(dumb.getSubjectsOf<String>(LifeParameters.END_TIDAL_CARBON_DIOXIDE.toString()).toString())
 }

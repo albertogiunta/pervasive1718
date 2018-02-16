@@ -1,20 +1,17 @@
 package controller
 
 import LifeParameters
-import com.google.gson.GsonBuilder
-import controller.logic.Notification
-import controller.logic.Relay
-import controller.logic.Subscription
+import controller.logic.NotificationHandler
+import controller.logic.RelayHandler
+import controller.logic.SubscriptionHandler
 import model.Member
 import org.eclipse.jetty.websocket.api.Session
 
 class CoreController private constructor(topicSet: Set<LifeParameters>) {
 
-    var topics: TopicsController<LifeParameters, Member> = NotifierTopicsController.init(topicSet)
-    var sessions: SessionsController<Member, Session> = NotifierSessionsController.singleton()
-    var subjects: SubjectsController<String, Any> = NotifierSubjectsController.singleton()
-
-    private val gson = GsonBuilder().create()
+    var topics: TopicsController<LifeParameters, Member> = NotifierTopicsController(topicSet)
+    var sessions: SessionsController<Member, Session> = NotifierSessionsController()
+    var subjects: SubjectsController<String, Any> = NotifierSubjectsController()
 
     init {
         subjects.createNewSubjectFor<Pair<Session, String>>(CoreController::class.java.name)
@@ -23,9 +20,9 @@ class CoreController private constructor(topicSet: Set<LifeParameters>) {
             it to subjects.createNewSubjectFor<String>(it.toString())
         }
 
-        Relay.run(this)
-        Notification.run(this)
-        Subscription.run(this)
+        SubscriptionHandler.runOn(this)
+        RelayHandler.runOn(this)
+        NotificationHandler.runOn(this)
     }
 
     companion object {

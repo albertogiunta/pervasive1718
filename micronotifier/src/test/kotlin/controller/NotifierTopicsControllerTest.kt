@@ -9,7 +9,7 @@ import org.junit.Test
 
 class NotifierTopicsControllerTest {
 
-    val controller = NotifierTopicsController.singleton(LifeParameters.values().toSet())
+    val controller = NotifierTopicsController(LifeParameters.values().toSet())
 
     val m1 = Member(888, "Mario Rossi")
     val m2 = Member(777, "Padre Pio")

@@ -17,7 +17,7 @@ class NotifierSessionsControllerTest {
 
     @Before
     fun setUp() {
-        sesCon = NotifierSessionsController.singleton()
+        sesCon = NotifierSessionsController()
     }
 
     @Test

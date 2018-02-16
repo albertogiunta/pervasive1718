@@ -6,6 +6,7 @@ import model.Subscription
 import utils.toJson
 
 fun main(args: Array<String>) {
+
     ConfigLoader().load()
     println(URIFactory.getNotifierURI())
 

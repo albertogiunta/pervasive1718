@@ -1,18 +1,16 @@
 package controller.logic
 
-import com.google.gson.GsonBuilder
 import controller.CoreController
 import model.PayloadWrapper
 import utils.toJson
 
-object Relay {
+object RelayHandler {
 
-    fun run(core: CoreController) {
+    fun runOn(core: CoreController) {
+
         val publishSubjects = core.topics.activeTopics().map {
             it to core.subjects.getSubjectsOf<String>(it.toString())!!
         }.toMap()
-
-        val gson = GsonBuilder().create()
 
         // Simple relays received Health Values to Listeners
         with(publishSubjects) {
@@ -30,7 +28,9 @@ object Relay {
                     // With one are specified into controller.listenerMap: Member -> Set<LifeParameters>
                     core.topics[topic]?.forEach { member ->
                         utils.Logger.info("$member ===> ${message.toJson()}")
-                        core.sessions[member]?.remote?.sendString(message.toJson()) // Notify the WS, dunno how.
+                        if (core.sessions[member]?.isOpen!!) {
+                            core.sessions[member]?.remote?.sendString(message.toJson()) // Notify the WS, dunno how.
+                        }
                     }
                 }
             }

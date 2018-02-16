@@ -23,10 +23,10 @@ interface Payload<T, D> {
 @Suppress("PROTECTED_CALL_FROM_PUBLIC_INLINE")
 enum class SessionOperation(val path: String, protected val xxx: (String) -> Any) {
 
-    CLOSE("/close", {GsonInitializer.gson.fromJson(it, model.Subscription::class.java)}),
-    SUBSCRIBE("/subscribe", {GsonInitializer.gson.fromJson(it, model.Subscription::class.java)}),
-    UPDATE("/update", {GsonInitializer.gson.fromJson(it, model.Update::class.java)}),
-    NOTIFY("/notify", {GsonInitializer.gson.fromJson(it, model.Notification::class.java)});
+    CLOSE("/close", {GsonInitializer.fromJson(it, model.Member::class.java)}),
+    SUBSCRIBE("/subscribe", {GsonInitializer.fromJson(it, model.Subscription::class.java)}),
+    UPDATE("/update", {GsonInitializer.fromJson(it, model.Update::class.java)}),
+    NOTIFY("/notify", {GsonInitializer.fromJson(it, model.Notification::class.java)});
 
     @Throws(ClassCastException::class)
     inline fun <reified X> objectify(json: String) : X {

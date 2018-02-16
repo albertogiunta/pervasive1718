@@ -46,7 +46,7 @@ interface SessionsController<L, S> {
     fun close()
 }
 
-class NotifierSessionsController private constructor() : SessionsController<Member, Session> {
+class NotifierSessionsController : SessionsController<Member, Session> {
 
     val sessionsMap = mutableMapOf<Member, Session>()
 
@@ -77,13 +77,5 @@ class NotifierSessionsController private constructor() : SessionsController<Memb
     @Synchronized
     override fun close() {
         sessionsMap.clear()
-    }
-
-    companion object {
-
-        private var controller: NotifierSessionsController = NotifierSessionsController()
-
-        fun singleton(): NotifierSessionsController = controller
-
     }
 }

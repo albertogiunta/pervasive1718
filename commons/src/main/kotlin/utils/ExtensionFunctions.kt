@@ -11,6 +11,7 @@ import model.VisibleTask
 object GsonInitializer {
     val gson = GsonBuilder().create()
     fun toJson(src: Any?): String = gson.toJson(src)
+    fun <T> fromJson(json : String, clazz: Class<T>) : T = gson.fromJson(json, clazz)
 }
 
 fun Any?.asJson(): String = GsonInitializer.toJson(this)

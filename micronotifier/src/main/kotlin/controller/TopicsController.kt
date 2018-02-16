@@ -2,7 +2,6 @@ package controller
 
 import LifeParameters
 import model.Member
-import java.util.concurrent.atomic.AtomicBoolean
 
 interface TopicsController<T, L> {
 
@@ -24,7 +23,7 @@ interface TopicsController<T, L> {
 
 }
 
-class NotifierTopicsController private constructor(private var topics: Set<LifeParameters>) : TopicsController<LifeParameters, Member> {
+class NotifierTopicsController(private var topics: Set<LifeParameters>) : TopicsController<LifeParameters, Member> {
 
     val topicsMap = mutableMapOf<LifeParameters, MutableSet<Member>>()
 
@@ -78,27 +77,4 @@ class NotifierTopicsController private constructor(private var topics: Set<LifeP
     }
 
     override fun activeTopics(): Set<LifeParameters> = topics
-
-    companion object {
-
-        private lateinit var instance: NotifierTopicsController
-        private val isInitialized : AtomicBoolean = AtomicBoolean(false)
-
-        fun init(topics: Set<LifeParameters>): NotifierTopicsController {
-            if (!isInitialized.getAndSet(true)){
-                instance = NotifierTopicsController(topics)
-            }
-            return instance
-        }
-
-        @Throws(Exception::class)
-        fun singleton(): NotifierTopicsController {
-            if (!isInitialized.get()) {
-                throw Exception("SINGLETON not Initialized")
-            } else return instance
-        }
-
-        fun singleton(topics: Set<LifeParameters>): NotifierTopicsController = init(topics)
-
-    }
 }

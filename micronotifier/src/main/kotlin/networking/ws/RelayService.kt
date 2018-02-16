@@ -1,12 +1,7 @@
 package networking.ws
 
-import LifeParameters
-import WSParams
 import WSServer
-import WSServerInitializer
-import com.google.gson.GsonBuilder
 import controller.CoreController
-import controller.NotifierTopicsController
 import io.reactivex.subjects.Subject
 import model.Payload
 import model.PayloadWrapper
@@ -26,13 +21,11 @@ class RelayService : WSServer<Payload<SessionOperation, String>>() {
 
     private val core = CoreController.singleton()
 
-    private val coreSubject: Subject<Pair<Session, String>> =
-            core.subjects.getSubjectsOf(CoreController::class.java.name)!!
+    private val coreSubject: Subject<Pair<Session, String>>
 
-    private val gson = GsonBuilder().create()
 
     init {
-        Logger.info(core.topics.activeTopics().toString())
+        coreSubject = core.subjects.getSubjectsOf(CoreController::class.java.name)!!
     }
 
     override fun onClose(session: Session, statusCode: Int, reason: String) {
@@ -53,10 +46,4 @@ class RelayService : WSServer<Payload<SessionOperation, String>>() {
     fun onError(session : Session, error : Throwable) {
         Logger.error("[WS Error] @ ${session.remote}", error)
     }
-}
-
-fun main(args: Array<String>) {
-
-    NotifierTopicsController.init(LifeParameters.values().toSet())
-    WSServerInitializer.init(RelayService::class.java, WSParams.WS_NOTIFIER_PORT, WSParams.WS_PATH_NOTIFIER)
 }

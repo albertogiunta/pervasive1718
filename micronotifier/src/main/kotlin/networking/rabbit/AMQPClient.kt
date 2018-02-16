@@ -12,12 +12,14 @@ import io.reactivex.subjects.Subject
  *  @author XanderC
  *
  */
-class AMQPClient(val broker: BrokerConnector, val topics: Map<LifeParameters, String>) {
+class AMQPClient(private val topics: Map<LifeParameters, String>) {
 
-    private val amqpSubscriber = RabbitMQSubscriber(broker)
-    //val publishSubjects = ConcurrentHashMap<LifeParameters, Subject<String>>()
+    private val subscriber : RabbitMQSubscriber
 
     init {
+        BrokerConnector.init(topics.values.toList())
+
+        subscriber = RabbitMQSubscriber(BrokerConnector.INSTANCE)
     }
 
     /**
@@ -27,7 +29,7 @@ class AMQPClient(val broker: BrokerConnector, val topics: Map<LifeParameters, St
      */
     fun publishOn(publishSubjects: Map<LifeParameters, Subject<String>>) {
         topics.forEach { (lp, channel) ->
-            amqpSubscriber.subscribe(channel, amqpSubscriber.createStringConsumer {
+            subscriber.subscribe(channel, subscriber.createStringConsumer {
                 publishSubjects[lp]?.onNext(it)
             })
         }

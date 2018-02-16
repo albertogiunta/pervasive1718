@@ -9,9 +9,9 @@ import model.Subscription
 import org.eclipse.jetty.websocket.api.Session
 import utils.Logger
 
-object Subscription {
+object SubscriptionHandler {
 
-    fun run(core: CoreController) {
+    fun runOn(core: CoreController) {
 
         val coreSubject = core.subjects.getSubjectsOf<Pair<Session, String>>(CoreController::class.java.name)!!
 
@@ -33,18 +33,18 @@ object Subscription {
                         core.topics.add(msg.body, msg.subject)
                     }
                     SessionOperation.CLOSE -> {
+                        Logger.info(body)
                         val listener = subject.objectify<Member>(body)
                         Logger.info("Closing Session for $listener")
                         core.sessions.removeListener(listener)
                         core.topics.removeListener(listener)
                     }
                     else -> {
-                        Logger.info("NOPE...")
+                        Logger.info(this.toString())
                         // Do Nothing at all
                     }
                 }
             }
         }
     }
-
 }
