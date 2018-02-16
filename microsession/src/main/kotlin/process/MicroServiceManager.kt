@@ -18,11 +18,9 @@ class MicroServiceManager {
 
             val dir = PathGetter.getRootPath()
 
-            val dynamicPort = service.port + slotId.toInt()
-
             val url = URL(
                     Services.Utils.Protocols.http,
-                    Services.Utils.defaultHost, dynamicPort,
+                    Services.Utils.defaultHost, slotId.toInt(),
                     "/session/$slotId${service.wsPath}"
             )
 
@@ -33,7 +31,7 @@ class MicroServiceManager {
                     .add("libs")
                     .toString()
 
-            return "java -jar ${service.executableName} $dynamicPort".runCommand(File(workingModule)) to url
+            return "java -jar ${service.executableName} ${slotId.toInt()}".runCommand(File(workingModule)) to url
         }
     }
 
