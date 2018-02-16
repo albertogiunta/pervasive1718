@@ -8,20 +8,22 @@ import java.net.URL
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class MicroServiceManager(val workingDir: String, val projectName: String = PathGetter.PROJECT_NAME) {
+class MicroServiceManager {
 
     val sessionsMap = mutableMapOf<String, Map<Services, Pair<Process, URL>>>()
 
     val instanceHandler = object : InstanceHandler<Services, String> {
+
         override fun new(service: Services, sessionID: String): Pair<Process, URL> {
 
-            val dir = workingDir.replaceAfter(projectName,"")
+            val dir = PathGetter.getRootPath()
 
             val url = URL(
                     Services.Utils.Protocols.http,
                     Services.Utils.defaultHost, service.port,
                     "/session/$sessionID${service.wsPath}"
             )
+
             val workingModule = StringJoiner(System.getProperty("file.separator"))
                     .add(dir)
                     .add(service.module)
@@ -77,7 +79,7 @@ fun main(args: Array<String>) {
 
     val w = System.getProperty("user.dir")
 
-    val m = MicroServiceManager(w)
+    val m = MicroServiceManager()
 
     val e = m.instanceHandler.new(Services.NOTIFIER, "666")
 
