@@ -44,10 +44,10 @@ data class PayloadWrapper(override val sid: Long,
         Payload<SessionOperation, String>
 
 data class Notification(override val sid: Long,
-                        override val subject: Set<LifeParameters>,
-                        override val body: String,
+                        override val subject: LifeParameters,
+                        override val body: List<Boundary>,
                         override val time: String = Payload.getTime()) :
-        Payload<Set<LifeParameters>, String>
+        Payload<LifeParameters, List<Boundary>>
 
 data class Update(override val sid: Long,
                   override val subject: LifeParameters,
@@ -66,7 +66,9 @@ fun main(args: Array<String>) {
     val gson = GsonBuilder().create()
     val sid = Random().nextLong()
 
-    val json = PayloadWrapper(sid, SessionOperation.NOTIFY, Notification(sid, emptySet(), "DEAD").toJson()).toJson()
+    val json = PayloadWrapper(sid, SessionOperation.NOTIFY,
+            Notification(sid, LifeParameters.HEART_RATE, emptyList()).toJson()
+    ).toJson()
 
     println(json)
     val wrapper = gson.fromJson(json, PayloadWrapper::class.java)
