@@ -16,7 +16,7 @@ import org.eclipse.jetty.websocket.api.Session
 import utils.toJson
 import utils.toVisibleTask
 import java.io.StringReader
-import java.util.ArrayList
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -32,7 +32,7 @@ class TaskController private constructor(private val ws: WSTaskServer,
 
         lateinit var INSTANCE: TaskController
         private val isInitialized = AtomicBoolean()
-        private lateinit var activityList: MutableList<Activity>
+        private var activityList: MutableList<Activity> = ArrayList<Activity>()
 
         fun init(ws: WSTaskServer) {
             if (!isInitialized.getAndSet(true)) {

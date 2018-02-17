@@ -20,7 +20,7 @@ fun Any.toJson(): String = GsonInitializer.toJson(this)
 fun Task.toVisibleTask(member: Member, activityName: String) =
         VisibleTask(this.id, activityName, Priority.HIGH, member.id, member.name, member.name)
 
-fun Services.calculatePort(args: Array<String>) = if (args.isEmpty()) this.port else this.port + args[0].toInt()
+fun Services.calculatePort(args: Array<String>) = if (args.isEmpty() || args[0] == "") this.port else this.port + args[0].toInt()
 
 
 fun LifeParameters.acronymWithSession(args: Array<String>) =

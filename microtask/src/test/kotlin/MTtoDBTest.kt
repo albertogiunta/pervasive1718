@@ -28,18 +28,27 @@ class MTtoDBTest {
     private lateinit var listResult:List<model.Task>
 
     companion object {
-        private val startArguments = arrayOf("2")
-        private val readTask : String
-        private val newSession: String
-        private var taskController: TaskController
+        private val startArguments = arrayOf("")//""2")
+        private lateinit var readTask: String
+        private lateinit var newSession: String
+        private lateinit var taskController: TaskController
         private val manager = MicroServiceManager()
         private val klaxon = Klaxon().fieldConverter(KlaxonDate::class, dateConverter)
         private lateinit var session: SessionDNS
 
-        init {
+        @AfterClass
+        @JvmStatic
+        fun destroyAll() {
+            manager.closeSession("666")
+        }
+
+        @BeforeClass
+        @JvmStatic
+        fun getSession() {
             ConfigLoader().load(startArguments)
             readTask = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.DATA_BASE.port}/${Connection.API}/task/all"
             newSession = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.SESSION.port}/session/new/hytgfred12"
+
 
             val taskService = ignite()
             taskService.port(Services.TASK_HANDLER.port)
@@ -54,19 +63,13 @@ class MTtoDBTest {
             manager.newService(Services.DATA_BASE,"666")
             Thread.sleep(3000)
 
-        }
 
-        @AfterClass
-        @JvmStatic
-        fun destroyAll() {
-            manager.closeSession("666")
-        }
-
-        @BeforeClass
-        @JvmStatic
-        fun getSession(){
             println(newSession)
-            newSession.httpPost().responseString().third.fold(success = {session = klaxon.parse<SessionDNS>(it)!!}, failure ={ println(it)})
+            newSession.httpPost().responseString().third.fold(success = {
+                session = klaxon.parse<SessionDNS>(it)!!
+            }, failure = {
+                println(it)
+            })
         }
     }
 

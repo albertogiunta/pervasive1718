@@ -6,6 +6,7 @@ import model.Task
 import networking.WSTaskServer
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
+import org.junit.BeforeClass
 import org.junit.Test
 import process.MicroServiceManager
 import spark.kotlin.ignite
@@ -17,16 +18,19 @@ class DeviceToMTTest {
 
     companion object {
         private val startArguments = arrayOf("2")
-        private var taskController: TaskController
+        private lateinit var taskController: TaskController
         private val manager = MicroServiceManager()
 
-        init {
+
+        @BeforeClass
+        @JvmStatic
+        fun setUp() {
             ConfigLoader().load(startArguments)
             val taskService = ignite()
             taskService.port(WSParams.WS_TASK_PORT)
             taskService.service.webSocket(WSParams.WS_PATH_TASK, WSTaskServer::class.java)
             taskService.service.init()
-            Thread.sleep(1000)
+            Thread.sleep(5000)
 
             taskController = TaskController.INSTANCE
         }
