@@ -1,15 +1,14 @@
 import config.ConfigLoader
+import config.Services
 import logic.TaskController
 import model.Member
 import model.Status
 import model.Task
-import networking.WSTaskServer
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.BeforeClass
 import org.junit.Test
 import process.MicroServiceManager
-import spark.kotlin.ignite
 import utils.*
 import java.sql.Timestamp
 import java.util.*
@@ -17,28 +16,29 @@ import java.util.*
 class DeviceToMTTest {
 
     companion object {
-        private val startArguments = arrayOf("2")
+        private val startArguments = arrayOf("0")
         private lateinit var taskController: TaskController
         private val manager = MicroServiceManager()
 
 
         @BeforeClass
         @JvmStatic
-        fun setUp() {
+        fun setup() {
             ConfigLoader().load(startArguments)
-            val taskService = ignite()
-            taskService.port(WSParams.WS_TASK_PORT)
-            taskService.service.webSocket(WSParams.WS_PATH_TASK, WSTaskServer::class.java)
-            taskService.service.init()
-            Thread.sleep(5000)
+            println("istanzio database")
+            manager.newService(Services.DATA_BASE, startArguments[0]) // 8100
+            Thread.sleep(3000)
 
+            println()
+            println("istanzio microtask")
+            MicroTaskBootstrap.init().also { Thread.sleep(2000) }
             taskController = TaskController.INSTANCE
         }
 
     }
 
     @Test
-    fun addLeaderTest() {
+    fun `create leader WS and test connection`() {
         addLeaderThread(memberId = -1).start()
         Thread.sleep(3000)
         assertEquals(taskController.leader.first.id, -1)
@@ -46,7 +46,7 @@ class DeviceToMTTest {
     }
 
     @Test
-    fun memberJoinsSessionTest() {
+    fun `create leader WS and member WS and test handshake from member to leader`() {
 
         addLeaderThread(memberId = -1).start()
         Thread.sleep(3000)
@@ -61,7 +61,7 @@ class DeviceToMTTest {
     }
 
     @Test
-    fun taskAssignmentTest() {
+    fun `create leader, create member, and test if leader assign test to member`() {
         //leader
         addLeaderThread(memberId = -1).start()
         Thread.sleep(3000)
@@ -81,7 +81,7 @@ class DeviceToMTTest {
     }
 
     @Test
-    fun removeTaskTest() {
+    fun `create leader, create member, assign and remove task`() {
         Thread.sleep(2000)
         //leader
         addLeaderThread(memberId = -1).start()
@@ -105,7 +105,7 @@ class DeviceToMTTest {
     }
 
     @Test
-    fun changeTaskStatusTest() {
+    fun `create leader, create member, assign task and change task's status`() {
         //leader
         addLeaderThread(memberId = -1).start()
         Thread.sleep(1000)

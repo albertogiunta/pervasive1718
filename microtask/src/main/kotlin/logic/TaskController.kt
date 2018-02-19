@@ -1,22 +1,16 @@
 package logic
 
-import com.beust.klaxon.JsonReader
-import com.beust.klaxon.Klaxon
-import com.github.kittinunf.fuel.core.FuelError
-import com.github.kittinunf.fuel.core.Request
-import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.fuel.httpDelete
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.fuel.httpPut
-import com.github.kittinunf.result.Result
+import config.Services
 import model.*
 import networking.WSTaskServer
 import org.eclipse.jetty.websocket.api.Session
+import utils.handlingGetResponse
 import utils.toJson
 import utils.toVisibleTask
-import java.io.StringReader
-import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -27,39 +21,18 @@ class TaskController private constructor(private val ws: WSTaskServer,
     val members: ConcurrentHashMap<Member, Session> = ConcurrentHashMap()
 
     companion object {
-        val dbUrl = "http://localhost:8101/api"
-        val visorUrl = "http://localhost:8401/api" // TODO che porta ha il visore, che api ha il visore
+        val dbUrl = "http://localhost:${Services.DATA_BASE.port}/api"
+        val visorUrl = "http://localhost:${Services.VISORS.port}/api"
 
         lateinit var INSTANCE: TaskController
         private val isInitialized = AtomicBoolean()
-        private var activityList: MutableList<Activity> = ArrayList<Activity>()
+        private lateinit var activityList: MutableList<Activity>
 
         fun init(ws: WSTaskServer) {
             if (!isInitialized.getAndSet(true)) {
                 INSTANCE = TaskController(ws)
             }
-            handlingGetResponse("$dbUrl/activity/all".httpGet().responseString())
-        }
-
-        private fun handlingGetResponse(triplet: Triple<Request, Response, Result<String, FuelError>>) {
-            triplet.third.fold(success = {
-                val klaxon = Klaxon()
-                JsonReader(StringReader(it)).use { reader ->
-                    println(it)
-                    reader.beginArray {
-                        activityList.clear()
-                        while (reader.hasNext()) {
-                            println(it)
-                            val activity = klaxon.parse<Activity>(reader)!!
-                            println(activity)
-                            (activityList as ArrayList<Activity>).add(activity)
-                        }
-                    }
-                }
-            }, failure = {
-                println(it)
-                println(String(it.errorData))
-            })
+            activityList = handlingGetResponse<Activity>("$dbUrl/activity/all".httpGet().responseString()).toMutableList()
         }
     }
 

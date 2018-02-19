@@ -7,106 +7,91 @@ import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpPost
 import config.ConfigLoader
 import config.Services
-import logic.TaskController
-import model.*
-import networking.WSTaskServer
+import model.SessionDNS
+import model.VisibleTask
 import org.junit.AfterClass
 import org.junit.Assert
 import org.junit.BeforeClass
 import org.junit.Test
 import process.MicroServiceManager
-import spark.kotlin.ignite
 import utils.*
-import java.sql.Timestamp
-import java.util.*
 
 class MTtoMVTest {
 
     private lateinit var listResult: List<VisibleTask>
 
     companion object {
-        private val startArguments = arrayOf("1")
-        private val getAllTaskVisor: String
-        private val newSession: String
-        private var taskController: TaskController
+        private val startArguments = arrayOf("0")
+        private lateinit var getAllTaskVisor: String
+        private lateinit var newSession: String
         private val manager = MicroServiceManager()
         private val klaxon = Klaxon().fieldConverter(KlaxonDate::class, dateConverter)
         private lateinit var session: SessionDNS
+        private lateinit var leaderWS: WSClient
+        private lateinit var memberWS: WSClient
 
-        init {
+        @BeforeClass
+        @JvmStatic
+        fun setup() {
             ConfigLoader().load(startArguments)
             getAllTaskVisor = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.VISORS.port}/${Connection.API}/all"
-            newSession ="$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.SESSION.port}/session/new/hytgfred12"
+            newSession = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.SESSION.port}/session/new/gntlrt94b21g479u"
 
-            manager.newService(Services.DATA_BASE, "1")
+            println()
+            println("istanzio monitor")
+            manager.newService(Services.MONITOR, startArguments[0]) // 8200
             Thread.sleep(3000)
-            manager.newService(Services.SESSION, "1")
+            println()
+            println("istanzio database")
+            manager.newService(Services.DATA_BASE, startArguments[0]) // 8100
             Thread.sleep(3000)
-            manager.newService(Services.VISORS, "1")
+            println()
+            println("istanzio session")
+            manager.newService(Services.SESSION, startArguments[0]) // 8500
             Thread.sleep(3000)
-            manager.newService(Services.TASK_HANDLER, "1")
+            println()
+            println("istanzio visors")
+            manager.newService(Services.VISORS, startArguments[0]) // 8400
+            Thread.sleep(3000)
+            println()
+            println("istanzio task")
+            manager.newService(Services.TASK_HANDLER, startArguments[0]) // 8200
             Thread.sleep(3000)
 
-            newSession.httpPost().responseString().third.fold(success = {session = klaxon.parse<SessionDNS>(it)!!}, failure ={ println(it)})
+            newSession.httpPost().responseString().third.fold(success = { session = klaxon.parse<SessionDNS>(it)!!; println("ho ricevuto risposta dal db: $session") }, failure = { println("ho ricevuto un errore $it") })
 
+            leaderWS = WSClientInitializer.init(WSClient(URIFactory.getTaskURI())).also { Thread.sleep(1000) }
+            memberWS = WSClientInitializer.init(WSClient(URIFactory.getTaskURI())).also { Thread.sleep(1000) }
 
-            /*val taskService = ignite()
-            taskService.port(Services.TASK_HANDLER.port)
-            taskService.service.webSocket(Services.TASK_HANDLER.wsPath, WSTaskServer::class.java)
-            taskService.service.init()
-            Thread.sleep(3000)*/
-
-            taskController = TaskController.INSTANCE
         }
 
         @AfterClass
         @JvmStatic
         fun destroyAll() {
-            manager.closeSession("1")
+            manager.closeSession(startArguments[0])
         }
     }
 
 
-    @Test
-    fun addTask(){
-        var taskId = 32
 
-        commonCode(4, taskId)
+    @Test
+    fun `create leader and member interaction and add task`() {
+        val taskId = 32
+
+        mockLeaderMemberInteractionAndTaskAddition(session, 4, taskId, leaderWS, memberWS)
+
         listResult = handlingGetResponse(getAllTaskVisor.httpGet().responseString())
-        Thread.sleep(2000)
-        println(listResult)
 
         Assert.assertTrue(listResult.firstOrNull { it.id == taskId } != null)
 
     }
 
     @Test
-    fun removeTask(){
-        var taskId = 35
-        commonCode(5, 35)
+    fun `create leader and member interaction, add task and remove task`() {
+        val taskId = 35
+
+        mockLeaderMemberInteractionAndTaskRemoval(session, 5, 35, leaderWS, memberWS)
         listResult = handlingGetResponse(getAllTaskVisor.httpGet().responseString())
-        Thread.sleep(1000)
-        println(listResult)
-
         Assert.assertTrue(listResult.firstOrNull { it.id == taskId } == null)
-    }
-
-    fun commonCode(memberId: Int, taskID: Int) {
-        Thread.sleep(5000)
-        addLeaderThread(memberId = -1).start()
-        Thread.sleep(4000)
-
-        val member = Member(memberId, "Member")
-        addMemberThread(memberId = member.id).start()
-        Thread.sleep(3000)
-
-        val task = Task(taskID, session.sessionId, member.id, Timestamp(Date().time), Timestamp(Date().time + 1000), 1, Status.RUNNING.id)
-
-        addTaskThread(task, member).start()
-        Thread.sleep(3000)
-
-        removeTaskThread(task).start()
-        Thread.sleep(4000)
-
     }
 }

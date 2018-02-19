@@ -15,6 +15,7 @@ import config.ConfigLoader
 import config.Services
 import model.Log
 import org.junit.AfterClass
+import org.junit.BeforeClass
 import org.junit.Test
 import utils.handlingGetResponse
 import java.util.*
@@ -27,19 +28,20 @@ class DatabaseSubscriberTest {
          * For this reason, use REMOTE_HOST as default.
          *
          **/
-        private val startArguments = arrayOf("2")
-        private val connector: BrokerConnector
-        private val addString: String
-        private val allString: String
-        private val readString: String
+        private val startArguments = arrayOf("0")
+        private lateinit var connector: BrokerConnector
+        private lateinit var getAllLogs: String
+        private lateinit var addLog: String
+        private lateinit var getLog: String
+        private var listResult = listOf<Log>()
 
-        lateinit var listResult: List<Log>
-
-        init {
+        @BeforeClass
+        @JvmStatic
+        fun setup() {
             ConfigLoader("../config.json").load(startArguments)
-            addString = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.DATA_BASE.port}/${Connection.API}/$TABLE_NAME/add"
-            allString = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.DATA_BASE.port}/${Connection.API}/$TABLE_NAME/all"
-            readString = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.DATA_BASE.port}/${Connection.API}/$TABLE_NAME/${Params.HealthParameter.TABLE_NAME}/"
+            getAllLogs = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.DATA_BASE.port}/${Connection.API}/$TABLE_NAME/all"
+            addLog = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.DATA_BASE.port}/${Connection.API}/$TABLE_NAME/add"
+            getLog = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.DATA_BASE.port}/${Connection.API}/$TABLE_NAME/${Params.HealthParameter.TABLE_NAME}/"
 
             BrokerConnector.init(LifeParameters.values().map { it.acronym }.toList(), REMOTE_HOST)
             connector = BrokerConnector.INSTANCE
@@ -54,17 +56,17 @@ class DatabaseSubscriberTest {
     }
 
     @Test
-    fun writeSingleData() {
+    fun `receive single data from broker and write to DB`() {
 
         val sub = RabbitMQSubscriber(connector)
         val randomId = Math.abs(Random().nextInt(500))
         val json = JsonObject()
         json.addProperty("healthParameterId", randomId)
         json.addProperty("healthParameterValue", 1212)
-        println(addString)
+        println(addLog)
         sub.subscribe(LifeParameters.HEART_RATE.acronym, sub.createStringConsumer {
             json.addProperty(Params.Log.NAME, it)
-            makePost(addString, json)
+            makePost(addLog, json)
         })
 
         Thread.sleep(6000)
@@ -76,7 +78,7 @@ class DatabaseSubscriberTest {
         pub.start()
 
         Thread.sleep(4000)
-        listResult = handlingGetResponse(makeGet(readString + randomId))
+        listResult = handlingGetResponse(makeGet(getLog + randomId))
 
         sub.unsubscribe(LifeParameters.HEART_RATE.acronym)
 
@@ -85,9 +87,9 @@ class DatabaseSubscriberTest {
     }
 
     @Test
-    fun writeMultipleData() {
+    fun `receive multiple data from broker and write to DB`() {
 
-        listResult = handlingGetResponse(makeGet(allString))
+        listResult = handlingGetResponse(makeGet(getAllLogs))
         val initialListSize = listResult.size
 
         val json = JsonObject()
@@ -98,7 +100,7 @@ class DatabaseSubscriberTest {
             LifeParameters.values().forEach { X ->
                 sub.subscribe(X.acronym, sub.createStringConsumer {
                     json.addProperty(Params.Log.NAME, it)
-                    makePost(addString, json)
+                    makePost(addLog, json)
                 })
             }
         }
@@ -119,7 +121,7 @@ class DatabaseSubscriberTest {
         Thread.sleep(50000)
 
 
-        listResult = handlingGetResponse(makeGet(allString))
+        listResult = handlingGetResponse(makeGet(getAllLogs))
 
         println(listResult.size)
         println(initialListSize)

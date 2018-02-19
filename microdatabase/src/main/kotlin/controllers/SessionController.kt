@@ -1,24 +1,27 @@
 package controllers
 
+import model.Session
 import java.util.concurrent.atomic.AtomicBoolean
 
 object SessionController {
 
-    private var sessionId: Int = -1
+    private var session: Session = Session.emptySession()
+
     private val isSet: AtomicBoolean = AtomicBoolean(false)
 
-    fun attachSession(id: Int): Boolean {
+    fun attachInstanceId(newSession: Session): Boolean {
         if (!isSet.getAndSet(true)) {
-            sessionId = id
+            session = newSession
             return true
         }
         return false
     }
 
-    fun detachSession() {
-        sessionId = -1
-        isSet.set(false)
-    }
+    fun detachInstance() = isSet.set(false)
 
-    fun getCurrentSession() = sessionId
+    fun isAttached(): Boolean = isSet.get()
+
+    fun getCurrentInstanceId() = session.microServiceInstanceId
+
+    fun getCurrentSessionId() = session.id
 }

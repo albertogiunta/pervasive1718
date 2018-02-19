@@ -75,5 +75,10 @@ object LogApi {
             .toJson()
     }
 
+//    fun deleteAllLogs(request: Request, response: Response): String {
+//        return JdbiConfiguration.INSTANCE.jdbi.useExtension<LogDao, SQLException>(LogDao::class.java)
+//        { response.ok() }.toJson()
+//    }
+
 }
 

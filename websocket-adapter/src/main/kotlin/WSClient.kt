@@ -32,7 +32,7 @@ open class WSClient(serverURI: URI) : WebSocketClient(serverURI) {
 object WSClientInitializer {
 
     fun <T : WSClient> init(client: T): T {
-        client.connect()
+        client.connectBlocking()
         return client
     }
 }

@@ -3,8 +3,8 @@ package controllers
 import BrokerConnector
 import LifeParameters
 import RabbitMQSubscriber
-import controllers.SessionController.getCurrentSession
 import controllers.api.LogApi
+import model.Session
 import utils.acronymWithSession
 
 object SubscriberController {
@@ -12,14 +12,14 @@ object SubscriberController {
     private lateinit var subscriber: RabbitMQSubscriber
 
 
-    fun startListeningMonitorsForSession(sessionId: Int) {
-        BrokerConnector.init(LifeParameters.values().map { it.acronymWithSession(sessionId) }.toList())
-        subscriber = RabbitMQSubscriber(BrokerConnector.INSTANCE)
-        if (SessionController.attachSession(sessionId)) {
+    fun startListeningMonitorsForInstanceId(session: Session) {
+        if (SessionController.attachInstanceId(session)) {
+            BrokerConnector.init(LifeParameters.values().map { it.acronymWithSession(SessionController.getCurrentInstanceId()) }.toList())
+            subscriber = RabbitMQSubscriber(BrokerConnector.INSTANCE)
             LifeParameters.values().forEach { param ->
-                subscriber.subscribe(param.acronym, subscriber.createStringConsumer { value ->
-                    println("Saving param $param value $value to session ${getCurrentSession()}")
-                    LogApi.addLogEntry(param, value.toDouble())
+                subscriber.subscribe(param.acronymWithSession(SessionController.getCurrentInstanceId()), subscriber.createStringConsumer { value ->
+                    //                    println("Saving param $param value $value to session ${getCurrentInstanceId()}")
+                    if (SessionController.isAttached()) LogApi.addLogEntry(param, value.toDouble())
                 })
             }
         }
@@ -27,8 +27,8 @@ object SubscriberController {
 
     fun stopListeningMonitorsForSession() {
         try {
-            SessionController.detachSession()
-            LifeParameters.values().forEach { subscriber.unsubscribe(it.acronym) }
+            LifeParameters.values().forEach { subscriber.unsubscribe(it.acronymWithSession(SessionController.getCurrentInstanceId())) }
+            SessionController.detachInstance()
         } catch (e: Exception) {
             println("Got exception in amq unsubscribe $e")
         }

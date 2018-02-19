@@ -2,6 +2,7 @@ dependencies {
     // local
     compile project(":pubsub-adapter")
     compile project(":rest-adapter")
+    testCompile project(":microsession")
 
     // jdbi
     compile "org.jdbi:jdbi3-core:$jdbi_version"
