@@ -1,9 +1,17 @@
+import Connection.ADDRESS
+import Connection.PORT_SEPARATOR
+import Connection.PROTOCOL
+import Connection.PROTOCOL_SEPARATOR
+import com.beust.klaxon.Klaxon
+import com.github.kittinunf.fuel.httpPost
 import config.ConfigLoader
 import config.Services
 import logic.TaskController
 import model.Member
+import model.SessionDNS
 import model.Status
 import model.Task
+import org.junit.AfterClass
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.BeforeClass
@@ -18,29 +26,53 @@ class DeviceToMTTest {
     companion object {
         private val startArguments = arrayOf("0")
         private lateinit var taskController: TaskController
+
+        private lateinit var newSession: String
         private val manager = MicroServiceManager()
+        private val klaxon = Klaxon().fieldConverter(KlaxonDate::class, dateConverter)
+        private lateinit var session: SessionDNS
+
+        private lateinit var leaderWS: WSClient
+        private lateinit var memberWS: WSClient
 
 
         @BeforeClass
         @JvmStatic
         fun setup() {
             ConfigLoader().load(startArguments)
+            newSession = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.SESSION.port}/session/new/gntlrt94b21g479u"
+
             println("istanzio database")
             manager.newService(Services.DATA_BASE, startArguments[0]) // 8100
             Thread.sleep(3000)
-
             println()
-            println("istanzio microtask")
-            MicroTaskBootstrap.init().also { Thread.sleep(2000) }
+            println("istanzio session")
+            manager.newService(Services.SESSION, startArguments[0]) // 8500
+            Thread.sleep(3000)
+            println()
+            println("istanzio task")
+            MicroTaskBootstrap.init().also { Thread.sleep(4000) } //need to be started in this way to access the INSTANCE
             taskController = TaskController.INSTANCE
+
+
+            newSession.httpPost().responseString().third.fold(success = { session = klaxon.parse<SessionDNS>(it)!!; println("ho ricevuto risposta dal db: $session") }, failure = { println("ho ricevuto un errore $it") })
+
+            leaderWS = WSClientInitializer.init(WSClient(URIFactory.getTaskURI())).also { Thread.sleep(1000) }
+            memberWS = WSClientInitializer.init(WSClient(URIFactory.getTaskURI())).also { Thread.sleep(1000) }
+            Thread.sleep(3000)
+        }
+
+        @AfterClass
+        @JvmStatic
+        fun destroyAll() {
+            manager.closeSession(startArguments[0])
         }
 
     }
 
     @Test
-    fun `create leader WS and test connection`() {
-        addLeaderThread(memberId = -1).start()
-        Thread.sleep(3000)
+    fun `create leader WS and test connection`(){
+        mockLeader(-1, leaderWS)
         assertEquals(taskController.leader.first.id, -1)
         assertEquals(taskController.leader.first.name, "Leader")
     }
@@ -48,85 +80,33 @@ class DeviceToMTTest {
     @Test
     fun `create leader WS and member WS and test handshake from member to leader`() {
 
-        addLeaderThread(memberId = -1).start()
-        Thread.sleep(3000)
         val initialSize = taskController.members.size
-
-        addMemberThread(memberId = 1).start()
-        Thread.sleep(3000)
-        addMemberThread(memberId = 2).start()
-        Thread.sleep(3000)
-
+        mockLeaderAndMembers(4, leaderWS, memberWS)
         assertEquals(taskController.members.size, initialSize + 2)
     }
 
     @Test
     fun `create leader, create member, and test if leader assign test to member`() {
-        //leader
-        addLeaderThread(memberId = -1).start()
-        Thread.sleep(3000)
-
-        val member = Member(3,"Member")
-        // member
-        addMemberThread(memberId = member.id).start()
-        Thread.sleep(3000)
-
-        val task = Task(6, -1, member.id, Timestamp(Date().time), Timestamp(Date().time+1),1, Status.RUNNING.id)
-
-        addTaskThread(task, member).start()
-        Thread.sleep(4000)
+        val taskId = 32
+        val memberId = 64
+        mockLeaderMemberInteractionAndTaskAddition(session, 64, taskId, leaderWS, memberWS)
 
         println(taskController.taskMemberAssociationList)
-        assertTrue(taskController.taskMemberAssociationList.firstOrNull{it.task.id == task.id && it.member.id == member.id}!=null)
+        assertTrue(taskController.taskMemberAssociationList.firstOrNull{it.task.id == taskId && it.member.id == memberId}!=null)
     }
 
     @Test
     fun `create leader, create member, assign and remove task`() {
-        Thread.sleep(2000)
-        //leader
-        addLeaderThread(memberId = -1).start()
-        Thread.sleep(3000)
-
-        val member = Member.defaultMember()
-
-        // member
-        addMemberThread(memberId = member.id).start()
-        Thread.sleep(3000)
-
-        val task = Task(3, -1, member.id, Timestamp(Date().time), Timestamp(Date().time+1000),1, Status.RUNNING.id)
-        addTaskThread(task, Member.defaultMember()).start()
-        Thread.sleep(3000)
-
-        assertTrue(taskController.taskMemberAssociationList.size == 1)
-
-        removeTaskThread(task).start()
-        Thread.sleep(3000)
-        assertTrue(taskController.taskMemberAssociationList.isEmpty())
+        val taskId = 41
+        mockLeaderMemberInteractionAndTaskRemoval(session, 4, taskId, leaderWS, memberWS)
+        assertTrue(taskController.taskMemberAssociationList.firstOrNull{ it.task.id == taskId} == null)
     }
 
     @Test
     fun `create leader, create member, assign task and change task's status`() {
-        //leader
-        addLeaderThread(memberId = -1).start()
-        Thread.sleep(1000)
-
-        val member = Member.defaultMember()
-
-        // member
-        addMemberThread(memberId = member.id).start()
-        Thread.sleep(1000)
-
-        val task = Task(4, -1, member.id, Timestamp(Date().time), Timestamp(Date().time+1000),1, Status.RUNNING.id)
-        addTaskThread(task, Member.defaultMember()).start()
-        Thread.sleep(1000)
-
-        val taskChanged = task.apply { this.statusId = Status.FINISHED.id }
-
-        changeTaskStatus(taskChanged).start()
-        Thread.sleep(3000)
-        println(taskController.members)
-
-        assertTrue(taskController.taskMemberAssociationList.first { it.task.id == taskChanged.id }.task.statusId == Status.FINISHED.id)
+        val taskId = 50
+        mockLeaderMemberInteractionAndTaskChange(session, 4, taskId, leaderWS, memberWS)
+        assertTrue(taskController.taskMemberAssociationList.first { it.task.id == taskId }.task.statusId == Status.FINISHED.id)
     }
 
 
