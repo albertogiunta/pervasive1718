@@ -38,10 +38,12 @@ class TaskController private constructor(private val ws: WSTaskServer,
 
     fun addLeader(member: Member, session: Session) {
         leader = Pair(member, session)
+        // TODO send all members to leader if present
     }
 
     fun addMember(member: Member, session: Session) {
         members[member] = session
+        // TODO don't send message to leader if not present
         ws.sendMessage(leader.second, TaskPayload(member, TaskOperation.ADD_MEMBER, Task.emptyTask()))
     }
 
