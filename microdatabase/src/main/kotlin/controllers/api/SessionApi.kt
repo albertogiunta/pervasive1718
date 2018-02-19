@@ -25,7 +25,8 @@ object SessionApi {
         JdbiConfiguration.INSTANCE.jdbi.useExtension<SessionDao, SQLException>(SessionDao::class.java)
         { session = it.insertNewSession(request.params(Params.Session.PAT_ID), Timestamp(Date().time), request.params(Params.Session.INSTANCE_ID).toInt()) }
 
-        SubscriberController.startListeningMonitorsForSession(session.id)
+        // TODO trova un modo di fare la richiesta dicendo se vuoi iscriverti o meno ai canali
+        SubscriberController.startListeningMonitorsForInstanceId(session.microServiceInstanceId)
 
         return session.toJson()
     }
@@ -55,10 +56,10 @@ object SessionApi {
     fun closeSessionBySessionId(request: Request, response: Response): String {
         val sessionId = request.params(Params.Session.SESSION_ID).toInt()
 
+        SubscriberController.stopListeningMonitorsForSession()
+
         JdbiConfiguration.INSTANCE.jdbi.useExtension<SessionDao, SQLException>(SessionDao::class.java)
         { it.closeSessionBySessionId(sessionId, Timestamp(Date().time)) }
-
-        SubscriberController.stopListeningMonitorsForSession()
 
         return response.ok()
     }

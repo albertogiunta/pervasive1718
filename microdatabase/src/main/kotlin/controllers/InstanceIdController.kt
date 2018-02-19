@@ -2,12 +2,12 @@ package controllers
 
 import java.util.concurrent.atomic.AtomicBoolean
 
-object SessionController {
+object InstanceIdController {
 
     private var sessionId: Int = -1
     private val isSet: AtomicBoolean = AtomicBoolean(false)
 
-    fun attachSession(id: Int): Boolean {
+    fun attachInstanceId(id: Int): Boolean {
         if (!isSet.getAndSet(true)) {
             sessionId = id
             return true
@@ -15,10 +15,14 @@ object SessionController {
         return false
     }
 
-    fun detachSession() {
-        sessionId = -1
+    fun detachInstance() {
+//        sessionId = -1
         isSet.set(false)
     }
 
-    fun getCurrentSession() = sessionId
+    fun isAttached(): Boolean {
+        return isSet.get()
+    }
+
+    fun getCurrentInstanceID() = sessionId
 }

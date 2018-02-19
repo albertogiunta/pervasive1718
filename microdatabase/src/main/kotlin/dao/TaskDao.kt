@@ -8,7 +8,7 @@ import Params.Task.SESSION_ID
 import Params.Task.START_TIME
 import Params.Task.STATUS_ID
 import Params.Task.TABLE_NAME
-import controllers.SessionController
+import controllers.InstanceIdController
 import model.Task
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
@@ -19,7 +19,7 @@ interface TaskDao {
 
     @SqlUpdate("INSERT INTO $TABLE_NAME($ID, $SESSION_ID, $OPERATOR_ID, $START_TIME, $END_TIME, $ACTIVITY_ID, $STATUS_ID) VALUES (:$ID, :$SESSION_ID, :$OPERATOR_ID, :$START_TIME, :$END_TIME, :$ACTIVITY_ID, :$STATUS_ID)")
     fun insertNewTask(@Bind(ID) id: Int,
-                      @Bind(SESSION_ID) sessionId: Int = SessionController.getCurrentSession(),
+                      @Bind(SESSION_ID) sessionId: Int = InstanceIdController.getCurrentInstanceID(),
                       @Bind(OPERATOR_ID) operatorId: Int,
                       @Bind(START_TIME) startTime: Timestamp,
                       @Bind(END_TIME) endTime: Timestamp,
@@ -29,16 +29,16 @@ interface TaskDao {
     @SqlUpdate("UPDATE $TABLE_NAME SET $STATUS_ID = (:$STATUS_ID) WHERE $SESSION_ID = (:$SESSION_ID) AND $ID = (:$ID)")
     fun updateTaskStatus(@Bind(ID) id: Int,
                          @Bind(STATUS_ID) statusId: Int,
-                         @Bind(SESSION_ID) sessionId: Int = SessionController.getCurrentSession())
+                         @Bind(SESSION_ID) sessionId: Int = InstanceIdController.getCurrentInstanceID())
 
     @SqlUpdate("DELETE FROM $TABLE_NAME WHERE $SESSION_ID = (:$SESSION_ID) AND $ID = (:$ID)")
     fun removeTask(@Bind(ID) operatorId: Int,
-                   @Bind(SESSION_ID) sessionId: Int = SessionController.getCurrentSession())
+                   @Bind(SESSION_ID) sessionId: Int = InstanceIdController.getCurrentInstanceID())
 
     @SqlQuery("SELECT * FROM $TABLE_NAME WHERE $SESSION_ID = (:$SESSION_ID)")
-    fun selectAllTasks(@Bind(SESSION_ID) sessionId: Int = SessionController.getCurrentSession()): List<Task>
+    fun selectAllTasks(@Bind(SESSION_ID) sessionId: Int = InstanceIdController.getCurrentInstanceID()): List<Task>
 
     @SqlQuery("SELECT * FROM $TABLE_NAME WHERE $SESSION_ID = (:$SESSION_ID) AND $ID = (:$ID)")
     fun selectTaskById(@Bind(ID) id: Int,
-                       @Bind(SESSION_ID) sessionId: Int = SessionController.getCurrentSession()): List<Task>
+                       @Bind(SESSION_ID) sessionId: Int = InstanceIdController.getCurrentInstanceID()): List<Task>
 }

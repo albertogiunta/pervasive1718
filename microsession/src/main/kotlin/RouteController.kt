@@ -57,6 +57,7 @@ object SessionApi {
         dbUrl = createMicroDatabaseAddress(currentBoot)
         taskUrl = createMicroTaskAddress(currentBoot)
 
+        println("current boot $currentBoot")
 
         // TODO attach to subset of microservices
 

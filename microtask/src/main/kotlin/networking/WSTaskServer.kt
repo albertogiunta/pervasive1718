@@ -35,6 +35,7 @@ class WSTaskServer : WSServer<TaskPayload>() {
                     TaskOperation.ADD_TASK -> controller.addTask(task, member) // done by leader
                     TaskOperation.REMOVE_TASK -> controller.removeTask(task) // done by leader
                     TaskOperation.CHANGE_TASK_STATUS -> controller.changeTaskStatus(task, session) // done by both
+                    else -> println("Message was not handled " + message)
                 }
             }
         }

@@ -6,7 +6,7 @@ import Params.Log.LOG_TIME
 import Params.Log.NAME
 import Params.Log.SESSION_ID
 import Params.Log.TABLE_NAME
-import controllers.SessionController
+import controllers.InstanceIdController
 import model.Log
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
@@ -19,18 +19,21 @@ interface LogDao {
                           @Bind(LOG_TIME) logTime: java.sql.Timestamp,
                           @Bind(HEALTH_PARAMETER_ID) healthParameterId: Int,
                           @Bind(HEALTH_PARAMETER_VALUE) healthParameterValue: Double,
-                          @Bind(SESSION_ID) sessionId: Int = SessionController.getCurrentSession())
+                          @Bind(SESSION_ID) sessionId: Int = InstanceIdController.getCurrentInstanceID())
 
     @SqlQuery("SELECT * FROM $TABLE_NAME WHERE $SESSION_ID = (:$SESSION_ID)")
-    fun selectAllLogEntries(@Bind(SESSION_ID) sessionId: Int = SessionController.getCurrentSession()): List<Log>
+    fun selectAllLogEntries(@Bind(SESSION_ID) sessionId: Int = InstanceIdController.getCurrentInstanceID()): List<Log>
 
     @SqlQuery("SELECT * FROM $TABLE_NAME WHERE $SESSION_ID = (:$SESSION_ID) AND $HEALTH_PARAMETER_ID = (:$HEALTH_PARAMETER_ID)")
     fun selectAllLogEntriesByHealthParameterId(@Bind(HEALTH_PARAMETER_ID) healthParameterId: Int,
-                                               @Bind(SESSION_ID) sessionId: Int = SessionController.getCurrentSession()): List<Log>
+                                               @Bind(SESSION_ID) sessionId: Int = InstanceIdController.getCurrentInstanceID()): List<Log>
 
     @SqlQuery("SELECT * FROM $TABLE_NAME WHERE $SESSION_ID = (:$SESSION_ID) AND $HEALTH_PARAMETER_ID = (:$HEALTH_PARAMETER_ID) AND $HEALTH_PARAMETER_VALUE > (:$HEALTH_PARAMETER_VALUE)")
     fun selectAllLogEntriesByHealthParameterAboveThreshold(@Bind(HEALTH_PARAMETER_ID) healthParameterId: Int,
                                                            @Bind(HEALTH_PARAMETER_VALUE) value: Int,
-                                                           @Bind(SESSION_ID) sessionId: Int = SessionController.getCurrentSession()): List<Log>
+                                                           @Bind(SESSION_ID) sessionId: Int = InstanceIdController.getCurrentInstanceID()): List<Log>
+
+//    @SqlUpdate("DELETE FROM $TABLE_NAME")
+//    fun deleteAllLogs()
 
 }
