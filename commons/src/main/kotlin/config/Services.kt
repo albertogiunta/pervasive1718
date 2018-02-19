@@ -1,12 +1,24 @@
 package config
 
 import utils.calculatePort
+import java.net.URI
 
 
 /*Remember to load the configuration with ConfigLoader*/
-class Services(var port: Int, val wsPath: String, val executableName: String, val module: String) {
+class Services private constructor(var port: Int, val wsPath: String, val executableName: String, val module: String) {
+
+    fun root() : String = "${Services.SESSION.wsPath}/${Services.instanceId()}${this.wsPath}"
+
+    fun wsURI(host : String = Utils.defaultHost) : URI =
+            URI("${Utils.Protocols.websocket}://$host:${this.port}${root()}")
+
+    fun httpURI(host : String = Utils.defaultHost) : URI =
+            URI("${Utils.Protocols.http}://$host:${this.port}${root()}")
 
     companion object {
+
+        private var instanceId : Int = 0
+
         lateinit var SESSION: Services
         lateinit var DATA_BASE: Services
         lateinit var TASK_HANDLER: Services
@@ -43,7 +55,14 @@ class Services(var port: Int, val wsPath: String, val executableName: String, va
 
         fun values(): Array<Services> = arrayOf(SESSION, DATA_BASE, TASK_HANDLER, NOTIFIER, VISORS, MONITOR)
 
+        fun instanceId(): Int = instanceId
+
         fun updatePortWithSession(args: Array<String>) {
+
+            if (args.isNotEmpty() && args.firstOrNull() != "") {
+                instanceId = args[0].toInt()
+            }
+
             Services.DATA_BASE.port = Services.DATA_BASE.calculatePort(args)
             Services.SESSION.port = Services.SESSION.calculatePort(args)
             Services.TASK_HANDLER.port = Services.TASK_HANDLER.calculatePort(args)
