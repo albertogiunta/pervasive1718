@@ -19,6 +19,6 @@ fun main(args: Array<String>) {
 
     amqp.publishOn(publishSubjects)
 
-    WSServerInitializer.init(RelayService::class.java, Services.NOTIFIER.port, Services.NOTIFIER.wsPath)
+    WSServerInitializer.init(RelayService::class.java, Services.NOTIFIER.port, Services.NOTIFIER.root())
 
 }

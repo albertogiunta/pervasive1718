@@ -1,4 +1,5 @@
 import config.ConfigLoader
+import config.Services
 import model.Member
 import model.PayloadWrapper
 import model.SessionOperation
@@ -8,11 +9,10 @@ import utils.toJson
 fun main(args: Array<String>) {
 
     ConfigLoader().load(args)
-    println(URIFactory.getNotifierURI())
 
     val member = Member(666, "Mario Rossi")
 
-    val client = WSClient(URIFactory.getNotifierURI())
+    val client = WSClient(Services.NOTIFIER.wsURI())
 
     client.connectBlocking()
 

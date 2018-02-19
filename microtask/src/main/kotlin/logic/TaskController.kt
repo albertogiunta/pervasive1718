@@ -38,11 +38,17 @@ class TaskController private constructor(private val ws: WSTaskServer,
 
     fun addLeader(member: Member, session: Session) {
         leader = Pair(member, session)
+        // How to send something that is not a Task?
+        if (members.isNotEmpty()) {
+            leader.second.remote.sendString(members.keys().toJson())
+        }
     }
 
     fun addMember(member: Member, session: Session) {
         members[member] = session
-        ws.sendMessage(leader.second, TaskPayload(member, TaskOperation.ADD_MEMBER, Task.emptyTask()))
+        if (leader.second.isOpen) {
+            ws.sendMessage(leader.second, TaskPayload(member, TaskOperation.ADD_MEMBER, Task.emptyTask()))
+        }
     }
 
     fun addTask(task: Task, member: Member) {
