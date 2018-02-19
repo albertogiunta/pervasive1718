@@ -11,22 +11,28 @@ function findUnique(arr, predicate) {
 
 // Trasposes rows with columns in a table
 function trasposeTable() {
-    $("tbody").each(function() {
-        var $this = $(this);
-        var newrows = [];
-        $this.find("tr").each(function(){
-            var i = 0;
-            $(this).find("td").each(function(){
-                i++;
-                if(newrows[i] === undefined) { newrows[i] = $("<tr></tr>") }
-                newrows[i].append($(this));
-            });
-        });
-        $this.find("tr").remove();
-        $.each(newrows, function(){
-            $this.append(this);
-        });
-    });
+    $(function() {
+        var t = $('tbody').eq(0);
+        var r = t.find('tr');
+        var cols= r.length;
+        var rows= r.eq(0).find('td').length;
+        var cell, next, tem, i = 0;
+        var tb= $('<tbody id="tasks"></tbody>');
+    
+        $('tbody').remove();
+        while(i<rows){
+            cell= 0;
+            tem= $('<tr></tr>');
+            while(cell<cols){
+                next= r.eq(cell++).find('td').eq(0);
+                tem.append(next);
+            }
+            tb.append(tem);
+            ++i;
+        }
+        $('#tasktable').append(tb);
+        $('#tasktable').show();
+    })
 }
 
 // Updates the Task Table
@@ -39,9 +45,6 @@ function updateTable() {
     for (var i in uniqueOperators) {
         var operatorId = uniqueOperators[i].operatorId;
         uniqueOperators[i].operatorTaskList = taskList.filter(t => t.operatorId == operatorId)
-            .sort(function (a, b) {
-                return (a.priority).localeCompare(b.priority)
-            })
     }
     uniqueOperators.sort(function (a, b ) {
         return b.operatorTaskList.length - a.operatorTaskList.length

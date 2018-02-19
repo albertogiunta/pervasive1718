@@ -26,9 +26,7 @@ data class Boundary(val id: Int = 0, val healthParameterId: Int, val activityId:
 
 data class TaskStatus(val id: Int = 0, val name: String) // sospseso, in corso, terminato, eliminato
 
-data class VisibleTask(val id: Int, val name: String, val priority: Priority, val operatorId: Int, val operatorName: String, val operatorSurname: String)
-
-enum class Priority { HIGH, LOW }
+data class VisibleTask(val id: Int, val name: String, val operatorId: Int, val operatorName: String, val operatorSurname: String)
 
 data class Member(val id: Int, val name: String) {
     companion object {

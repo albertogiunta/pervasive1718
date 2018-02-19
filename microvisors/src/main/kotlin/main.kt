@@ -5,6 +5,7 @@ import model.Bootstrapper
 import utils.PathGetter
 import java.awt.Desktop
 import java.io.File
+import java.net.URI
 
 fun main(args: Array<String>) {
     ConfigLoader().load(args)
@@ -13,7 +14,7 @@ fun main(args: Array<String>) {
     if (Desktop.isDesktopSupported()) {
         val usrDir = PathGetter.getRootPath().replace("\\", "/").replace(" ", "%20")
         val separator = "/"
-//        Desktop.getDesktop().browse(URI("file:" + separator + separator + separator + usrDir + "microvisors" + separator + "src" + separator + "index.html"))
+        Desktop.getDesktop().browse(URI("file:" + separator + separator + separator + usrDir + "microvisors" + separator + "src" + separator + "index.html"))
     }
     RouteController.initRoutes()
 }
