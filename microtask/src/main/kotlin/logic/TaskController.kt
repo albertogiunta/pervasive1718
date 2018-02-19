@@ -40,7 +40,7 @@ class TaskController private constructor(private val ws: WSTaskServer,
         leader = Pair(member, session)
         // How to send something that is not a Task?
         if (members.isNotEmpty()) {
-            leader.second.remote.sendString(members.keys().toJson())
+            leader.second.remote.sendString(members.keys().toList().toJson())
         }
     }
 
