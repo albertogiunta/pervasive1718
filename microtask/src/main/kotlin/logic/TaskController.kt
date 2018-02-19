@@ -4,6 +4,7 @@ import com.github.kittinunf.fuel.httpDelete
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.fuel.httpPut
+import config.Services
 import model.*
 import networking.WSTaskServer
 import org.eclipse.jetty.websocket.api.Session
@@ -20,8 +21,8 @@ class TaskController private constructor(private val ws: WSTaskServer,
     val members: ConcurrentHashMap<Member, Session> = ConcurrentHashMap()
 
     companion object {
-        val dbUrl = "http://localhost:8100/api"
-        val visorUrl = "http://localhost:8400/api" // TODO che porta ha il visore, che api ha il visore
+        val dbUrl = "http://localhost:${Services.DATA_BASE.port}/api"
+        val visorUrl = "http://localhost:${Services.VISORS.port}/api"
 
         lateinit var INSTANCE: TaskController
         private val isInitialized = AtomicBoolean()

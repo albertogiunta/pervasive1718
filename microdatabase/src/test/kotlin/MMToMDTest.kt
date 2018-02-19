@@ -13,6 +13,7 @@ import model.Log
 import model.Serializer.klaxon
 import model.SessionDNS
 import org.junit.AfterClass
+import org.junit.BeforeClass
 import org.junit.Test
 import process.MicroServiceManager
 import utils.handlingGetResponse
@@ -22,15 +23,16 @@ class MMToMDTest {
     companion object {
         private val startArguments = arrayOf("0")
         private val manager = MicroServiceManager()
-        private val newSession: String
-        private val closeSession: String
-        private val getAllLogs: String
+        private lateinit var newSession: String
+        private lateinit var closeSession: String
+        private lateinit var getAllLogs: String
         private lateinit var session: SessionDNS
 
         private var logList = listOf<Log>()
 
-
-        init {
+        @BeforeClass
+        @JvmStatic
+        fun setup() {
             ConfigLoader("../config.json").load(startArguments)
             newSession = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.SESSION.port}/session/new/gntlrt94b21g479u"
             closeSession = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.SESSION.port}/session/close/"

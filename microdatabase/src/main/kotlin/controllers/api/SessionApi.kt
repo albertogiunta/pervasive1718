@@ -25,8 +25,7 @@ object SessionApi {
         JdbiConfiguration.INSTANCE.jdbi.useExtension<SessionDao, SQLException>(SessionDao::class.java)
         { session = it.insertNewSession(request.params(Params.Session.PAT_ID), Timestamp(Date().time), request.params(Params.Session.INSTANCE_ID).toInt()) }
 
-        // TODO trova un modo di fare la richiesta dicendo se vuoi iscriverti o meno ai canali
-        SubscriberController.startListeningMonitorsForInstanceId(session.microServiceInstanceId)
+        SubscriberController.startListeningMonitorsForInstanceId(session)
 
         return session.toJson()
     }

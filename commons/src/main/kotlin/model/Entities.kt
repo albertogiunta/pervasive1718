@@ -4,7 +4,11 @@ import utils.KlaxonDate
 import java.sql.Timestamp
 import java.util.*
 
-data class Session @JvmOverloads constructor(val id: Int = 0, val cf: String, @KlaxonDate val startDate: Timestamp = Timestamp(Date().time), @KlaxonDate val endDate: Timestamp? = null, val microServiceInstanceId: Int = 0)
+data class Session @JvmOverloads constructor(val id: Int = 0, val cf: String, @KlaxonDate val startDate: Timestamp = Timestamp(Date().time), @KlaxonDate val endDate: Timestamp? = null, val microServiceInstanceId: Int = 0) {
+    companion object {
+        fun emptySession(): Session = Session(-1, "-1", microServiceInstanceId = -1)
+    }
+}
 
 data class Activity(val id: Int = 0, val name: String, val activityTypeId: Int, val acronym: String, val boundaryId: Int)
 

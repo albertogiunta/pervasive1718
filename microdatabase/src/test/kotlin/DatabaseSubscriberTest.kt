@@ -15,6 +15,7 @@ import config.ConfigLoader
 import config.Services
 import model.Log
 import org.junit.AfterClass
+import org.junit.BeforeClass
 import org.junit.Test
 import utils.handlingGetResponse
 import java.util.*
@@ -28,15 +29,15 @@ class DatabaseSubscriberTest {
          *
          **/
         private val startArguments = arrayOf("0")
-        private val connector: BrokerConnector
-        private val getAllLogs: String
-        private val addLog: String
-        private val getLog: String
+        private lateinit var connector: BrokerConnector
+        private lateinit var getAllLogs: String
+        private lateinit var addLog: String
+        private lateinit var getLog: String
         private var listResult = listOf<Log>()
 
-
-        init {
-            // TODO metti in metodo beforeclass
+        @BeforeClass
+        @JvmStatic
+        fun setup() {
             ConfigLoader("../config.json").load(startArguments)
             getAllLogs = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.DATA_BASE.port}/${Connection.API}/$TABLE_NAME/all"
             addLog = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.DATA_BASE.port}/${Connection.API}/$TABLE_NAME/add"
@@ -55,7 +56,7 @@ class DatabaseSubscriberTest {
     }
 
     @Test
-    fun writeSingleData() {
+    fun `receive single data from broker and write to DB`() {
 
         val sub = RabbitMQSubscriber(connector)
         val randomId = Math.abs(Random().nextInt(500))
@@ -86,7 +87,7 @@ class DatabaseSubscriberTest {
     }
 
     @Test
-    fun writeMultipleData() {
+    fun `receive multiple data from broker and write to DB`() {
 
         listResult = handlingGetResponse(makeGet(getAllLogs))
         val initialListSize = listResult.size

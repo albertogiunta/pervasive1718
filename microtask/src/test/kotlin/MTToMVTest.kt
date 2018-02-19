@@ -11,12 +11,10 @@ import model.SessionDNS
 import model.VisibleTask
 import org.junit.AfterClass
 import org.junit.Assert
+import org.junit.BeforeClass
 import org.junit.Test
 import process.MicroServiceManager
-import utils.KlaxonDate
-import utils.dateConverter
-import utils.handlingGetResponse
-import utils.mockLeaderMemberInteractionAndTaskAddition
+import utils.*
 
 class MTtoMVTest {
 
@@ -24,13 +22,17 @@ class MTtoMVTest {
 
     companion object {
         private val startArguments = arrayOf("0")
-        private val getAllTaskVisor: String
-        private val newSession: String
+        private lateinit var getAllTaskVisor: String
+        private lateinit var newSession: String
         private val manager = MicroServiceManager()
         private val klaxon = Klaxon().fieldConverter(KlaxonDate::class, dateConverter)
         private lateinit var session: SessionDNS
+        private lateinit var leaderWS: WSClient
+        private lateinit var memberWS: WSClient
 
-        init {
+        @BeforeClass
+        @JvmStatic
+        fun setup() {
             ConfigLoader().load(startArguments)
             getAllTaskVisor = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.VISORS.port}/${Connection.API}/all"
             newSession = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.SESSION.port}/session/new/gntlrt94b21g479u"
@@ -58,6 +60,9 @@ class MTtoMVTest {
 
             newSession.httpPost().responseString().third.fold(success = { session = klaxon.parse<SessionDNS>(it)!!; println("ho ricevuto risposta dal db: $session") }, failure = { println("ho ricevuto un errore $it") })
 
+            leaderWS = WSClientInitializer.init(WSClient(URIFactory.getTaskURI())).also { Thread.sleep(1000) }
+            memberWS = WSClientInitializer.init(WSClient(URIFactory.getTaskURI())).also { Thread.sleep(1000) }
+
         }
 
         @AfterClass
@@ -73,7 +78,7 @@ class MTtoMVTest {
     fun `create leader and member interaction and add task`() {
         val taskId = 32
 
-        mockLeaderMemberInteractionAndTaskAddition(session, 4, taskId, removeTask = false)
+        mockLeaderMemberInteractionAndTaskAddition(session, 4, taskId, leaderWS, memberWS)
 
         listResult = handlingGetResponse(getAllTaskVisor.httpGet().responseString())
 
@@ -85,10 +90,8 @@ class MTtoMVTest {
     fun `create leader and member interaction, add task and remove task`() {
         val taskId = 35
 
-        mockLeaderMemberInteractionAndTaskAddition(session, 5, 35, removeTask = true)
-
+        mockLeaderMemberInteractionAndTaskRemoval(session, 5, 35, leaderWS, memberWS)
         listResult = handlingGetResponse(getAllTaskVisor.httpGet().responseString())
-
         Assert.assertTrue(listResult.firstOrNull { it.id == taskId } == null)
     }
 }
