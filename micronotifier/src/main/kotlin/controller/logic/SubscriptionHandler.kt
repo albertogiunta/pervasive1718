@@ -23,7 +23,7 @@ object SubscriptionHandler {
             with(wrapper) {
                 when (subject) {
                     SessionOperation.SUBSCRIBE -> {
-                        val msg = subject.objectify<Subscription>(body)
+                        val msg : Subscription = subject.objectify(body)
                         if (!core.sessions.contains(msg.subject)) {
                             Logger.info("Adding Session for ${msg.subject} @ ${msg.body}")
                             core.sessions[msg.subject] = session
@@ -34,7 +34,7 @@ object SubscriptionHandler {
                     }
                     SessionOperation.CLOSE -> {
                         Logger.info(body)
-                        val listener = subject.objectify<Member>(body)
+                        val listener : Member = subject.objectify(body)
                         Logger.info("Closing Session for $listener")
                         core.sessions.removeListener(listener)
                         core.topics.removeListener(listener)
