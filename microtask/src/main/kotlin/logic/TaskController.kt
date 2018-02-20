@@ -1,5 +1,6 @@
 package logic
 
+import PayloadWrapper
 import com.github.kittinunf.fuel.httpDelete
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpPost
@@ -40,14 +41,19 @@ class TaskController private constructor(private val ws: WSTaskServer,
         leader = Pair(member, session)
         // How to send something that is not a Task?
         if (members.isNotEmpty()) {
-            leader.second.remote.sendString(members.keys().toList().toJson())
+            val message = PayloadWrapper(Services.instanceId().toLong(),
+                TaskOperations.ADD_LEADER, MembersAdditionNotification(members.keys().toList()).toJson())
+            ws.sendMessage(leader.second, message)
+            //leader.second.remote.sendString(members.keys().toList().toJson())
         }
     }
 
     fun addMember(member: Member, session: Session) {
         members[member] = session
         if (leader.second.isOpen) {
-            ws.sendMessage(leader.second, TaskPayload(member, TaskOperation.ADD_MEMBER, Task.emptyTask()))
+            val message = PayloadWrapper(Services.instanceId().toLong(),
+                TaskOperations.ADD_MEMBER, MembersAdditionNotification(members.keys().toList()).toJson())
+            ws.sendMessage(leader.second, message)
         }
     }
 

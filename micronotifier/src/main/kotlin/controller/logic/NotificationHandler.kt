@@ -1,11 +1,11 @@
 package controller.logic
 
 import LifeParameters
+import PayloadWrapper
 import com.github.kittinunf.fuel.httpGet
 import config.Services
 import controller.CoreController
 import model.Boundary
-import model.PayloadWrapper
 import utils.GsonInitializer
 import utils.Logger
 import utils.toJson
@@ -61,7 +61,7 @@ object NotificationHandler {
                     it.isNotEmpty()
                 }.map { body ->
                     PayloadWrapper(-1L,
-                            model.SessionOperation.NOTIFY,
+                        model.SessionOperations.NOTIFY,
                             model.Notification(-1L, lp, body).toJson()
                     ).toJson()
                 }.doOnNext {
