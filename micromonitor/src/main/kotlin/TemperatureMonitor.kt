@@ -1,3 +1,5 @@
+import model.LifeParameters
+
 object TemperatureMonitorsFactory {
 
     /**

@@ -1,7 +1,9 @@
 package controller.logic
 
-import PayloadWrapper
 import controller.CoreController
+import model.PayloadWrapper
+import model.Update
+import model.WSOperations
 import utils.toJson
 
 object RelayHandler {
@@ -21,11 +23,11 @@ object RelayHandler {
                     utils.Logger.info(it.toString())
                 }.subscribe { (lp, value) ->
                     val message = PayloadWrapper(-1L,
-                        model.SessionOperations.UPDATE,
-                            model.Update(-1L, lp, value).toJson()
+                            WSOperations.UPDATE,
+                            Update(lp, value).toJson()
                     )
                     // Do stuff with the WebSockets, dispatch only some of the merged values
-                    // With one are specified into controller.listenerMap: Member -> Set<LifeParameters>
+                            // With one are specified into controller.listenerMap: Member -> Set<model.LifeParameters>
                     core.topics[topic]?.forEach { member ->
                         utils.Logger.info("$member ===> ${message.toJson()}")
                         if (core.sessions[member]?.isOpen!!) {

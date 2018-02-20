@@ -1,9 +1,9 @@
 package controller
 
-import LifeParameters
 import controller.logic.NotificationHandler
 import controller.logic.RelayHandler
 import controller.logic.SubscriptionHandler
+import model.LifeParameters
 import model.Member
 import org.eclipse.jetty.websocket.api.Session
 

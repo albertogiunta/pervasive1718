@@ -1,7 +1,7 @@
 package controller
 
-import LifeParameters
 import io.reactivex.subjects.PublishSubject
+import model.LifeParameters
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Before

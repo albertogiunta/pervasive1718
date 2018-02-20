@@ -1,6 +1,6 @@
 package controller
 
-import LifeParameters
+import model.LifeParameters
 import model.Member
 
 interface TopicsController<T, L> {

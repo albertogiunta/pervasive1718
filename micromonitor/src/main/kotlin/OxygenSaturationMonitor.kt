@@ -1,3 +1,5 @@
+import model.LifeParameters
+
 object SpO2MonitorsFactory {
 
     val DEFAULT_INIT_VALUE = 80

@@ -1,8 +1,8 @@
 package utils
 
-import LifeParameters
 import com.google.gson.GsonBuilder
 import config.Services
+import model.LifeParameters
 import model.Member
 import model.Task
 import model.VisibleTask

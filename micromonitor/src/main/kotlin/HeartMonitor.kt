@@ -1,3 +1,5 @@
+import model.LifeParameters
+
 object HeartMonitorsFactory {
 
     val DEFAULT_SYSTOLIC_BLOOD_PRESSURE_INIT_VAL = 120.0

@@ -13,6 +13,7 @@ import com.github.kittinunf.result.Result
 import com.google.gson.JsonObject
 import config.ConfigLoader
 import config.Services
+import model.LifeParameters
 import model.Log
 import org.junit.AfterClass
 import org.junit.BeforeClass

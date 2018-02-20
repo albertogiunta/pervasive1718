@@ -1,4 +1,5 @@
 import config.ConfigLoader
+import model.LifeParameters
 import utils.acronymWithSession
 
 object MicroMonitorBootstrap {

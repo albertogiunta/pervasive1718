@@ -1,9 +1,6 @@
 import config.ConfigLoader
 import config.Services
-import model.Member
-import model.PayloadWrapper
-import model.SessionOperation
-import model.Subscription
+import model.*
 import utils.toJson
 
 fun main(args: Array<String>) {
@@ -16,15 +13,15 @@ fun main(args: Array<String>) {
 
     client.connectBlocking()
 
-    val msg1 = PayloadWrapper(-1L, SessionOperation.SUBSCRIBE,
-            Subscription(-1L, member, LifeParameters.values().toList()).toJson()
-        ).toJson()
+    val msg1 = PayloadWrapper(-1L, WSOperations.SUBSCRIBE,
+            Subscription(member, LifeParameters.values().toList()).toJson()
+    ).toJson()
 
     client.sendMessage(msg1)
 
     Thread.sleep(5000L)
 
-    val msg2 = PayloadWrapper(-1L, SessionOperation.CLOSE, member.toJson()).toJson()
+    val msg2 = PayloadWrapper(-1L, WSOperations.CLOSE, member.toJson()).toJson()
 
     client.sendMessage(msg2)
 
