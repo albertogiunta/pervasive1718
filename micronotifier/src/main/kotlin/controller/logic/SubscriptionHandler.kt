@@ -1,11 +1,12 @@
 package controller.logic
 
+import PayloadWrapper
 import com.google.gson.GsonBuilder
 import controller.CoreController
 import model.Member
-import model.PayloadWrapper
-import model.SessionOperation
+import model.SessionOperations
 import model.Subscription
+import objectify
 import org.eclipse.jetty.websocket.api.Session
 import utils.Logger
 
@@ -22,8 +23,8 @@ object SubscriptionHandler {
         }.subscribe { (session, wrapper) ->
             with(wrapper) {
                 when (subject) {
-                    SessionOperation.SUBSCRIBE -> {
-                        val msg : Subscription = subject.objectify(body)
+                    SessionOperations.SUBSCRIBE -> {
+                        val msg: Subscription = wrapper.objectify(body)
                         if (!core.sessions.contains(msg.subject)) {
                             Logger.info("Adding Session for ${msg.subject} @ ${msg.body}")
                             core.sessions[msg.subject] = session
@@ -32,9 +33,9 @@ object SubscriptionHandler {
                         core.topics.removeListener(msg.subject)
                         core.topics.add(msg.body, msg.subject)
                     }
-                    SessionOperation.CLOSE -> {
+                    SessionOperations.CLOSE -> {
                         Logger.info(body)
-                        val listener : Member = subject.objectify(body)
+                        val listener: Member = wrapper.objectify(body)
                         Logger.info("Closing Session for $listener")
                         core.sessions.removeListener(listener)
                         core.topics.removeListener(listener)
