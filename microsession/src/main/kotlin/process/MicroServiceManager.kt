@@ -36,7 +36,10 @@ class MicroServiceManager {
     }
 
     fun newSession(slotId: String) {
-        Services.values().forEach { newService(it,slotId) }
+        Services.valuesWithoutSession().forEach {
+            println("Try to start " + it.executableName)
+            newService(it, slotId)
+        }
     }
 
     fun newService(service: Services, slotId: String){

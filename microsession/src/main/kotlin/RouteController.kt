@@ -7,6 +7,7 @@ import config.Services
 import config.Services.Utils
 import model.Session
 import model.SessionDNS
+import process.MicroServiceManager
 import spark.Request
 import spark.Response
 import spark.Spark.path
@@ -26,7 +27,6 @@ object RouteController {
         port(Services.SESSION.port)
 
         path("/session") {
-
             // la fa il leader, ritorna il riferimento di [MT], crea una websocket per mandargli i membri mano a mano che arrivano, ti ritorna anche l'id della sessione
             post("/new/:patId", Utils.RESTParams.applicationJson) { SessionApi.createNewSession(request, response) }
 
@@ -35,7 +35,6 @@ object RouteController {
 
             // la fanno i membri, e deve restituire la lista di interventi disponibili
             get("/all", Utils.RESTParams.applicationJson) { SessionApi.listAllSessions(request, response) }
-
         }
     }
 }
@@ -43,33 +42,38 @@ object RouteController {
 
 object SessionApi {
 
-    private val boots = BooleanArray(5)
+    private val BOOT_WAIT_TIME = 5000L
+    private val MAX_CONCURRENT_SESSION = 5
+    private val instance = BooleanArray(MAX_CONCURRENT_SESSION)
     private val sessions = mutableListOf<Pair<SessionDNS, Int>>()
     private var dbUrl: String = ""
     private var taskUrl: String = ""
+    private var sManager = MicroServiceManager()
 
-    private fun nextFreeSessionNumber() = boots.indexOfFirst { !it }.also { boots[it] = true }
+    private fun nextFreeSessionNumber() = instance.indexOfFirst { !it }.also { instance[it] = true }
 
     fun createNewSession(request: Request, response: Response): String {
         val patId = request.params("patId")
 
-        val currentBoot = nextFreeSessionNumber()
-        dbUrl = createMicroDatabaseAddress(currentBoot)
-        taskUrl = createMicroTaskAddress(currentBoot)
+        val instanceId = nextFreeSessionNumber()
+        dbUrl = createMicroDatabaseAddress(instanceId)
+        taskUrl = createMicroTaskAddress(instanceId)
 
-        println("current boot $currentBoot")
+        println("current boot $instanceId")
+        sManager.newSession(instanceId.toString())
 
-        // TODO attach to subset of microservices
-
-        "$dbUrl/api/session/add/$patId/instanceid/$currentBoot".httpPost().responseString().third.fold(
+        Thread.sleep(BOOT_WAIT_TIME)
+        "$dbUrl/api/session/add/$patId/instanceid/$instanceId".httpPost().responseString().third.fold(
             success = {
                 val session = Klaxon().fieldConverter(KlaxonDate::class, dateConverter).parse<Session>(it)
                         ?: return response.badRequest().also { println("klaxon couldn't parse session") }
-                sessions.add(Pair(SessionDNS(session.id, session.cf, taskUrl), currentBoot))
+
+                sessions.add(Pair(SessionDNS(session.id, session.cf, taskUrl), instanceId))
             }, failure = { error ->
                 if (error.exception.message == "Connection refused (Connection refused)") {
                     return response.resourceNotAvailable(dbUrl)
                 }
+            sManager.closeSession(instanceId.toString())
                 return response.internalServerError(error.exception.message.toString())
             })
 
@@ -80,11 +84,11 @@ object SessionApi {
         val sessionId = request.params("sessionId").toInt()
         val session = sessions.first { it.first.sessionId == sessionId }
 
-        boots[session.second] = false
+        instance[session.second] = false
 
         sessions.removeAll { it.first.sessionId == sessionId }
 
-        // TODO detach to subset of microservices
+        sManager.closeSession(session.second.toString())
 
         "$dbUrl/api/session/close/$sessionId".httpDelete().responseString().third.fold(
             success = { return response.ok() },

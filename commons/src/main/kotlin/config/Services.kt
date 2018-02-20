@@ -55,6 +55,9 @@ class Services private constructor(var port: Int, val wsPath: String, val execut
 
         fun values(): Array<Services> = arrayOf(SESSION, DATA_BASE, TASK_HANDLER, NOTIFIER, VISORS, MONITOR)
 
+        fun valuesWithoutSession(): Array<Services> = arrayOf(DATA_BASE, TASK_HANDLER, NOTIFIER, VISORS, MONITOR)
+
+
         fun instanceId(): Int = instanceId
 
         fun updatePortWithSession(args: Array<String>) {
