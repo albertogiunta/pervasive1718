@@ -1,3 +1,5 @@
+package model
+
 enum class LifeParameters(val longName: String, val acronym: String, val id: Int) {
     SYSTOLIC_BLOOD_PRESSURE("Pressione Arteriosa Sistolica", "SYS", 1),
     DIASTOLIC_BLOOD_PRESSURE("Pressione Arteriosa Diastolica", "DIA", 2),

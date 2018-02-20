@@ -1,9 +1,9 @@
 package networking.rabbit
 
 import BrokerConnector
-import LifeParameters
 import RabbitMQSubscriber
 import io.reactivex.subjects.Subject
+import model.LifeParameters
 
 /**
  *  This RabbitMQ class wrapper work as relay point in order to move (@publishOn)

@@ -1,9 +1,9 @@
 package controllers
 
 import BrokerConnector
-import LifeParameters
 import RabbitMQSubscriber
 import controllers.api.LogApi
+import model.LifeParameters
 import model.Session
 import utils.acronymWithSession
 

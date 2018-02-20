@@ -1,5 +1,6 @@
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
+import model.LifeParameters
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 

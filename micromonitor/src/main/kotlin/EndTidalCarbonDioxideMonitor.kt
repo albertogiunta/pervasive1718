@@ -1,3 +1,5 @@
+import model.LifeParameters
+
 object EtCO2MonitorsFactory {
     val DEFAULT_INIT_VALUE = 40.0
     val DEFAULT_MIN_BOUND = 0.0

@@ -1,3 +1,5 @@
+import model.LifeParameters
+
 /**
  *
  * A Wrapper of a Publisher for RabbitMQ Broker

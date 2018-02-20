@@ -5,7 +5,7 @@ import controller.CoreController
 import io.reactivex.subjects.Subject
 import model.Payload
 import model.PayloadWrapper
-import model.SessionOperation
+import model.WSOperations
 import org.eclipse.jetty.websocket.api.Session
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketError
 import org.eclipse.jetty.websocket.api.annotations.WebSocket
@@ -17,7 +17,7 @@ import utils.toJson
  *
  */
 @WebSocket
-class RelayService : WSServer<Payload<SessionOperation, String>>() {
+class RelayService : WSServer<Payload<WSOperations, String>>() {
 
     private val core = CoreController.singleton()
 
@@ -31,7 +31,7 @@ class RelayService : WSServer<Payload<SessionOperation, String>>() {
     override fun onClose(session: Session, statusCode: Int, reason: String) {
         super.onClose(session, statusCode, reason)
         if (core.sessions.has(session)) {
-            val message = PayloadWrapper(-1L, SessionOperation.CLOSE,
+            val message = PayloadWrapper(-1L, WSOperations.CLOSE,
                     core.sessions.getOn(session)!!.toJson()).toJson()
             coreSubject.onNext(Pair(session, message))
         }

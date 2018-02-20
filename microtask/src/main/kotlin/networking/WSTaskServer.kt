@@ -1,14 +1,9 @@
 package networking
 
-import PayloadWrapper
 import WSServer
 import logic.TaskController
-import model.Member
-import model.MembersAdditionNotification
+import model.*
 import model.Serializer.klaxon
-import model.TaskAssignment
-import model.TaskOperations
-import objectify
 import org.eclipse.jetty.websocket.api.Session
 import org.eclipse.jetty.websocket.api.annotations.WebSocket
 import utils.KlaxonDate
@@ -32,25 +27,29 @@ class WSTaskServer : WSServer<PayloadWrapper>() {
         taskWrapper?.let {
             with(taskWrapper) {
                 when (subject) {
-                    TaskOperations.ADD_LEADER -> {
-                        val member: Member = taskWrapper.objectify(body)
-                        controller.addLeader(member, session)
+                    WSOperations.ADD_LEADER -> {
+                        val notification: MembersAdditionNotification = taskWrapper.objectify(body)
+                        if (notification.members.isNotEmpty()) {
+                            controller.addLeader(notification.members.first(), session)
+                        }
                     } // done by leader
-                    TaskOperations.ADD_MEMBER -> {
-                        val member: MembersAdditionNotification = taskWrapper.objectify(body)
-                        controller.addMember(member, session)
+                    WSOperations.ADD_MEMBER -> {
+                        val notification: MembersAdditionNotification = taskWrapper.objectify(body)
+                        if (notification.members.isNotEmpty()) {
+                            controller.addMember(notification.members.first(), session)
+                        }
                     } // done by member
-                    TaskOperations.ADD_TASK -> {
+                    WSOperations.ADD_TASK -> {
                         val assignment: TaskAssignment = taskWrapper.objectify(body)
-                        controller.addTask(assignment.body, assignment.subject)
+                        controller.addTask(assignment.task, assignment.member)
                     } // done by leader
-                    TaskOperations.REMOVE_TASK -> {
+                    WSOperations.REMOVE_TASK -> {
                         val assignment: TaskAssignment = taskWrapper.objectify(body)
-                        controller.removeTask(assignment.body)
+                        controller.removeTask(assignment.task)
                     } // done by leader
-                    TaskOperations.CHANGE_TASK_STATUS -> {
+                    WSOperations.CHANGE_TASK_STATUS -> {
                         val assignment: TaskAssignment = taskWrapper.objectify(body)
-                        controller.changeTaskStatus(assignment.body, session)
+                        controller.changeTaskStatus(assignment.task, session)
                     } // done by both
                     else -> println("Message was not handled " + message)
                 }

@@ -1,4 +1,5 @@
 import BrokerConnector.Companion.REMOTE_HOST
+import model.LifeParameters
 import org.junit.AfterClass
 import org.junit.Assert
 import org.junit.Test

@@ -1,6 +1,5 @@
 package logic
 
-import PayloadWrapper
 import com.github.kittinunf.fuel.httpDelete
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpPost
@@ -42,7 +41,7 @@ class TaskController private constructor(private val ws: WSTaskServer,
         // How to send something that is not a Task?
         if (members.isNotEmpty()) {
             val message = PayloadWrapper(Services.instanceId().toLong(),
-                TaskOperations.ADD_LEADER, MembersAdditionNotification(members.keys().toList()).toJson())
+                    WSOperations.ADD_LEADER, MembersAdditionNotification(members.keys().toList()).toJson())
             ws.sendMessage(leader.second, message)
             //leader.second.remote.sendString(members.keys().toList().toJson())
         }
@@ -52,7 +51,7 @@ class TaskController private constructor(private val ws: WSTaskServer,
         members[member] = session
         if (leader.second.isOpen) {
             val message = PayloadWrapper(Services.instanceId().toLong(),
-                TaskOperations.ADD_MEMBER, MembersAdditionNotification(members.keys().toList()).toJson())
+                    WSOperations.ADD_MEMBER, MembersAdditionNotification(members.keys().toList()).toJson())
             ws.sendMessage(leader.second, message)
         }
     }
@@ -60,7 +59,9 @@ class TaskController private constructor(private val ws: WSTaskServer,
     fun addTask(task: Task, member: Member) {
         if (members.containsKey(member)) {
             taskMemberAssociationList.add(TaskMemberAssociation.create(task, member))
-            ws.sendMessage(members[member]!!, TaskPayload(member, TaskOperation.ADD_TASK, task))
+            val message = PayloadWrapper(Services.instanceId().toLong(),
+                    WSOperations.ADD_TASK, TaskAssignment(member, task).toJson())
+            ws.sendMessage(members[member]!!, message)
             "$dbUrl/task/add".httpPost().body(task.toJson()).responseString()
             "$visorUrl/add".httpPost().body(task.toVisibleTask(member, activityName = activityList.first { x -> x.id == task.activityId }.name).toJson()).responseString()
         }
@@ -70,11 +71,14 @@ class TaskController private constructor(private val ws: WSTaskServer,
         with(taskMemberAssociationList.firstOrNull { it.task.id == task.id }) {
             this?.let {
                 taskMemberAssociationList.remove(this)
-                ws.sendMessage(members[member]!!, TaskPayload(member, TaskOperation.REMOVE_TASK, Task.emptyTask()))
+                val message = PayloadWrapper(Services.instanceId().toLong(),
+                        WSOperations.REMOVE_TASK, TaskAssignment(member, task).toJson())
+                ws.sendMessage(members[member]!!, message)
                 "$dbUrl/task/${it.task.id}".httpDelete().responseString()
                 "$visorUrl/remove/${it.task.id}".httpDelete().responseString()
             }
-                    ?: ws.sendMessage(leader.second, TaskPayload(Member.emptyMember(), TaskOperation.ERROR_REMOVING_TASK, task))
+                    ?: ws.sendMessage(leader.second, PayloadWrapper(Services.instanceId().toLong(),
+                            WSOperations.ERROR_REMOVING_TASK, TaskError(task, "").toJson()))
         }
     }
 
@@ -82,10 +86,13 @@ class TaskController private constructor(private val ws: WSTaskServer,
         with(taskMemberAssociationList.firstOrNull { it.task.id == task.id }) {
             this?.let {
                 it.task.statusId = task.statusId
-                ws.sendMessage(members[member]!!, TaskPayload(member, TaskOperation.CHANGE_TASK_STATUS, this.task))
-                ws.sendMessage(leader.second, TaskPayload(member, TaskOperation.CHANGE_TASK_STATUS, this.task))
+                val message = PayloadWrapper(Services.instanceId().toLong(),
+                        WSOperations.CHANGE_TASK_STATUS, TaskAssignment(member, this.task).toJson())
+                ws.sendMessage(members[member]!!, message)
+                ws.sendMessage(leader.second, message)
                 "$dbUrl/task/${it.task.id}/status/${it.task.statusId}".httpPut().responseString()
-            } ?: ws.sendMessage(session, TaskPayload(Member.emptyMember(), TaskOperation.ERROR_CHANGING_STATUS, task))
+            } ?: ws.sendMessage(session, PayloadWrapper(Services.instanceId().toLong(),
+                    WSOperations.ERROR_CHANGING_STATUS, StatusError(task.statusId, task, "").toJson()))
         }
     }
 }

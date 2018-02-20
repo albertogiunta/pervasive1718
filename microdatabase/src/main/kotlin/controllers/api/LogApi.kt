@@ -3,11 +3,11 @@
 package controllers.api
 
 import JdbiConfiguration
-import LifeParameters
 import Params
 import badRequest
 import com.beust.klaxon.Klaxon
 import dao.LogDao
+import model.LifeParameters
 import model.Log
 import okCreated
 import spark.Request
