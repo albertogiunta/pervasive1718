@@ -84,14 +84,13 @@ object SessionApi {
         val sessionId = request.params("sessionId").toInt()
         val session = sessions.first { it.first.sessionId == sessionId }
 
-        instance[session.second] = false
-
-        sessions.removeAll { it.first.sessionId == sessionId }
-
-        sManager.closeSession(session.second.toString())
-
         "$dbUrl/api/session/close/$sessionId".httpDelete().responseString().third.fold(
-            success = { return response.ok() },
+                success = {
+                    instance[session.second] = false
+                    sessions.removeAll { it.first.sessionId == sessionId }
+                    sManager.closeSession(session.second.toString())
+                    return response.ok()
+                },
             failure = { return it.toJson() }
         )
     }

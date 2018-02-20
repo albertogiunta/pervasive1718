@@ -74,7 +74,6 @@ class MTtoDBTest {
         @JvmStatic
         fun destroyAll() {
             (closeSession + session.sessionId).httpDelete().responseString().third.fold(success = { println("ho chiuso la sessione") }, failure = { println("ho ricevuto un errore in fase di chiusura della sessione: $it") })
-            Thread.sleep(5000)
             manager.closeSession(startArguments[0])
         }
     }
