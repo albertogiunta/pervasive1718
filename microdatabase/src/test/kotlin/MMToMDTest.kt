@@ -43,13 +43,15 @@ class MMToMDTest {
             manager.newService(Services.SESSION, startArguments[0]) // 8500
             Thread.sleep(3000)
             println()
-            println("istanzio monitor")
+            /*println("istanzio monitor")
             manager.newService(Services.MONITOR, startArguments[0]) // 8200
             Thread.sleep(3000)
             println()
             println("istanzio database")
             manager.newService(Services.DATA_BASE, startArguments[0]) // 8100
-            Thread.sleep(3000)
+            Thread.sleep(3000)*/
+
+            Thread.sleep(5000)
 
         }
 
@@ -62,22 +64,19 @@ class MMToMDTest {
 
     @Test
     fun `add new session and start listening to monitor and write data`() {
+
+        newSession.httpPost().responseString().third.fold(success = { session = klaxon.parse<SessionDNS>(it)!!; println("ho ricevuto risposta dal db: $session") }, failure = { println("ho ricevuto un errore $it") })
         logList = handlingGetResponse(getAllLogs.httpGet().responseString())
         val startingSize = logList.size
 
-        newSession.httpPost().responseString().third.fold(success = { session = klaxon.parse<SessionDNS>(it)!!; println("ho ricevuto risposta dal db: $session") }, failure = { println("ho ricevuto un errore $it") })
         Thread.sleep(10000)
 
-        "$closeSession${session.sessionId}".httpDelete().responseString()
-
+        Thread.sleep(5000)
         logList = handlingGetResponse(getAllLogs.httpGet().responseString())
         val newSize = logList.size
         assertTrue(newSize > startingSize)
+        (closeSession + session.sessionId).httpDelete().responseString()
 
-        Thread.sleep(2000)
-
-        logList = handlingGetResponse(getAllLogs.httpGet().responseString())
-        val newNewSize = logList.size
-        assertTrue(newSize == newNewSize)
+        Thread.sleep(5000)
     }
 }
