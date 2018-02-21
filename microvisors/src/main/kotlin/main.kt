@@ -11,7 +11,7 @@ import java.net.URLEncoder
 fun main(args: Array<String>) {
     ConfigLoader().load(args)
 
-    File(PathGetter.getRootPath()+"microvisors/src/view/js/portLoader.js").bufferedWriter().use { out -> out.write("var sessionExchange = " + Bootstrapper(Services.VISORS.port).port.toString()) }
+    File(PathGetter.getRootPath()+"microvisors/src/view/js/portLoader.js").bufferedWriter().use { out -> out.write("var sessionExchange = " + (if (args[0].isNullOrEmpty()) "" else args[0])) }
     if (Desktop.isDesktopSupported()) {
         var rootProjectPath = PathGetter.getRootPath()
         if (System.getProperty("os.name").contains("Mac OS X")) {

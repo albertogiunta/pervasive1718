@@ -79,7 +79,7 @@ function updateTable() {
 
 (function pollService() {
     $.ajax({
-        url: 'http://localhost:8400/api/all',
+        url: 'http://localhost:+'sessionExchange'+/api/all',
         type: "GET",
         contentType: "application/json",
         dataType: 'json',

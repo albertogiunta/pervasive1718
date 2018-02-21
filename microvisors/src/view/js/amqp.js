@@ -1,6 +1,6 @@
 // GUI elements
 var url, username, password, virtualhost, connectBut, disconnectBut;
-var consumeExchange;
+var consumeExchange, punctualConsumeExchange;
 var logConsole, clearBut, receivedMessageCount;
 
 // A factory for creating AMQP clients and the AMQP client used.
@@ -24,6 +24,7 @@ $(document).ready(function () {
 	virtualhost = "/";
 	routingKey = "broadcastkey";
 	consumeExchange = ["DIA", "EtCO2", "HR", "SYS", "SpO2", "T"];
+	punctualConsumeExchange = ["EtCO2", "SpO2", "T"];
 
 	receivedMessageCounter = 0;
 
@@ -53,7 +54,12 @@ var handleConnect = function () {
 
     consumeExchange.forEach(function (element, index, consumeExchange) {
         consumeExchange[index] = element + sessionExchange
-    });
+	});
+	
+	// Need to modify ID of punctual exchanges in DOM
+	punctualConsumeExchange.forEach(function (element, index, punctualConsumeExchange) {
+		$('#'+element).attr('id', element + sessionExchange);	
+	})
 
 	queueName = "queue" + Math.floor(Math.random() * 1000000);
 
@@ -171,9 +177,9 @@ function getRandomInt(min, max) {
 	return Math.floor(Math.random() * (max - min)) + min;
 }
 
-graphs.push(new Graph("Battito cardiaco", "HR", 0, 220, "black", ".graphOne"));
+graphs.push(new Graph("Battito cardiaco", "HR"+sessionExchange, 0, 220, "black", ".graphOne"));
 //graphs.push(new Graph("Temperatura", "T", 0, 45, "red"));
-graphs.push(new Graph("Pressione sistolica", "SYS", 0, 230, "blue", ".graphTwo"));
-graphs.push(new Graph("Pressione diastolica", "DIA", 0, 150, "green", ".graphThree"));
+graphs.push(new Graph("Pressione sistolica", "SYS"+sessionExchange, 0, 230, "blue", ".graphTwo"));
+graphs.push(new Graph("Pressione diastolica", "DIA"+sessionExchange, 0, 150, "green", ".graphThree"));
 //graphs.push(new Graph("Saturazione ossigeno", "SpO2", 0, 100, "purple"));
 //graphs.push(new Graph("Fine respirazione CO2", "EtCO2", 0, 15, "gray"));
