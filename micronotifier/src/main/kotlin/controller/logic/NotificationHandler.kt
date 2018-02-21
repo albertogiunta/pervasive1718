@@ -63,7 +63,7 @@ object NotificationHandler {
                             Notification(lp, body).toJson()
                     ).toJson()
                 }.doOnNext {
-                    utils.Logger.info(it.toString())
+                    //utils.Logger.info(it.toString())
                 }.subscribe {message ->
                     // Do Stuff, if necessary but SubscriptionHandler is MANDATORY.
                     core.topics[lp]?.forEach { member ->
