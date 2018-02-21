@@ -21,7 +21,7 @@ class WSTaskServer : WSServer<PayloadWrapper>() {
 
     override fun onMessage(session: Session, message: String) {
         super.onMessage(session, message)
-
+        print(message)
         val taskWrapper = klaxon.fieldConverter(KlaxonDate::class, dateConverter).parse<PayloadWrapper>(message)
 
         taskWrapper?.let {
@@ -29,6 +29,7 @@ class WSTaskServer : WSServer<PayloadWrapper>() {
                 when (subject) {
                     WSOperations.ADD_LEADER -> {
                         val notification: MembersAdditionNotification = taskWrapper.objectify(body)
+                        //TODO GESTIRE CADUTA LEADER
                         if (notification.members.isNotEmpty()) {
                             controller.addLeader(notification.members.first(), session)
                         }

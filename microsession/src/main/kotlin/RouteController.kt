@@ -42,7 +42,7 @@ object RouteController {
 
 object SessionApi {
 
-    private val BOOT_WAIT_TIME = 5000L
+    private val BOOT_WAIT_TIME = 10000L
     private val MAX_CONCURRENT_SESSION = 5
     private val instance = BooleanArray(MAX_CONCURRENT_SESSION)
     private val sessions = mutableListOf<Pair<SessionDNS, Int>>()
