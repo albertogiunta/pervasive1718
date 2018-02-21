@@ -45,16 +45,17 @@ class DeviceToMTTest {
             manager.newService(Services.DATA_BASE, startArguments[0]) // 8100
             Thread.sleep(3000)
             println()*/
+            println("istanzio task")
+            MicroTaskBootstrap.init().also { Thread.sleep(4000) } //need to be started in this way to access the INSTANCE
+            taskController = TaskController.INSTANCE
             println("istanzio session")
             manager.newService(Services.SESSION, startArguments[0]) // 8500
             Thread.sleep(3000)
             println()
-            println("istanzio task")
-            MicroTaskBootstrap.init().also { Thread.sleep(4000) } //need to be started in this way to access the INSTANCE
-            taskController = TaskController.INSTANCE
 
 
             newSession.httpPost().responseString().third.fold(success = { session = klaxon.parse<SessionDNS>(it)!!; println("ho ricevuto risposta dal db: $session") }, failure = { println("ho ricevuto un errore $it") })
+            Thread.sleep(3000)
 
             leaderWS = WSClientInitializer.init(WSClient(URIFactory.getTaskURI())).also { Thread.sleep(1000) }
             memberWS = WSClientInitializer.init(WSClient(URIFactory.getTaskURI())).also { Thread.sleep(1000) }
