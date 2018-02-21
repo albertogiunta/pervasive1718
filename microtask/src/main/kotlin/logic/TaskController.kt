@@ -118,4 +118,13 @@ class TaskController private constructor(private val ws: WSTaskServer,
                     WSOperations.ERROR_CHANGING_STATUS, StatusError(task.statusId, task, "").toJson()))
         }
     }
+
+    fun getAllActivities(member: Member, session: Session) {
+        leader = Pair(member, session)
+        if (activityList.isNotEmpty()) {
+            val message = PayloadWrapper(Services.instanceId().toLong(),
+                    WSOperations.GET_ALL_ACTIVITIES, activityList.toTypedArray().toJson())
+            ws.sendMessage(leader.second, message)
+        }
+    }
 }

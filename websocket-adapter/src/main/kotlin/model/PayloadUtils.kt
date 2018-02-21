@@ -47,7 +47,10 @@ enum class WSOperations(val objectifier: (String) -> Any) {
     REMOVE_TASK({ GsonInitializer.fromJson(it, TaskAssignment::class.java) }),
     CHANGE_TASK_STATUS({ GsonInitializer.fromJson(it, TaskAssignment::class.java) }),
     ERROR_REMOVING_TASK({ GsonInitializer.fromJson(it, TaskError::class.java) }),
-    ERROR_CHANGING_STATUS({ GsonInitializer.fromJson(it, StatusError::class.java) });
+    ERROR_CHANGING_STATUS({ GsonInitializer.fromJson(it, StatusError::class.java) }),
+
+    // ACTIVITY
+    GET_ALL_ACTIVITIES({ GsonInitializer.fromJson(it, MembersAdditionNotification::class.java) });
 }
 
 data class Notification(val lifeParameter: LifeParameters, val boundaries: List<Boundary>)

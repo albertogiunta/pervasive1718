@@ -85,7 +85,6 @@ object SessionApi {
         val session = sessions.firstOrNull() { it.first.sessionId == sessionId }
         session?: return response.notFound()
 
-        println("vediamo quanto è porco il signore, quello del piano di sotto (gabs)")
         "$dbUrl/api/session/close/$sessionId".httpDelete().responseString().third.fold(
                 success = {
                     instance[session.second] = false

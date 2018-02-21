@@ -15,7 +15,6 @@ inline fun <reified A> handlingGetResponse(triplet: Triple<Request, Response, Re
     triplet.third.fold(success = {
         val klaxon = Klaxon().fieldConverter(KlaxonDate::class, dateConverter)
         JsonReader(StringReader(it) as Reader).use { reader ->
-            println(it)
             listResult = arrayListOf()
             reader.beginArray {
                 while (reader.hasNext()) {
