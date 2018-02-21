@@ -41,10 +41,10 @@ class DeviceToMTTest {
             newSession = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.SESSION.port}/session/new/gntlrt94b21g479u"
             closeSession = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.SESSION.port}/session/close/"
 
-            /*println("istanzio database")
+            println("istanzio database")
             manager.newService(Services.DATA_BASE, startArguments[0]) // 8100
             Thread.sleep(3000)
-            println()*/
+            println()
             println("istanzio task")
             MicroTaskBootstrap.init().also { Thread.sleep(4000) } //need to be started in this way to access the INSTANCE
             taskController = TaskController.INSTANCE
@@ -53,7 +53,12 @@ class DeviceToMTTest {
             Thread.sleep(3000)
             println()
 
-
+            /*
+            *   In this test is normal if the system throw 2 bind Exceptions,
+            *   because internally MicroSession will try to start 2 another
+            *   Microdatabase and Microtask process on the same port of the
+            *   two services started above
+            */
             newSession.httpPost().responseString().third.fold(success = { session = klaxon.parse<SessionDNS>(it)!!; println("ho ricevuto risposta dal db: $session") }, failure = { println("ho ricevuto un errore $it") })
             Thread.sleep(3000)
 
