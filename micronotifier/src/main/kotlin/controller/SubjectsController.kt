@@ -50,12 +50,12 @@ fun main(args: Array<String>) {
     dumb.createNewSubjectFor<String>(LifeParameters.SYSTOLIC_BLOOD_PRESSURE.toString())
     dumb.createNewSubjectFor<String>(LifeParameters.END_TIDAL_CARBON_DIOXIDE.toString())
 
-    Logger.info(dumb.getSubjectsOf<String>(dumb.toString()).toString())
+    /*Logger.info(dumb.getSubjectsOf<String>(dumb.toString()).toString())
     Logger.info(dumb.getSubjectsOf<String>(dumber.toString()).toString())
     Logger.info(dumb.getSubjectsOf<String>(LifeParameters.TEMPERATURE.toString()).toString())
     Logger.info(dumb.getSubjectsOf<String>(LifeParameters.OXYGEN_SATURATION.toString()).toString())
     Logger.info(dumb.getSubjectsOf<String>(LifeParameters.HEART_RATE.toString()).toString())
     Logger.info(dumb.getSubjectsOf<String>(LifeParameters.DIASTOLIC_BLOOD_PRESSURE.toString()).toString())
     Logger.info(dumb.getSubjectsOf<String>(LifeParameters.SYSTOLIC_BLOOD_PRESSURE.toString()).toString())
-    Logger.info(dumb.getSubjectsOf<String>(LifeParameters.END_TIDAL_CARBON_DIOXIDE.toString()).toString())
+    Logger.info(dumb.getSubjectsOf<String>(LifeParameters.END_TIDAL_CARBON_DIOXIDE.toString()).toString())*/
 }

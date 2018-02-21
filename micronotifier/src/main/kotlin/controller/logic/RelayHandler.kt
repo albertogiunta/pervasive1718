@@ -20,7 +20,7 @@ object RelayHandler {
                 subject.map {
                     topic to it.toDouble()
                 }.doOnNext {
-                    utils.Logger.info(it.toString())
+                    //utils.Logger.info(it.toString())
                 }.subscribe { (lp, value) ->
                     val message = PayloadWrapper(-1L,
                             WSOperations.UPDATE,
