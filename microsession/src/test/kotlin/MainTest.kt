@@ -1,4 +1,3 @@
-
 import com.beust.klaxon.JsonReader
 import com.beust.klaxon.Klaxon
 import com.github.kittinunf.fuel.core.FuelError
@@ -13,8 +12,9 @@ import config.ConfigLoader
 import config.Services
 import model.SessionDNS
 import org.junit.After
+import org.junit.AfterClass
 import org.junit.Assert.assertTrue
-import org.junit.Before
+import org.junit.BeforeClass
 import org.junit.Test
 import process.MicroServiceManager
 import java.io.StringReader
@@ -23,45 +23,58 @@ import java.util.*
 
 class SessionTest {
 
-    private val startArguments = arrayOf("2")
-
     private var sessionDnsList: MutableList<SessionDNS> = mutableListOf()
-    private var manager = MicroServiceManager()
-    private lateinit var baseUrl: String
-    private lateinit var dbBaseUrl: String
+    private var killFunction: () -> Any = {}
 
-    @Before
-    fun setUp() {
-        ConfigLoader().load(startArguments)
-        baseUrl = Services.Utils.defaultHostHttpPrefix(Services.SESSION)
-        dbBaseUrl = Services.Utils.defaultHostHttpPrefix(Services.DATA_BASE)
+    companion object {
 
-        RouteController.initRoutes()
-        Thread.sleep(1500)
+        private val startArguments = arrayOf("0")
+        private val manager = MicroServiceManager()
+        private lateinit var baseUrl: String
 
-        manager.newService(Services.DATA_BASE, "0")
-        Thread.sleep(1500)
-        manager.newService(Services.DATA_BASE, "1")
-        Thread.sleep(1500)
-        manager.newService(Services.DATA_BASE, "2")
-        Thread.sleep(1500)
+        @BeforeClass
+        @JvmStatic
+        fun setUp() {
+            ConfigLoader().load(startArguments)
+
+            baseUrl = Services.Utils.defaultHostHttpPrefix(Services.SESSION)
+
+            println("istanzio session")
+            manager.newService(Services.SESSION, startArguments[0]) // 8500
+            Thread.sleep(3000)
+            println()
+//            RouteController.initRoutes()
+//            Thread.sleep(1500)
+        }
+
+        @AfterClass
+        @JvmStatic
+        fun closeConnection() {
+            manager.closeSession(startArguments[0])
+        }
     }
 
     @After
-    fun destroyAll() {
-        manager.closeSession("0")
-        manager.closeSession("1")
-        manager.closeSession("2")
+    fun killThemAll() {
+        killFunction()
+        killFunction = {}
     }
-
 
     @Test
     fun createNewSessionTest() {
         sessionDnsList.clear()
-        val roomId = ""
+        val patientId = "frodo"
         var session = SessionDNS(-1, "", "")
-        "$baseUrl/new/$roomId".httpPost().responseString().third.success { session = Klaxon().parse<SessionDNS>(it)!! }
-        assertTrue(session.patId == roomId)
+        "$baseUrl/new/$patientId".httpPost().responseString().third.success { session = Klaxon().parse<SessionDNS>(it)!! }
+        println("$baseUrl/new/$patientId")
+        println(session.sessionId)
+        Thread.sleep(3000)
+        killFunction = {
+            "$baseUrl/close/${session.sessionId}".httpDelete().responseString()
+            println("$baseUrl/close/${session.sessionId}")
+            Thread.sleep(4000)
+        }
+        assertTrue(session.patId == patientId)
     }
 
     @Test
@@ -69,14 +82,27 @@ class SessionTest {
         handlingGetResponseWithArrayOfDnsSessions(makeGet("$baseUrl/all"))
         val previousSize = sessionDnsList.size
         println(previousSize)
+        var session1 = SessionDNS(-1, "", "")
+        var session2 = SessionDNS(-1, "", "")
+        var session3 = SessionDNS(-1, "", "")
 
-        "$baseUrl/new/1".httpPost().responseString()
+        "$baseUrl/new/1".httpPost().responseString().third.success { session1 = Klaxon().parse<SessionDNS>(it)!! }
         Thread.sleep(500)
-        "$baseUrl/new/2".httpPost().responseString()
+        "$baseUrl/new/2".httpPost().responseString().third.success { session2 = Klaxon().parse<SessionDNS>(it)!! }
         Thread.sleep(500)
-        "$baseUrl/new/3".httpPost().responseString()
+        "$baseUrl/new/3".httpPost().responseString().third.success { session3 = Klaxon().parse<SessionDNS>(it)!! }
 
+        Thread.sleep(3000)
         handlingGetResponseWithArrayOfDnsSessions(makeGet("$baseUrl/all"))
+
+        killFunction = {
+            "$baseUrl/close/${session1.sessionId}".httpDelete().responseString()
+            Thread.sleep(500)
+            "$baseUrl/close/${session2.sessionId}".httpDelete().responseString()
+            Thread.sleep(500)
+            "$baseUrl/close/${session3.sessionId}".httpDelete().responseString()
+            Thread.sleep(4000)
+        }
 
         println(sessionDnsList.size)
         assertTrue(sessionDnsList.size == previousSize + 3)

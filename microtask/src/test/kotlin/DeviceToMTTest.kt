@@ -3,14 +3,13 @@ import Connection.PORT_SEPARATOR
 import Connection.PROTOCOL
 import Connection.PROTOCOL_SEPARATOR
 import com.beust.klaxon.Klaxon
+import com.github.kittinunf.fuel.httpDelete
 import com.github.kittinunf.fuel.httpPost
 import config.ConfigLoader
 import config.Services
 import logic.TaskController
-import model.Member
 import model.SessionDNS
 import model.Status
-import model.Task
 import org.junit.AfterClass
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -18,8 +17,6 @@ import org.junit.BeforeClass
 import org.junit.Test
 import process.MicroServiceManager
 import utils.*
-import java.sql.Timestamp
-import java.util.*
 
 class DeviceToMTTest {
 
@@ -28,6 +25,7 @@ class DeviceToMTTest {
         private lateinit var taskController: TaskController
 
         private lateinit var newSession: String
+        private lateinit var closeSession: String
         private val manager = MicroServiceManager()
         private val klaxon = Klaxon().fieldConverter(KlaxonDate::class, dateConverter)
         private lateinit var session: SessionDNS
@@ -41,11 +39,12 @@ class DeviceToMTTest {
         fun setup() {
             ConfigLoader().load(startArguments)
             newSession = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.SESSION.port}/session/new/gntlrt94b21g479u"
+            closeSession = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.SESSION.port}/session/close/"
 
-            println("istanzio database")
+            /*println("istanzio database")
             manager.newService(Services.DATA_BASE, startArguments[0]) // 8100
             Thread.sleep(3000)
-            println()
+            println()*/
             println("istanzio session")
             manager.newService(Services.SESSION, startArguments[0]) // 8500
             Thread.sleep(3000)
@@ -65,6 +64,8 @@ class DeviceToMTTest {
         @AfterClass
         @JvmStatic
         fun destroyAll() {
+            (closeSession + session.sessionId).httpDelete().responseString()
+            Thread.sleep(5000)
             manager.closeSession(startArguments[0])
         }
 

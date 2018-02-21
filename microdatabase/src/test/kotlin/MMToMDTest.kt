@@ -8,11 +8,11 @@ import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpPost
 import config.ConfigLoader
 import config.Services
-import junit.framework.Assert.assertTrue
 import model.Log
 import model.Serializer.klaxon
 import model.SessionDNS
 import org.junit.AfterClass
+import org.junit.Assert.assertTrue
 import org.junit.BeforeClass
 import org.junit.Test
 import process.MicroServiceManager
