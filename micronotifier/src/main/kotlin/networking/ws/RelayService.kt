@@ -31,7 +31,7 @@ class RelayService : WSServer<Payload<WSOperations, String>>() {
     override fun onClose(session: Session, statusCode: Int, reason: String) {
         super.onClose(session, statusCode, reason)
         if (core.sessions.has(session)) {
-            val message = PayloadWrapper(-1L, WSOperations.CLOSE,
+            val message = PayloadWrapper(-1, WSOperations.CLOSE,
                     core.sessions.getOn(session)!!.toJson()).toJson()
             coreSubject.onNext(Pair(session, message))
         }

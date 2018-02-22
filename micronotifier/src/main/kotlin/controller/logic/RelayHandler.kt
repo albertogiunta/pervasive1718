@@ -22,7 +22,7 @@ object RelayHandler {
                 }.doOnNext {
                     //utils.Logger.info(it.toString())
                 }.subscribe { (lp, value) ->
-                    val message = PayloadWrapper(-1L,
+                    val message = PayloadWrapper(-1,
                             WSOperations.UPDATE,
                             Update(lp, value).toJson()
                     )

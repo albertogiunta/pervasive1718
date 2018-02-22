@@ -13,7 +13,7 @@ fun main(args: Array<String>) {
 
     client.connectBlocking()
 
-    val msg1 = PayloadWrapper(-1L, WSOperations.SUBSCRIBE,
+    val msg1 = PayloadWrapper(-1, WSOperations.SUBSCRIBE,
             Subscription(member, LifeParameters.values().toList()).toJson()
     ).toJson()
 
@@ -21,7 +21,7 @@ fun main(args: Array<String>) {
 
     Thread.sleep(5000L)
 
-    val msg2 = PayloadWrapper(-1L, WSOperations.CLOSE, member.toJson()).toJson()
+    val msg2 = PayloadWrapper(-1, WSOperations.CLOSE, member.toJson()).toJson()
 
     client.sendMessage(msg2)
 

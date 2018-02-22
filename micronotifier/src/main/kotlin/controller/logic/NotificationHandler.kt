@@ -58,7 +58,7 @@ object NotificationHandler {
                 }.filter{
                     it.isNotEmpty()
                 }.map { body ->
-                    PayloadWrapper(-1L,
+                    PayloadWrapper(-1,
                             WSOperations.NOTIFY,
                             Notification(lp, body).toJson()
                     ).toJson()

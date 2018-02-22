@@ -7,7 +7,7 @@ import java.time.ZonedDateTime
 
 interface Payload<T, D> {
 
-    val sid: Long // Session model.Payload
+    val sid: Int // Session model.Payload
     val subject: T
     val body: D
     val time: String
@@ -24,7 +24,7 @@ inline fun <reified X> PayloadWrapper.objectify(json: String): X {
     } else throw ClassCastException("Class Cast Error")
 }
 
-data class PayloadWrapper(override val sid: Long,
+data class PayloadWrapper(override val sid: Int,
                           override val subject: WSOperations,
                           override val body: String,
                           override val time: String = Payload.getTime()) :
