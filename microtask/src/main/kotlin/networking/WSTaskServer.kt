@@ -21,7 +21,7 @@ class WSTaskServer : WSServer<PayloadWrapper>() {
 
     override fun onMessage(session: Session, message: String) {
         super.onMessage(session, message)
-
+        print(message)
         val taskWrapper = klaxon.fieldConverter(KlaxonDate::class, dateConverter).parse<PayloadWrapper>(message)
 
         taskWrapper?.let {
@@ -29,6 +29,7 @@ class WSTaskServer : WSServer<PayloadWrapper>() {
                 when (subject) {
                     WSOperations.ADD_LEADER -> {
                         val notification: MembersAdditionNotification = taskWrapper.objectify(body)
+                        //TODO GESTIRE CADUTA LEADER
                         if (notification.members.isNotEmpty()) {
                             controller.addLeader(notification.members.first(), session)
                         }
@@ -51,6 +52,10 @@ class WSTaskServer : WSServer<PayloadWrapper>() {
                         val assignment: TaskAssignment = taskWrapper.objectify(body)
                         controller.changeTaskStatus(assignment.task, session)
                     } // done by both
+                    WSOperations.GET_ALL_ACTIVITIES -> {
+                        val notification: MembersAdditionNotification = taskWrapper.objectify(body)
+                        controller.getAllActivities(notification.members.first(), session)
+                    } // done by leader
                     else -> println("Message was not handled " + message)
                 }
             }

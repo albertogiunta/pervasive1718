@@ -57,12 +57,17 @@ class TaskController private constructor(private val ws: WSTaskServer,
     fun addLeader(member: Member, session: Session) {
         leader = Pair(member, session)
         // How to send something that is not a Task?
+
+        //the following is for the websocket android test
+        //val message = PayloadWrapper(Services.instanceId().toLong(),
+        //        WSOperations.ADD_LEADER, "ok")
         if (members.isNotEmpty()) {
             val message = PayloadWrapper(Services.instanceId().toLong(),
                     WSOperations.ADD_LEADER, MembersAdditionNotification(members.keys().toList()).toJson())
             ws.sendMessage(leader.second, message)
             //leader.second.remote.sendString(members.keys().toList().toJson())
         }
+        //ws.sendMessage(leader.second, message)
     }
 
     fun addMember(member: Member, session: Session) {
@@ -111,6 +116,15 @@ class TaskController private constructor(private val ws: WSTaskServer,
                 "$dbUrl/task/${it.task.id}/status/${it.task.statusId}".httpPut().responseString()
             } ?: ws.sendMessage(session, PayloadWrapper(Services.instanceId().toLong(),
                     WSOperations.ERROR_CHANGING_STATUS, StatusError(task.statusId, task, "").toJson()))
+        }
+    }
+
+    fun getAllActivities(member: Member, session: Session) {
+        leader = Pair(member, session)
+        if (activityList.isNotEmpty()) {
+            val message = PayloadWrapper(Services.instanceId().toLong(),
+                    WSOperations.SET_ALL_ACTIVITIES, ActivityAdditionNotification(activityList).toJson())
+            ws.sendMessage(leader.second, message)
         }
     }
 }

@@ -88,7 +88,7 @@ class MTtoMVTest {
         mockLeaderMemberInteractionAndTaskAddition(session, 4, taskId, leaderWS, memberWS)
 
         listResult = handlingGetResponse(getAllTaskVisor.httpGet().responseString().also {
-            println("Sta cazzo de risposta è " + it.third)
+            println("La risposta è " + it.third)
         })
         println(listResult.size)
         Assert.assertTrue(listResult.firstOrNull { it.id == taskId } != null)

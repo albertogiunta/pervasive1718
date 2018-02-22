@@ -42,7 +42,7 @@ object RouteController {
 
 object SessionApi {
 
-    private val BOOT_WAIT_TIME = 5000L
+    private val BOOT_WAIT_TIME = 10000L
     private val MAX_CONCURRENT_SESSION = 5
     private val instance = BooleanArray(MAX_CONCURRENT_SESSION)
     private val sessions = mutableListOf<Pair<SessionDNS, Int>>()
@@ -82,7 +82,8 @@ object SessionApi {
 
     fun closeSessionById(request: Request, response: Response): String {
         val sessionId = request.params("sessionId").toInt()
-        val session = sessions.first { it.first.sessionId == sessionId }
+        val session = sessions.firstOrNull() { it.first.sessionId == sessionId }
+        session?: return response.notFound()
 
         "$dbUrl/api/session/close/$sessionId".httpDelete().responseString().third.fold(
                 success = {

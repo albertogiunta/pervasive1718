@@ -59,7 +59,7 @@ subprojects {
 }
 
 task generatePervasiveJars {
-    doFirst {
+    doFirst { 
         println("Resetting JDK log level to INFO...")
         java.util.logging.Logger.getLogger("").setLevel(Level.INFO)
     }
