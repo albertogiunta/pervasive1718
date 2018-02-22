@@ -57,7 +57,8 @@ CREATE TABLE Session (
     CF VarChar(50),
     StartDate TIMESTAMP,
     EndDate TIMESTAMP,
-    MicroServiceInstanceId BigInt
+    MicroServiceInstanceId BigInt,
+    LeaderId BigInt
 );
 
 CREATE TABLE Task (

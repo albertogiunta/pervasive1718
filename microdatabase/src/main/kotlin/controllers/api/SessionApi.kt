@@ -21,9 +21,10 @@ object SessionApi {
      * Retrieves all the session
      */
     fun addSession(request: Request, response: Response): String {
-        var session = Session(cf = "", startDate = Timestamp(Date().time))
+        var session = Session(cf = "", startDate = Timestamp(Date().time), leaderId = -1)
         JdbiConfiguration.INSTANCE.jdbi.useExtension<SessionDao, SQLException>(SessionDao::class.java)
-        { session = it.insertNewSession(request.params(Params.Session.PAT_ID), Timestamp(Date().time), request.params(Params.Session.INSTANCE_ID).toInt()) }
+        { session = it.insertNewSession(request.params(Params.Session.PAT_ID), Timestamp(Date().time),
+                request.params(Params.Session.INSTANCE_ID).toInt(), request.params(Params.Session.LEADER_ID).toInt()) }
 
         SubscriberController.startListeningMonitorsForInstanceId(session)
 
@@ -40,14 +41,13 @@ object SessionApi {
     }
 
     /**
-     * Retrieves all the open sessions
+     * Retrieves all the open sessions by leader id
      */
-    fun getAllOpenSessions(request: Request, response: Response): String {
+    fun getAllOpenSessionsByLeaderId(request: Request, response: Response): String {
         return JdbiConfiguration.INSTANCE.jdbi.withExtension<List<Session>, SessionDao, SQLException>(SessionDao::class.java)
-        { it.selectAllOpenSessions() }
+        { it.selectAllOpenSessionsByLeaderId(request.params(Params.Session.LEADER_ID).toInt()) }
             .toJson()
     }
-
 
     /**
      * Deletes a session based on the session ID

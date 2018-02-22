@@ -38,7 +38,7 @@ class DeviceToMTTest {
         @JvmStatic
         fun setup() {
             ConfigLoader().load(startArguments)
-            newSession = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.SESSION.port}/session/new/gntlrt94b21g479u"
+            newSession = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.SESSION.port}/session/new/gntlrt94b21g479u/leaderid/-1"
             closeSession = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.SESSION.port}/session/close/"
 
             println(" In this test is normal if the system throw 2 bind Exceptions,\n" +

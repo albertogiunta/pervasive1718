@@ -1,1 +1,1 @@
-var sessionExchange = 0
+var sessionExchange = 2

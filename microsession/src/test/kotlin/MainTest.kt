@@ -64,10 +64,10 @@ class SessionTest {
     fun createNewSessionTest() {
         sessionDnsList.clear()
         val patientId = "frodo"
+        val leaderId = -1
         var session = SessionDNS(-1, "", "")
-        "$baseUrl/new/$patientId".httpPost().responseString().third.success { session = Klaxon().parse<SessionDNS>(it)!! }
-        println("$baseUrl/new/$patientId")
-        println(session.sessionId)
+        "$baseUrl/new/$patientId/leaderid/$leaderId".httpPost().responseString().third.success { session = Klaxon().parse<SessionDNS>(it)!! }
+        println("$baseUrl/new/$patientId/leaderid/$leaderId")
         Thread.sleep(3000)
         killFunction = {
             "$baseUrl/close/${session.sessionId}".httpDelete().responseString()
@@ -86,11 +86,11 @@ class SessionTest {
         var session2 = SessionDNS(-1, "", "")
         var session3 = SessionDNS(-1, "", "")
 
-        "$baseUrl/new/1".httpPost().responseString().third.success { session1 = Klaxon().parse<SessionDNS>(it)!! }
+        "$baseUrl/new/1/leaderid/-1".httpPost().responseString().third.success { session1 = Klaxon().parse<SessionDNS>(it)!! }
         Thread.sleep(500)
-        "$baseUrl/new/2".httpPost().responseString().third.success { session2 = Klaxon().parse<SessionDNS>(it)!! }
+        "$baseUrl/new/2/leaderid/-1".httpPost().responseString().third.success { session2 = Klaxon().parse<SessionDNS>(it)!! }
         Thread.sleep(500)
-        "$baseUrl/new/3".httpPost().responseString().third.success { session3 = Klaxon().parse<SessionDNS>(it)!! }
+        "$baseUrl/new/3/leaderid/-1".httpPost().responseString().third.success { session3 = Klaxon().parse<SessionDNS>(it)!! }
 
         Thread.sleep(3000)
         handlingGetResponseWithArrayOfDnsSessions(makeGet("$baseUrl/all"))
@@ -110,7 +110,7 @@ class SessionTest {
 
     @Test
     fun closeSession() {
-        "$baseUrl/new/codicefiscalepaziente".httpPost().responseString()
+        "$baseUrl/new/codicefiscalepaziente/leaderid/-1".httpPost().responseString()
         handlingGetResponseWithArrayOfDnsSessions(makeGet("$baseUrl/all"))
         val sessionId = sessionDnsList.first().sessionId
         val previousSize = sessionDnsList.size

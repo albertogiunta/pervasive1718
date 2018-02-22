@@ -9,6 +9,7 @@ object Params {
         const val START_DATE = "startdate"
         const val END_DATE = "enddate"
         const val INSTANCE_ID = "microserviceinstanceid"
+        const val LEADER_ID = "leaderid"
     }
 
     object Activity {

@@ -2,6 +2,7 @@
 
 import com.beust.klaxon.Klaxon
 import com.github.kittinunf.fuel.httpDelete
+import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpPost
 import config.Services
 import config.Services.Utils
@@ -15,10 +16,7 @@ import spark.Spark.port
 import spark.kotlin.delete
 import spark.kotlin.get
 import spark.kotlin.post
-import utils.GsonInitializer
-import utils.KlaxonDate
-import utils.dateConverter
-import utils.toJson
+import utils.*
 
 object RouteController {
 
@@ -28,13 +26,16 @@ object RouteController {
 
         path("/session") {
             // la fa il leader, ritorna il riferimento di [MT], crea una websocket per mandargli i membri mano a mano che arrivano, ti ritorna anche l'id della sessione
-            post("/new/:patId", Utils.RESTParams.applicationJson) { SessionApi.createNewSession(request, response) }
+            post("/new/:patId/leaderid/:leaderId", Utils.RESTParams.applicationJson) { SessionApi.createNewSession(request, response) }
 
             // la fa il leader, deve sapere quale chiudere (la prende dalla new)
             delete("/close/:sessionId", Utils.RESTParams.applicationJson) { SessionApi.closeSessionById(request, response) }
 
             // la fanno i membri, e deve restituire la lista di interventi disponibili
             get("/all", Utils.RESTParams.applicationJson) { SessionApi.listAllSessions(request, response) }
+
+            // la fa il leader e restituisce la lista dei suoi interventi aperti
+            get("/all/:leaderId", Utils.RESTParams.applicationJson) { SessionApi.listAllOpenSessionsByLeaderId(request, response) }
         }
     }
 }
@@ -54,6 +55,7 @@ object SessionApi {
 
     fun createNewSession(request: Request, response: Response): String {
         val patId = request.params("patId")
+        val leaderId = request.params("leaderId")
 
         val instanceId = nextFreeSessionNumber()
         dbUrl = createMicroDatabaseAddress(instanceId)
@@ -63,7 +65,7 @@ object SessionApi {
         sManager.newSession(instanceId.toString())
 
         Thread.sleep(BOOT_WAIT_TIME)
-        "$dbUrl/api/session/add/$patId/instanceid/$instanceId".httpPost().responseString().third.fold(
+        "$dbUrl/api/session/add/$patId/instanceid/$instanceId/leaderid/$leaderId".httpPost().responseString().third.fold(
             success = {
                 val session = Klaxon().fieldConverter(KlaxonDate::class, dateConverter).parse<Session>(it)
                         ?: return response.badRequest().also { println("klaxon couldn't parse session") }
@@ -94,6 +96,11 @@ object SessionApi {
                 },
             failure = { return it.toJson() }
         )
+    }
+
+    fun listAllOpenSessionsByLeaderId(request: Request, response: Response): String {
+        val leaderId = request.params("leaderid").toInt()
+        return handlingGetResponse<Session>("$dbUrl/api/session/all/open/$leaderId".httpGet().responseString()).toJson()
     }
 
     fun listAllSessions(request: Request, response: Response): String = GsonInitializer.toJson(sessions.map { x -> x.first })

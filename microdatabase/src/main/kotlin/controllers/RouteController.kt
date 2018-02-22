@@ -71,10 +71,10 @@ object RouteController {
             }
 
             path("/${Params.Session.TABLE_NAME}") {
-                post("/add/:${Params.Session.PAT_ID}/instanceid/:${Params.Session.INSTANCE_ID}", applicationJson) { SessionApi.addSession(request, response) }
+                post("/add/:${Params.Session.PAT_ID}/instanceid/:${Params.Session.INSTANCE_ID}/leaderid/:${Params.Session.LEADER_ID}", applicationJson) { SessionApi.addSession(request, response) }
                 get("/all", applicationJson) { SessionApi.getAllSessions(request, response) }
-                get("/all/open", applicationJson) { SessionApi.getAllOpenSessions(request, response) }
-                delete("/close/:id", applicationJson) { SessionApi.closeSessionBySessionId(request, response) }
+                get("/all/open/:${Params.Session.LEADER_ID}", applicationJson) { SessionApi.getAllOpenSessionsByLeaderId(request, response) }
+                delete("/close/:${Params.Session.SESSION_ID}", applicationJson) { SessionApi.closeSessionBySessionId(request, response) }
             }
 
             path("/${Params.Task.TABLE_NAME}") {
