@@ -123,7 +123,7 @@ class TaskController private constructor(private val ws: WSTaskServer,
         leader = Pair(member, session)
         if (activityList.isNotEmpty()) {
             val message = PayloadWrapper(Services.instanceId().toLong(),
-                    WSOperations.GET_ALL_ACTIVITIES, activityList.toTypedArray().toJson())
+                    WSOperations.SET_ALL_ACTIVITIES, ActivityAdditionNotification(activityList).toJson())
             ws.sendMessage(leader.second, message)
         }
     }
