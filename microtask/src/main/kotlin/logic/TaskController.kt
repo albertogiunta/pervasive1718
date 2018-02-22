@@ -68,6 +68,7 @@ class TaskController private constructor(private val ws: WSTaskServer,
             //leader.second.remote.sendString(members.keys().toList().toJson())
         }
         //ws.sendMessage(leader.second, message)
+        ws.sendMessage(leader.second, PayloadWrapper(Services.instanceId().toLong(),WSOperations.LEADER_RESPONSE,"ok"))
     }
 
     fun addMember(member: Member, session: Session) {
