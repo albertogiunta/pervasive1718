@@ -88,6 +88,8 @@ class Services private constructor(var port: Int, val wsPath: String, val execut
 
         fun defaultHostHttpPrefix(serv: Services) = "${Protocols.http}://$defaultHost:${serv.port}${Services.SESSION.wsPath}"
 
+        fun defaultHostUrlApi(serv: Services) = "${Protocols.http}://$defaultHost:${serv.port}/api"
+
         object WSParams {
             const val defaultWSRoot = "${Protocols.websocket}://$defaultHost:"
         }

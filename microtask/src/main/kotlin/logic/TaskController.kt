@@ -23,8 +23,8 @@ class TaskController private constructor(private val ws: WSTaskServer,
     companion object {
         var WAIT_TIME_BEFORE_THE_NEXT_REQUEST = 2000L
         var configNotCompleted = true
-        val dbUrl = "http://localhost:${Services.DATA_BASE.port}/api"
-        val visorUrl = "http://localhost:${Services.VISORS.port}/api"
+        val dbUrl = Services.Utils.defaultHostUrlApi(Services.DATA_BASE)
+        val visorUrl = Services.Utils.defaultHostUrlApi(Services.VISORS)
 
         lateinit var INSTANCE: TaskController
         private val isInitialized = AtomicBoolean()
