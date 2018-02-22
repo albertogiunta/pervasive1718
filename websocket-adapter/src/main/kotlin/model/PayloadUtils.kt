@@ -42,6 +42,7 @@ enum class WSOperations(val objectifier: (String) -> Any) {
 
     // TASKS
     ADD_LEADER({ GsonInitializer.fromJson(it, MembersAdditionNotification::class.java) }),
+    LIST_MEMBERS({ GsonInitializer.fromJson(it, MembersAdditionNotification::class.java) }),
     ADD_MEMBER({ GsonInitializer.fromJson(it, MembersAdditionNotification::class.java) }),
     ADD_TASK({ GsonInitializer.fromJson(it, TaskAssignment::class.java) }),
     REMOVE_TASK({ GsonInitializer.fromJson(it, TaskAssignment::class.java) }),
