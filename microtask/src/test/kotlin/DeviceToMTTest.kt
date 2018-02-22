@@ -41,6 +41,12 @@ class DeviceToMTTest {
             newSession = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.SESSION.port}/session/new/gntlrt94b21g479u"
             closeSession = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.SESSION.port}/session/close/"
 
+            println(" In this test is normal if the system throw 2 bind Exceptions,\n" +
+                    " because internally MicroSession will try to start 2 another\n" +
+                    " Microdatabase and Microtask process already started indipendently \n" +
+                    " by the test\n")
+
+
             println("istanzio database")
             manager.newService(Services.DATA_BASE, startArguments[0]) // 8100
             Thread.sleep(3000)
