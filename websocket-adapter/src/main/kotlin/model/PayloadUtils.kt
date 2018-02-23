@@ -2,7 +2,9 @@ package model
 
 import utils.GsonInitializer
 import java.lang.ClassCastException
+import java.sql.Timestamp
 import java.time.ZonedDateTime
+import java.util.*
 
 
 interface Payload<T, D> {
@@ -13,7 +15,7 @@ interface Payload<T, D> {
     val time: String
 
     companion object {
-        fun getTime(): String = ZonedDateTime.now().toString()
+        fun getTime(): String = Timestamp(Date().time).toString()
     }
 }
 
