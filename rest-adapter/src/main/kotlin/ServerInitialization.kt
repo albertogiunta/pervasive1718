@@ -3,7 +3,7 @@ import spark.Spark
 import com.github.kittinunf.fuel.httpGet
 import model.Serializer.klaxon
 
-fun waitInitAndNotifiyToMicroSession(instanceId: Int) {
+fun waitInitAndNotifyToMicroSession(instanceId: Int) {
     Spark.awaitInitialization()
     "http://localhost:${Services.SESSION.port}/session/acknowledge/$instanceId"
             .httpGet().responseString().third.fold(success = {

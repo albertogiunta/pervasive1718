@@ -35,7 +35,7 @@ object RouteController {
             get("/all/:leaderId", Utils.RESTParams.applicationJson) { SessionApi.listAllOpenSessionsByLeaderId(request, response) }
 
             // la fanno i vari microservices per notificare il
-            get("/acknowledge/:sessionId", Utils.RESTParams.applicationJson) { SessionApi.acknowledgeReadyService(request, response) }
+            get("/acknowledge/:instanceId", Utils.RESTParams.applicationJson) { SessionApi.acknowledgeReadyService(request, response) }
         }
     }
 }
@@ -72,7 +72,7 @@ object SessionApi {
     }
 
     fun listAllOpenSessionsByLeaderId(request: Request, response: Response): String {
-        val leaderId = request.params("leaderid").toInt()
+        val leaderId = request.params("leaderId").toInt()
         sessionInitializationParamsWithInstanceId.forEach {
             if (it.value.first.leaderId == leaderId)
                 return sessions.filter { session -> session.second == it.key }.toJson()

@@ -1,7 +1,5 @@
 import config.ConfigLoader
-import config.Services
 import controllers.RouteController
-import model.Bootstrapper
 import utils.PathGetter
 import java.awt.Desktop
 import java.io.File
@@ -27,5 +25,5 @@ fun main(args: Array<String>) {
         Desktop.getDesktop().browse(uri)
     }
     RouteController.initRoutes()
-    waitInitAndNotifiyToMicroSession(args[0].toInt())
+    waitInitAndNotifyToMicroSession(args[0].toInt())
 }
