@@ -46,6 +46,8 @@ enum class WSOperations(val objectifier: (String) -> Any) {
     ADD_LEADER({ GsonInitializer.fromJson(it, MembersAdditionNotification::class.java) }),
     LIST_MEMBERS({ GsonInitializer.fromJson(it, MembersAdditionNotification::class.java) }),
     LEADER_RESPONSE({ utils.GsonInitializer.fromJson(it,GenericResponse::class.java) }),
+    SESSION_HANDLER_ERROR_RESPONSE({ utils.GsonInitializer.fromJson(it,GenericResponse::class.java) }),
+    SESSION_HANDLER_RESPONSE({ utils.GsonInitializer.fromJson(it,SessionDNS::class.java) }),
     ADD_MEMBER({ GsonInitializer.fromJson(it, MembersAdditionNotification::class.java) }),
     ADD_TASK({ GsonInitializer.fromJson(it, TaskAssignment::class.java) }),
     REMOVE_TASK({ GsonInitializer.fromJson(it, TaskAssignment::class.java) }),
@@ -55,7 +57,10 @@ enum class WSOperations(val objectifier: (String) -> Any) {
 
     // ACTIVITY
     GET_ALL_ACTIVITIES({ GsonInitializer.fromJson(it, MembersAdditionNotification::class.java) }),
-    SET_ALL_ACTIVITIES({ GsonInitializer.fromJson(it, ActivityAdditionNotification::class.java) });
+    SET_ALL_ACTIVITIES({ GsonInitializer.fromJson(it, ActivityAdditionNotification::class.java) }),
+
+    // SESSION
+    NEW_SESSION({ GsonInitializer.fromJson(it, SessionAssignment::class.java) });
 }
 
 data class GenericResponse(val response: String)
@@ -75,3 +80,7 @@ data class ActivityAdditionNotification(val activities: List<Activity>)
 data class TaskError(val task: Task, val error: String)
 
 data class StatusError(val statusId: Int, val task: Task, val error: String)
+
+data class SessionAssignment(val patId: String, val leaderId: Int)
+
+data class SessionDNS(val sessionId: Int, val patId: String, val microTaskAddress: String)
