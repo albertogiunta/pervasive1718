@@ -3,6 +3,7 @@ dependencies {
     //compile project(":microtask")
     compile project(":websocket-adapter")
     compile project(":pubsub-adapter")
+    compile project(":rest-adapter")
     compile project(":commons")
 
     compile "com.sparkjava:spark-kotlin:$spark_version"

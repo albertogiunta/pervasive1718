@@ -1,5 +1,6 @@
 dependencies {
     compile project(":pubsub-adapter")
+    compile project(":rest-adapter")
 }
 
 apply plugin: 'gradle-one-jar'//this section contains declarations for the build script run.

@@ -27,4 +27,5 @@ fun main(args: Array<String>) {
         Desktop.getDesktop().browse(uri)
     }
     RouteController.initRoutes()
+    waitInitAndNotifiyToMicroSession(args[0].toInt())
 }

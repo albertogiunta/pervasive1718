@@ -17,6 +17,13 @@ fun Response.okCreated(): String {
     return this.body()
 }
 
+fun Response.okAccepted(): String {
+    this.status(202)
+    this.type("application/json")
+    this.body(ResponseMessage(202, "Ok Accepted").toJson())
+    return this.body()
+}
+
 fun Response.badRequest(): String {
     this.status(400)
     this.type("application/json")
