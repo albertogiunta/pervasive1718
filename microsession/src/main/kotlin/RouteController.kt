@@ -75,16 +75,15 @@ object SessionApi {
         val leaderId = request.params("leaderId").toInt()
         sessionInitializationParamsWithInstanceId.forEach {
             if (it.value.first.leaderId == leaderId)
-                return sessions.filter { session -> session.second == it.key }.toJson()
+                return sessions.filter { session -> session.second == it.key }.map{ x -> x.first}.toJson()
         }
-        return ""
+        return emptyList<SessionDNS>().toJson()
     }
 
     fun acknowledgeReadyService(request: Request, response: Response): String {
         val instanceId = request.params("instanceId").toInt()
-        serviceInitializationStatus[instanceId]?.plus(1)
-
-        if (serviceInitializationStatus[instanceId] == 5) {
+        serviceInitializationStatus[instanceId] = serviceInitializationStatus[instanceId]!! +1
+        if (serviceInitializationStatus[instanceId] == 4) {
             val dbUrl = createMicroDatabaseAddress(instanceId)
             val taskUrl = createMicroTaskAddress(instanceId)
 
@@ -126,7 +125,6 @@ object SessionApi {
             super.onMessage(session, message)
             print(message)
             val taskWrapper = Serializer.klaxon.fieldConverter(KlaxonDate::class, dateConverter).parse<PayloadWrapper>(message)
-
             taskWrapper?.let {
                 with(taskWrapper) {
                     when (subject) {

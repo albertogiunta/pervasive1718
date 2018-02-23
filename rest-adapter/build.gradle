@@ -1,4 +1,3 @@
 dependencies {
     compile project(":commons")
-    compile project(":rest-adapter")
 }
