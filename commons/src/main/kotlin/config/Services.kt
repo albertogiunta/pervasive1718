@@ -66,8 +66,8 @@ class Services private constructor(var port: Int, val wsPath: String, val execut
                 instanceId = args[0].toInt()
             }
 
+            Services.SESSION.port = Services.SESSION.port
             Services.DATA_BASE.port = Services.DATA_BASE.calculatePort(args)
-            Services.SESSION.port = Services.SESSION.calculatePort(args)
             Services.TASK_HANDLER.port = Services.TASK_HANDLER.calculatePort(args)
             Services.NOTIFIER.port = Services.NOTIFIER.calculatePort(args)
             Services.VISORS.port = Services.VISORS.calculatePort(args)
@@ -76,7 +76,7 @@ class Services private constructor(var port: Int, val wsPath: String, val execut
     }
 
     object Utils {
-        const val maxSimultaneousSessions = 10
+        const val maxSimultaneousSessions = 5
         const val defaultHost = "localhost"
         const val defaultWSPath = "/"
         

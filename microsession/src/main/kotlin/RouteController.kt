@@ -6,6 +6,7 @@ import com.github.kittinunf.fuel.httpPost
 import config.Services
 import config.Services.Utils
 import model.*
+import org.eclipse.jetty.websocket.api.Session
 import org.eclipse.jetty.websocket.api.annotations.WebSocket
 import process.MicroServiceManager
 import spark.Request
@@ -14,9 +15,10 @@ import spark.Spark.path
 import spark.Spark.port
 import spark.kotlin.delete
 import spark.kotlin.get
-import spark.kotlin.post
-import utils.*
-import org.eclipse.jetty.websocket.api.Session
+import utils.GsonInitializer
+import utils.KlaxonDate
+import utils.dateConverter
+import utils.toJson
 
 object RouteController {
 
@@ -43,8 +45,7 @@ object RouteController {
 
 object SessionApi {
 
-    private val MAX_CONCURRENT_SESSION = 5
-    private val instance = BooleanArray(MAX_CONCURRENT_SESSION)
+    private val instance = BooleanArray(Utils.maxSimultaneousSessions)
     private val sessions = mutableListOf<Pair<SessionDNS, Int>>()
     private var sManager = MicroServiceManager()
     private var serviceInitializationStatus = HashMap<Int,Int>()
