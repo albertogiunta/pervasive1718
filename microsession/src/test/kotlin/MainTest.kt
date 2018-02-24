@@ -65,7 +65,7 @@ class SessionTest {
         sessionDnsList.clear()
         val patientId = "frodo"
         val leaderId = -1
-        var session = SessionDNS(-1, "", "")
+        var session = SessionDNS(-1, "")
         "$baseUrl/new/$patientId/leaderid/$leaderId".httpPost().responseString().third.success { session = Klaxon().parse<SessionDNS>(it)!! }
         println("$baseUrl/new/$patientId/leaderid/$leaderId")
         Thread.sleep(3000)
@@ -82,9 +82,9 @@ class SessionTest {
         handlingGetResponseWithArrayOfDnsSessions(makeGet("$baseUrl/all"))
         val previousSize = sessionDnsList.size
         println(previousSize)
-        var session1 = SessionDNS(-1, "", "")
-        var session2 = SessionDNS(-1, "", "")
-        var session3 = SessionDNS(-1, "", "")
+        var session1 = SessionDNS(-1, "")
+        var session2 = SessionDNS(-1, "")
+        var session3 = SessionDNS(-1, "")
 
         "$baseUrl/new/1/leaderid/-1".httpPost().responseString().third.success { session1 = Klaxon().parse<SessionDNS>(it)!! }
         Thread.sleep(500)
