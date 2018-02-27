@@ -9,7 +9,7 @@ class RabbitMQPublisher(val connector: BrokerConnector) : Publisher<String, Stri
 
     override fun publish(message: String, topic: String) {
         connector.channel.basicPublish(topic, "", null, message.toByteArray(charset("UTF-8")))
-//        println(" [x] Sent '$message' on '${topic}' ")
+        println(" [x] Sent '$message' on '${topic}' ")
 
     }
 }

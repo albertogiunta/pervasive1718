@@ -11,6 +11,8 @@ fun main(args: Array<String>) {
 
     val core = CoreController.singleton()
 
+    println(core.topics.activeTopics().map {it.acronymWithSession(args) }.toList())
+
     val amqp = AMQPClient(core.topics.activeTopics().map { it to it.acronymWithSession(args) }.toMap())
 
     val publishSubjects = core.topics.activeTopics().map {

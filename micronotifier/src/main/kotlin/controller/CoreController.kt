@@ -31,4 +31,3 @@ class CoreController private constructor(topicSet: Set<LifeParameters>) {
         fun singleton(): CoreController = instance
     }
 }
-
