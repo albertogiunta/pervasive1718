@@ -18,7 +18,8 @@ object NotificationHandler {
             "/api/${Boundary::class.simpleName?.toLowerCase()}/all"
     ).toString()
 
-    private lateinit var boundaries: Map<LifeParameters, List<Boundary>>
+    @Volatile
+    private var boundaries: Map<LifeParameters, List<Boundary>> = emptyMap()
 
     fun runOn(core: CoreController) {
 
@@ -26,50 +27,56 @@ object NotificationHandler {
             it to core.subjects.getSubjectsOf<String>(it.toString())!!
         }.toMap()
 
-        boundaryURL.httpGet().responseString().third.fold( success = {
-            Logger.info("Loaded boundaries from DB")
-            boundaries = GsonInitializer.fromJson(it, Array<Boundary>::class.java)
-                    .filter {
-                        LifeParameters.values().map { it.id }.contains(it.healthParameterId)
-                    }.map {
-                        LifeParameters.Utils.getByID(it.healthParameterId) to it
-                    }.groupBy({it.first}, {it.second})
-        }, failure = {
-            Logger.info("Error Loading boundaries from DB")
-            boundaries = emptyMap()
-        })
+        // Continuously try to connect to the DB Micro-Service in order to retrieve necessary data
+        Thread {
+            while (boundaries.isEmpty()) {
+                boundaryURL.httpGet().responseString().third.fold(success = {
+                    Logger.info("Loaded boundaries from DB")
+                    boundaries = GsonInitializer.fromJson(it, Array<Boundary>::class.java)
+                            .filter {
+                                LifeParameters.values().map { it.id }.contains(it.healthParameterId)
+                            }.map {
+                                LifeParameters.Utils.getByID(it.healthParameterId) to it
+                            }.groupBy({it.first}, {it.second})
+                }, failure = {
+                    Logger.info("Error Loading boundaries from DB... Retrying")
+                })
 
-        if (boundaries.isNotEmpty()) {
-            // Check OUT OF BOUND Heath Parameters
-            publishSubjects.forEach { lp, subject ->
-                subject.map {
-                    it.toDouble()
-                }.map {value ->
-                    // Check if out of boundaries and notify of the WS
-                    if (boundaries.containsKey(lp)) {
-                        boundaries[lp]!!.filter {
-                            value >= it.lowerBound - it.lightWarningOffset
-                            && value < it.lowerBound + it.lightWarningOffset
+                Thread.sleep(2000L)
+            }
+        }.start()
+
+        // Check OUT OF BOUND Heath Parameters
+        publishSubjects.forEach { lp, subject ->
+            subject.filter{
+                boundaries.isNotEmpty()
+            }.map {
+                it.toDouble()
+            }.map {value ->
+                // Check if out of boundaries and notify of the WS
+                if (boundaries.containsKey(lp)) {
+                    boundaries[lp]!!.filter {
+                        value >= it.lowerBound - it.lightWarningOffset
+                        && value < it.lowerBound + it.lightWarningOffset
 //                            && !it.itsGood
-                        }.filter { !it.itsGood }
-                    } else {
-                        emptyList()
-                    }
-                }.filter{
-                    it.isNotEmpty()
-                }.map { body ->
-                    PayloadWrapper(-1,
-                            WSOperations.NOTIFY,
-                            Notification(lp, body).toJson()
-                    ).toJson()
-                }.doOnNext {
-                    //utils.Logger.info(it.toString())
-                }.subscribe {message ->
-                    // Do Stuff, if necessary but SubscriptionHandler is MANDATORY.
-                    core.topics[lp]?.forEach { member ->
-                        if (core.sessions[member]?.isOpen!!) {
-                            core.sessions[member]?.remote?.sendString(message) // Notify the WS, dunno how.
-                        }
+                    }.filter { !it.itsGood }
+                } else {
+                    emptyList()
+                }
+            }.filter{
+                it.isNotEmpty()
+            }.map { body ->
+                PayloadWrapper(-1,
+                        WSOperations.NOTIFY,
+                        Notification(lp, body).toJson()
+                ).toJson()
+            }.doOnNext {
+                //utils.Logger.info(it.toString())
+            }.subscribe {message ->
+                // Do Stuff, if necessary but SubscriptionHandler is MANDATORY.
+                core.topics[lp]?.forEach { member ->
+                    if (core.sessions[member]?.isOpen!!) {
+                        core.sessions[member]?.remote?.sendString(message) // Notify the WS, dunno how.
                     }
                 }
             }
