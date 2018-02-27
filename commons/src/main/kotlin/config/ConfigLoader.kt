@@ -14,7 +14,7 @@ class ConfigLoader(val configPath: String = PathGetter.getConfigPath()) {
     val loadedConfig = GsonInitializer.gson.fromJson(inputString, Config::class.java)
     fun load(args: Array<String>) {
         Services.loadServicesConfig(loadedConfig)
-        Services.updatePortWithSession(args)
+        Services.finalizeConfiguration(args)
     }
 }
 

@@ -18,6 +18,7 @@ class Services private constructor(var port: Int, val wsPath: String, val execut
     companion object {
 
         private var instanceId : Int = 0
+        private var startedIndipendently: Boolean = false
 
         lateinit var SESSION: Services
         lateinit var DATA_BASE: Services
@@ -60,18 +61,25 @@ class Services private constructor(var port: Int, val wsPath: String, val execut
 
         fun instanceId(): Int = instanceId
 
-        fun updatePortWithSession(args: Array<String>) {
+        fun isStartedIndipendently() = startedIndipendently
 
-            if (args.isNotEmpty() && args.firstOrNull() != "") {
-                instanceId = args[0].toInt()
+        fun finalizeConfiguration(args: Array<String>) {
+            if (args.isNotEmpty()) {
+                if (args[0] != "-si") {
+                    instanceId = args[0].toInt()
+
+                    Services.SESSION.port = Services.SESSION.port
+                    Services.DATA_BASE.port = Services.DATA_BASE.calculatePort(args)
+                    Services.TASK_HANDLER.port = Services.TASK_HANDLER.calculatePort(args)
+                    Services.NOTIFIER.port = Services.NOTIFIER.calculatePort(args)
+                    Services.VISORS.port = Services.VISORS.calculatePort(args)
+                    Services.MONITOR.port = Services.MONITOR.calculatePort(args)
+                }
+                if ((args.size == 2 && args[0] == "-si" && args[1] == "true") ||
+                        ((args.size == 3 && args[1] == "-si" && args[2] == "true"))) {
+                    startedIndipendently = true
+                }
             }
-
-            Services.SESSION.port = Services.SESSION.port
-            Services.DATA_BASE.port = Services.DATA_BASE.calculatePort(args)
-            Services.TASK_HANDLER.port = Services.TASK_HANDLER.calculatePort(args)
-            Services.NOTIFIER.port = Services.NOTIFIER.calculatePort(args)
-            Services.VISORS.port = Services.VISORS.calculatePort(args)
-            Services.MONITOR.port = Services.MONITOR.calculatePort(args)
         }
     }
 

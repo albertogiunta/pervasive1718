@@ -9,7 +9,11 @@ object MicroTaskBootstrap {
     fun init(args: Array<String>) {
         ConfigLoader().load(args)
         WSServerInitializer.init(WSTaskServer::class.java, wsPath = WSParams.WS_PATH_TASK, wsPort = Services.TASK_HANDLER.port)
-        waitInitAndNotifyToMicroSession(Services.TASK_HANDLER.executableName, Services.instanceId())
+
+        if (Services.isStartedIndipendently()) {
+            waitInitAndNotifyToMicroSession(Services.TASK_HANDLER.executableName, Services.instanceId())
+        }
+
         TaskController.fetchActivitiesFromDB()
         println("[${Services.TASK_HANDLER.executableName}] FINISHED bootstrap")
     }
