@@ -5,6 +5,7 @@ import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.fuel.httpPut
 import config.Services
+import config.Services.Utils.WAIT_TIME_BEFORE_THE_NEXT_REQUEST
 import model.*
 import networking.WSTaskServer
 import org.eclipse.jetty.websocket.api.Session
@@ -21,7 +22,6 @@ class TaskController private constructor(private val ws: WSTaskServer,
     val members: ConcurrentHashMap<Member, Session> = ConcurrentHashMap()
 
     companion object {
-        var WAIT_TIME_BEFORE_THE_NEXT_REQUEST = 2000L
         var configNotCompleted = true
         val dbUrl = Services.Utils.defaultHostUrlApi(Services.DATA_BASE)
         val visorUrl = Services.Utils.defaultHostUrlApi(Services.VISORS)
@@ -34,20 +34,18 @@ class TaskController private constructor(private val ws: WSTaskServer,
             if (!isInitialized.getAndSet(true)) {
                 INSTANCE = TaskController(ws)
             }
+        }
 
-            /**
-             * Continue to repeat the request until the Microdatabase service responds correctly.
-             * This protect the MicroTask service configuration procedure when it starts before the MicroDatabase service
-             * */
+        fun fetchActivitiesFromDB() {
             while (configNotCompleted) {
                 var responseString = "$dbUrl/activity/all".httpGet().responseString()
                 responseString.third.fold(
-                        success = { configNotCompleted = false },
-                        failure = {
-                            println("MicroTask: the MicroDatabase doesn't respond, reissuing the request in "
-                                    + WAIT_TIME_BEFORE_THE_NEXT_REQUEST + "microseconds")
-                            Thread.sleep(WAIT_TIME_BEFORE_THE_NEXT_REQUEST)
-                        }
+                    success = { configNotCompleted = false },
+                    failure = {
+                        println("MicroTask: the MicroDatabase doesn't respond, reissuing the request in "
+                                + WAIT_TIME_BEFORE_THE_NEXT_REQUEST + "microseconds")
+                        Thread.sleep(WAIT_TIME_BEFORE_THE_NEXT_REQUEST)
+                    }
                 )
                 activityList = handlingGetResponse<Activity>(responseString).toMutableList()
             }

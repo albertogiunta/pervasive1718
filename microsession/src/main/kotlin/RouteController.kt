@@ -28,16 +28,16 @@ object RouteController {
 
         path("/session") {
             // la fa il leader, deve sapere quale chiudere (la prende dalla new)
-            delete("/close/:sessionId", Utils.RESTParams.applicationJson) { SessionApi.closeSessionById(request, response) }
+            delete("/close/:sessionid", Utils.RESTParams.applicationJson) { SessionApi.closeSessionById(request, response) }
 
             // la fanno i membri, e deve restituire la lista di interventi disponibili
             get("/all", Utils.RESTParams.applicationJson) { SessionApi.listAllSessions(request, response) }
 
             // la fa il leader e restituisce la lista dei suoi interventi aperti
-            get("/all/:leaderId", Utils.RESTParams.applicationJson) { SessionApi.listAllOpenSessionsByLeaderId(request, response) }
+            get("/all/:leadercf", Utils.RESTParams.applicationJson) { SessionApi.listAllOpenSessionsByLeaderCF(request, response) }
 
             // la fanno i vari microservices per notificare il
-            get("/acknowledge/:instanceId", Utils.RESTParams.applicationJson) { SessionApi.acknowledgeReadyService(request, response) }
+            get("/acknowledge/:instanceid", Utils.RESTParams.applicationJson) { SessionApi.acknowledgeReadyService(request, response) }
         }
     }
 }
@@ -48,68 +48,71 @@ object SessionApi {
     private val instance = BooleanArray(Utils.maxSimultaneousSessions)
     private val sessions = mutableListOf<Pair<SessionDNS, Int>>()
     private var sManager = MicroServiceManager()
-    private var serviceInitializationStatus = HashMap<Int,Int>()
+    private var serviceInitializationStatus = HashMap<Int, Int>()
     private var sessionInitializationParamsWithInstanceId = HashMap<Int, Pair<SessionAssignment, Session>>()
     private var ws = WSSessionServer()
 
     private fun nextFreeSessionNumber() = instance.indexOfFirst { !it }.also { instance[it] = true }
 
     fun closeSessionById(request: Request, response: Response): String {
-        val sessionId = request.params("sessionId").toInt()
+        val sessionId = request.params("sessionid").toInt()
         val session = sessions.firstOrNull { it.first.sessionId == sessionId }
-        session?: return response.notFound()
+        session ?: return response.notFound()
 
         val dbUrl = createMicroDatabaseAddress(session.second)
 
         "$dbUrl/api/session/close/$sessionId".httpDelete().responseString().third.fold(
-                success = {
-                    instance[session.second] = false
-                    sessions.removeAll { it.first.sessionId == sessionId }
-                    sManager.closeSession(session.second.toString())
-                    return response.ok()
-                },
+            success = {
+                instance[session.second] = false
+                sessions.removeAll { it.first.sessionId == sessionId }
+                sManager.closeSession(session.second.toString())
+                return response.ok()
+            },
             failure = { return it.toJson() }
         )
     }
 
-    fun listAllOpenSessionsByLeaderId(request: Request, response: Response): String {
-        val leaderId = request.params("leaderId").toInt()
+    fun listAllOpenSessionsByLeaderCF(request: Request, response: Response): String {
+        val leaderCF = request.params("leadercf")
         sessionInitializationParamsWithInstanceId.forEach {
-            if (it.value.first.leaderId == leaderId)
-                return sessions.filter { session -> session.second == it.key }.map{ x -> x.first}.toJson()
+            if (it.value.first.leaderCF == leaderCF)
+                return sessions.filter { session -> session.second == it.key }.map { x -> x.first }.toJson()
         }
         return emptyList<SessionDNS>().toJson()
     }
 
     fun acknowledgeReadyService(request: Request, response: Response): String {
-        val instanceId = request.params("instanceId").toInt()
-        serviceInitializationStatus[instanceId] = serviceInitializationStatus[instanceId]!! +1
-        if (serviceInitializationStatus[instanceId] == 4) {
+        val instanceId = request.params("instanceid").toInt()
+        println("[RECEIVED ACK FOR INSTANCE $instanceId, map is $serviceInitializationStatus")
+        serviceInitializationStatus[instanceId] = serviceInitializationStatus[instanceId]?.plus(1) ?: return response.badRequest()
+        println("INSTANCE ACKS ARE ${serviceInitializationStatus[instanceId]}")
+        if (serviceInitializationStatus[instanceId] == 3) {
             val dbUrl = createMicroDatabaseAddress(instanceId)
 
             val instanceDetails = sessionInitializationParamsWithInstanceId[instanceId]!!
 
-            "$dbUrl/api/session/add/${instanceDetails.first.patId}/instanceid/$instanceId/leaderid/${instanceDetails.first.leaderId}".httpPost().responseString().third.fold(
-                    success = {
-                        val session = Klaxon().fieldConverter(KlaxonDate::class, dateConverter).parse<model.Session>(it)
-                                ?: ws.sendMessage(instanceDetails.second, PayloadWrapper(-1, WSOperations.SESSION_HANDLER_ERROR_RESPONSE, "Cannot parse response from database - session not created"))
-                        session as model.Session
-                        sessions.add(Pair(SessionDNS(session.id, session.cf, instanceId), instanceId))
-                        ws.sendMessage(instanceDetails.second, PayloadWrapper(-1, WSOperations.SESSION_HANDLER_RESPONSE, SessionDNS(session.id, session.cf, instanceId).toJson()))
-                    }, failure = { error ->
-                        if (error.exception.message == "Connection refused (Connection refused)") {
-                            ws.sendMessage(instanceDetails.second, PayloadWrapper(-1, WSOperations.SESSION_HANDLER_ERROR_RESPONSE, "Connection refused - session not created"))
-                        }
-                        sManager.closeSession(instanceId.toString())
-                        ws.sendMessage(instanceDetails.second, PayloadWrapper(-1, WSOperations.SESSION_HANDLER_ERROR_RESPONSE, "Internal server error - session not created"))
-                    })
-            }
+            "$dbUrl/api/session/add/patientcf/${instanceDetails.first.patientCF}/leadercf/${instanceDetails.first.leaderCF}/instanceid/$instanceId".httpPost().responseString().third.fold(
+                success = {
+                    val session = Klaxon().fieldConverter(KlaxonDate::class, dateConverter).parse<model.Session>(it)
+                            ?: ws.sendMessage(instanceDetails.second, PayloadWrapper(-1, WSOperations.SESSION_HANDLER_ERROR_RESPONSE, "Cannot parse response from database - session not created"))
+                    session as model.Session
+                    sessions.add(Pair(SessionDNS(session.id, session.patientCF, instanceId), instanceId))
+                    ws.sendMessage(instanceDetails.second, PayloadWrapper(-1, WSOperations.SESSION_HANDLER_RESPONSE, SessionDNS(session.id, session.patientCF, instanceId).toJson()))
+                }, failure = { error ->
+                    if (error.exception.message == "Connection refused (Connection refused)") {
+                        ws.sendMessage(instanceDetails.second, PayloadWrapper(-1, WSOperations.SESSION_HANDLER_ERROR_RESPONSE, "Connection refused - session not created"))
+                    }
+                    sManager.closeSession(instanceId.toString())
+                    ws.sendMessage(instanceDetails.second, PayloadWrapper(-1, WSOperations.SESSION_HANDLER_ERROR_RESPONSE, "Internal server error - session not created"))
+                })
+        }
 
         // So senders can have a response
         return response.ok()
     }
 
-    fun listAllSessions(request: Request, response: Response): String = GsonInitializer.toJson(sessions.map { x -> x.first })
+    fun listAllSessions(request: Request, response: Response): String =
+        GsonInitializer.toJson(sessions.map { x -> x.first })
 
     private fun buildPort(port: Int, id: Int): Int = port + id
 
@@ -123,17 +126,17 @@ object SessionApi {
 
         override fun onMessage(session: Session, message: String) {
             super.onMessage(session, message)
-            print(message)
-            val taskWrapper = Serializer.klaxon.fieldConverter(KlaxonDate::class, dateConverter).parse<PayloadWrapper>(message)
-            taskWrapper?.let {
-                with(taskWrapper) {
+            val sessionWrapper = Serializer.klaxon.fieldConverter(KlaxonDate::class, dateConverter).parse<PayloadWrapper>(message)
+            sessionWrapper?.let {
+                with(sessionWrapper) {
                     when (subject) {
                         WSOperations.NEW_SESSION -> {
                             val instanceId = nextFreeSessionNumber()
                             serviceInitializationStatus[instanceId] = 0
-                            sessionInitializationParamsWithInstanceId[instanceId] = Pair(taskWrapper.objectify(body), session)
+                            sessionInitializationParamsWithInstanceId[instanceId] = Pair(sessionWrapper.objectify(body), session)
 
                             println("current boot $instanceId")
+                            println("last session ${sessionInitializationParamsWithInstanceId[instanceId]!!.first}")
                             sManager.newSession(instanceId.toString())
                         } // done by leader
                         else -> println("Message was not handled " + message)

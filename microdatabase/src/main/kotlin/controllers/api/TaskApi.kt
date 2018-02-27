@@ -29,7 +29,7 @@ object TaskApi {
             it.insertNewTask(
                 task.id,
                 task.sessionId,
-                task.operatorId,
+                task.operatorCF,
                 task.startTime,
                 task.endTime,
                 task.activityId,

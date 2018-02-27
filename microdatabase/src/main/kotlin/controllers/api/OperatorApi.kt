@@ -24,6 +24,7 @@ object OperatorApi {
         JdbiConfiguration.INSTANCE.jdbi.useExtension<OperatorDao, SQLException>(OperatorDao::class.java)
         {
             it.insertNewOperator(
+                operator.operatorCF,
                 operator.name,
                 operator.surname,
                 operator.roleId,

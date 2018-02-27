@@ -5,11 +5,11 @@ object Params {
     object Session {
         const val TABLE_NAME = "session"
         const val SESSION_ID = "id"
-        const val PAT_ID = "cf"
+        const val PATIENT_CF = "patientcf"
+        const val LEADER_CF = "leadercf"
         const val START_DATE = "startdate"
         const val END_DATE = "enddate"
         const val INSTANCE_ID = "microserviceinstanceid"
-        const val LEADER_ID = "leaderid"
     }
 
     object Activity {
@@ -76,7 +76,7 @@ object Params {
     object Task {
         const val TABLE_NAME = "task"
         const val ID = "id"
-        const val OPERATOR_ID = "operatorid"
+        const val OPERATOR_CF = "operatorcf"
         const val START_TIME = "starttime"
         const val END_TIME = "endtime"
         const val ACTIVITY_ID = "activityid"

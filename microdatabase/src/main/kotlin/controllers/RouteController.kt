@@ -71,9 +71,9 @@ object RouteController {
             }
 
             path("/${Params.Session.TABLE_NAME}") {
-                post("/add/:${Params.Session.PAT_ID}/instanceid/:${Params.Session.INSTANCE_ID}/leaderid/:${Params.Session.LEADER_ID}", applicationJson) { SessionApi.addSession(request, response) }
+                post("/add/patientcf/:${Params.Session.PATIENT_CF}/leadercf/:${Params.Session.LEADER_CF}/instanceid/:${Params.Session.INSTANCE_ID}", applicationJson) { SessionApi.addSession(request, response) }
                 get("/all", applicationJson) { SessionApi.getAllSessions(request, response) }
-                get("/all/open/:${Params.Session.LEADER_ID}", applicationJson) { SessionApi.getAllOpenSessionsByLeaderId(request, response) }
+                get("/all/open/:${Params.Session.LEADER_CF}", applicationJson) { SessionApi.getAllOpenSessionsByLeaderCF(request, response) }
                 delete("/close/:${Params.Session.SESSION_ID}", applicationJson) { SessionApi.closeSessionBySessionId(request, response) }
             }
 

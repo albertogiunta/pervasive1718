@@ -21,5 +21,5 @@ fun main(args: Array<String>) {
 
     WSServerInitializer.init(RelayService::class.java, Services.NOTIFIER.port, Services.NOTIFIER.root())
 
-    waitInitAndNotifyToMicroSession(args[0].toInt())
+    waitInitAndNotifyToMicroSession(Services.NOTIFIER.executableName, Services.instanceId())
 }

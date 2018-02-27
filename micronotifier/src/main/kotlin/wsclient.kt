@@ -7,7 +7,7 @@ fun main(args: Array<String>) {
 
     ConfigLoader().load(args)
 
-    val member = Member(666, "Mario Rossi")
+    val member = Member("Mario Rossi")
 
     val client = WSClient(Services.NOTIFIER.wsURI())
 

@@ -11,7 +11,7 @@ import java.io.StringReader
 import java.util.*
 
 inline fun <reified A> handlingGetResponse(triplet: Triple<Request, Response, Result<String, FuelError>>): List<A> {
-    lateinit var listResult: List<A>
+    var listResult = listOf<A>()
     triplet.third.fold(success = {
         val klaxon = Klaxon().fieldConverter(KlaxonDate::class, dateConverter)
         JsonReader(StringReader(it) as Reader).use { reader ->

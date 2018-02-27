@@ -12,8 +12,8 @@ class NotifierSessionsControllerTest {
 
     lateinit var sesCon: SessionsController<Member, Session>
 
-    val m1 = Member(888, "Mario Rossi")
-    val m2 = Member(777, "Padre Pio")
+    val m1 = Member("Mario Rossi")
+    val m2 = Member("Padre Pio")
 
     @Before
     fun setUp() {
