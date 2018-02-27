@@ -21,10 +21,15 @@ object SessionApi {
      * Retrieves all the session
      */
     fun addSession(request: Request, response: Response): String {
-        var session = Session(cf = "", startDate = Timestamp(Date().time), leaderId = -1)
+        var session = Session(patientCF = "", leaderCF = "", startDate = Timestamp(Date().time))
         JdbiConfiguration.INSTANCE.jdbi.useExtension<SessionDao, SQLException>(SessionDao::class.java)
-        { session = it.insertNewSession(request.params(Params.Session.PAT_ID), Timestamp(Date().time),
-                request.params(Params.Session.INSTANCE_ID).toInt(), request.params(Params.Session.LEADER_ID).toInt()) }
+        {
+            session = it.insertNewSession(
+                request.params(Params.Session.PATIENT_CF),
+                request.params(Params.Session.LEADER_CF),
+                Timestamp(Date().time),
+                request.params(Params.Session.INSTANCE_ID).toInt())
+        }
 
         SubscriberController.startListeningMonitorsForInstanceId(session)
 
@@ -43,9 +48,9 @@ object SessionApi {
     /**
      * Retrieves all the open sessions by leader id
      */
-    fun getAllOpenSessionsByLeaderId(request: Request, response: Response): String {
+    fun getAllOpenSessionsByLeaderCF(request: Request, response: Response): String {
         return JdbiConfiguration.INSTANCE.jdbi.withExtension<List<Session>, SessionDao, SQLException>(SessionDao::class.java)
-        { it.selectAllOpenSessionsByLeaderId(request.params(Params.Session.LEADER_ID).toInt()) }
+        { it.selectAllOpenSessionsByLeaderCF(request.params(Params.Session.LEADER_CF)) }
             .toJson()
     }
 

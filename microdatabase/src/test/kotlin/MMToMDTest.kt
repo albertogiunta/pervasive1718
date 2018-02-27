@@ -5,28 +5,31 @@ import Connection.PROTOCOL_SEPARATOR
 import Params.Log.TABLE_NAME
 import com.github.kittinunf.fuel.httpDelete
 import com.github.kittinunf.fuel.httpGet
-import com.github.kittinunf.fuel.httpPost
 import config.ConfigLoader
 import config.Services
-import model.Log
+import model.*
 import model.Serializer.klaxon
-import model.SessionDNS
 import org.junit.AfterClass
 import org.junit.Assert.assertTrue
 import org.junit.BeforeClass
 import org.junit.Test
 import process.MicroServiceManager
+import utils.KlaxonDate
+import utils.dateConverter
 import utils.handlingGetResponse
+import utils.toJson
+import java.util.concurrent.CountDownLatch
 
 class MMToMDTest {
 
     companion object {
         private val startArguments = arrayOf("0")
         private val manager = MicroServiceManager()
-        private lateinit var newSession: String
+        private lateinit var wsClient: WSClient
         private lateinit var closeSession: String
         private lateinit var getAllLogs: String
         private lateinit var session: SessionDNS
+        private lateinit var latch: CountDownLatch
 
         private var logList = listOf<Log>()
 
@@ -34,25 +37,24 @@ class MMToMDTest {
         @JvmStatic
         fun setup() {
             ConfigLoader("../config.json").load(startArguments)
-            newSession = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.SESSION.port}/session/new/gntlrt94b21g479u/leaderid/-1"
+
             closeSession = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.SESSION.port}/session/close/"
             getAllLogs = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.DATA_BASE.port}/${Connection.API}/$TABLE_NAME/all"
 
-            println()
             println("istanzio session")
             manager.newService(Services.SESSION, startArguments[0]) // 8500
             Thread.sleep(3000)
-            println()
-            /*println("istanzio monitor")
-            manager.newService(Services.MONITOR, startArguments[0]) // 8200
-            Thread.sleep(3000)
-            println()
-            println("istanzio database")
-            manager.newService(Services.DATA_BASE, startArguments[0]) // 8100
-            Thread.sleep(3000)*/
+
+            wsClient = object : WSClient(URIFactory.getSessionURI(port = 8501)) {
+                override fun onMessage(message: String) {
+                    super.onMessage(message)
+                    val sessionWrapper = Serializer.klaxon.fieldConverter(KlaxonDate::class, dateConverter).parse<PayloadWrapper>(message)
+                    session = klaxon.parse<SessionDNS>(sessionWrapper!!.body) ?: SessionDNS(-1, "no", -1).also { println("NON HO INIZIALIZZATO LA SESSION PERCHè NON HO CAPITO IL MESSAGGIO DELLA WS: $message") }
+                    latch.countDown()
+                }
+            }.also { WSClientInitializer.init(it) }
 
             Thread.sleep(5000)
-
         }
 
         @AfterClass
@@ -64,8 +66,9 @@ class MMToMDTest {
 
     @Test
     fun `add new session and start listening to monitor and write data`() {
-
-        newSession.httpPost().responseString().third.fold(success = { session = klaxon.parse<SessionDNS>(it)!!; println("ho ricevuto risposta dal db: $session") }, failure = { println("ho ricevuto un errore $it") })
+        latch = CountDownLatch(1)
+        wsClient.sendMessage(PayloadWrapper(-1, WSOperations.NEW_SESSION, SessionAssignment("gntlrt94b21g479u", "asdflkjasdflkj").toJson()).toJson())
+        latch.await()
         logList = handlingGetResponse(getAllLogs.httpGet().responseString())
         val startingSize = logList.size
 

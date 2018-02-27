@@ -3,7 +3,6 @@ package model
 import utils.GsonInitializer
 import java.lang.ClassCastException
 import java.sql.Timestamp
-import java.time.ZonedDateTime
 import java.util.*
 
 
@@ -81,6 +80,6 @@ data class TaskError(val task: Task, val error: String)
 
 data class StatusError(val statusId: Int, val task: Task, val error: String)
 
-data class SessionAssignment(val patId: String, val leaderId: Int)
+data class SessionAssignment(val patientCF: String, val leaderCF: String)
 
-data class SessionDNS(val sessionId: Int, val patId: String, val microTaskAddress: String)
+data class SessionDNS(val sessionId: Int, val patientCF: String)

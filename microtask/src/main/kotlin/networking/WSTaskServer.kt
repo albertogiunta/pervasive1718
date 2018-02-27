@@ -21,7 +21,6 @@ class WSTaskServer : WSServer<PayloadWrapper>() {
 
     override fun onMessage(session: Session, message: String) {
         super.onMessage(session, message)
-        print(message)
         val taskWrapper = klaxon.fieldConverter(KlaxonDate::class, dateConverter).parse<PayloadWrapper>(message)
 
         taskWrapper?.let {

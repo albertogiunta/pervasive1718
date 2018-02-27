@@ -41,6 +41,7 @@ CREATE TABLE Log (
 
 CREATE TABLE Operator (
     ID BigSerial PRIMARY KEY,
+    OperatorCF VarChar(50) PRIMARY KEY,
     Name VarChar(50),
     Surname VarChar(50),
     RoleID BigInt,
@@ -54,17 +55,17 @@ CREATE TABLE Role (
 
 CREATE TABLE Session (
     ID BigSerial PRIMARY KEY,
-    CF VarChar(50),
+    PatientCF VarChar(50),
+    LeaderCF VarChar(50),
     StartDate TIMESTAMP,
     EndDate TIMESTAMP,
     MicroServiceInstanceId BigInt,
-    LeaderId BigInt
 );
 
 CREATE TABLE Task (
     ID BigInt NOT NULL,
     SessionID BigInt NOT NULL,
-    OperatorID BigInt,
+    OperatorCF VarChar(50),
     StartTime TIMESTAMP,
     EndTime TIMESTAMP,
     ActivityID BigInt,

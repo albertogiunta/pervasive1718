@@ -8,7 +8,7 @@ import java.util.*
 
 object EmptyTask{
     const val emptyTaskId: Int = -1
-    const val emptyTaskOperatorId: Int = -1
+    const val emptyTaskOperatorId: String = "cf a caso"
     val emptyTaskStatusId: Int = Status.EMPTY.id
     const val emptyTaskActivityId: Int = -1
     val emptyTaskStartTime : Timestamp = Timestamp(Date(0).time )

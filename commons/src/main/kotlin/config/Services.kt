@@ -76,6 +76,7 @@ class Services private constructor(var port: Int, val wsPath: String, val execut
     }
 
     object Utils {
+        var WAIT_TIME_BEFORE_THE_NEXT_REQUEST = 2000L
         const val maxSimultaneousSessions = 5
         const val defaultHost = "localhost"
         const val defaultWSPath = "/"

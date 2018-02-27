@@ -5,25 +5,26 @@ import com.github.kittinunf.fuel.core.Request
 import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.fuel.httpDelete
 import com.github.kittinunf.fuel.httpGet
-import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.result.Result
-import com.github.kittinunf.result.success
 import config.ConfigLoader
 import config.Services
-import model.SessionDNS
+import model.*
 import org.junit.After
 import org.junit.AfterClass
 import org.junit.Assert.assertTrue
 import org.junit.BeforeClass
 import org.junit.Test
 import process.MicroServiceManager
+import utils.KlaxonDate
+import utils.dateConverter
+import utils.toJson
 import java.io.StringReader
 import java.util.*
+import java.util.concurrent.CountDownLatch
 
 
 class SessionTest {
 
-    private var sessionDnsList: MutableList<SessionDNS> = mutableListOf()
     private var killFunction: () -> Any = {}
 
     companion object {
@@ -31,6 +32,9 @@ class SessionTest {
         private val startArguments = arrayOf("0")
         private val manager = MicroServiceManager()
         private lateinit var baseUrl: String
+        private lateinit var wsClient: WSClient
+        private var sessionList = mutableListOf<SessionDNS>()
+        private lateinit var latch: CountDownLatch
 
         @BeforeClass
         @JvmStatic
@@ -39,12 +43,19 @@ class SessionTest {
 
             baseUrl = Services.Utils.defaultHostHttpPrefix(Services.SESSION)
 
-            println("istanzio session")
+            println("istanzio sessionList")
             manager.newService(Services.SESSION, startArguments[0]) // 8500
             Thread.sleep(3000)
-            println()
-//            RouteController.initRoutes()
-//            Thread.sleep(1500)
+
+            wsClient = object : WSClient(URIFactory.getSessionURI(port = 8501)) {
+                override fun onMessage(message: String) {
+                    super.onMessage(message)
+                    val sessionWrapper = Serializer.klaxon.fieldConverter(KlaxonDate::class, dateConverter).parse<PayloadWrapper>(message)
+                    sessionList.add(Serializer.klaxon.parse<SessionDNS>(sessionWrapper!!.body)
+                            ?: SessionDNS(-1, "no", -1).also { println("NON HO INIZIALIZZATO LA SESSION PERCHè NON HO CAPITO IL MESSAGGIO DELLA WS: $message") })
+                    latch.countDown()
+                }
+            }.also { WSClientInitializer.init(it) }
         }
 
         @AfterClass
@@ -62,63 +73,65 @@ class SessionTest {
 
     @Test
     fun createNewSessionTest() {
-        sessionDnsList.clear()
-        val patientId = "frodo"
-        val leaderId = -1
-        var session = SessionDNS(-1, "")
-        "$baseUrl/new/$patientId/leaderid/$leaderId".httpPost().responseString().third.success { session = Klaxon().parse<SessionDNS>(it)!! }
-        println("$baseUrl/new/$patientId/leaderid/$leaderId")
+        sessionList.clear()
+        latch = CountDownLatch(1)
+        val patient = "gntlrt94b21g479u"
+        val leader = "asdflkjasdflkj"
+        wsClient.sendMessage(PayloadWrapper(-1, WSOperations.NEW_SESSION, SessionAssignment(patient, leader).toJson()).toJson())
+        latch.await()
+
         Thread.sleep(3000)
         killFunction = {
-            "$baseUrl/close/${session.sessionId}".httpDelete().responseString()
-            println("$baseUrl/close/${session.sessionId}")
+            "$baseUrl/close/${sessionList.first().sessionId}".httpDelete().responseString()
+            println("$baseUrl/close/${sessionList.first().sessionId}")
             Thread.sleep(4000)
         }
-        assertTrue(session.patId == patientId)
+        assertTrue(sessionList.first().patientCF == patient)
     }
 
     @Test
     fun getAllSessions() {
         handlingGetResponseWithArrayOfDnsSessions(makeGet("$baseUrl/all"))
-        val previousSize = sessionDnsList.size
+        val previousSize = sessionList.size
         println(previousSize)
-        var session1 = SessionDNS(-1, "")
-        var session2 = SessionDNS(-1, "")
-        var session3 = SessionDNS(-1, "")
 
-        "$baseUrl/new/1/leaderid/-1".httpPost().responseString().third.success { session1 = Klaxon().parse<SessionDNS>(it)!! }
+        latch = CountDownLatch(3)
+        wsClient.sendMessage(PayloadWrapper(-1, WSOperations.NEW_SESSION, SessionAssignment("1", "-1").toJson()).toJson())
         Thread.sleep(500)
-        "$baseUrl/new/2/leaderid/-1".httpPost().responseString().third.success { session2 = Klaxon().parse<SessionDNS>(it)!! }
+        wsClient.sendMessage(PayloadWrapper(-1, WSOperations.NEW_SESSION, SessionAssignment("2", "-1").toJson()).toJson())
         Thread.sleep(500)
-        "$baseUrl/new/3/leaderid/-1".httpPost().responseString().third.success { session3 = Klaxon().parse<SessionDNS>(it)!! }
+        wsClient.sendMessage(PayloadWrapper(-1, WSOperations.NEW_SESSION, SessionAssignment("3", "-1").toJson()).toJson())
+        latch.await()
 
         Thread.sleep(3000)
         handlingGetResponseWithArrayOfDnsSessions(makeGet("$baseUrl/all"))
 
         killFunction = {
-            "$baseUrl/close/${session1.sessionId}".httpDelete().responseString()
-            Thread.sleep(500)
-            "$baseUrl/close/${session2.sessionId}".httpDelete().responseString()
-            Thread.sleep(500)
-            "$baseUrl/close/${session3.sessionId}".httpDelete().responseString()
+            sessionList.takeLast(3).forEach {
+                "$baseUrl/close/${it.sessionId}".httpDelete().responseString()
+                Thread.sleep(500)
+            }
             Thread.sleep(4000)
         }
 
-        println(sessionDnsList.size)
-        assertTrue(sessionDnsList.size == previousSize + 3)
+        println(sessionList.size)
+        assertTrue(sessionList.size == previousSize + 3)
     }
 
     @Test
     fun closeSession() {
-        "$baseUrl/new/codicefiscalepaziente/leaderid/-1".httpPost().responseString()
+        latch = CountDownLatch(1)
+        wsClient.sendMessage(PayloadWrapper(-1, WSOperations.NEW_SESSION, SessionAssignment("1", "-1").toJson()).toJson())
+        latch.await()
+
         handlingGetResponseWithArrayOfDnsSessions(makeGet("$baseUrl/all"))
-        val sessionId = sessionDnsList.first().sessionId
-        val previousSize = sessionDnsList.size
+        val sessionId = sessionList.first().sessionId
+        val previousSize = sessionList.size
 
         "$baseUrl/close/$sessionId".httpDelete().responseString()
         handlingGetResponseWithArrayOfDnsSessions(makeGet("$baseUrl/all"))
 
-        assertTrue(sessionDnsList.size == previousSize - 1)
+        assertTrue(sessionList.size == previousSize - 1)
     }
 
     private fun makeGet(string: String): Triple<Request, Response, Result<String, FuelError>> {
@@ -130,10 +143,10 @@ class SessionTest {
             val klaxon = Klaxon()
             JsonReader(StringReader(it)).use { reader ->
                 reader.beginArray {
-                    sessionDnsList.clear()
+                    sessionList.clear()
                     while (reader.hasNext()) {
                         val session = klaxon.parse<SessionDNS>(reader)!!
-                        (sessionDnsList as ArrayList<SessionDNS>).add(session)
+                        (sessionList as ArrayList<SessionDNS>).add(session)
                     }
                 }
             }
