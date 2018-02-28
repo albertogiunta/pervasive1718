@@ -82,4 +82,4 @@ data class StatusError(val statusId: Int, val task: Task, val error: String)
 
 data class SessionAssignment(val patientCF: String, val leaderCF: String)
 
-data class SessionDNS(val sessionId: Int, val patientCF: String)
+data class SessionDNS(val sessionId: Int, val patientCF: String, val instanceId: Int = 0, val leaderCF: String)

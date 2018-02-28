@@ -18,7 +18,7 @@ class Services private constructor(var port: Int, val wsPath: String, val execut
     companion object {
 
         private var instanceId : Int = 0
-        private var startedIndipendently: Boolean = false
+        private var startedIndependently: Boolean = false
 
         lateinit var SESSION: Services
         lateinit var DATA_BASE: Services
@@ -61,7 +61,7 @@ class Services private constructor(var port: Int, val wsPath: String, val execut
 
         fun instanceId(): Int = instanceId
 
-        fun isStartedIndipendently() = startedIndipendently
+        fun isNotStartedIndependently() = !startedIndependently
 
         fun finalizeConfiguration(args: Array<String>) {
             if (args.isNotEmpty()) {
@@ -77,7 +77,7 @@ class Services private constructor(var port: Int, val wsPath: String, val execut
                 }
                 if ((args.size == 2 && args[0] == "-si" && args[1] == "true") ||
                         ((args.size == 3 && args[1] == "-si" && args[2] == "true"))) {
-                    startedIndipendently = true
+                    startedIndependently = true
                 }
             }
         }

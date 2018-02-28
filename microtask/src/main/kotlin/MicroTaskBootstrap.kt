@@ -10,7 +10,7 @@ object MicroTaskBootstrap {
         ConfigLoader().load(args)
         WSServerInitializer.init(WSTaskServer::class.java, wsPath = WSParams.WS_PATH_TASK, wsPort = Services.TASK_HANDLER.port)
 
-        if (Services.isStartedIndipendently()) {
+        if (Services.isNotStartedIndependently()) {
             waitInitAndNotifyToMicroSession(Services.TASK_HANDLER.executableName, Services.instanceId())
         }
 

@@ -3,9 +3,9 @@ import controllers.RouteController
 
 object MicroDatabaseBootstrap {
 
-    fun init(startIndependent: Boolean = false) {
+    fun init(notStartIndependently: Boolean = false) {
         RouteController.init()
         JdbiConfiguration.init()
-        if (!startIndependent) waitInitAndNotifyToMicroSession(Services.DATA_BASE.executableName, Services.instanceId())
+        if (notStartIndependently) waitInitAndNotifyToMicroSession(Services.DATA_BASE.executableName, Services.instanceId())
     }
 }
