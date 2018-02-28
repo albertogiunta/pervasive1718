@@ -1,5 +1,6 @@
 package controller.logic
 
+import config.Services
 import controller.CoreController
 import model.PayloadWrapper
 import model.Update
@@ -23,14 +24,15 @@ object RelayHandler {
                 }.doOnNext {
                     if (core.useLogging) Logger.info(it.toString())
                 }.subscribe { (lp, value) ->
-                    val message = PayloadWrapper(-1,
+                    val message = PayloadWrapper(
+                            Services.instanceId(),
                             WSOperations.UPDATE,
                             Update(lp, value).toJson()
                     )
                     // Do stuff with the WebSockets, dispatch only some of the merged values
                     // With one are specified into controller.listenerMap: Member -> Set<model.LifeParameters>
                     core.topics[topic]?.forEach { member ->
-                        Logger.info("$member ===> ${message.toJson()}")
+                        if (core.useLogging) Logger.info("$member ===> ${message.toJson()}")
                         if (core.sessions[member]?.isOpen!!) {
                             core.sessions[member]?.remote?.sendString(message.toJson()) // Notify the WS, dunno how.
                         }

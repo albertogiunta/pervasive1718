@@ -31,7 +31,7 @@ class MicroServiceManager {
                     .add("libs")
                     .toString()
 
-            return "java -jar ${service.executableName} ${slotId.toInt()} $startIndependently"
+            return "java -jar ${service.executableName} ${slotId.toInt()} -si $startIndependently"
                     .runCommand(File(workingModule)) to url
         }
     }

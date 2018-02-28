@@ -9,7 +9,11 @@ fun main(args: Array<String>) {
 
     ConfigLoader().load(args)
 
+    println(Services.NOTIFIER.wsURI())
+
     val core = CoreController.singleton()
+            .withoutLogging()
+            .loadHandlers()
 
     println(core.topics.activeTopics().map {it.acronymWithSession(args) }.toList())
 
@@ -25,6 +29,5 @@ fun main(args: Array<String>) {
 
     if (Services.isNotStartedIndependently()) {
         waitInitAndNotifyToMicroSession(Services.NOTIFIER.executableName, Services.instanceId())
-        core.useLogging = false
     }
 }

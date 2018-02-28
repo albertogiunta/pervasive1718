@@ -13,7 +13,8 @@ class CoreController private constructor(topicSet: Set<LifeParameters>) {
     var sessions: SessionsController<Member, Session> = NotifierSessionsController()
     var subjects: SubjectsController<String, Any> = NotifierSubjectsController()
 
-    var useLogging = true
+    @Volatile
+    var useLogging = false
 
     init {
         subjects.createNewSubjectFor<Pair<Session, String>>(CoreController::class.java.name)
@@ -21,10 +22,24 @@ class CoreController private constructor(topicSet: Set<LifeParameters>) {
         topics.activeTopics().map {
             it to subjects.createNewSubjectFor<String>(it.toString())
         }
+    }
 
+    fun withLogging() : CoreController {
+        this.useLogging = true
+        return this
+    }
+
+    fun loadHandlers() : CoreController {
         SubscriptionHandler.runOn(this)
         RelayHandler.runOn(this)
         NotificationHandler.runOn(this)
+
+        return this
+    }
+
+    fun withoutLogging() : CoreController {
+        this.useLogging = false
+        return this
     }
 
     companion object {
