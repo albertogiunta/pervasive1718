@@ -1,10 +1,12 @@
 package controller.logic
 
+import config.Services
 import controller.CoreController
 import model.*
 import org.eclipse.jetty.websocket.api.Session
 import utils.GsonInitializer
 import utils.Logger
+import utils.toJson
 
 object SubscriptionHandler {
 
@@ -27,6 +29,14 @@ object SubscriptionHandler {
                         Logger.info("Subscribing ${msg.subject} @ ${msg.topics}")
                         core.topics.removeListener(msg.subject)
                         core.topics.add(msg.topics, msg.subject)
+
+                        val okResponse = PayloadWrapper(
+                                Services.instanceId(),
+                                WSOperations.ANSWER,
+                                Response(200, wrapper.toJson()).toJson()
+                        )
+
+                        session.remote.sendString(okResponse.toJson())
                     }
                     WSOperations.CLOSE -> {
                         Logger.info(body)

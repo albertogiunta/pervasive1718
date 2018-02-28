@@ -3,7 +3,6 @@ package controller
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import model.LifeParameters
-import utils.Logger
 
 interface SubjectsController <I, T> {
 

@@ -67,11 +67,11 @@ object NotificationHandler {
                 it.isNotEmpty()
             }.map { body ->
                 PayloadWrapper(-1,
-                        WSOperations.NOTIFY,
-                        Notification(lp, body).toJson()
+                    WSOperations.NOTIFY,
+                    Notification(lp, body).toJson()
                 ).toJson()
             }.doOnNext {
-                //utils.Logger.info(it.toString())
+                if (core.useLogging) utils.Logger.info(it.toString())
             }.subscribe {message ->
                 // Do Stuff, if necessary but SubscriptionHandler is MANDATORY.
                 core.topics[lp]?.forEach { member ->

@@ -13,6 +13,8 @@ class CoreController private constructor(topicSet: Set<LifeParameters>) {
     var sessions: SessionsController<Member, Session> = NotifierSessionsController()
     var subjects: SubjectsController<String, Any> = NotifierSubjectsController()
 
+    var useLogging = true
+
     init {
         subjects.createNewSubjectFor<Pair<Session, String>>(CoreController::class.java.name)
 

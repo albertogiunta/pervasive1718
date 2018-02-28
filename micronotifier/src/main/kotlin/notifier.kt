@@ -25,5 +25,6 @@ fun main(args: Array<String>) {
 
     if (Services.isStartedIndipendently()) {
         waitInitAndNotifyToMicroSession(Services.NOTIFIER.executableName, Services.instanceId())
+        core.useLogging = false
     }
 }

@@ -12,9 +12,9 @@ class MicroServiceManager {
 
     val sessionsMap = mutableMapOf<String, Map<Services, Pair<Process, URL>>>()
 
-    val instanceHandler = object : InstanceHandler<Services, String> {
+    val instanceHandler = object : InstanceHandler<Services, String, Boolean> {
 
-        override fun new(service: Services, slotId: String): Pair<Process, URL> {
+        override fun new(service: Services, slotId: String, startIndependently: Boolean): Pair<Process, URL> {
 
             val dir = PathGetter.getRootPath()
 
@@ -31,7 +31,8 @@ class MicroServiceManager {
                     .add("libs")
                     .toString()
 
-            return "java -jar ${service.executableName} ${slotId.toInt()}".runCommand(File(workingModule)) to url
+            return "java -jar ${service.executableName} ${slotId.toInt()} $startIndependently"
+                    .runCommand(File(workingModule)) to url
         }
     }
 
@@ -42,14 +43,14 @@ class MicroServiceManager {
         }
     }
 
-    fun newService(service: Services, slotId: String){
+    fun newService(service: Services, slotId: String, startIndependently: Boolean = false){
 
         lateinit var map: MutableMap<Services, Pair<Process, URL>>
         when(!sessionsMap.containsKey(slotId)){
             true -> map = mutableMapOf()
             false -> map = sessionsMap[slotId]!!.toMutableMap()
         }
-        map[service] = instanceHandler.new(service,slotId)
+        map[service] = instanceHandler.new(service, slotId, startIndependently)
         sessionsMap[slotId] = map.toMap()
     }
 
@@ -71,9 +72,9 @@ class MicroServiceManager {
 
 }
 
-interface InstanceHandler<X, Y> {
+interface InstanceHandler<X, Y, Z> {
 
-    fun new(service: X, slotId: Y) : Pair<Process, URL>
+    fun new(service: X, slotId: Y, startIndependently: Z) : Pair<Process, URL>
 }
 
 fun main(args: Array<String>) {
@@ -84,7 +85,7 @@ fun main(args: Array<String>) {
 
     val m = MicroServiceManager()
 
-    val e = m.instanceHandler.new(Services.NOTIFIER, "666")
+    val e = m.instanceHandler.new(Services.NOTIFIER, "666", true)
 
     println(e.second)
     println(e.first.waitFor(5000L, TimeUnit.MILLISECONDS))
