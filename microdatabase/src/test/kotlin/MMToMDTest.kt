@@ -49,7 +49,7 @@ class MMToMDTest {
                 override fun onMessage(message: String) {
                     super.onMessage(message)
                     val sessionWrapper = Serializer.klaxon.fieldConverter(KlaxonDate::class, dateConverter).parse<PayloadWrapper>(message)
-                    session = klaxon.parse<SessionDNS>(sessionWrapper!!.body) ?: SessionDNS(-1, "no", -1).also { println("NON HO INIZIALIZZATO LA SESSION PERCHè NON HO CAPITO IL MESSAGGIO DELLA WS: $message") }
+                    session = klaxon.parse<SessionDNS>(sessionWrapper!!.body) ?: SessionDNS(-1, "no", -1,"EmptyLeaderCF").also { println("NON HO INIZIALIZZATO LA SESSION PERCHè NON HO CAPITO IL MESSAGGIO DELLA WS: $message") }
                     latch.countDown()
                 }
             }.also { WSClientInitializer.init(it) }

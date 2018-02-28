@@ -77,6 +77,7 @@ interface InstanceHandler<X, Y, Z> {
     fun new(service: X, slotId: Y, startIndependently: Z) : Pair<Process, URL>
 }
 
+@Suppress("UNUSED_VARIABLE")
 fun main(args: Array<String>) {
 
     ConfigLoader().load(args)
