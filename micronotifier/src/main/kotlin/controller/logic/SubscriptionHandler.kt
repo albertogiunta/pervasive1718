@@ -39,11 +39,17 @@ object SubscriptionHandler {
                         session.remote.sendString(okResponse.toJson())
                     }
                     WSOperations.CLOSE -> {
-                        Logger.info(body)
                         val listener: Member = wrapper.objectify(body)
                         Logger.info("Closing Session for $listener")
                         core.sessions.removeListener(listener)
                         core.topics.removeListener(listener)
+
+                        val okResponse = PayloadWrapper(
+                                Services.instanceId(),
+                                WSOperations.ANSWER,
+                                Response(200, wrapper.toJson()).toJson()
+                        )
+                        session.remote.sendString(okResponse.toJson())
                     }
                     else -> {
                         Logger.info(this.toString())

@@ -38,6 +38,9 @@ object NotificationHandler {
                             }.map {
                                 LifeParameters.Utils.getByID(it.healthParameterId) to it
                             }.groupBy({it.first}, {it.second})
+                    if (core.useLogging) {
+                        Logger.info(boundaries.toString())
+                    }
                 }, failure = {
                     Logger.info("Error Loading boundaries from DB... Retrying")
                 })
@@ -58,7 +61,6 @@ object NotificationHandler {
                     boundaries[lp]!!.filter {
                         value >= it.lowerBound - it.lightWarningOffset
                         && value < it.lowerBound + it.lightWarningOffset
-//                            && !it.itsGood
                     }.filter { !it.itsGood }
                 } else {
                     emptyList()
@@ -66,7 +68,8 @@ object NotificationHandler {
             }.filter{
                 it.isNotEmpty()
             }.map { body ->
-                PayloadWrapper(-1,
+                PayloadWrapper(
+                    Services.instanceId(),
                     WSOperations.NOTIFY,
                     Notification(lp, body).toJson()
                 ).toJson()

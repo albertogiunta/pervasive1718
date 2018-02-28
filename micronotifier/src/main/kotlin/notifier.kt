@@ -25,6 +25,8 @@ fun main(args: Array<String>) {
 
     amqp.publishOn(publishSubjects)
 
+    publishSubjects.forEach { println(it) }
+
     WSServerInitializer.init(RelayService::class.java, Services.NOTIFIER.port, Services.NOTIFIER.root())
 
     if (Services.isNotStartedIndependently()) {
