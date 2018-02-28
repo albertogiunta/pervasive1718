@@ -18,7 +18,7 @@ object Params {
         const val NAME = "name"
         const val ACTIVITY_TYPE_ID = "activitytypeid"
         const val ACRONYM = "acronym"
-        const val BOUNDARY_ID = "boundaryid"
+        const val HEALTH_PARAMETER_IDS = "healthparameterids"
     }
 
     object ActivityType {
@@ -31,7 +31,6 @@ object Params {
         const val TABLE_NAME = "boundary"
         const val ID = "id"
         const val HEALTH_PARAMETER_ID = "healthparameterid"
-        const val ACTIVITY_ID = "activityid"
         const val UPPERBOUND = "upperbound"
         const val LOWERBOUND = "lowerbound"
         const val LIGHT_WARNING_OFFSET = "lightwarning_offset"

@@ -26,7 +26,7 @@ object ActivityApi {
                 activity.name,
                 activity.activityTypeId,
                 activity.acronym,
-                activity.boundaryId)
+                activity.healthParameterIds)
         }
         return response.okCreated()
     }

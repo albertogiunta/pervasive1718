@@ -2,7 +2,7 @@ package dao
 
 import Params.Activity.ACRONYM
 import Params.Activity.ACTIVITY_TYPE_ID
-import Params.Activity.BOUNDARY_ID
+import Params.Activity.HEALTH_PARAMETER_IDS
 import Params.Activity.ID
 import Params.Activity.NAME
 import Params.Activity.TABLE_NAME
@@ -13,11 +13,11 @@ import org.jdbi.v3.sqlobject.statement.SqlUpdate
 
 interface ActivityDao {
 
-    @SqlUpdate("INSERT INTO $TABLE_NAME($NAME, $ACTIVITY_TYPE_ID, $ACRONYM, $BOUNDARY_ID) VALUES (:$NAME, :$ACTIVITY_TYPE_ID, :$ACRONYM, :$BOUNDARY_ID)")
+    @SqlUpdate("INSERT INTO $TABLE_NAME($NAME, $ACTIVITY_TYPE_ID, $ACRONYM, $HEALTH_PARAMETER_IDS) VALUES (:$NAME, :$ACTIVITY_TYPE_ID, :$ACRONYM, :$HEALTH_PARAMETER_IDS)")
     fun insertNewActivity(@Bind(NAME) name: String,
                           @Bind(ACTIVITY_TYPE_ID) typeId: Int,
                           @Bind(ACRONYM) signature: String,
-                          @Bind(BOUNDARY_ID) statusId: Int)
+                          @Bind(HEALTH_PARAMETER_IDS) healthParameterIds: List<Int>)
 
     @SqlQuery("SELECT * FROM $TABLE_NAME")
     fun selectAllActivities(): List<Activity>

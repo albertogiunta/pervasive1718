@@ -41,14 +41,26 @@ fun mockLeaderMemberInteractionAndTaskAddition(session: SessionDNS,
                                                memberWS: WSClient,
                                                leader: Member = Member("Leader"),
                                                member: Member = Member("Member"),
-                                               task: Task = Task(taskID, session.sessionId, member.userCF, Timestamp(Date().time), Timestamp(Date().time + 1000), 1, Status.RUNNING.id)) {
+                                               augmentedTask: AugmentedTask = AugmentedTask(
+                                                       Task(
+                                                               taskID,
+                                                               session.sessionId,
+                                                               member.userCF,
+                                                               Timestamp(Date().time),
+                                                               Timestamp(Date().time + 1000),
+                                                               1,
+                                                               Status.RUNNING.id),
+                                                       listOf(
+                                                               LifeParameters.DIASTOLIC_BLOOD_PRESSURE,
+                                                               LifeParameters.SYSTOLIC_BLOOD_PRESSURE,
+                                                               LifeParameters.HEART_RATE))) {
 
     mockLeader(memberCF, leaderWS, leader).also { Thread.sleep(1000) }
 
     val message1 = PayloadWrapper(Services.instanceId(), WSOperations.ADD_MEMBER,
         MembersAdditionNotification(listOf(member)).toJson())
     val message2 = PayloadWrapper(Services.instanceId(), WSOperations.ADD_TASK,
-        TaskAssignment(member, task).toJson())
+        TaskAssignment(member, augmentedTask).toJson())
 
     memberWS.sendMessage(message1.toJson()).also { Thread.sleep(1000) }
     leaderWS.sendMessage(message2.toJson()).also { Thread.sleep(1000) }
@@ -61,12 +73,24 @@ fun mockLeaderMemberInteractionAndTaskRemoval(session: SessionDNS,
                                               leaderWS: WSClient,
                                               memberWS: WSClient,
                                               member: Member = Member("Member"),
-                                              task: Task = Task(taskID, session.sessionId, member.userCF, Timestamp(Date().time), Timestamp(Date().time + 1000), 1, Status.RUNNING.id)) {
+                                              augmentedTask: AugmentedTask = AugmentedTask(
+                                                      Task(
+                                                              taskID,
+                                                              session.sessionId,
+                                                              member.userCF,
+                                                              Timestamp(Date().time),
+                                                              Timestamp(Date().time + 1000),
+                                                              1,
+                                                              Status.RUNNING.id),
+                                                      listOf(
+                                                              LifeParameters.DIASTOLIC_BLOOD_PRESSURE,
+                                                              LifeParameters.SYSTOLIC_BLOOD_PRESSURE,
+                                                              LifeParameters.HEART_RATE))) {
 
     mockLeaderMemberInteractionAndTaskAddition(session, memberCF, taskID, leaderWS, memberWS)
 
     val message = PayloadWrapper(Services.instanceId(), WSOperations.REMOVE_TASK,
-        TaskAssignment(member, task).toJson())
+        TaskAssignment(member, augmentedTask).toJson())
 
     leaderWS.sendMessage(message.toJson()).also { Thread.sleep(1000) }
 }
@@ -77,13 +101,25 @@ fun mockLeaderMemberInteractionAndTaskChange(session: SessionDNS,
                                              leaderWS: WSClient,
                                              memberWS: WSClient,
                                              member: Member = Member("Member"),
-                                             task: Task = Task(taskID, session.sessionId, member.userCF, Timestamp(Date().time), Timestamp(Date().time + 1000), 1, Status.RUNNING.id)) {
+                                             augmentedTask: AugmentedTask = AugmentedTask(
+                                                     Task(
+                                                             taskID,
+                                                             session.sessionId,
+                                                             member.userCF,
+                                                             Timestamp(Date().time),
+                                                             Timestamp(Date().time + 1000),
+                                                             1,
+                                                             Status.RUNNING.id),
+                                                     listOf(
+                                                             LifeParameters.DIASTOLIC_BLOOD_PRESSURE,
+                                                             LifeParameters.SYSTOLIC_BLOOD_PRESSURE,
+                                                             LifeParameters.HEART_RATE))) {
 
     mockLeaderMemberInteractionAndTaskAddition(session, memberCF, taskID, leaderWS, memberWS)
-    task.statusId = Status.FINISHED.id
+    augmentedTask.task.statusId = Status.FINISHED.id
 
     val message = PayloadWrapper(Services.instanceId(), WSOperations.CHANGE_TASK_STATUS,
-        TaskAssignment(member, task).toJson())
+        TaskAssignment(member, augmentedTask).toJson())
 
     leaderWS.sendMessage(message.toJson()).also { Thread.sleep(1000) }
 }

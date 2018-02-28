@@ -10,6 +10,7 @@ import model.*
 import networking.WSTaskServer
 import org.eclipse.jetty.websocket.api.Session
 import utils.handlingGetResponse
+import utils.toAugmentedTask
 import utils.toJson
 import utils.toVisibleTask
 import java.util.concurrent.ConcurrentHashMap
@@ -79,43 +80,43 @@ class TaskController private constructor(private val ws: WSTaskServer,
         }
     }
 
-    fun addTask(task: Task, member: Member) {
+    fun addTask(augmentedTask: AugmentedTask, member: Member) {
         if (members.containsKey(member)) {
-            taskMemberAssociationList.add(TaskMemberAssociation.create(task, member))
+            taskMemberAssociationList.add(TaskMemberAssociation.create(augmentedTask.task, member))
             val message = PayloadWrapper(Services.instanceId(),
-                    WSOperations.ADD_TASK, TaskAssignment(member, task).toJson())
+                    WSOperations.ADD_TASK, TaskAssignment(member, augmentedTask).toJson())
             ws.sendMessage(members[member]!!, message)
-            "$dbUrl/task/add".httpPost().body(task.toJson()).responseString()
-            "$visorUrl/add".httpPost().body(task.toVisibleTask(member, activityName = activityList.first { x -> x.id == task.activityId }.name).toJson()).responseString()
+            "$dbUrl/task/add".httpPost().body(augmentedTask.task.toJson()).responseString()
+            "$visorUrl/add".httpPost().body(augmentedTask.task.toVisibleTask(member, activityName = activityList.first { x -> x.id == augmentedTask.task.activityId }.name).toJson()).responseString()
         }
     }
 
-    fun removeTask(task: Task) {
-        with(taskMemberAssociationList.firstOrNull { it.task.id == task.id }) {
+    fun removeTask(augmentedTask: AugmentedTask) {
+        with(taskMemberAssociationList.firstOrNull { it.task.id == augmentedTask.task.id }) {
             this?.let {
                 taskMemberAssociationList.remove(this)
                 val message = PayloadWrapper(Services.instanceId(),
-                        WSOperations.REMOVE_TASK, TaskAssignment(member, task).toJson())
+                        WSOperations.REMOVE_TASK, TaskAssignment(member, augmentedTask).toJson())
                 ws.sendMessage(members[member]!!, message)
                 "$dbUrl/task/${it.task.id}".httpDelete().responseString()
                 "$visorUrl/remove/${it.task.id}".httpDelete().responseString()
             }
                     ?: ws.sendMessage(leader.second, PayloadWrapper(Services.instanceId(),
-                            WSOperations.ERROR_REMOVING_TASK, TaskError(task, "").toJson()))
+                            WSOperations.ERROR_REMOVING_TASK, TaskError(augmentedTask.task, "").toJson()))
         }
     }
 
-    fun changeTaskStatus(task: Task, session: Session) {
-        with(taskMemberAssociationList.firstOrNull { it.task.id == task.id }) {
+    fun changeTaskStatus(augmentedTask: AugmentedTask, session: Session) {
+        with(taskMemberAssociationList.firstOrNull { it.task.id == augmentedTask.task.id }) {
             this?.let {
-                it.task.statusId = task.statusId
+                it.task.statusId = augmentedTask.task.statusId
                 val message = PayloadWrapper(Services.instanceId(),
-                        WSOperations.CHANGE_TASK_STATUS, TaskAssignment(member, this.task).toJson())
+                        WSOperations.CHANGE_TASK_STATUS, TaskAssignment(member, this.task.toAugmentedTask(activityList)).toJson())
                 ws.sendMessage(members[member]!!, message)
                 ws.sendMessage(leader.second, message)
                 "$dbUrl/task/${it.task.id}/status/${it.task.statusId}".httpPut().responseString()
             } ?: ws.sendMessage(session, PayloadWrapper(Services.instanceId(),
-                    WSOperations.ERROR_CHANGING_STATUS, StatusError(task.statusId, task, "").toJson()))
+                    WSOperations.ERROR_CHANGING_STATUS, StatusError(augmentedTask.task.statusId, augmentedTask.task, "").toJson()))
         }
     }
 

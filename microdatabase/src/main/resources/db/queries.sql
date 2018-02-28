@@ -99,3 +99,10 @@ select A.Signature, A.name as ActivityName, A.ExpectedEffect, AT.Name as Activit
 from activity as A inner join activitytype as AT on A.typeid = AT.id
 where AT.id = 3
 order by 1, A.id;
+
+ALTER TABLE activity DROP COLUMN boundaryid
+ALTER TABLE activity ADD COLUMN healthparameterids bigint[]
+
+UPDATE activity SET healthparameterids=ARRAY[1,3,6] where id%3 = 1
+UPDATE activity SET healthparameterids=ARRAY[4,5,6] where id%3 = 2
+UPDATE activity SET healthparameterids=ARRAY[1,2,3] where id%3 = 0
