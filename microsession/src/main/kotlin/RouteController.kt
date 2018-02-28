@@ -96,8 +96,8 @@ object SessionApi {
                     val session = Klaxon().fieldConverter(KlaxonDate::class, dateConverter).parse<model.Session>(it)
                             ?: ws.sendMessage(instanceDetails.second, PayloadWrapper(-1, WSOperations.SESSION_HANDLER_ERROR_RESPONSE, "Cannot parse response from database - session not created"))
                     session as model.Session
-                    sessions.add(Pair(SessionDNS(session.id, session.patientCF, instanceId), instanceId))
-                    ws.sendMessage(instanceDetails.second, PayloadWrapper(-1, WSOperations.SESSION_HANDLER_RESPONSE, SessionDNS(session.id, session.patientCF, instanceId).toJson()))
+                    sessions.add(Pair(SessionDNS(session.id, session.patientCF, instanceId,session.leaderCF), instanceId))
+                    ws.sendMessage(instanceDetails.second, PayloadWrapper(-1, WSOperations.SESSION_HANDLER_RESPONSE, SessionDNS(session.id, session.patientCF, instanceId, session.leaderCF).toJson()))
                 }, failure = { error ->
                     if (error.exception.message == "Connection refused (Connection refused)") {
                         ws.sendMessage(instanceDetails.second, PayloadWrapper(-1, WSOperations.SESSION_HANDLER_ERROR_RESPONSE, "Connection refused - session not created"))
