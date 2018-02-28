@@ -6,6 +6,7 @@ import model.*
 import java.sql.Timestamp
 import java.util.*
 
+@Suppress("UNUSED_PARAMETER")
 fun mockLeader(memberCF: String,
                leaderWS: WSClient,
                leader: Member = Member("Leader")) {
