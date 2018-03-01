@@ -10,7 +10,7 @@ data class Session @JvmOverloads constructor(val id: Int = 0, val patientCF: Str
     }
 }
 
-data class Activity(val id: Int = 0, val name: String, val activityTypeId: Int, val acronym: String, val boundaryId: Int)
+data class Activity(val id: Int = 0, val name: String, val activityTypeId: Int, val acronym: String, val healthParameterIds: List<Int>)
 
 data class ActivityType(val id: Int = 0, val name: String) // farmaci, manovre, diagnostiche
 
@@ -22,7 +22,7 @@ data class Operator(val id: Int = 0, val operatorCF: String, val name: String, v
 
 data class Role(val id: Int = 0, val name: String) // leader, collaboratore, anestesista
 
-data class Boundary(val id: Int = 0, val healthParameterId: Int, val activityId: Int, val upperBound: Double, val lowerBound: Double, val lightWarningOffset: Double, val status: String, val itsGood: Boolean, val minAge: Double, val maxAge: Double)
+data class Boundary(val id: Int = 0, val healthParameterId: Int, val upperBound: Double, val lowerBound: Double, val lightWarningOffset: Double, val status: String, val itsGood: Boolean, val minAge: Double, val maxAge: Double)
 
 data class TaskStatus(val id: Int = 0, val name: String) // sospseso, in corso, terminato, eliminato
 
@@ -45,3 +45,5 @@ data class Task @JvmOverloads constructor(val id: Int = 0, val sessionId: Int, v
             Task(1, -1, "CF a casissimo", Timestamp(Date().time), Timestamp(Date().time + 1000), 1, Status.RUNNING.id)
     }
 }
+
+data class AugmentedTask(val task: Task, val linkedParameters: List<LifeParameters>)

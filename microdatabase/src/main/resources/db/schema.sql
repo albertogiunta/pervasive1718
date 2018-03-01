@@ -3,7 +3,7 @@
     Name VarChar(50),
     ActivityTypeID BigInt,
     Acronym VarChar(50),
-    BoundaryID BigInt
+    HealthParameterIds integer[],
 );
 
 CREATE TABLE ActionType (
@@ -14,7 +14,6 @@ CREATE TABLE ActionType (
 CREATE TABLE Boundary (
     ID BigSerial PRIMARY KEY,
     HealthParameterID BigInt,
-    ActivityId BigInt,
     Upperbound double precision,
     Lowerbound double precision,
     LightWarning_Offset double precision,

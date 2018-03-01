@@ -25,7 +25,6 @@ object BoundaryApi {
         {
             it.insertNewStatus(
                 boundary.healthParameterId,
-                boundary.activityId,
                 boundary.upperBound,
                 boundary.lowerBound,
                 boundary.lightWarningOffset,

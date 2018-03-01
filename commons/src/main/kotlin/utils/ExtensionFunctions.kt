@@ -2,10 +2,7 @@ package utils
 
 import com.google.gson.GsonBuilder
 import config.Services
-import model.LifeParameters
-import model.Member
-import model.Task
-import model.VisibleTask
+import model.*
 
 object GsonInitializer {
     val gson = GsonBuilder().create()
@@ -18,6 +15,12 @@ fun Any.toJson(): String = GsonInitializer.toJson(this)
 
 fun Task.toVisibleTask(member: Member, activityName: String) =
     VisibleTask(this.id, activityName, member.userCF, "nome a caso", "cognome a caso")
+
+fun Task.toAugmentedTask(activityList: List<Activity>): AugmentedTask =
+        AugmentedTask(this, activityList
+                .first { it -> it.id == this.activityId }
+                .healthParameterIds
+                .map { id -> LifeParameters.Utils.getByID(id)})
 
 fun Services.calculatePort(args: Array<String>) = if (args.isEmpty() || args[0] == "") this.port else this.port + args[0].toInt()
 
