@@ -1,6 +1,7 @@
 @file:Suppress("UNUSED_PARAMETER")
 
 import org.eclipse.jetty.websocket.api.Session
+import org.eclipse.jetty.websocket.api.WebSocketException
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage
@@ -41,7 +42,7 @@ open class WSServer<in P> {
      *
      */
     open fun sendMessage(session: Session, payload: P) {
-        sendMessage(session, payload.asJson())
+        try { sendMessage(session, payload.asJson()) } catch (e : WebSocketException) { println(e.message) }
     }
 
     private fun sendMessage(session: Session, message: String) {
