@@ -28,6 +28,7 @@ object RouteController {
                 post("/add", applicationJson) { ActivityApi.addActivity(request, response) }
                 get("/all", applicationJson) { ActivityApi.getAllActivities(request, response) }
                 get("/:id", applicationJson) { ActivityApi.getActivityById(request, response) }
+                get("/all/:activitytypeid", applicationJson) { ActivityApi.getActivitiesByActivityTypeId(request, response) }
             }
 
             path("/${Params.ActivityType.TABLE_NAME}") {
