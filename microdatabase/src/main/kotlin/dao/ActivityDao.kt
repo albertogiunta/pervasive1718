@@ -25,5 +25,8 @@ interface ActivityDao {
     @SqlQuery("SELECT * FROM $TABLE_NAME WHERE $ID = (:$ID)")
     fun selectActivityById(@Bind(ID) id: Int): List<Activity>
 
+    @SqlQuery("SELECT * FROM $TABLE_NAME WHERE $ACTIVITY_TYPE_ID = (:$ACTIVITY_TYPE_ID)")
+    fun selectActivitiesByActivityTypeId(@Bind(ACTIVITY_TYPE_ID) id: Int): List<Activity>
+
 }
 

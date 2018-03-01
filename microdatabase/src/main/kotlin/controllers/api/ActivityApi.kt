@@ -48,4 +48,13 @@ object ActivityApi {
         { it.selectActivityById(request.params(Params.Activity.ID).toInt()) }
             .toJson()
     }
+
+    /**
+     * Retrieves all the activities by activity type id
+     */
+    fun getActivitiesByActivityTypeId(request: Request, response: Response): String {
+        return JdbiConfiguration.INSTANCE.jdbi.withExtension<List<Activity>, ActivityDao, SQLException>(ActivityDao::class.java)
+        { it.selectActivitiesByActivityTypeId(request.params(Params.Activity.ACTIVITY_TYPE_ID).toInt()) }
+                .toJson()
+    }
 }
