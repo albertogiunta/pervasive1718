@@ -55,11 +55,6 @@ class TaskController private constructor(private val ws: WSTaskServer,
 
     fun addLeader(member: Member, session: Session) {
         leader = Pair(member, session)
-        if (members.isNotEmpty()) {
-            val message = PayloadWrapper(Services.instanceId(),
-                    WSOperations.LIST_MEMBERS, MembersAdditionNotification(members.keys().toList()).toJson())
-            ws.sendMessage(leader.second, message)
-        }
         ws.sendMessage(leader.second, PayloadWrapper(Services.instanceId(),WSOperations.LEADER_RESPONSE,"ok"))
     }
 
@@ -68,6 +63,14 @@ class TaskController private constructor(private val ws: WSTaskServer,
         if (leader.second.isOpen) {
             val message = PayloadWrapper(Services.instanceId(),
                     WSOperations.ADD_MEMBER, MembersAdditionNotification(members.keys().toList()).toJson())
+            ws.sendMessage(leader.second, message)
+        }
+    }
+
+    fun getAllMembers() {
+        if (members.isNotEmpty()) {
+            val message = PayloadWrapper(Services.instanceId(),
+                WSOperations.LIST_MEMBERS_RESPONSE, MembersAdditionNotification(members.keys().toList()).toJson())
             ws.sendMessage(leader.second, message)
         }
     }

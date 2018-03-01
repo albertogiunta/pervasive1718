@@ -39,6 +39,9 @@ class WSTaskServer : WSServer<PayloadWrapper>() {
                             controller.addMember(notification.members.first(), session)
                         }
                     } // done by member
+                    WSOperations.LIST_MEMBERS_REQUEST -> {
+                        controller.getAllMembers()
+                    } // done by leader
                     WSOperations.ADD_TASK -> {
                         val assignment: TaskAssignment = taskWrapper.objectify(body)
                         controller.addTask(assignment.task, assignment.member)
