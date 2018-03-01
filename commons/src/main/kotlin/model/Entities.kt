@@ -46,4 +46,4 @@ data class Task @JvmOverloads constructor(val id: Int = 0, val sessionId: Int, v
     }
 }
 
-data class AugmentedTask(val task: Task, val linkedParameters: List<LifeParameters>)
+data class AugmentedTask(val task: Task, val linkedParameters: List<LifeParameters>, val activityName: String)

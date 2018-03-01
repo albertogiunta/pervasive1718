@@ -16,11 +16,11 @@ fun Any.toJson(): String = GsonInitializer.toJson(this)
 fun Task.toVisibleTask(member: Member, activityName: String) =
     VisibleTask(this.id, activityName, member.userCF, "nome a caso", "cognome a caso")
 
-fun Task.toAugmentedTask(activityList: List<Activity>): AugmentedTask =
-        AugmentedTask(this, activityList
-                .first { it -> it.id == this.activityId }
-                .healthParameterIds
-                .map { id -> LifeParameters.Utils.getByID(id)})
+fun Task.toAugmentedTask(activityList: List<Activity>): AugmentedTask {
+    val currentActivity = activityList.first { it -> it.id == this.activityId }
+    return AugmentedTask(this, currentActivity.healthParameterIds
+            .map { id -> LifeParameters.Utils.getByID(id) }, currentActivity.name)
+}
 
 fun Services.calculatePort(args: Array<String>) = if (args.isEmpty() || args[0] == "") this.port else this.port + args[0].toInt()
 
