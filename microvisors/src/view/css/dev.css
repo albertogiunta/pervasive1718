@@ -289,12 +289,12 @@ header.wrapper nav ul {
 
 header .logo {
   margin: 0;
-  background-image: url("../images/logo.jpg");
-  background-size: 400px 80px;
+  background-image: url("../images/hermess_logo.png");
+  background-size: 800px 80px;
   background-repeat: no-repeat;
   margin-top: 12px;
   margin-bottom: 10px;
-  width: 400px;
+  width: 800px;
   height: 80px; }
 
 h1, h2, h3, h4, h5 {
