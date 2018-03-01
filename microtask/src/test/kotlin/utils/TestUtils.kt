@@ -53,7 +53,8 @@ fun mockLeaderMemberInteractionAndTaskAddition(session: SessionDNS,
                                                        listOf(
                                                                LifeParameters.DIASTOLIC_BLOOD_PRESSURE,
                                                                LifeParameters.SYSTOLIC_BLOOD_PRESSURE,
-                                                               LifeParameters.HEART_RATE))) {
+                                                               LifeParameters.HEART_RATE),
+                                                       "nome attività")) {
 
     mockLeader(memberCF, leaderWS, leader).also { Thread.sleep(1000) }
 
@@ -85,7 +86,8 @@ fun mockLeaderMemberInteractionAndTaskRemoval(session: SessionDNS,
                                                       listOf(
                                                               LifeParameters.DIASTOLIC_BLOOD_PRESSURE,
                                                               LifeParameters.SYSTOLIC_BLOOD_PRESSURE,
-                                                              LifeParameters.HEART_RATE))) {
+                                                              LifeParameters.HEART_RATE),
+                                                      "nome attività")) {
 
     mockLeaderMemberInteractionAndTaskAddition(session, memberCF, taskID, leaderWS, memberWS)
 
@@ -113,7 +115,8 @@ fun mockLeaderMemberInteractionAndTaskChange(session: SessionDNS,
                                                      listOf(
                                                              LifeParameters.DIASTOLIC_BLOOD_PRESSURE,
                                                              LifeParameters.SYSTOLIC_BLOOD_PRESSURE,
-                                                             LifeParameters.HEART_RATE))) {
+                                                             LifeParameters.HEART_RATE),
+                                                     "nome attività")) {
 
     mockLeaderMemberInteractionAndTaskAddition(session, memberCF, taskID, leaderWS, memberWS)
     augmentedTask.task.statusId = Status.FINISHED.id
