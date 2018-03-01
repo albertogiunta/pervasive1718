@@ -97,10 +97,12 @@ object SessionApi {
             "$dbUrl/api/session/add/patientcf/${instanceDetails.first.patientCF}/leadercf/${instanceDetails.first.leaderCF}/instanceid/$instanceId".httpPost().responseString().third.fold(
                 success = {
                     val session = Klaxon().fieldConverter(KlaxonDate::class, dateConverter).parse<model.Session>(it)
-                            ?: ws.sendMessage(instanceDetails.second, PayloadWrapper(-1, WSOperations.SESSION_HANDLER_ERROR_RESPONSE, "Cannot parse response from database - session not created"))
-                    session as model.Session
-                    sessions.add(Pair(SessionDNS(session.id, session.patientCF, instanceId, session.leaderCF), instanceId))
-                    ws.sendMessage(instanceDetails.second, PayloadWrapper(-1, WSOperations.SESSION_HANDLER_RESPONSE, SessionDNS(session.id, session.patientCF, instanceId, session.leaderCF).toJson()))
+                    if (session != null) {
+                        sessions.add(Pair(SessionDNS(session.id, session.patientCF, instanceId, session.leaderCF), instanceId))
+                        ws.sendMessage(instanceDetails.second, PayloadWrapper(-1, WSOperations.SESSION_HANDLER_RESPONSE, SessionDNS(session.id, session.patientCF, instanceId, session.leaderCF).toJson()))
+                    } else {
+                        ws.sendMessage(instanceDetails.second, PayloadWrapper(-1, WSOperations.SESSION_HANDLER_ERROR_RESPONSE, "Cannot parse response from database - session not created"))
+                    }
                 }, failure = { error ->
                     if (error.exception.message == "Connection refused (Connection refused)") {
                         ws.sendMessage(instanceDetails.second, PayloadWrapper(-1, WSOperations.SESSION_HANDLER_ERROR_RESPONSE, "Connection refused - session not created"))

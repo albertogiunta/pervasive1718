@@ -7,7 +7,7 @@ import java.net.URI
 /*Remember to load the configuration with ConfigLoader*/
 class Services private constructor(var port: Int, val wsPath: String, val executableName: String, val module: String) {
 
-    fun root() : String = "${Services.SESSION.wsPath}/${Services.instanceId()}${this.wsPath}"
+    fun root(): String = "/instanceid/${Services.instanceId()}${this.wsPath}"
 
     fun wsURI(host : String = Utils.defaultHost) : URI =
             URI("${Utils.Protocols.websocket}://$host:${this.port}${root()}")
