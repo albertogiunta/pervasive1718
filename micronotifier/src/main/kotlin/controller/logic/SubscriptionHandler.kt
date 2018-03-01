@@ -22,10 +22,8 @@ object SubscriptionHandler {
                 when (subject) {
                     WSOperations.SUBSCRIBE -> {
                         val msg: Subscription = wrapper.objectify(body)
-                        if (!core.sessions.contains(msg.subject)) {
-                            Logger.info("Adding Session for ${msg.subject} @ ${msg.topics}")
-                            core.sessions[msg.subject] = session
-                        }
+                        Logger.info("Adding Session for ${msg.subject} @ ${msg.topics}")
+                        core.sessions[msg.subject] = session
                         Logger.info("Subscribing ${msg.subject} @ ${msg.topics}")
                         core.topics.removeListener(msg.subject)
                         core.topics.add(msg.topics, msg.subject)
@@ -37,6 +35,7 @@ object SubscriptionHandler {
                         )
 
                         session.remote.sendString(okResponse.toJson())
+
                     }
                     WSOperations.CLOSE -> {
                         val listener: Member = wrapper.objectify(body)
@@ -49,7 +48,15 @@ object SubscriptionHandler {
                                 WSOperations.ANSWER,
                                 Response(200, wrapper.toJson()).toJson()
                         )
-                        session.remote.sendString(okResponse.toJson())
+
+                        if (session.isOpen) {
+                            try {
+                                session.remote.sendString(okResponse.toJson())
+                            } catch (ex : Exception) {
+                                Logger.error("Remote Endpoint has been closed...")
+                            }
+                        }
+
                     }
                     else -> {
                         Logger.info(this.toString())

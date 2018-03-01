@@ -5,6 +5,7 @@ import controller.CoreController
 import model.PayloadWrapper
 import model.Update
 import model.WSOperations
+import org.eclipse.jetty.websocket.api.WebSocketException
 import utils.Logger
 import utils.toJson
 
@@ -32,9 +33,19 @@ object RelayHandler {
                     // Do stuff with the WebSockets, dispatch only some of the merged values
                     // With one are specified into controller.listenerMap: Member -> Set<model.LifeParameters>
                     core.topics[topic]?.forEach { member ->
-                        if (core.useLogging) Logger.info("$member ===> ${message.toJson()}")
-                        if (core.sessions[member]?.isOpen!!) {
-                            core.sessions[member]?.remote?.sendString(message.toJson()) // Notify the WS, dunno how.
+                        if (core.sessions.contains(member) && core.sessions[member]?.isOpen!!) {
+                            try {
+                                core.sessions[member]?.remote?.sendString(message.toJson()) // Notify the WS, dunno how.
+                            } catch (ex : Exception) {
+                                when(ex) {
+                                    is WebSocketException -> {
+                                        core.sessions.removeListener(member)
+                                    }
+                                    else -> {
+                                        Logger.error("Remote Endpoint has been closed...")
+                                    }
+                                }
+                            }
                         }
                     }
                 }

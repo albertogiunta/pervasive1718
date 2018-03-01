@@ -161,7 +161,7 @@ class MMtoMNtoClientTest {
         client.sendMessage(subscriptionWrapper.toJson())
         Thread.sleep(2000L)
         client.sendMessage(closeMsg.toJson())
-        Thread.sleep(2000L)
+        client.closeBlocking()
 
         if (checkBuffer.isEmpty()) {
             assertTrue(false)
@@ -179,8 +179,6 @@ class MMtoMNtoClientTest {
                 }
             }.invoke())
         }
-
-        client.closeBlocking()
     }
 
     @After

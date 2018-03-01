@@ -4,6 +4,7 @@ import com.github.kittinunf.fuel.httpGet
 import config.Services
 import controller.CoreController
 import model.*
+import org.eclipse.jetty.websocket.api.WebSocketException
 import utils.GsonInitializer
 import utils.Logger
 import utils.toJson
@@ -38,9 +39,6 @@ object NotificationHandler {
                             }.map {
                                 LifeParameters.Utils.getByID(it.healthParameterId) to it
                             }.groupBy({it.first}, {it.second})
-                    if (core.useLogging) {
-                        Logger.info(boundaries.toString())
-                    }
                 }, failure = {
                     Logger.info("Error Loading boundaries from DB... Retrying")
                 })
@@ -78,8 +76,20 @@ object NotificationHandler {
             }.subscribe {message ->
                 // Do Stuff, if necessary but SubscriptionHandler is MANDATORY.
                 core.topics[lp]?.forEach { member ->
-                    if (core.sessions[member]?.isOpen!!) {
-                        core.sessions[member]?.remote?.sendString(message) // Notify the WS, dunno how.
+                    if (core.sessions.contains(member) && core.sessions[member]?.isOpen!!) {
+                        try {
+                            core.sessions[member]?.remote?.sendString(message.toJson()) // Notify the WS, dunno how.
+                        } catch (ex : Exception) {
+                            when(ex) {
+                                is WebSocketException -> {
+                                    core.sessions.removeListener(member)
+                                    // Can't remove the topics since it's inside their loop
+                                }
+                                else -> {
+                                    Logger.error("Remote Endpoint has been closed...")
+                                }
+                            }
+                        }
                     }
                 }
             }
