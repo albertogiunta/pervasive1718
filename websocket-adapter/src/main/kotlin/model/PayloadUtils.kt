@@ -40,7 +40,7 @@ enum class WSOperations(val objectifier: (String) -> Any) {
     SUBSCRIBE({ GsonInitializer.fromJson(it, Subscription::class.java) }),
     UPDATE({ GsonInitializer.fromJson(it, Update::class.java) }),
     NOTIFY({ GsonInitializer.fromJson(it, Notification::class.java) }),
-    ANSWER({ GsonInitializer.fromJson(it, model.Response::class.java)}),
+    ANSWER({ GsonInitializer.fromJson(it, Response::class.java)}),
 
     // TASKS
     ADD_LEADER({ GsonInitializer.fromJson(it, MembersAdditionNotification::class.java) }),
