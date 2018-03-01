@@ -74,11 +74,14 @@ object SessionApi {
 
     fun listAllOpenSessionsByLeaderCF(request: Request, response: Response): String {
         val leaderCF = request.params("leadercf")
-        sessionInitializationParamsWithInstanceId.forEach {
-            if (it.value.first.leaderCF == leaderCF)
-                return sessions.filter { session -> session.second == it.key }.toJson()
-        }
-        return emptyList<SessionDNS>().toJson()
+
+        return sessions.filter { it.first.leaderCF == leaderCF }.map { it.first }.toJson()
+
+//        sessionInitializationParamsWithInstanceId.forEach {
+//            if (it.value.first.leaderCF == leaderCF)
+//                return sessions.filter { session -> session.second == it.key }.map { it.first }.toJson()
+//        }
+//        return emptyList<SessionDNS>().toJson()
     }
 
     fun acknowledgeReadyService(request: Request, response: Response): String {
@@ -96,7 +99,7 @@ object SessionApi {
                     val session = Klaxon().fieldConverter(KlaxonDate::class, dateConverter).parse<model.Session>(it)
                             ?: ws.sendMessage(instanceDetails.second, PayloadWrapper(-1, WSOperations.SESSION_HANDLER_ERROR_RESPONSE, "Cannot parse response from database - session not created"))
                     session as model.Session
-                    sessions.add(Pair(SessionDNS(session.id, session.patientCF, instanceId,session.leaderCF), instanceId))
+                    sessions.add(Pair(SessionDNS(session.id, session.patientCF, instanceId, session.leaderCF), instanceId))
                     ws.sendMessage(instanceDetails.second, PayloadWrapper(-1, WSOperations.SESSION_HANDLER_RESPONSE, SessionDNS(session.id, session.patientCF, instanceId, session.leaderCF).toJson()))
                 }, failure = { error ->
                     if (error.exception.message == "Connection refused (Connection refused)") {
@@ -111,7 +114,8 @@ object SessionApi {
         return response.ok()
     }
 
-    fun listAllSessions(request: Request, response: Response): String = GsonInitializer.toJson(sessions)
+    fun listAllSessions(request: Request, response: Response): String =
+        GsonInitializer.toJson(sessions.map { it.first })
 
     private fun buildPort(port: Int, id: Int): Int = port + id
 

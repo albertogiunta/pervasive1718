@@ -23,7 +23,7 @@ class TaskController private constructor(private val ws: WSTaskServer,
     val members: ConcurrentHashMap<Member, Session> = ConcurrentHashMap()
 
     companion object {
-        var configNotCompleted = true
+        private var configNotCompleted = true
         val dbUrl = Services.Utils.defaultHostUrlApi(Services.DATA_BASE)
         val visorUrl = Services.Utils.defaultHostUrlApi(Services.VISORS)
 
@@ -39,7 +39,7 @@ class TaskController private constructor(private val ws: WSTaskServer,
 
         fun fetchActivitiesFromDB() {
             while (configNotCompleted) {
-                var responseString = "$dbUrl/activity/all".httpGet().responseString()
+                val responseString = "$dbUrl/activity/all".httpGet().responseString()
                 responseString.third.fold(
                     success = { configNotCompleted = false },
                     failure = {
@@ -55,19 +55,11 @@ class TaskController private constructor(private val ws: WSTaskServer,
 
     fun addLeader(member: Member, session: Session) {
         leader = Pair(member, session)
-        // How to send something that is not a Task?
-
-        //the following is for the websocket android test
-        //val message = PayloadWrapper(Services.instanceId()
-        //,
-        //        WSOperations.ADD_LEADER, "ok")
         if (members.isNotEmpty()) {
             val message = PayloadWrapper(Services.instanceId(),
                     WSOperations.LIST_MEMBERS, MembersAdditionNotification(members.keys().toList()).toJson())
             ws.sendMessage(leader.second, message)
-            //leader.second.remote.sendString(members.keys().toList().toJson())
         }
-        //ws.sendMessage(leader.second, message)
         ws.sendMessage(leader.second, PayloadWrapper(Services.instanceId(),WSOperations.LEADER_RESPONSE,"ok"))
     }
 
