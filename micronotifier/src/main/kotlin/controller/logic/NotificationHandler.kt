@@ -48,15 +48,15 @@ object NotificationHandler {
         }.start()
 
         // Check OUT OF BOUND Heath Parameters
-        publishSubjects.forEach { lp, subject ->
+        publishSubjects.forEach { lifeParameter, subject ->
             subject.filter{
                 boundaries.isNotEmpty()
             }.map {
                 it.toDouble()
             }.map {value ->
                 // Check if out of boundaries and notify of the WS
-                if (boundaries.containsKey(lp)) {
-                    boundaries[lp]!!.filter {
+                if (boundaries.containsKey(lifeParameter)) {
+                    boundaries[lifeParameter]!!.filter {
                         value >= it.lowerBound - it.lightWarningOffset
                         && value < it.lowerBound + it.lightWarningOffset
                     }.filter { !it.itsGood }
@@ -69,13 +69,13 @@ object NotificationHandler {
                 PayloadWrapper(
                     Services.instanceId(),
                     WSOperations.NOTIFY,
-                    Notification(lp, body).toJson()
-                ).toJson()
+                    Notification(lifeParameter, body).toJson()
+                )
             }.doOnNext {
                 if (core.useLogging) utils.Logger.info(it.toString())
             }.subscribe {message ->
                 // Do Stuff, if necessary but SubscriptionHandler is MANDATORY.
-                core.topics[lp]?.forEach { member ->
+                core.topics[lifeParameter]?.forEach { member ->
                     if (core.sessions.contains(member) && core.sessions[member]?.isOpen!!) {
                         try {
                             core.sessions[member]?.remote?.sendString(message.toJson()) // Notify the WS, dunno how.
@@ -83,7 +83,6 @@ object NotificationHandler {
                             when(ex) {
                                 is WebSocketException -> {
                                     core.sessions.removeListener(member)
-                                    // Can't remove the topics since it's inside their loop
                                 }
                                 else -> {
                                     Logger.error("Remote Endpoint has been closed...")

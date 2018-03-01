@@ -19,20 +19,19 @@ object RelayHandler {
 
         // Simple relays received Health Values to Listeners
         with(publishSubjects) {
-            this.forEach { topic, subject ->
-                subject.map {
-                    topic to it.toDouble()
-                }.doOnNext {
-                    if (core.useLogging) Logger.info(it.toString())
-                }.subscribe { (lp, value) ->
-                    val message = PayloadWrapper(
+            this.forEach { lifeParameter, subject ->
+                subject.map { value ->
+                    PayloadWrapper(
                             Services.instanceId(),
                             WSOperations.UPDATE,
-                            Update(lp, value).toJson()
+                            Update(lifeParameter, value.toDouble()).toJson()
                     )
+                }.doOnNext {
+                    if (core.useLogging) Logger.info(it.toString())
+                }.subscribe { message ->
                     // Do stuff with the WebSockets, dispatch only some of the merged values
                     // With one are specified into controller.listenerMap: Member -> Set<model.LifeParameters>
-                    core.topics[topic]?.forEach { member ->
+                    core.topics[lifeParameter]?.forEach { member ->
                         if (core.sessions.contains(member) && core.sessions[member]?.isOpen!!) {
                             try {
                                 core.sessions[member]?.remote?.sendString(message.toJson()) // Notify the WS, dunno how.

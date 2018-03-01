@@ -15,8 +15,6 @@ fun main(args: Array<String>) {
             .withoutLogging()
             .loadHandlers()
 
-    println(core.topics.activeTopics().map {it.acronymWithSession(args) }.toList())
-
     val amqp = AMQPClient(core.topics.activeTopics().map { it to it.acronymWithSession(args) }.toMap())
 
     val publishSubjects = core.topics.activeTopics().map {
