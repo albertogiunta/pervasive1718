@@ -86,6 +86,8 @@ class TaskController private constructor(private val ws: WSTaskServer,
             val message = PayloadWrapper(Services.instanceId(),
                     WSOperations.ADD_TASK, TaskAssignment(member, augmentedTask).toJson())
             ws.sendMessage(members[member]!!, message)
+            ws.sendMessage(leader.second, message)
+
             "$dbUrl/task/add".httpPost().body(augmentedTask.task.toJson()).responseString()
             "$visorUrl/add".httpPost().body(augmentedTask.task.toVisibleTask(member, activityName = activityList.first { x -> x.id == augmentedTask.task.activityId }.name).toJson()).responseString()
         }
@@ -98,6 +100,8 @@ class TaskController private constructor(private val ws: WSTaskServer,
                 val message = PayloadWrapper(Services.instanceId(),
                         WSOperations.REMOVE_TASK, TaskAssignment(member, augmentedTask).toJson())
                 ws.sendMessage(members[member]!!, message)
+                ws.sendMessage(leader.second, message)
+
                 "$dbUrl/task/${it.task.id}".httpDelete().responseString()
                 "$visorUrl/remove/${it.task.id}".httpDelete().responseString()
             }

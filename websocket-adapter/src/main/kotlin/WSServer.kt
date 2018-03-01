@@ -23,7 +23,7 @@ open class WSServer<in P> {
 
     @OnWebSocketClose
     open fun onClose(session: Session, statusCode: Int, reason: String) {
-        log.printStatusMessage("session onClose on remote ${session.remote} | exit code $statusCode | info: $reason")
+        log.printStatusMessage("session onClose on remote | exit code")
     }
 
     /**

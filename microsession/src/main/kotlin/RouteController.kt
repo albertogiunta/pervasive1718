@@ -76,7 +76,7 @@ object SessionApi {
         val leaderCF = request.params("leadercf")
         sessionInitializationParamsWithInstanceId.forEach {
             if (it.value.first.leaderCF == leaderCF)
-                return sessions.filter { session -> session.second == it.key }.map { x -> x.first }.toJson()
+                return sessions.filter { session -> session.second == it.key }.toJson()
         }
         return emptyList<SessionDNS>().toJson()
     }
@@ -111,8 +111,7 @@ object SessionApi {
         return response.ok()
     }
 
-    fun listAllSessions(request: Request, response: Response): String =
-        GsonInitializer.toJson(sessions.map { x -> x.first })
+    fun listAllSessions(request: Request, response: Response): String = GsonInitializer.toJson(sessions)
 
     private fun buildPort(port: Int, id: Int): Int = port + id
 
