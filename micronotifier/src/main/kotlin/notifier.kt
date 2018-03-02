@@ -3,6 +3,7 @@ import config.Services
 import controller.CoreController
 import networking.rabbit.AMQPClient
 import networking.ws.RelayService
+import utils.Logger
 import utils.acronymWithSession
 
 fun main(args: Array<String>) {
@@ -10,6 +11,8 @@ fun main(args: Array<String>) {
     ConfigLoader().load(args)
 
     println(Services.NOTIFIER.wsURI())
+
+    Logger.setLogger(Services.NOTIFIER.wsPath)
 
     val core = CoreController.singleton()
             .withoutLogging()

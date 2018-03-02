@@ -11,7 +11,17 @@ import org.slf4j.Marker
  */
 object Logger : org.slf4j.Logger {
 
-    private val logger = LoggerFactory.getLogger(Logger::class.java)
+    private var logger = LoggerFactory.getLogger(Logger::class.java)
+
+    fun setLogger(name : String) : org.slf4j.Logger {
+        logger = LoggerFactory.getLogger(name)
+        return this
+    }
+
+    fun setLogger(clazz : Class<out Any>) : org.slf4j.Logger {
+        logger = LoggerFactory.getLogger(clazz)
+        return this
+    }
 
     override fun info(msg: String?) = logger.info(msg)
 
