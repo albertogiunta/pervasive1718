@@ -68,11 +68,9 @@ class TaskController private constructor(private val ws: WSTaskServer,
     }
 
     fun getAllMembers() {
-        if (members.isNotEmpty()) {
-            val message = PayloadWrapper(Services.instanceId(),
-                WSOperations.LIST_MEMBERS_RESPONSE, MembersAdditionNotification(members.keys().toList()).toJson())
-            ws.sendMessage(leader.second, message)
-        }
+        val message = PayloadWrapper(Services.instanceId(),
+            WSOperations.LIST_MEMBERS_RESPONSE, MembersAdditionNotification(members.keys().toList()).toJson())
+        ws.sendMessage(leader.second, message)
     }
 
     fun addTask(augmentedTask: AugmentedTask, member: Member) {
