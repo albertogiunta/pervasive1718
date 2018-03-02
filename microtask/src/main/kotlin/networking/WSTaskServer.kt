@@ -11,7 +11,7 @@ import utils.dateConverter
 
 @Suppress("unused", "UNUSED_PARAMETER", "MemberVisibilityCanBePrivate")
 @WebSocket
-class WSTaskServer : WSServer<PayloadWrapper>() {
+class WSTaskServer : WSServer<PayloadWrapper>("Task") {
 
     init {
         TaskController.init(this)

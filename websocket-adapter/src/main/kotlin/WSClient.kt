@@ -3,9 +3,9 @@ import org.java_websocket.handshake.ServerHandshake
 import java.net.URI
 
 @Suppress("unused", "UNUSED_PARAMETER")
-open class WSClient(serverURI: URI) : WebSocketClient(serverURI) {
+open class WSClient(serverURI: URI, name : String = "WS") : WebSocketClient(serverURI) {
 
-    private val log = WSLogger(WSLogger.WSUser.CLIENT)
+    private val log = WSLogger(WSLogger.WSUser.CLIENT, name)
 
     override fun onOpen(handshakeData: ServerHandshake) {
         log.printStatusMessage("session opened")
