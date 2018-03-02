@@ -52,6 +52,7 @@ object SessionApi {
     private var sessionInitializationParamsWithInstanceId = HashMap<Int, Pair<SessionAssignment, Session>>()
     private var ws = WSSessionServer()
 
+    @Throws(IndexOutOfBoundsException::class)
     private fun nextFreeSessionNumber() = instance.indexOfFirst { !it }.also { instance[it] = true }
 
     fun closeSessionById(request: Request, response: Response): String {
@@ -136,13 +137,34 @@ object SessionApi {
                 with(sessionWrapper) {
                     when (subject) {
                         WSOperations.NEW_SESSION -> {
-                            val instanceId = nextFreeSessionNumber()
-                            serviceInitializationStatus[instanceId] = 0
-                            sessionInitializationParamsWithInstanceId[instanceId] = Pair(sessionWrapper.objectify(body), session)
+                            try {
+                                val instanceId = nextFreeSessionNumber()
 
-                            println("current boot $instanceId")
-                            println("last session ${sessionInitializationParamsWithInstanceId[instanceId]!!.first}")
-                            sManager.newSession(instanceId.toString())
+                                serviceInitializationStatus[instanceId] = 0
+                                sessionInitializationParamsWithInstanceId[instanceId] = Pair(sessionWrapper.objectify(body), session)
+                                println("Current boot $instanceId")
+                                println("Last session ${sessionInitializationParamsWithInstanceId[instanceId]!!.first}")
+                                sManager.newSession(instanceId.toString())
+
+                            } catch (ex : Exception) {
+                                when(ex) {
+                                    is IndexOutOfBoundsException -> {
+
+                                        println("[Error] Creating a new instance is impossible. Max Simultaneous Instances ${Utils.maxSimultaneousSessions}")
+
+                                        val errorMessage = PayloadWrapper(
+                                                Services.instanceId(),
+                                                WSOperations.ERROR_CREATING_INSTANCE_PULL_FULL,
+                                                Unit.toJson()
+                                        )
+
+                                        ws.sendMessage(session, errorMessage)
+                                    }
+                                    else -> {
+                                        ex.printStackTrace()
+                                    }
+                                }
+                            }
                         } // done by leader
                         else -> println("Message was not handled " + message)
                     }
