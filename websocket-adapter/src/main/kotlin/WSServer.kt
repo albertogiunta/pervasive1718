@@ -13,9 +13,9 @@ import java.io.IOException
 
 @Suppress("unused", "UNUSED_PARAMETER", "MemberVisibilityCanBePrivate")
 @WebSocket
-open class WSServer<in P> {
+open class WSServer<in P> (val name: String = "WS"){
 
-    private val log = WSLogger(WSLogger.WSUser.SERVER)
+    private val log = WSLogger(WSLogger.WSUser.SERVER, name)
 
     @OnWebSocketConnect
     open fun onConnect(session: Session) {
@@ -51,18 +51,18 @@ open class WSServer<in P> {
     }
 }
 
-class WSLogger(private val user: WSUser) {
+class WSLogger(private val user: WSUser, private val wsName: String) {
 
     enum class WSUser(name: String) {
         SERVER("SERVER"),
         CLIENT("CLIENT")
     }
 
-    fun printStatusMessage(message: String) = println("[ ${user.name} | *** ] $message")
+    fun printStatusMessage(message: String) = println("[ ${user.name} | $wsName *** ] $message")
 
-    fun printIncomingMessage(message: String) = println("[ ${user.name} | <-- ] $message")
+    fun printIncomingMessage(message: String) = println("[ ${user.name} | $wsName <-- ] $message")
 
-    fun printOutgoingMessage(message: String) = println("[ ${user.name} | --> ] $message")
+    fun printOutgoingMessage(message: String) = println("[ ${user.name} | $wsName --> ] $message")
 }
 
 object WSServerInitializer {

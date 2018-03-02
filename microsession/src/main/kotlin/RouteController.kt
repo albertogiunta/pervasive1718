@@ -128,7 +128,7 @@ object SessionApi {
 
     @Suppress("unused", "UNUSED_PARAMETER", "MemberVisibilityCanBePrivate")
     @WebSocket
-    class WSSessionServer : WSServer<PayloadWrapper>() {
+    class WSSessionServer : WSServer<PayloadWrapper>("Session") {
 
         override fun onMessage(session: Session, message: String) {
             super.onMessage(session, message)

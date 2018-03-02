@@ -17,7 +17,7 @@ import utils.toJson
  *
  */
 @WebSocket
-class RelayService : WSServer<Payload<WSOperations, String>>() {
+class RelayService : WSServer<Payload<WSOperations, String>>("Notifier") {
 
     private val core = CoreController.singleton()
 
