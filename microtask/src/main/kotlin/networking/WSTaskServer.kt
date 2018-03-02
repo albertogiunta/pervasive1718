@@ -55,8 +55,8 @@ class WSTaskServer : WSServer<PayloadWrapper>() {
                         controller.changeTaskStatus(assignment.task, session)
                     } // done by both
                     WSOperations.GET_ALL_ACTIVITIES -> {
-                        val notification: MembersAdditionNotification = taskWrapper.objectify(body)
-                        controller.getAllActivities(notification.members.first(), session)
+                        val notification: ActivityRequest = taskWrapper.objectify(body)
+                        controller.getAllActivities(notification.activityTypeId)
                     } // done by leader
                     else -> println("Message was not handled " + message)
                 }
