@@ -69,8 +69,12 @@ class TaskController private constructor(private val ws: WSTaskServer,
 
     fun getAllMembers() {
         if (members.isNotEmpty()) {
-            val message = PayloadWrapper(Services.instanceId(),
-                WSOperations.LIST_MEMBERS_RESPONSE, MembersAdditionNotification(members.keys().toList()).toJson())
+            val list = mutableListOf<AugmentedMemberFromServer>()
+            members.keys.toList().forEach { member ->
+                list.add(AugmentedMemberFromServer(member.userCF, taskMemberAssociationList.filter { it.member.userCF == member.userCF }.map { it.task.toAugmentedTask(activityList) }.toMutableList()))
+            }
+
+            val message = PayloadWrapper(Services.instanceId(), WSOperations.LIST_MEMBERS_RESPONSE, AugmentedMembersAdditionNotification(list).toJson())
             ws.sendMessage(leader.second, message)
         }
     }

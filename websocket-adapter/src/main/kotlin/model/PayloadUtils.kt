@@ -78,6 +78,8 @@ data class TaskAssignment(val member: Member, val task: AugmentedTask)
 
 data class MembersAdditionNotification(val members: List<Member>)
 
+data class AugmentedMembersAdditionNotification(val members: List<AugmentedMemberFromServer>)
+
 data class ActivityAdditionNotification(val activities: List<Activity>)
 
 data class TaskError(val task: Task, val error: String)
