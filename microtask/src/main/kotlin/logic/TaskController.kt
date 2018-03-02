@@ -68,9 +68,15 @@ class TaskController private constructor(private val ws: WSTaskServer,
     }
 
     fun getAllMembers() {
-        val message = PayloadWrapper(Services.instanceId(),
-            WSOperations.LIST_MEMBERS_RESPONSE, MembersAdditionNotification(members.keys().toList()).toJson())
-        ws.sendMessage(leader.second, message)
+        if (members.isNotEmpty()) {
+            val list = mutableListOf<AugmentedMemberFromServer>()
+            members.keys.toList().forEach { member ->
+                list.add(AugmentedMemberFromServer(member.userCF, taskMemberAssociationList.filter { it.member.userCF == member.userCF }.map { it.task.toAugmentedTask(activityList) }.toMutableList()))
+            }
+
+            val message = PayloadWrapper(Services.instanceId(), WSOperations.LIST_MEMBERS_RESPONSE, AugmentedMembersAdditionNotification(list).toJson())
+            ws.sendMessage(leader.second, message)
+        }
     }
 
     fun addTask(augmentedTask: AugmentedTask, member: Member) {
@@ -119,9 +125,9 @@ class TaskController private constructor(private val ws: WSTaskServer,
 
     fun getAllActivities(activityTypeId: Int) {
         if (activityList.isNotEmpty()) {
-            val filteredList = activityList.filter{it.activityTypeId == activityTypeId}
+            val filteredList = activityList.filter { it.activityTypeId == activityTypeId }.sortedBy { it.name }
             val message = PayloadWrapper(Services.instanceId(),
-                    WSOperations.SET_ALL_ACTIVITIES, ActivityAdditionNotification(filteredList).toJson())
+                WSOperations.SET_ALL_ACTIVITIES, ActivityAdditionNotification(filteredList).toJson())
             ws.sendMessage(leader.second, message)
         }
     }
