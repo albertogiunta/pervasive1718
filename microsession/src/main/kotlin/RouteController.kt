@@ -154,7 +154,7 @@ object SessionApi {
 
                                         val errorMessage = PayloadWrapper(
                                                 Services.instanceId(),
-                                                WSOperations.ERROR_CREATING_INSTANCE_PULL_FULL,
+                                                WSOperations.ERROR_CREATING_INSTANCE_POOL_FULL,
                                                 Unit.toJson()
                                         )
 

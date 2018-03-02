@@ -44,6 +44,7 @@ class WSTaskServer : WSServer<PayloadWrapper>("Task") {
                     } // done by leader
                     WSOperations.ADD_TASK -> {
                         val assignment: TaskAssignment = taskWrapper.objectify(body)
+                        println("Assigning Task ${assignment.task.activityName} to ${assignment.member.userCF}")
                         controller.addTask(assignment.task, assignment.member)
                     } // done by leader
                     WSOperations.REMOVE_TASK -> {
