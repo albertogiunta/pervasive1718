@@ -51,12 +51,21 @@ enum class WSOperations(val objectifier: (String) -> Any) {
     SESSION_HANDLER_ERROR_RESPONSE({ utils.GsonInitializer.fromJson(it,GenericResponse::class.java) }),
     SESSION_HANDLER_RESPONSE({ utils.GsonInitializer.fromJson(it,SessionDNS::class.java) }),
     ADD_MEMBER({ GsonInitializer.fromJson(it, MembersAdditionNotification::class.java) }),
-    ADD_TASK({ GsonInitializer.fromJson(it, TaskAssignment::class.java) }),
-    REMOVE_TASK({ GsonInitializer.fromJson(it, TaskAssignment::class.java) }),
-    CHANGE_TASK_STATUS({ GsonInitializer.fromJson(it, TaskAssignment::class.java) }),
-    ERROR_REMOVING_TASK({ GsonInitializer.fromJson(it, TaskError::class.java) }),
+
+    ADD_TASK({ com.beust.klaxon.Klaxon().fieldConverter(utils.KlaxonDate::class,
+            utils.dateConverter).parse<model.TaskAssignment>(it)!! }),
+
+    REMOVE_TASK({ com.beust.klaxon.Klaxon().fieldConverter(utils.KlaxonDate::class,
+            utils.dateConverter).parse<model.TaskAssignment>(it)!! }),
+
+    CHANGE_TASK_STATUS({ com.beust.klaxon.Klaxon().fieldConverter(utils.KlaxonDate::class,
+            utils.dateConverter).parse<model.TaskAssignment>(it)!! }),
+
+    ERROR_REMOVING_TASK({ com.beust.klaxon.Klaxon().fieldConverter(utils.KlaxonDate::class,
+            utils.dateConverter).parse<model.TaskError>(it)!! }),
+
     ERROR_CHANGING_STATUS({ GsonInitializer.fromJson(it, StatusError::class.java) }),
-    ERROR_CREATING_INSTANCE_PULL_FULL({ GsonInitializer.fromJson(it, kotlin.Unit::class.java)}),
+    ERROR_CREATING_INSTANCE_POOL_FULL({ GsonInitializer.fromJson(it, kotlin.Unit::class.java)}),
     // ACTIVITY
     GET_ALL_ACTIVITIES({ GsonInitializer.fromJson(it, ActivityRequest::class.java) }),
     SET_ALL_ACTIVITIES({ GsonInitializer.fromJson(it, ActivityAdditionNotification::class.java) }),
