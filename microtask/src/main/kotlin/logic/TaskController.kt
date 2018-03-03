@@ -65,25 +65,25 @@ class TaskController private constructor(private val ws: WSTaskServer,
             list.add(AugmentedMemberFromServer(member.userCF, taskMemberAssociationList.filter { it.member.userCF == member.userCF }.map { it.task.toAugmentedTask(activityList) }.toMutableList()))
             val message = PayloadWrapper(Services.instanceId(), WSOperations.MEMBER_COMEBACK_RESPONSE, AugmentedMembersAdditionNotification(list).toJson())
             ws.sendMessage(members[member]!!,message)
-        }
-        members[member] = session
-        if (leader.second.isOpen) {
-            val message = PayloadWrapper(Services.instanceId(),
-                    WSOperations.ADD_MEMBER, MembersAdditionNotification(members.keys().toList()).toJson())
-            ws.sendMessage(leader.second, message)
+        }else {
+            members[member] = session
+            if (leader.second.isOpen) {
+                val message = PayloadWrapper(Services.instanceId(),
+                        WSOperations.ADD_MEMBER, MembersAdditionNotification(members.keys().toList()).toJson())
+                ws.sendMessage(leader.second, message)
+            }
         }
     }
 
     fun getAllMembers() {
+        val list = mutableListOf<AugmentedMemberFromServer>()
         if (members.isNotEmpty()) {
-            val list = mutableListOf<AugmentedMemberFromServer>()
             members.keys.toList().forEach { member ->
                 list.add(AugmentedMemberFromServer(member.userCF, taskMemberAssociationList.filter { it.member.userCF == member.userCF }.map { it.task.toAugmentedTask(activityList) }.toMutableList()))
             }
-
-            val message = PayloadWrapper(Services.instanceId(), WSOperations.LIST_MEMBERS_RESPONSE, AugmentedMembersAdditionNotification(list).toJson())
-            ws.sendMessage(leader.second, message)
         }
+        val message = PayloadWrapper(Services.instanceId(), WSOperations.LIST_MEMBERS_RESPONSE, AugmentedMembersAdditionNotification(list).toJson())
+        ws.sendMessage(leader.second, message)
     }
 
     fun addTask(augmentedTask: AugmentedTask, member: Member) {
