@@ -46,6 +46,7 @@ enum class WSOperations(val objectifier: (String) -> Any) {
     ADD_LEADER({ GsonInitializer.fromJson(it, MembersAdditionNotification::class.java) }),
     LIST_MEMBERS_REQUEST({ GsonInitializer.fromJson(it, Unit::class.java) }),
     LIST_MEMBERS_RESPONSE({ GsonInitializer.fromJson(it, MembersAdditionNotification::class.java) }),
+    MEMBER_COMEBACK_RESPONSE({ GsonInitializer.fromJson(it, AugmentedMembersAdditionNotification::class.java) }),
     LEADER_RESPONSE({ utils.GsonInitializer.fromJson(it,GenericResponse::class.java) }),
     SESSION_HANDLER_ERROR_RESPONSE({ utils.GsonInitializer.fromJson(it,GenericResponse::class.java) }),
     SESSION_HANDLER_RESPONSE({ utils.GsonInitializer.fromJson(it,SessionDNS::class.java) }),
