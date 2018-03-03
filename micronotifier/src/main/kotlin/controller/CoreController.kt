@@ -5,6 +5,7 @@ import controller.logic.RelayHandler
 import controller.logic.SubscriptionHandler
 import model.LifeParameters
 import model.Member
+import networking.ws.RelayService
 import org.eclipse.jetty.websocket.api.Session
 
 class CoreController private constructor(topicSet: Set<LifeParameters>) {
@@ -17,7 +18,7 @@ class CoreController private constructor(topicSet: Set<LifeParameters>) {
     var useLogging = false
 
     init {
-        subjects.createNewSubjectFor<Pair<Session, String>>(CoreController::class.java.name)
+        subjects.createNewSubjectFor<Pair<Session, String>>(RelayService::class.java.name)
 
         topics.activeTopics().map {
             it to subjects.createNewSubjectFor<String>(it.toString())

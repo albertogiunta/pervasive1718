@@ -1,6 +1,8 @@
 import config.ConfigLoader
 import config.Services
 import controller.CoreController
+import io.reactivex.BackpressureStrategy
+import io.reactivex.Flowable
 import networking.rabbit.AMQPClient
 import networking.ws.RelayService
 import utils.Logger
@@ -33,4 +35,13 @@ fun main(args: Array<String>) {
     if (Services.isNotStartedIndependently()) {
         waitInitAndNotifyToMicroSession(Services.NOTIFIER.executableName, Services.instanceId())
     }
+
+    val flow = Flowable.create<String>({ emitter ->
+        Thread {
+            while (true) {
+                emitter.onNext("Hello, World!")
+                Thread.sleep(500L)
+            }
+        }
+    }, BackpressureStrategy.LATEST)
 }

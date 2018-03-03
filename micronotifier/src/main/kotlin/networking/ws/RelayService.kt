@@ -21,11 +21,11 @@ class RelayService : WSServer<Payload<WSOperations, String>>("Notifier") {
 
     private val core = CoreController.singleton()
 
-    private val coreSubject: Subject<Pair<Session, String>>
+    private val wsSubject: Subject<Pair<Session, String>>
 
 
     init {
-        coreSubject = core.subjects.getSubjectsOf(CoreController::class.java.name)!!
+        wsSubject = core.subjects.getSubjectsOf(this::class.java.name)!!
     }
 
     override fun onClose(session: Session, statusCode: Int, reason: String) {
@@ -33,13 +33,13 @@ class RelayService : WSServer<Payload<WSOperations, String>>("Notifier") {
         if (core.sessions.has(session)) {
             val message = PayloadWrapper(-1, WSOperations.CLOSE,
                     core.sessions.getOn(session)!!.toJson()).toJson()
-            coreSubject.onNext(Pair(session, message))
+            wsSubject.onNext(Pair(session, message))
         }
     }
 
     override fun onMessage(session: Session, message: String) {
         super.onMessage(session, message)
-        coreSubject.onNext(Pair(session, message))
+        wsSubject.onNext(Pair(session, message))
     }
 
     @OnWebSocketError
