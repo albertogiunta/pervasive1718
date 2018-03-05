@@ -24,6 +24,14 @@ interface SessionDao {
                          @Bind(START_DATE) startDate: Timestamp,
                          @Bind(INSTANCE_ID) microServiceInstanceId: Int): Session
 
+    @SqlUpdate("INSERT INTO $TABLE_NAME($SESSION_ID, $PATIENT_CF, $LEADER_CF, $START_DATE, $INSTANCE_ID) " +
+            "VALUES (:$SESSION_ID, :$PATIENT_CF, :$LEADER_CF, :$START_DATE, :$INSTANCE_ID)")
+    @GetGeneratedKeys
+    fun insertNewSessionWithId(@Bind(SESSION_ID) id : Int,
+                               @Bind(PATIENT_CF) patientCF: String,
+                               @Bind(LEADER_CF) leaderCF: String,
+                               @Bind(START_DATE) startDate: Timestamp,
+                               @Bind(INSTANCE_ID) microServiceInstanceId: Int): Session
 
     @SqlUpdate("UPDATE $TABLE_NAME SET $END_DATE = (:$END_DATE) WHERE $SESSION_ID = (:$SESSION_ID)")
     fun closeSessionBySessionId(@Bind(SESSION_ID) sessionId: Int,

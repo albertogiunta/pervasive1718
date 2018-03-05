@@ -6,6 +6,7 @@ import JdbiConfiguration
 import Params
 import badRequest
 import com.beust.klaxon.Klaxon
+import controllers.SessionController
 import dao.TaskDao
 import model.Task
 import okCreated
@@ -27,7 +28,7 @@ object TaskApi {
         JdbiConfiguration.INSTANCE.jdbi.useExtension<TaskDao, SQLException>(TaskDao::class.java)
         {
             it.insertNewTask(
-                task.id,
+//                task.id,
                 task.sessionId,
                 task.operatorCF,
                 task.startTime,
@@ -57,12 +58,28 @@ object TaskApi {
     }
 
     /**
-     * Retrieves all the roles
+     * Retrieves all the tasks
      */
     fun getAllTasks(request: Request, response: Response): String {
         return JdbiConfiguration.INSTANCE.jdbi.withExtension<List<Task>, TaskDao, SQLException>(TaskDao::class.java)
         { it.selectAllTasks() }
             .toJson()
+    }
+
+    /**
+     * Retrieves all the tasks for the current session
+     */
+    fun getCurrentSessionTasks(request: Request, response: Response): String {
+        return JdbiConfiguration.INSTANCE.jdbi.withExtension<List<Task>, TaskDao, SQLException>(TaskDao::class.java)
+        { it.selectAllTasks(SessionController.getCurrentSessionId()) }.toJson()
+    }
+
+    /**
+     * Retrieves all the tasks for the given sessionId
+     */
+    fun getAllTasksBySession(request: Request, response: Response): String {
+        return JdbiConfiguration.INSTANCE.jdbi.withExtension<List<Task>, TaskDao, SQLException>(TaskDao::class.java)
+        { it.selectAllTasks(request.params(Params.Session.SESSION_ID).toInt()) }.toJson()
     }
 
     /**

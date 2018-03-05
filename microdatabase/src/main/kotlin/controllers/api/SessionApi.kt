@@ -18,7 +18,7 @@ import java.util.*
 object SessionApi {
 
     /**
-     * Retrieves all the session
+     * Adds a session
      */
     fun addSession(request: Request, response: Response): String {
         var session = Session(patientCF = "", leaderCF = "", startDate = Timestamp(Date().time))
@@ -29,6 +29,26 @@ object SessionApi {
                 request.params(Params.Session.LEADER_CF),
                 Timestamp(Date().time),
                 request.params(Params.Session.INSTANCE_ID).toInt())
+        }
+
+        SubscriberController.startListeningMonitorsForInstanceId(session)
+
+        return session.toJson()
+    }
+
+    /**
+     * Adds a session
+     */
+    fun addSessionWithId(request: Request, response: Response): String {
+        var session = Session(patientCF = "", leaderCF = "", startDate = Timestamp(Date().time))
+        JdbiConfiguration.INSTANCE.jdbi.useExtension<SessionDao, SQLException>(SessionDao::class.java)
+        {
+            session = it.insertNewSessionWithId(
+                    request.params(Params.Session.SESSION_ID).toInt(),
+                    request.params(Params.Session.PATIENT_CF),
+                    request.params(Params.Session.LEADER_CF),
+                    Timestamp(Date().time),
+                    request.params(Params.Session.INSTANCE_ID).toInt())
         }
 
         SubscriberController.startListeningMonitorsForInstanceId(session)

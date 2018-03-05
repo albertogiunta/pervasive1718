@@ -17,9 +17,8 @@ import java.sql.Timestamp
 
 interface TaskDao {
 
-    @SqlUpdate("INSERT INTO $TABLE_NAME($ID, $SESSION_ID, $OPERATOR_CF, $START_TIME, $END_TIME, $ACTIVITY_ID, $STATUS_ID) VALUES (:$ID, :$SESSION_ID, :$OPERATOR_CF, :$START_TIME, :$END_TIME, :$ACTIVITY_ID, :$STATUS_ID)")
-    fun insertNewTask(@Bind(ID) id: Int,
-                      @Bind(SESSION_ID) sessionId: Int = SessionController.getCurrentSessionId(),
+    @SqlUpdate("INSERT INTO $TABLE_NAME($SESSION_ID, $OPERATOR_CF, $START_TIME, $END_TIME, $ACTIVITY_ID, $STATUS_ID) VALUES (:$SESSION_ID, :$OPERATOR_CF, :$START_TIME, :$END_TIME, :$ACTIVITY_ID, :$STATUS_ID)")
+    fun insertNewTask(@Bind(SESSION_ID) sessionId: Int = SessionController.getCurrentSessionId(),
                       @Bind(OPERATOR_CF) operatorCF: String,
                       @Bind(START_TIME) startTime: Timestamp,
                       @Bind(END_TIME) endTime: Timestamp,
@@ -35,10 +34,12 @@ interface TaskDao {
     fun removeTask(@Bind(ID) taskId: Int,
                    @Bind(SESSION_ID) sessionId: Int = SessionController.getCurrentSessionId())
 
+    @SqlQuery("SELECT * FROM $TABLE_NAME")
+    fun selectAllTasks(): List<Task>
+
     @SqlQuery("SELECT * FROM $TABLE_NAME WHERE $SESSION_ID = (:$SESSION_ID)")
-    fun selectAllTasks(@Bind(SESSION_ID) sessionId: Int = SessionController.getCurrentSessionId()): List<Task>
+    fun selectAllTasks(@Bind(SESSION_ID) sessionId: Int): List<Task>
 
     @SqlQuery("SELECT * FROM $TABLE_NAME WHERE $SESSION_ID = (:$SESSION_ID) AND $ID = (:$ID)")
-    fun selectTaskById(@Bind(ID) id: Int,
-                       @Bind(SESSION_ID) sessionId: Int = SessionController.getCurrentSessionId()): List<Task>
+    fun selectTaskById(@Bind(ID) id: Int, @Bind(SESSION_ID) sessionId: Int = SessionController.getCurrentSessionId()): List<Task>
 }

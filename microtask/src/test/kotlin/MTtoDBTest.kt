@@ -31,11 +31,14 @@ class MTtoDBTest {
         private lateinit var session: SessionDNS
         private lateinit var latch: CountDownLatch
 
+        private lateinit var taskHistory: String
+
         @BeforeClass
         @JvmStatic
         fun setup() {
             ConfigLoader().load(startArguments)
             readTask = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.DATA_BASE.port}/${Connection.API}/task/all"
+            taskHistory = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.DATA_BASE.port}/${Connection.API}/task/history"
             closeSession = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.SESSION.port}/session/close/"
             println("istanzio session")
             manager.newService(Services.SESSION, startArguments[0]) // 8500
@@ -65,32 +68,42 @@ class MTtoDBTest {
         @AfterClass
         @JvmStatic
         fun destroyAll() {
-            (closeSession + session.sessionId).httpDelete().responseString().third.fold(success = { println("ho chiuso la sessione") }, failure = { println("ho ricevuto un errore in fase di chiusura della sessione: $it") })
+            (closeSession + session.sessionId).httpDelete().responseString().third.fold(success = {
+                println("ho chiuso la sessione")
+            }, failure = {
+                println("ho ricevuto un errore in fase di chiusura della sessione: $it")
+            })
             manager.closeSession(startArguments[0])
         }
     }
 
     @Test
     fun `create leader and member and add task`() {
-        val taskId = 32
-        mockLeaderMemberInteractionAndTaskAddition(session, "gntlrt94b21g479u", taskId, leaderWS, memberWS)
-        listResult = handlingGetResponse(readTask.httpGet().responseString())
-        assertTrue(listResult.firstOrNull { it.id == taskId } != null)
+        val fetchedMaxId : Int = handlingGetResponse<Task>(taskHistory.httpGet().responseString()).map {it.id}.max()?: 0
+        println(fetchedMaxId)
+        mockLeaderMemberInteractionAndTaskAddition(session, "gntlrt94b21g479u", fetchedMaxId + 1, leaderWS, memberWS)
+        Thread.sleep(5000L)
+        listResult = handlingGetResponse(taskHistory.httpGet().responseString())
+        println(listResult)
+        assertTrue(listResult.firstOrNull { it.id >=  fetchedMaxId + 1 && it.id <= fetchedMaxId + 2} != null)
     }
 
     @Test
     fun `create leader and member, add task and remove task`() {
-        val taskId = 41
-        mockLeaderMemberInteractionAndTaskRemoval(session, "gntlrt94b21g479u", taskId, leaderWS, memberWS)
-        listResult = handlingGetResponse(readTask.httpGet().responseString())
-        assertTrue(listResult.firstOrNull { it.id == taskId } == null)
+        val fetchedMaxId : Int = handlingGetResponse<Task>(taskHistory.httpGet().responseString()).map {it.id}.max()?: 0
+        mockLeaderMemberInteractionAndTaskRemoval(session, "gntlrt94b21g479u", fetchedMaxId + 1, leaderWS, memberWS)
+        Thread.sleep(5000L)
+        listResult = handlingGetResponse(taskHistory.httpGet().responseString())
+        assertTrue(listResult.none { it.id >=  fetchedMaxId + 1 && it.id <= fetchedMaxId + 2})
     }
 
     @Test
     fun `create leader and member, add task and change task status`() {
-        val taskId = 50
-        mockLeaderMemberInteractionAndTaskChange(session, "gntlrt94b21g479u", taskId, leaderWS, memberWS)
-        listResult = handlingGetResponse(readTask.httpGet().responseString())
-        assertTrue(listResult.firstOrNull { it.id == taskId }!!.statusId == Status.FINISHED.id)
+        val fetchedMaxId : Int = handlingGetResponse<Task>(taskHistory.httpGet().responseString()).map {it.id}.max()?: 0
+        mockLeaderMemberInteractionAndTaskChange(session, "gntlrt94b21g479u", fetchedMaxId + 1, leaderWS, memberWS)
+        Thread.sleep(5000L)
+        listResult = handlingGetResponse(taskHistory.httpGet().responseString())
+        println(listResult.firstOrNull { it.id >=  fetchedMaxId + 1 && it.id <= fetchedMaxId + 2 })
+        assertTrue(listResult.firstOrNull { it.id >=  fetchedMaxId + 1 && it.id <= fetchedMaxId + 2 }!!.statusId == Status.FINISHED.id)
     }
 }

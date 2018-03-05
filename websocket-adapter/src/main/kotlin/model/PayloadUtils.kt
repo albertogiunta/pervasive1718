@@ -84,7 +84,7 @@ data class Response(val code: Int, val toMessage: String)
 
 data class Subscription(val subject: Member, val topics: List<LifeParameters>)
 
-data class TaskAssignment(val member: Member, val task: AugmentedTask)
+data class TaskAssignment(val member: Member, val augmentedTask: AugmentedTask)
 
 data class MembersAdditionNotification(val members: List<Member>)
 

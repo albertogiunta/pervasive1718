@@ -44,16 +44,16 @@ class WSTaskServer : WSServer<PayloadWrapper>("Task") {
                     } // done by leader
                     WSOperations.ADD_TASK -> {
                         val assignment: TaskAssignment = taskWrapper.objectify(body)
-                        println("Assigning Task ${assignment.task.activityName} to ${assignment.member.userCF}")
-                        controller.addTask(assignment.task, assignment.member)
+                        println("Assigning Task ${assignment.augmentedTask.activityName} to ${assignment.member.userCF}")
+                        controller.addTask(assignment.augmentedTask, assignment.member)
                     } // done by leader
                     WSOperations.REMOVE_TASK -> {
                         val assignment: TaskAssignment = taskWrapper.objectify(body)
-                        controller.removeTask(assignment.task)
+                        controller.removeTask(assignment.augmentedTask)
                     } // done by leader
                     WSOperations.CHANGE_TASK_STATUS -> {
                         val assignment: TaskAssignment = taskWrapper.objectify(body)
-                        controller.changeTaskStatus(assignment.task, session)
+                        controller.changeTaskStatus(assignment.augmentedTask, session)
                     } // done by both
                     WSOperations.GET_ALL_ACTIVITIES -> {
                         val notification: ActivityRequest = taskWrapper.objectify(body)

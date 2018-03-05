@@ -73,6 +73,7 @@ object RouteController {
 
             path("/${Params.Session.TABLE_NAME}") {
                 post("/add/patientcf/:${Params.Session.PATIENT_CF}/leadercf/:${Params.Session.LEADER_CF}/instanceid/:${Params.Session.INSTANCE_ID}", applicationJson) { SessionApi.addSession(request, response) }
+                post("/add/sessionid/:${Params.Session.SESSION_ID}/patientcf/:${Params.Session.PATIENT_CF}/leadercf/:${Params.Session.LEADER_CF}/instanceid/:${Params.Session.INSTANCE_ID}", applicationJson) { SessionApi.addSessionWithId(request, response) }
                 get("/all", applicationJson) { SessionApi.getAllSessions(request, response) }
                 get("/all/open/:${Params.Session.LEADER_CF}", applicationJson) { SessionApi.getAllOpenSessionsByLeaderCF(request, response) }
                 delete("/close/:${Params.Session.SESSION_ID}", applicationJson) { SessionApi.closeSessionBySessionId(request, response) }
@@ -82,7 +83,9 @@ object RouteController {
                 post("/add", applicationJson) { TaskApi.addTask(request, response) }
                 put("/:id/status/:statusId", applicationJson) { TaskApi.updateTaskStatus(request, response) }
                 delete("/:id", applicationJson) { TaskApi.removeTaskStatus(request, response) }
-                get("/all", applicationJson) { TaskApi.getAllTasks(request, response) }
+                get("/all", applicationJson) { TaskApi.getCurrentSessionTasks(request, response) }
+                get("/history", applicationJson) { TaskApi.getAllTasks(request, response) }
+                get("/all/sessionid/:${Params.Session.SESSION_ID}", applicationJson) { TaskApi.getAllTasksBySession(request, response) }
                 get("/:id", applicationJson) { TaskApi.getTaskById(request, response) }
             }
 
