@@ -73,7 +73,7 @@ object Params {
     }
 
     object Task {
-        const val TABLE_NAME = "task"
+        const val TABLE_NAME = "augmentedTask"
         const val ID = "id"
         const val OPERATOR_CF = "operatorcf"
         const val START_TIME = "starttime"
