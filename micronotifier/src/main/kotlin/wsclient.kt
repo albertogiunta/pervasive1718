@@ -19,7 +19,9 @@ fun main(args: Array<String>) {
 
     client.sendMessage(msg1)
 
-    Thread.sleep(5000L)
+    (0 until 10).forEach {
+        Thread.sleep(5000L)
+    }
 
     val msg2 = PayloadWrapper(-1, WSOperations.CLOSE, member.toJson()).toJson()
 

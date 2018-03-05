@@ -25,7 +25,7 @@ class RelayService : WSServer<Payload<WSOperations, String>>("Notifier") {
 
 
     init {
-        wsSubject = core.subjects.getSubjectsOf(this::class.java.name)!!
+        wsSubject = core.subjects.getSubjectsOf(RelayService::class.java.name)!!
     }
 
     override fun onClose(session: Session, statusCode: Int, reason: String) {
