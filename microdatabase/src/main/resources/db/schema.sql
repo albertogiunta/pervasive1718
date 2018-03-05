@@ -62,16 +62,15 @@ CREATE TABLE Session (
 );
 
 CREATE TABLE Task (
-    ID BigSerial PRIMARY KEY,
+    ID Serial,
     SessionID BigInt NOT NULL,
     OperatorCF VarChar(50),
     StartTime TIMESTAMP,
     EndTime TIMESTAMP,
     ActivityID BigInt,
-    StatusID BigInt
+    StatusID BigInt,
+    CONSTRAINT task_pkey PRIMARY KEY (id, sessionid)
 );
-
-ALTER TABLE Task ADD CONSTRAINT task_pkey PRIMARY KEY (id, sessionid);
 
 CREATE TABLE TaskStatus (
     ID BigSerial PRIMARY KEY,
