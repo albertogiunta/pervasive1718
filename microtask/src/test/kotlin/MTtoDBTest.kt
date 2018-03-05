@@ -35,7 +35,7 @@ class MTtoDBTest {
         @JvmStatic
         fun setup() {
             ConfigLoader().load(startArguments)
-            readTask = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.DATA_BASE.port}/${Connection.API}/task/all"
+            readTask = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.DATA_BASE.port}/${Connection.API}/augmentedTask/all"
             closeSession = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.SESSION.port}/session/close/"
             println("istanzio session")
             manager.newService(Services.SESSION, startArguments[0]) // 8500
