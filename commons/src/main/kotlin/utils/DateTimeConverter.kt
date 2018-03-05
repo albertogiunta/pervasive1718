@@ -12,9 +12,10 @@ import java.util.*
 annotation class KlaxonDate
 
 val dateConverter = object : Converter<Timestamp> {
-    val defaultSDF = SimpleDateFormat("MMM d, yyyy hh:mm:ss aaa", Locale.ENGLISH)
+    val javaSDF = SimpleDateFormat("MMM d, yyyy hh:mm:ss aaa", Locale.ENGLISH)
     val androidSDF = SimpleDateFormat("MMM d, yyyy hh:mm:ss", Locale.ENGLISH)
-    val sdfList: List<SimpleDateFormat> = listOf(defaultSDF,androidSDF)
+    val defaultSDF = SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS", Locale.ENGLISH)
+    val sdfList: List<SimpleDateFormat> = listOf(defaultSDF,androidSDF,javaSDF)
     lateinit var date:Timestamp
 
     override fun fromJson(jv: JsonValue): Timestamp{

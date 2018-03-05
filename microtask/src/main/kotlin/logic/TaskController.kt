@@ -62,7 +62,7 @@ class TaskController private constructor(private val ws: WSTaskServer,
         if(members.containsKey(member)){
             members[member] = session
             val list = mutableListOf<AugmentedMemberFromServer>()
-            list.add(AugmentedMemberFromServer(member.userCF, taskMemberAssociationList.filter { it.member.userCF == member.userCF }.map { it.task.toAugmentedTask(activityList) }.toMutableList()))
+            list.add(AugmentedMemberFromServer(member.userCF, taskMemberAssociationList.filter { it.member.userCF == member.userCF && it.task.statusId != Status.FINISHED.id}.map { it.task.toAugmentedTask(activityList) }.toMutableList()))
             val message = PayloadWrapper(Services.instanceId(), WSOperations.MEMBER_COMEBACK_RESPONSE, AugmentedMembersAdditionNotification(list).toJson())
             ws.sendMessage(members[member]!!,message)
         }else {
@@ -79,7 +79,7 @@ class TaskController private constructor(private val ws: WSTaskServer,
         val list = mutableListOf<AugmentedMemberFromServer>()
         if (members.isNotEmpty()) {
             members.keys.toList().forEach { member ->
-                list.add(AugmentedMemberFromServer(member.userCF, taskMemberAssociationList.filter { it.member.userCF == member.userCF }.map { it.task.toAugmentedTask(activityList) }.toMutableList()))
+                list.add(AugmentedMemberFromServer(member.userCF, taskMemberAssociationList.filter { it.member.userCF == member.userCF && it.task.statusId != Status.FINISHED.id}.map { it.task.toAugmentedTask(activityList) }.toMutableList()))
             }
         }
         val message = PayloadWrapper(Services.instanceId(), WSOperations.LIST_MEMBERS_RESPONSE, AugmentedMembersAdditionNotification(list).toJson())
@@ -117,7 +117,7 @@ class TaskController private constructor(private val ws: WSTaskServer,
     }
 
     fun changeTaskStatus(augmentedTask: AugmentedTask, session: Session) {
-        with(taskMemberAssociationList.firstOrNull { it.task.id == augmentedTask.task.id }) {
+        with(taskMemberAssociationList.firstOrNull { it.task.activityId == augmentedTask.task.activityId}) {
             this?.let {
                 it.task.statusId = augmentedTask.task.statusId
                 val message = PayloadWrapper(Services.instanceId(),
