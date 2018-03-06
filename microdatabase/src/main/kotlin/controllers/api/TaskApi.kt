@@ -16,6 +16,8 @@ import utils.KlaxonDate
 import utils.dateConverter
 import utils.toJson
 import java.sql.SQLException
+import java.sql.Timestamp
+import java.util.*
 
 object TaskApi {
 
@@ -57,9 +59,9 @@ object TaskApi {
         JdbiConfiguration.INSTANCE.jdbi.useExtension<TaskDao, SQLException>(TaskDao::class.java)
         {
             it.updateTaskStatusByName(
-                    task.name,
-                    task.statusId,
-                    task.sessionId
+                    request.params(Params.Task.TASK_NAME),
+                    request.params(Params.Task.STATUS_ID).toInt(),
+                    SessionController.getCurrentSessionId()
             )
         }
         return response.okCreated()
@@ -85,8 +87,8 @@ object TaskApi {
         JdbiConfiguration.INSTANCE.jdbi.useExtension<TaskDao, SQLException>(TaskDao::class.java)
         {
             it.updateTaskEndtimeByName(
-                    task.name,
-                    task.endTime!!
+                    request.params(Params.Task.TASK_NAME),
+                    Timestamp(Date().time)
             )
         }
         return response.okCreated()
@@ -106,7 +108,7 @@ object TaskApi {
 
         JdbiConfiguration.INSTANCE.jdbi.useExtension<TaskDao, SQLException>(TaskDao::class.java)
         {
-            it.removeTaskByName(task.name)
+            it.removeTaskByName(request.params(Params.Task.TASK_NAME))
         }
         return response.okCreated()
     }
