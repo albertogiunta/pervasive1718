@@ -47,7 +47,7 @@ fun mockLeaderMemberInteractionAndTaskAddition(session: SessionDNS,
                                                                LifeParameters.DIASTOLIC_BLOOD_PRESSURE,
                                                                LifeParameters.SYSTOLIC_BLOOD_PRESSURE,
                                                                LifeParameters.HEART_RATE),
-                                                       "nome attività")) {
+                                                       "nome attività")): AugmentedTask {
 
     mockLeader(memberCF, leaderWS, leader).also { Thread.sleep(1000) }
 
@@ -60,6 +60,8 @@ fun mockLeaderMemberInteractionAndTaskAddition(session: SessionDNS,
     memberWS.sendMessage(message1.toJson()).also { Thread.sleep(1000) }
     leaderWS.sendMessage(message2.toJson()).also { Thread.sleep(1000) }
     Thread.sleep(5000)
+
+    return augmentedTask
 }
 
 fun mockLeaderMemberInteractionAndTaskRemoval(session: SessionDNS,
@@ -74,14 +76,15 @@ fun mockLeaderMemberInteractionAndTaskRemoval(session: SessionDNS,
                                                               LifeParameters.DIASTOLIC_BLOOD_PRESSURE,
                                                               LifeParameters.SYSTOLIC_BLOOD_PRESSURE,
                                                               LifeParameters.HEART_RATE),
-                                                      "nome attività")) {
+                                                      "nome attività")): AugmentedTask {
 
-    mockLeaderMemberInteractionAndTaskAddition(session, memberCF, taskID, leaderWS, memberWS)
+    mockLeaderMemberInteractionAndTaskAddition(session, memberCF, taskID, leaderWS, memberWS, augmentedTask = augmentedTask)
 
-    val message = PayloadWrapper(Services.instanceId(), WSOperations.REMOVE_TASK,
-        TaskAssignment(member, augmentedTask).toJson())
+    val message = PayloadWrapper(Services.instanceId(), WSOperations.REMOVE_TASK, TaskAssignment(member, augmentedTask).toJson())
 
     leaderWS.sendMessage(message.toJson()).also { Thread.sleep(1000) }
+
+    return augmentedTask
 }
 
 fun mockLeaderMemberInteractionAndTaskChange(session: SessionDNS,
@@ -96,9 +99,9 @@ fun mockLeaderMemberInteractionAndTaskChange(session: SessionDNS,
                                                              LifeParameters.DIASTOLIC_BLOOD_PRESSURE,
                                                              LifeParameters.SYSTOLIC_BLOOD_PRESSURE,
                                                              LifeParameters.HEART_RATE),
-                                                     "nome attività")) {
+                                                     "nome attività")): AugmentedTask {
 
-    mockLeaderMemberInteractionAndTaskAddition(session, memberCF, taskID, leaderWS, memberWS)
+    mockLeaderMemberInteractionAndTaskAddition(session, memberCF, taskID, leaderWS, memberWS, augmentedTask = augmentedTask)
     augmentedTask.task.statusId = Status.FINISHED.id
 
     println(augmentedTask)
@@ -107,5 +110,7 @@ fun mockLeaderMemberInteractionAndTaskChange(session: SessionDNS,
         TaskAssignment(member, augmentedTask).toJson())
 
     leaderWS.sendMessage(message.toJson()).also { Thread.sleep(1000) }
+
+    return augmentedTask
 }
 

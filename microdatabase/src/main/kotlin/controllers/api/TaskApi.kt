@@ -16,6 +16,8 @@ import utils.KlaxonDate
 import utils.dateConverter
 import utils.toJson
 import java.sql.SQLException
+import java.sql.Timestamp
+import java.util.*
 
 object TaskApi {
 
@@ -29,6 +31,7 @@ object TaskApi {
         {
             it.insertNewTask(
 //                task.id,
+                    task.name,
                 task.sessionId,
                 task.operatorCF,
                 task.startTime,
@@ -49,6 +52,16 @@ object TaskApi {
         return response.okCreated()
     }
 
+    fun updateTaskStatusByName(request: Request, response: Response): String {
+        JdbiConfiguration.INSTANCE.jdbi.useExtension<TaskDao, SQLException>(TaskDao::class.java)
+        {
+            it.updateTaskStatusByName(
+                    request.params(Params.Task.TASK_NAME),
+                    request.params(Params.Task.STATUS_ID).toInt())
+        }
+        return response.okCreated()
+    }
+
     fun updateTaskEndtime(request: Request, response: Response): String {
         val task: Task = Klaxon().fieldConverter(KlaxonDate::class, dateConverter).parse<Task>(request.body())
                 ?: return response.badRequest()
@@ -61,10 +74,30 @@ object TaskApi {
         return response.okCreated()
     }
 
+    fun updateTaskEndtimeByName(request: Request, response: Response): String {
+
+        JdbiConfiguration.INSTANCE.jdbi.useExtension<TaskDao, SQLException>(TaskDao::class.java)
+        {
+            it.updateTaskEndtimeByName(
+                    request.params(Params.Task.TASK_NAME),
+                    Timestamp(Date().time)
+            )
+        }
+        return response.okCreated()
+    }
+
     fun removeTaskStatus(request: Request, response: Response): String {
         JdbiConfiguration.INSTANCE.jdbi.useExtension<TaskDao, SQLException>(TaskDao::class.java)
         {
             it.removeTask(request.params(Params.Task.ID).toInt())
+        }
+        return response.okCreated()
+    }
+
+    fun removeTaskStatusByName(request: Request, response: Response): String {
+        JdbiConfiguration.INSTANCE.jdbi.useExtension<TaskDao, SQLException>(TaskDao::class.java)
+        {
+            it.removeTaskByName(request.params(Params.Task.TASK_NAME))
         }
         return response.okCreated()
     }

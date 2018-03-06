@@ -75,24 +75,22 @@ class MTtoMVTest {
 
     @Test
     fun `create leader and member interaction and add task`() {
-        val taskId = 32
 
-        mockLeaderMemberInteractionAndTaskAddition(session, "gntlrt94b21g479u", taskId, leaderWS, memberWS)
+        val aTask = mockLeaderMemberInteractionAndTaskAddition(session, "gntlrt94b21g479u", 0, leaderWS, memberWS)
 
         listResult = handlingGetResponse(getAllTaskVisor.httpGet().responseString().also {
             println("La risposta è " + it.third)
         })
         println(listResult.size)
-        Assert.assertTrue(listResult.firstOrNull { it.name == taskId } != null)
+        Assert.assertTrue(listResult.firstOrNull { it.name == aTask.task.name } != null)
 
     }
 
     @Test
     fun `create leader and member interaction, add task and remove task`() {
-        val taskId = 35
 
-        mockLeaderMemberInteractionAndTaskRemoval(session, "gntlrt94b21g479u", 35, leaderWS, memberWS)
+        val aTask = mockLeaderMemberInteractionAndTaskRemoval(session, "gntlrt94b21g479u", 0, leaderWS, memberWS)
         listResult = handlingGetResponse(getAllTaskVisor.httpGet().responseString())
-        Assert.assertTrue(listResult.firstOrNull { it.name == taskId } == null)
+        Assert.assertTrue(listResult.firstOrNull { it.name == aTask.task.name } == null)
     }
 }

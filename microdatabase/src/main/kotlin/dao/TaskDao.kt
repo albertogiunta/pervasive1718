@@ -8,6 +8,7 @@ import Params.Task.SESSION_ID
 import Params.Task.START_TIME
 import Params.Task.STATUS_ID
 import Params.Task.TABLE_NAME
+import Params.Task.TASK_NAME
 import controllers.SessionController
 import model.Task
 import org.jdbi.v3.sqlobject.customizer.Bind
@@ -17,10 +18,12 @@ import java.sql.Timestamp
 
 interface TaskDao {
 
-    @SqlUpdate("INSERT INTO $TABLE_NAME($SESSION_ID, $OPERATOR_CF, $START_TIME, $ACTIVITY_ID, $STATUS_ID) VALUES (:$SESSION_ID, :$OPERATOR_CF, :$START_TIME, :$ACTIVITY_ID, :$STATUS_ID)")
-    fun insertNewTask(@Bind(SESSION_ID) sessionId: Int = SessionController.getCurrentSessionId(),
+    @SqlUpdate("INSERT INTO $TABLE_NAME($TASK_NAME, $SESSION_ID, $OPERATOR_CF, $START_TIME, $ACTIVITY_ID, $STATUS_ID) VALUES (:$TASK_NAME, :$SESSION_ID, :$OPERATOR_CF, :$START_TIME, :$ACTIVITY_ID, :$STATUS_ID)")
+    fun insertNewTask(@Bind(TASK_NAME) name: String,
+                      @Bind(SESSION_ID) sessionId: Int = SessionController.getCurrentSessionId(),
                       @Bind(OPERATOR_CF) operatorCF: String,
                       @Bind(START_TIME) startTime: Timestamp,
+//                      @Bind(END_TIME) endTime: Timestamp,
                       @Bind(ACTIVITY_ID) activityId: Int,
                       @Bind(STATUS_ID) statusId: Int)
 
@@ -29,14 +32,28 @@ interface TaskDao {
                          @Bind(STATUS_ID) statusId: Int,
                          @Bind(SESSION_ID) sessionId: Int = SessionController.getCurrentSessionId())
 
+    @SqlUpdate("UPDATE $TABLE_NAME SET $STATUS_ID = (:$STATUS_ID) WHERE $SESSION_ID = (:$SESSION_ID) AND $TASK_NAME = (:$TASK_NAME)")
+    fun updateTaskStatusByName(@Bind(TASK_NAME) name: String,
+                               @Bind(STATUS_ID) statusId: Int,
+                               @Bind(SESSION_ID) sessionId: Int = SessionController.getCurrentSessionId())
+
     @SqlUpdate("UPDATE $TABLE_NAME SET $END_TIME = (:$END_TIME) WHERE $SESSION_ID = (:$SESSION_ID) AND $ID = (:$ID)")
     fun updateTaskEndtime(@Bind(ID) id: Int,
                           @Bind(END_TIME) endTime: Timestamp,
                           @Bind(SESSION_ID) sessionId: Int = SessionController.getCurrentSessionId())
 
+    @SqlUpdate("UPDATE $TABLE_NAME SET $END_TIME = (:$END_TIME) WHERE $SESSION_ID = (:$SESSION_ID) AND $TASK_NAME = (:$TASK_NAME)")
+    fun updateTaskEndtimeByName(@Bind(TASK_NAME) id: String,
+                                @Bind(END_TIME) endTime: Timestamp,
+                                @Bind(SESSION_ID) sessionId: Int = SessionController.getCurrentSessionId())
+
     @SqlUpdate("DELETE FROM $TABLE_NAME WHERE $SESSION_ID = (:$SESSION_ID) AND $ID = (:$ID)")
     fun removeTask(@Bind(ID) taskId: Int,
                    @Bind(SESSION_ID) sessionId: Int = SessionController.getCurrentSessionId())
+
+    @SqlUpdate("DELETE FROM $TABLE_NAME WHERE $SESSION_ID = (:$SESSION_ID) AND $TASK_NAME = (:$TASK_NAME)")
+    fun removeTaskByName(@Bind(TASK_NAME) name: String,
+                         @Bind(SESSION_ID) sessionId: Int = SessionController.getCurrentSessionId())
 
     @SqlQuery("SELECT * FROM $TABLE_NAME")
     fun selectAllTasks(): List<Task>

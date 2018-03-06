@@ -75,31 +75,27 @@ class MTtoDBTest2 {
 
     @Test
     fun `create leader and member and add task`() {
-        val fetchedMaxId : Int = handlingGetResponse<Task>(taskHistory.httpGet().responseString()).map {it.id}.max()?: 0
-        println(fetchedMaxId)
-        mockLeaderMemberInteractionAndTaskAddition(session, "gntlrt94b21g479u", fetchedMaxId + 1, leaderWS, memberWS)
+        val aTask = mockLeaderMemberInteractionAndTaskAddition(session, "gntlrt94b21g479u", 0, leaderWS, memberWS)
         Thread.sleep(5000L)
         listResult = handlingGetResponse(taskHistory.httpGet().responseString())
         println(listResult)
-        assertTrue(listResult.firstOrNull { it.id >=  fetchedMaxId + 1 && it.id <= fetchedMaxId + 2} != null)
+        assertTrue(listResult.firstOrNull { it.name == aTask.task.name } != null)
     }
 
     @Test
     fun `create leader and member, add task and remove task`() {
-        val fetchedMaxId : Int = handlingGetResponse<Task>(taskHistory.httpGet().responseString()).map {it.id}.max()?: 0
-        mockLeaderMemberInteractionAndTaskRemoval(session, "gntlrt94b21g479u", fetchedMaxId + 1, leaderWS, memberWS)
+        val aTask = mockLeaderMemberInteractionAndTaskRemoval(session, "gntlrt94b21g479u", 0, leaderWS, memberWS)
         Thread.sleep(5000L)
         listResult = handlingGetResponse(taskHistory.httpGet().responseString())
-        assertTrue(listResult.none { it.id >=  fetchedMaxId + 1 && it.id <= fetchedMaxId + 2})
+        assertTrue(listResult.none { it.name == aTask.task.name })
     }
 
     @Test
     fun `create leader and member, add task and change task status`() {
-        val fetchedMaxId : Int = handlingGetResponse<Task>(taskHistory.httpGet().responseString()).map {it.id}.max()?: 0
-        mockLeaderMemberInteractionAndTaskChange(session, "gntlrt94b21g479u", fetchedMaxId + 1, leaderWS, memberWS)
+
+        val aTask = mockLeaderMemberInteractionAndTaskChange(session, "gntlrt94b21g479u", 0, leaderWS, memberWS)
         Thread.sleep(5000L)
         listResult = handlingGetResponse(taskHistory.httpGet().responseString())
-        println(listResult.firstOrNull { it.id >=  fetchedMaxId + 1 && it.id <= fetchedMaxId + 2 })
-        assertTrue(listResult.firstOrNull { it.id >=  fetchedMaxId + 1 && it.id <= fetchedMaxId + 2 }!!.statusId == Status.FINISHED.id)
+        assertTrue(listResult.firstOrNull { it.name == aTask.task.name }!!.statusId == Status.FINISHED.id)
     }
 }

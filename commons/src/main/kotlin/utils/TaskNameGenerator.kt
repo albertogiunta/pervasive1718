@@ -25,6 +25,7 @@ fun Task.Companion.generateTaskName(sid: Int, aid: Int, ocf: String, start: Time
                 .replace("-", "")
                 .replace(":", "")
                 .replace(".", "")
+                .replace(" ", "")
 
 fun Task.Companion.generateTaskName(task: Task): String =
         generateTaskName(task.sessionId, task.activityId, task.operatorCF, task.startTime)

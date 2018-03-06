@@ -113,7 +113,7 @@ class TaskController private constructor(private val ws: WSTaskServer,
                 ws.sendMessage(members[member]!!, message)
                 ws.sendMessage(leader.second, message)
 
-                "$dbUrl/task/remove${it.task.name}".httpDelete().responseString()
+                "$dbUrl/task/remove/${it.task.name}".httpDelete().responseString()
                 "$visorUrl/remove/${it.task.name}".httpDelete().responseString()
             }
                     ?: ws.sendMessage(leader.second, PayloadWrapper(Services.instanceId(),
