@@ -10,8 +10,8 @@ class TaskManager {
         tasks += task
     }
 
-    fun removeTask(taskId: Int) {
-        tasks.remove(tasks.find { t -> t.id == taskId})
+    fun removeTask(taskName: String) {
+        tasks.remove(tasks.find { t -> t.taskName == taskName})
     }
 
     fun getAllTasks() : MutableList<VisibleTask> = tasks

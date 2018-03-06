@@ -26,7 +26,7 @@ data class Boundary(val id: Int = 0, val healthParameterId: Int, val upperBound:
 
 data class TaskStatus(val id: Int = 0, val name: String) // sospseso, in corso, terminato, eliminato
 
-data class VisibleTask(val id: Int, val name: String, val operatorCF: String, val operatorName: String, val operatorSurname: String)
+data class VisibleTask(val taskName: String, val name: String, val operatorCF: String, val operatorName: String, val operatorSurname: String)
 
 data class Member(val userCF: String) {
     companion object {

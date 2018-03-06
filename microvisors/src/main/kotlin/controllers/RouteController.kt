@@ -40,7 +40,7 @@ object RouteController {
         path("/api") {
             get("/all", RESTParams.applicationJson) { VisorApi.getAllTasks(request, response) }
             post("/add", RESTParams.applicationJson) { VisorApi.addTask(request, response) }
-            delete("/remove/:taskId", RESTParams.applicationJson) { VisorApi.removeTask(request, response) }
+            delete("/remove/:taskName", RESTParams.applicationJson) { VisorApi.removeTask(request, response) }
         }
     }
 }

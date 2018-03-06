@@ -29,7 +29,7 @@ object VisorApi {
      * Removes a task
      */
     fun removeTask(request: Request, response: Response): String {
-        taskManager.removeTask(request.params("taskId").toInt())
+        taskManager.removeTask(request.params("taskName").toString())
         return response.ok()
     }
 

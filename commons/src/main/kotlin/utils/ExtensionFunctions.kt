@@ -14,7 +14,7 @@ fun Any?.asJson(): String = GsonInitializer.toJson(this)
 fun Any.toJson(): String = GsonInitializer.toJson(this)
 
 fun Task.toVisibleTask(member: Member, activityName: String) =
-    VisibleTask(this.id, activityName, member.userCF, "nome a caso", "cognome a caso")
+    VisibleTask(this.name, activityName, member.userCF, "nome a caso", "cognome a caso")
 
 fun Task.toAugmentedTask(activityList: List<Activity>): AugmentedTask {
     val currentActivity = activityList.first { it -> it.id == this.activityId }

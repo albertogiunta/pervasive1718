@@ -83,7 +83,7 @@ class MTtoMVTest {
             println("La risposta è " + it.third)
         })
         println(listResult.size)
-        Assert.assertTrue(listResult.firstOrNull { it.id == taskId } != null)
+        Assert.assertTrue(listResult.firstOrNull { it.name == taskId } != null)
 
     }
 
@@ -93,6 +93,6 @@ class MTtoMVTest {
 
         mockLeaderMemberInteractionAndTaskRemoval(session, "gntlrt94b21g479u", 35, leaderWS, memberWS)
         listResult = handlingGetResponse(getAllTaskVisor.httpGet().responseString())
-        Assert.assertTrue(listResult.firstOrNull { it.id == taskId } == null)
+        Assert.assertTrue(listResult.firstOrNull { it.name == taskId } == null)
     }
 }
