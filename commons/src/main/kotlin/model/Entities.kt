@@ -36,7 +36,7 @@ data class Member(val userCF: String) {
     }
 }
 
-data class Task @JvmOverloads constructor(val id: Int = 0, val sessionId: Int, val operatorCF: String, @KlaxonDate val startTime: Timestamp, @KlaxonDate val endTime: Timestamp, val activityId: Int, var statusId: Int) {
+data class Task @JvmOverloads constructor(var id: Int = 0, val sessionId: Int, val operatorCF: String, @KlaxonDate val startTime: Timestamp, @KlaxonDate val endTime: Timestamp, val activityId: Int, var statusId: Int) {
 
     companion object {
         fun emptyTask(): Task =

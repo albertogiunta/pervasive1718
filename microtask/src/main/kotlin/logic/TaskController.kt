@@ -26,6 +26,8 @@ class TaskController private constructor(private val ws: WSTaskServer,
         private var configNotCompleted = true
         val dbUrl = Services.Utils.defaultHostUrlApi(Services.DATA_BASE)
         val visorUrl = Services.Utils.defaultHostUrlApi(Services.VISORS)
+        private lateinit var taskList: List<Task>
+        private var lastId: Int = 0
 
         lateinit var INSTANCE: TaskController
         private val isInitialized = AtomicBoolean()
@@ -34,6 +36,7 @@ class TaskController private constructor(private val ws: WSTaskServer,
         fun init(ws: WSTaskServer) {
             if (!isInitialized.getAndSet(true)) {
                 INSTANCE = TaskController(ws)
+
             }
         }
 
@@ -51,7 +54,13 @@ class TaskController private constructor(private val ws: WSTaskServer,
                 activityList = handlingGetResponse<Activity>(responseString).toMutableList()
             }
         }
+        fun getLastTaskId(){
+            taskList = handlingGetResponse("$dbUrl/task/history".httpGet().responseString())
+            lastId=taskList.last().id
+        }
     }
+
+
 
     fun addLeader(member: Member, session: Session) {
         leader = Pair(member, session)
@@ -88,6 +97,8 @@ class TaskController private constructor(private val ws: WSTaskServer,
 
     fun addTask(augmentedTask: AugmentedTask, member: Member) {
         if (members.containsKey(member)) {
+            lastId++
+            augmentedTask.task.id = lastId
             taskMemberAssociationList.add(TaskMemberAssociation.create(augmentedTask.task, member))
             val message = PayloadWrapper(Services.instanceId(),
                     WSOperations.ADD_TASK, TaskAssignment(member, augmentedTask).toJson())
