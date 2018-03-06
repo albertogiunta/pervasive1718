@@ -136,7 +136,8 @@ class TaskController private constructor(private val ws: WSTaskServer,
                 ws.sendMessage(members[member]!!, message)
                 ws.sendMessage(leader.second, message)
                 "$dbUrl/task/${it.task.id}/status/${it.task.statusId}".httpPut().responseString()
-                "$dbUrl/task/stopTask".httpPut().body(augmentedTask.task.toJson()).responseString()
+                if(augmentedTask.task.statusId == Status.FINISHED.id)
+                    "$dbUrl/task/stopTask".httpPut().body(augmentedTask.task.toJson()).responseString()
             } ?: ws.sendMessage(session, PayloadWrapper(Services.instanceId(),
                     WSOperations.ERROR_CHANGING_STATUS, StatusError(augmentedTask.task.statusId, augmentedTask.task, "").toJson()))
         }
