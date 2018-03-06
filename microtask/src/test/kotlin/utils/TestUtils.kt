@@ -42,14 +42,7 @@ fun mockLeaderMemberInteractionAndTaskAddition(session: SessionDNS,
                                                leader: Member = Member("Leader"),
                                                member: Member = Member("Member"),
                                                augmentedTask: AugmentedTask = AugmentedTask(
-                                                       Task(
-                                                               taskID,
-                                                               session.sessionId,
-                                                               memberCF,
-                                                               Timestamp(Date().time),
-                                                               Timestamp(Date().time + 1000),
-                                                               1,
-                                                               Status.RUNNING.id),
+                                                       Task.newTask(session.sessionId, 1, memberCF),
                                                        listOf(
                                                                LifeParameters.DIASTOLIC_BLOOD_PRESSURE,
                                                                LifeParameters.SYSTOLIC_BLOOD_PRESSURE,
@@ -60,6 +53,7 @@ fun mockLeaderMemberInteractionAndTaskAddition(session: SessionDNS,
 
     val message1 = PayloadWrapper(Services.instanceId(), WSOperations.ADD_MEMBER,
         MembersAdditionNotification(listOf(member)).toJson())
+
     val message2 = PayloadWrapper(Services.instanceId(), WSOperations.ADD_TASK,
         TaskAssignment(member, augmentedTask).toJson())
 
@@ -75,14 +69,7 @@ fun mockLeaderMemberInteractionAndTaskRemoval(session: SessionDNS,
                                               memberWS: WSClient,
                                               member: Member = Member("Member"),
                                               augmentedTask: AugmentedTask = AugmentedTask(
-                                                      Task(
-                                                              taskID,
-                                                              session.sessionId,
-                                                              memberCF,
-                                                              Timestamp(Date().time),
-                                                              Timestamp(Date().time + 1000),
-                                                              1,
-                                                              Status.RUNNING.id),
+                                                      Task.newTask(session.sessionId, 1, memberCF),
                                                       listOf(
                                                               LifeParameters.DIASTOLIC_BLOOD_PRESSURE,
                                                               LifeParameters.SYSTOLIC_BLOOD_PRESSURE,
@@ -104,14 +91,7 @@ fun mockLeaderMemberInteractionAndTaskChange(session: SessionDNS,
                                              memberWS: WSClient,
                                              member: Member = Member("Member"),
                                              augmentedTask: AugmentedTask = AugmentedTask(
-                                                     Task(
-                                                             taskID,
-                                                             session.sessionId,
-                                                             memberCF,
-                                                             Timestamp(Date().time),
-                                                             Timestamp(Date().time + 1000),
-                                                             1,
-                                                             Status.RUNNING.id),
+                                                     Task.newTask(session.sessionId, 1, memberCF, end = Timestamp(Date().time + 2000)),
                                                      listOf(
                                                              LifeParameters.DIASTOLIC_BLOOD_PRESSURE,
                                                              LifeParameters.SYSTOLIC_BLOOD_PRESSURE,
@@ -120,6 +100,8 @@ fun mockLeaderMemberInteractionAndTaskChange(session: SessionDNS,
 
     mockLeaderMemberInteractionAndTaskAddition(session, memberCF, taskID, leaderWS, memberWS)
     augmentedTask.task.statusId = Status.FINISHED.id
+
+    println(augmentedTask)
 
     val message = PayloadWrapper(Services.instanceId(), WSOperations.CHANGE_TASK_STATUS,
         TaskAssignment(member, augmentedTask).toJson())

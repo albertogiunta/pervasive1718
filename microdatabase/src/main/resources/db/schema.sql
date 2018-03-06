@@ -54,7 +54,7 @@ CREATE TABLE Role (
 
 CREATE TABLE Session (
     ID BigSerial PRIMARY KEY,
-    PatientCF VarChar(50),
+    PatientCF VarChar(100) UNIQUE,
     LeaderCF VarChar(50),
     StartDate TIMESTAMP,
     EndDate TIMESTAMP,
@@ -62,14 +62,15 @@ CREATE TABLE Session (
 );
 
 CREATE TABLE Task (
-    ID Serial,
+    ID BigSerial PRIMARY KEY,
+    Name VarChar(50),
     SessionID BigInt NOT NULL,
     OperatorCF VarChar(50),
     StartTime TIMESTAMP,
     EndTime TIMESTAMP,
     ActivityID BigInt,
-    StatusID BigInt,
-    CONSTRAINT task_pkey PRIMARY KEY (id, sessionid)
+    StatusID BigInt
+    -- ,CONSTRAINT task_pkey PRIMARY KEY (id, sessionid)
 );
 
 CREATE TABLE TaskStatus (

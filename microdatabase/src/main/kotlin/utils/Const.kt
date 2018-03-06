@@ -81,6 +81,7 @@ object Params {
         const val ACTIVITY_ID = "activityid"
         const val STATUS_ID = "statusid"
         const val SESSION_ID = "sessionid"
+        const val TASK_NAME = "name"
     }
 
     object TaskStatus {

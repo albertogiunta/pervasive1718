@@ -3,10 +3,10 @@
 package model
 
 enum class Status(val id: Int) {
-    RUNNING(2),
     SUSPENDED(1),
-    MONITORING(5),
+    RUNNING(2),
     FINISHED(3),
     ELIMINATED(4),
+    MONITORING(5),
     EMPTY(6)
 }

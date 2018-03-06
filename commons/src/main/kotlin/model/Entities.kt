@@ -36,14 +36,14 @@ data class Member(val userCF: String) {
     }
 }
 
-data class Task @JvmOverloads constructor(var id: Int = 0, val sessionId: Int, val operatorCF: String, @KlaxonDate val startTime: Timestamp, @KlaxonDate val endTime: Timestamp? = null, val activityId: Int, var statusId: Int) {
+data class Task @JvmOverloads constructor(var id: Int = 0, val name: String, val sessionId: Int, val operatorCF: String, @KlaxonDate val startTime: Timestamp, @KlaxonDate val endTime: Timestamp? = null, val activityId: Int, var statusId: Int) {
 
     companion object {
         fun emptyTask(): Task =
-                Task(EmptyTask.emptyTaskId, EmptyTask.emptySessionId, EmptyTask.emptyTaskOperatorId, EmptyTask.emptyTaskStartTime, EmptyTask.emptyTaskEndTime, EmptyTask.emptyTaskActivityId, EmptyTask.emptyTaskStatusId)
+                Task(EmptyTask.emptyTaskId, EmptyTask.emptyTaskName, EmptyTask.emptySessionId, EmptyTask.emptyTaskOperatorId, EmptyTask.emptyTaskStartTime, EmptyTask.emptyTaskEndTime, EmptyTask.emptyTaskActivityId, EmptyTask.emptyTaskStatusId)
 
         fun defaultTask(): Task =
-            Task(1, -1, "CF a casissimo", Timestamp(Date().time), Timestamp(Date().time + 1000), 1, Status.RUNNING.id)
+                Task(1, "Task", -1, "CF", Timestamp(Date().time), Timestamp(Date().time + 1000), 1, Status.RUNNING.id)
     }
 }
 
