@@ -54,10 +54,6 @@ class TaskController private constructor(private val ws: WSTaskServer,
                 activityList = handlingGetResponse<Activity>(responseString).toMutableList()
             }
         }
-        fun getLastTaskId(){
-            taskList = handlingGetResponse("$dbUrl/task/history".httpGet().responseString())
-            lastId = taskList.map {it.id}.max()?: 0
-        }
     }
 
 
@@ -97,8 +93,6 @@ class TaskController private constructor(private val ws: WSTaskServer,
 
     fun addTask(augmentedTask: AugmentedTask, member: Member) {
         if (members.containsKey(member)) {
-            lastId++
-            augmentedTask.task.id = lastId
             taskMemberAssociationList.add(TaskMemberAssociation.create(augmentedTask.task, member))
             val message = PayloadWrapper(Services.instanceId(),
                     WSOperations.ADD_TASK, TaskAssignment(member, augmentedTask).toJson())
@@ -111,7 +105,7 @@ class TaskController private constructor(private val ws: WSTaskServer,
     }
 
     fun removeTask(augmentedTask: AugmentedTask) {
-        with(taskMemberAssociationList.firstOrNull { it.task.id == augmentedTask.task.id }) {
+        with(taskMemberAssociationList.firstOrNull { it.task.name == augmentedTask.task.name }) {
             this?.let {
                 taskMemberAssociationList.remove(this)
                 val message = PayloadWrapper(Services.instanceId(),
@@ -128,7 +122,7 @@ class TaskController private constructor(private val ws: WSTaskServer,
     }
 
     fun changeTaskStatus(augmentedTask: AugmentedTask, session: Session) {
-        with(taskMemberAssociationList.firstOrNull { it.task.activityId == augmentedTask.task.activityId}) {
+        with(taskMemberAssociationList.firstOrNull { it.task.name == augmentedTask.task.name}) {
             this?.let {
                 it.task.statusId = augmentedTask.task.statusId
                 val message = PayloadWrapper(Services.instanceId(),

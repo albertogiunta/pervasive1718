@@ -15,7 +15,6 @@ object MicroTaskBootstrap {
         }
 
         TaskController.fetchActivitiesFromDB()
-        TaskController.getLastTaskId()
         println("[${Services.TASK_HANDLER.executableName}] FINISHED bootstrap")
     }
 }
