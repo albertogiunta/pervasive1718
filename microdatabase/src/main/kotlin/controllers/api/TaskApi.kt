@@ -32,7 +32,7 @@ object TaskApi {
                 task.sessionId,
                 task.operatorCF,
                 task.startTime,
-                task.endTime,
+//                task.endTime,
                 task.activityId,
                 task.statusId)
         }
@@ -45,6 +45,18 @@ object TaskApi {
             it.updateTaskStatus(
                 request.params(Params.Task.ID).toInt(),
                 request.params(Params.Task.STATUS_ID).toInt())
+        }
+        return response.okCreated()
+    }
+
+    fun updateTaskEndtime(request: Request, response: Response): String {
+        val task: Task = Klaxon().fieldConverter(KlaxonDate::class, dateConverter).parse<Task>(request.body())
+                ?: return response.badRequest()
+        JdbiConfiguration.INSTANCE.jdbi.useExtension<TaskDao, SQLException>(TaskDao::class.java)
+        {
+            it.updateTaskEndtime(
+                    task.id,
+                    task.endTime!!)
         }
         return response.okCreated()
     }

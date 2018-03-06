@@ -56,7 +56,7 @@ class TaskController private constructor(private val ws: WSTaskServer,
         }
         fun getLastTaskId(){
             taskList = handlingGetResponse("$dbUrl/task/history".httpGet().responseString())
-            lastId=taskList.last().id
+            lastId = taskList.map {it.id}.max()?: 0
         }
     }
 
@@ -136,6 +136,7 @@ class TaskController private constructor(private val ws: WSTaskServer,
                 ws.sendMessage(members[member]!!, message)
                 ws.sendMessage(leader.second, message)
                 "$dbUrl/task/${it.task.id}/status/${it.task.statusId}".httpPut().responseString()
+                "$dbUrl/task/stopTask".httpPut().body(augmentedTask.task.toJson()).responseString()
             } ?: ws.sendMessage(session, PayloadWrapper(Services.instanceId(),
                     WSOperations.ERROR_CHANGING_STATUS, StatusError(augmentedTask.task.statusId, augmentedTask.task, "").toJson()))
         }

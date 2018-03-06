@@ -82,6 +82,7 @@ object RouteController {
             path("/${Params.Task.TABLE_NAME}") {
                 post("/add", applicationJson) { TaskApi.addTask(request, response) }
                 put("/:id/status/:statusId", applicationJson) { TaskApi.updateTaskStatus(request, response) }
+                put("/stopTask", applicationJson) { TaskApi.updateTaskEndtime(request, response) }
                 delete("/:id", applicationJson) { TaskApi.removeTaskStatus(request, response) }
                 get("/all", applicationJson) { TaskApi.getCurrentSessionTasks(request, response) }
                 get("/history", applicationJson) { TaskApi.getAllTasks(request, response) }

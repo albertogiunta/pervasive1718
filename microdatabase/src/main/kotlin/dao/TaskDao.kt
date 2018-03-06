@@ -17,11 +17,10 @@ import java.sql.Timestamp
 
 interface TaskDao {
 
-    @SqlUpdate("INSERT INTO $TABLE_NAME($SESSION_ID, $OPERATOR_CF, $START_TIME, $END_TIME, $ACTIVITY_ID, $STATUS_ID) VALUES (:$SESSION_ID, :$OPERATOR_CF, :$START_TIME, :$END_TIME, :$ACTIVITY_ID, :$STATUS_ID)")
+    @SqlUpdate("INSERT INTO $TABLE_NAME($SESSION_ID, $OPERATOR_CF, $START_TIME, $ACTIVITY_ID, $STATUS_ID) VALUES (:$SESSION_ID, :$OPERATOR_CF, :$START_TIME, :$ACTIVITY_ID, :$STATUS_ID)")
     fun insertNewTask(@Bind(SESSION_ID) sessionId: Int = SessionController.getCurrentSessionId(),
                       @Bind(OPERATOR_CF) operatorCF: String,
                       @Bind(START_TIME) startTime: Timestamp,
-                      @Bind(END_TIME) endTime: Timestamp,
                       @Bind(ACTIVITY_ID) activityId: Int,
                       @Bind(STATUS_ID) statusId: Int)
 
@@ -29,6 +28,11 @@ interface TaskDao {
     fun updateTaskStatus(@Bind(ID) id: Int,
                          @Bind(STATUS_ID) statusId: Int,
                          @Bind(SESSION_ID) sessionId: Int = SessionController.getCurrentSessionId())
+
+    @SqlUpdate("UPDATE $TABLE_NAME SET $END_TIME = (:$END_TIME) WHERE $SESSION_ID = (:$SESSION_ID) AND $ID = (:$ID)")
+    fun updateTaskEndtime(@Bind(ID) id: Int,
+                          @Bind(END_TIME) endTime: Timestamp,
+                          @Bind(SESSION_ID) sessionId: Int = SessionController.getCurrentSessionId())
 
     @SqlUpdate("DELETE FROM $TABLE_NAME WHERE $SESSION_ID = (:$SESSION_ID) AND $ID = (:$ID)")
     fun removeTask(@Bind(ID) taskId: Int,
