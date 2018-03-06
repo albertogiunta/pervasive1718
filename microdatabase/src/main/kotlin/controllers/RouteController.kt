@@ -83,14 +83,14 @@ object RouteController {
                 post("/add", applicationJson) { TaskApi.addTask(request, response) }
                 put("/:id/status/:statusId", applicationJson) { TaskApi.updateTaskStatus(request, response) }
 
-                put("/update/:${Params.Task.TASK_NAME}/status/:${Params.Task.STATUS_ID}", applicationJson) { TaskApi.updateTaskStatusByName(request, response) }
+                put("/update/status", applicationJson) { TaskApi.updateTaskStatusByName(request, response) }
 
-                put("/stop/:${Params.Task.TASK_NAME}", applicationJson) { TaskApi.updateTaskEndtimeByName(request, response) }
+                put("/stop", applicationJson) { TaskApi.updateTaskEndtimeByName(request, response) }
 
                 put("/stopTask", applicationJson) { TaskApi.updateTaskEndtime(request, response) }
                 delete("/:id", applicationJson) { TaskApi.removeTaskStatus(request, response) }
 
-                delete("/remove/:${Params.Task.TASK_NAME}", applicationJson) { TaskApi.removeTaskStatusByName(request, response) }
+                delete("/remove/byName", applicationJson) { TaskApi.removeTaskStatusByName(request, response) }
 
                 get("/all", applicationJson) { TaskApi.getCurrentSessionTasks(request, response) }
                 get("/history", applicationJson) { TaskApi.getAllTasks(request, response) }

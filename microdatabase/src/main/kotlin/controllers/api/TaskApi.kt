@@ -16,8 +16,6 @@ import utils.KlaxonDate
 import utils.dateConverter
 import utils.toJson
 import java.sql.SQLException
-import java.sql.Timestamp
-import java.util.*
 
 object TaskApi {
 
@@ -53,11 +51,16 @@ object TaskApi {
     }
 
     fun updateTaskStatusByName(request: Request, response: Response): String {
+        val task: Task = Klaxon().fieldConverter(KlaxonDate::class, dateConverter).parse<Task>(request.body())
+                ?: return response.badRequest()
+
         JdbiConfiguration.INSTANCE.jdbi.useExtension<TaskDao, SQLException>(TaskDao::class.java)
         {
             it.updateTaskStatusByName(
-                    request.params(Params.Task.TASK_NAME),
-                    request.params(Params.Task.STATUS_ID).toInt())
+                    task.name,
+                    task.statusId,
+                    task.sessionId
+            )
         }
         return response.okCreated()
     }
@@ -65,6 +68,7 @@ object TaskApi {
     fun updateTaskEndtime(request: Request, response: Response): String {
         val task: Task = Klaxon().fieldConverter(KlaxonDate::class, dateConverter).parse<Task>(request.body())
                 ?: return response.badRequest()
+
         JdbiConfiguration.INSTANCE.jdbi.useExtension<TaskDao, SQLException>(TaskDao::class.java)
         {
             it.updateTaskEndtime(
@@ -75,12 +79,14 @@ object TaskApi {
     }
 
     fun updateTaskEndtimeByName(request: Request, response: Response): String {
+        val task: Task = Klaxon().fieldConverter(KlaxonDate::class, dateConverter).parse<Task>(request.body())
+                ?: return response.badRequest()
 
         JdbiConfiguration.INSTANCE.jdbi.useExtension<TaskDao, SQLException>(TaskDao::class.java)
         {
             it.updateTaskEndtimeByName(
-                    request.params(Params.Task.TASK_NAME),
-                    Timestamp(Date().time)
+                    task.name,
+                    task.endTime!!
             )
         }
         return response.okCreated()
@@ -95,9 +101,12 @@ object TaskApi {
     }
 
     fun removeTaskStatusByName(request: Request, response: Response): String {
+        val task: Task = Klaxon().fieldConverter(KlaxonDate::class, dateConverter).parse<Task>(request.body())
+                ?: return response.badRequest()
+
         JdbiConfiguration.INSTANCE.jdbi.useExtension<TaskDao, SQLException>(TaskDao::class.java)
         {
-            it.removeTaskByName(request.params(Params.Task.TASK_NAME))
+            it.removeTaskByName(task.name)
         }
         return response.okCreated()
     }
