@@ -39,12 +39,12 @@ function trasposeTable() {
 function updateTable() {
 
     // Finding unique operators
-    var uniqueOperators = findUnique(taskList, t => t.operatorId)
+    var uniqueOperators = findUnique(taskList, t => t.operatorCF)
 
     // Sorting operators from the busiest to the less busy for avoiding a visual bug.
     for (var i in uniqueOperators) {
-        var operatorId = uniqueOperators[i].operatorId;
-        uniqueOperators[i].operatorTaskList = taskList.filter(t => t.operatorId == operatorId)
+        var operatorCF = uniqueOperators[i].operatorCF;
+        uniqueOperators[i].operatorTaskList = taskList.filter(t => t.operatorCF == operatorCF)
     }
     uniqueOperators.sort(function (a, b ) {
         return b.operatorTaskList.length - a.operatorTaskList.length
@@ -54,8 +54,8 @@ function updateTable() {
     var tableHeaderString = "";
     // Printing operator names
     for (var i in uniqueOperators) {
-        var operatorId = uniqueOperators[i].operatorId;
-        tableHeaderString = tableHeaderString + "<th id=\""+uniqueOperators[i].operatorId+"\">" + uniqueOperators[i].operatorName + " " + uniqueOperators[i].operatorSurname + "</th>";
+        var operatorCF = uniqueOperators[i].operatorCF;
+        tableHeaderString = tableHeaderString + "<th id=\""+uniqueOperators[i].operatorCF+"\">" + uniqueOperators[i].operatorName + " " + uniqueOperators[i].operatorSurname + "</th>";
     }
     document.getElementById("names").innerHTML = tableHeaderString;
     document.getElementById("tasks").innerHTML = "";
@@ -63,7 +63,7 @@ function updateTable() {
     // Writing all operator's tasks, one operator per time, IN ROW    
     for (var i in uniqueOperators) {
         var tableBodyString = "<tr>";
-        var operatorId = uniqueOperators[i].operatorId;
+        var operatorCF = uniqueOperators[i].operatorCF;
         
         for (var j in uniqueOperators[i].operatorTaskList) {
             tableBodyString = tableBodyString + "<td>" + uniqueOperators[i].operatorTaskList[j].name+ "</td>";
@@ -77,11 +77,9 @@ function updateTable() {
     trasposeTable()
 }
 
-var portService = 8400 + sessionExchange
-
 (function pollService() {
     $.ajax({
-        url: 'http://localhost:'+portService+'/api/all',
+        url: 'http://localhost:'+ (8400 + sessionExchange)+'/api/all',
         type: "GET",
         contentType: "application/json",
         dataType: 'json',
