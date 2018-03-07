@@ -114,7 +114,6 @@ class TaskController private constructor(private val ws: WSTaskServer,
                 ws.sendMessage(leader.second, message)
 
                 "$dbUrl/task/remove/${it.task.name}".httpDelete().responseString()
-                "$visorUrl/remove/${it.task.name}".httpDelete().responseString()
             }
                     ?: ws.sendMessage(leader.second, PayloadWrapper(Services.instanceId(),
                             WSOperations.ERROR_REMOVING_TASK, TaskError(augmentedTask.task, "").toJson()))
@@ -130,8 +129,10 @@ class TaskController private constructor(private val ws: WSTaskServer,
                 ws.sendMessage(members[member]!!, message)
                 ws.sendMessage(leader.second, message)
                 "$dbUrl/task/update/${it.task.name}/status/${it.task.statusId}".httpPut().responseString()
-                if(augmentedTask.task.statusId == Status.FINISHED.id)
+                if(augmentedTask.task.statusId == Status.FINISHED.id) {
                     "$dbUrl/task/stopTask".httpPut().body(augmentedTask.task.toJson()).responseString()
+                    "$visorUrl/remove/${it.task.name}".httpDelete().responseString()
+                }
             } ?: ws.sendMessage(session, PayloadWrapper(Services.instanceId(),
                     WSOperations.ERROR_CHANGING_STATUS, StatusError(augmentedTask.task.statusId, augmentedTask.task, "").toJson()))
         }
