@@ -77,9 +77,11 @@ function updateTable() {
     trasposeTable()
 }
 
+var portService = 8400 + sessionExchange
+
 (function pollService() {
     $.ajax({
-        url: 'http://localhost:+'sessionExchange'+/api/all',
+        url: 'http://localhost:'+portService+'/api/all',
         type: "GET",
         contentType: "application/json",
         dataType: 'json',

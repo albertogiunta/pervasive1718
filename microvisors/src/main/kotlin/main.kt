@@ -19,8 +19,8 @@ fun main(args: Array<String>) {
         }
         val usrDir = rootProjectPath.replace("\\", "/").replace(" ", "%20")
         val separator = "/"
-        var path = "file:" + separator + separator + separator + usrDir + "microvisors" + separator + "src" + separator + "index.html"
-        var uri = URI(path)
+        val path = "file:" + separator + separator + separator + usrDir + "microvisors" + separator + "src" + separator + "index.html"
+        val uri = URI(path)
         println(uri)
 //        Desktop.getDesktop().browse(uri)
     }
