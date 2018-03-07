@@ -129,7 +129,7 @@ class TaskController private constructor(private val ws: WSTaskServer,
                         WSOperations.CHANGE_TASK_STATUS, TaskAssignment(member, this.task.toAugmentedTask(activityList)).toJson())
                 ws.sendMessage(members[member]!!, message)
                 ws.sendMessage(leader.second, message)
-                "$dbUrl/task/${it.task.id}/status/${it.task.statusId}".httpPut().responseString()
+                "$dbUrl/task/update/${it.task.name}/status/${it.task.statusId}".httpPut().responseString()
                 if(augmentedTask.task.statusId == Status.FINISHED.id)
                     "$dbUrl/task/stopTask".httpPut().body(augmentedTask.task.toJson()).responseString()
             } ?: ws.sendMessage(session, PayloadWrapper(Services.instanceId(),

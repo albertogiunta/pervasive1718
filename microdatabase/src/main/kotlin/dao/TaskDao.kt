@@ -37,8 +37,8 @@ interface TaskDao {
                                @Bind(STATUS_ID) statusId: Int,
                                @Bind(SESSION_ID) sessionId: Int)
 
-    @SqlUpdate("UPDATE $TABLE_NAME SET $END_TIME = (:$END_TIME) WHERE $SESSION_ID = (:$SESSION_ID) AND $ID = (:$ID)")
-    fun updateTaskEndtime(@Bind(ID) id: Int,
+    @SqlUpdate("UPDATE $TABLE_NAME SET $END_TIME = (:$END_TIME) WHERE $SESSION_ID = (:$SESSION_ID) AND $TASK_NAME = (:$TASK_NAME)")
+    fun updateTaskEndtime(@Bind(TASK_NAME) name: String,
                           @Bind(END_TIME) endTime: Timestamp,
                           @Bind(SESSION_ID) sessionId: Int = SessionController.getCurrentSessionId())
 

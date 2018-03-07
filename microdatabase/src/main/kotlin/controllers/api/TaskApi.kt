@@ -74,7 +74,7 @@ object TaskApi {
         JdbiConfiguration.INSTANCE.jdbi.useExtension<TaskDao, SQLException>(TaskDao::class.java)
         {
             it.updateTaskEndtime(
-                    task.id,
+                    task.name,
                     task.endTime!!)
         }
         return response.okCreated()
