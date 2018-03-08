@@ -88,6 +88,8 @@ class TaskController private constructor(private val ws: WSTaskServer,
             }
         }
         val message = PayloadWrapper(Services.instanceId(), WSOperations.LIST_MEMBERS_RESPONSE, AugmentedMembersAdditionNotification(list).toJson())
+        println("Services"+Services.instanceId())
+        println("Ciao"+leader.second)
         ws.sendMessage(leader.second, message)
     }
 
