@@ -2,7 +2,9 @@ package controller.logic
 
 import config.Services
 import controller.CoreController
+import io.reactivex.subjects.Subject
 import model.*
+import networking.ws.NotifierReferenceManager
 import networking.ws.RelayService
 import org.eclipse.jetty.websocket.api.Session
 import utils.GsonInitializer
@@ -13,7 +15,8 @@ object SubscriptionHandler {
 
     fun runOn(core: CoreController) {
 
-        val wsSubject = core.subjects.getSubjectsOf<Pair<Session, String>>(RelayService::class.java.name)!!
+        val wsRef : RelayService? = NotifierReferenceManager[RelayService::class.java.name]
+        val wsSubject: Subject<Pair<Session, String>> = core.subjects.getSubjectsOf(RelayService::class.java.name)!!
 
         wsSubject.map { (session, json) ->
             Logger.info(json)
@@ -35,7 +38,7 @@ object SubscriptionHandler {
                                 Response(200, wrapper.toJson()).toJson()
                         )
 
-                        session.remote.sendString(okResponse.toJson())
+                        wsRef?.sendMessage(session, okResponse)
 
                     }
                     WSOperations.CLOSE -> {
@@ -50,14 +53,11 @@ object SubscriptionHandler {
                                 Response(200, wrapper.toJson()).toJson()
                         )
 
-                        if (session.isOpen) {
-                            try {
-                                session.remote.sendString(okResponse.toJson())
-                            } catch (ex : Exception) {
-                                Logger.error("Remote Endpoint has been closed...")
-                            }
+                        try {
+                            wsRef?.sendMessage(session, okResponse)
+                        } catch (ex : Exception) {
+                            Logger.error("Remote Endpoint has been closed...")
                         }
-
                     }
                     else -> {
                         Logger.info(this.toString())
@@ -66,5 +66,7 @@ object SubscriptionHandler {
                 }
             }
         }
+
+        Logger.info("SubscriptionHandler Loaded... @${wsRef?.name}")
     }
 }

@@ -10,13 +10,13 @@ import org.junit.Test
 /**
  * Created by Matteo Gabellini on 12/02/18.
  */
-class SubjectsControllerTest {
+class SubjectsManagerTest {
 
-    lateinit var subjCont: SubjectsController<String, Any>
+    lateinit var subjCont: SubjectsManager<String, Any>
 
     @Before
     fun setUp() {
-        subjCont = NotifierSubjectsController()
+        subjCont = NotifierSubjectsManager()
     }
 
     @Test

@@ -4,6 +4,8 @@ import com.github.kittinunf.fuel.httpGet
 import config.Services
 import controller.CoreController
 import model.*
+import networking.ws.NotifierReferenceManager
+import networking.ws.RelayService
 import org.eclipse.jetty.websocket.api.WebSocketException
 import utils.GsonInitializer
 import utils.Logger
@@ -22,12 +24,7 @@ object NotificationHandler {
     @Volatile
     private var boundaries: Map<LifeParameters, List<Boundary>> = emptyMap()
 
-    fun runOn(core: CoreController) {
-
-        val publishSubjects = core.topics.activeTopics().map {
-            it to core.subjects.getSubjectsOf<String>(it.toString())!!
-        }.toMap()
-
+    init {
         // Continuously try to connect to the DB Micro-Service in order to retrieve necessary data
         Thread {
             while (boundaries.isEmpty()) {
@@ -46,6 +43,15 @@ object NotificationHandler {
                 Thread.sleep(2000L)
             }
         }.start()
+    }
+
+    fun runOn(core: CoreController) {
+
+        val wsRef : RelayService? = NotifierReferenceManager[RelayService::class.java.name]
+
+        val publishSubjects = core.topics.activeTopics().map {
+            it to core.subjects.getSubjectsOf<String>(it.toString())!!
+        }.toMap()
 
         // Check OUT OF BOUND Heath Parameters
         publishSubjects.forEach { lifeParameter, subject ->
@@ -76,9 +82,9 @@ object NotificationHandler {
             }.subscribe {message ->
                 // Do Stuff, if necessary but SubscriptionHandler is MANDATORY.
                 core.topics[lifeParameter]?.forEach { member ->
-                    if (core.sessions.contains(member) && core.sessions[member]?.isOpen!!) {
+                    if (core.sessions.contains(member)) {
                         try {
-                            core.sessions[member]?.remote?.sendString(message.toJson()) // Notify the WS, dunno how.
+                            wsRef?.sendMessage(core.sessions[member]!!, message)
                         } catch (ex : Exception) {
                             when(ex) {
                                 is WebSocketException -> {
@@ -93,5 +99,7 @@ object NotificationHandler {
                 }
             }
         }
+
+        Logger.info("NotificationHandler Loaded... @${wsRef?.name}")
     }
 }

@@ -3,7 +3,7 @@ package controller
 import model.LifeParameters
 import model.Member
 
-interface TopicsController<T, L> {
+interface TopicsManager<T, L> {
 
     fun add(topic: T, listener: L)
 
@@ -23,9 +23,9 @@ interface TopicsController<T, L> {
 
 }
 
-class NotifierTopicsController(private var topics: Set<LifeParameters>) : TopicsController<LifeParameters, Member> {
+class NotifierTopicsManager(private var topics: Set<LifeParameters>) : TopicsManager<LifeParameters, Member> {
 
-    val topicsMap = mutableMapOf<LifeParameters, MutableSet<Member>>()
+    private val topicsMap = mutableMapOf<LifeParameters, MutableSet<Member>>()
 
     init {
         topics.forEach {

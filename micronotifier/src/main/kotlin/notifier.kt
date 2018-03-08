@@ -3,6 +3,7 @@ import config.Services
 import controller.CoreController
 import networking.rabbit.AMQPClient
 import networking.ws.RelayService
+import spark.Spark
 import utils.Logger
 import utils.acronymWithSession
 
@@ -16,7 +17,13 @@ fun main(args: Array<String>) {
 
     val core = CoreController.singleton()
             .withoutLogging()
-            .loadHandlers()
+            .loadSubjects()
+
+    WSServerInitializer.init(RelayService::class.java, Services.NOTIFIER.port, Services.NOTIFIER.root())
+
+    Spark.awaitInitialization()
+
+    core.loadHandlers()
 
     val amqp = AMQPClient(core.topics.activeTopics().map { it to it.acronymWithSession(args) }.toMap())
 
@@ -25,8 +32,6 @@ fun main(args: Array<String>) {
     }.toMap()
 
     amqp.publishOn(publishSubjects)
-
-    WSServerInitializer.init(RelayService::class.java, Services.NOTIFIER.port, Services.NOTIFIER.root())
 
     if (Services.isNotStartedIndependently()) {
         waitInitAndNotifyToMicroSession(Services.NOTIFIER.executableName, Services.instanceId())

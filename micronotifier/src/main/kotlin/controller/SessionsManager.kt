@@ -10,7 +10,7 @@ import org.eclipse.jetty.websocket.api.Session
  * @param S session type
  * (ex: websocket,...)
  * */
-interface SessionsController<L, S> {
+interface SessionsManager<L, S> {
 
     /**
      * Set a new session for the specified listener
@@ -46,16 +46,16 @@ interface SessionsController<L, S> {
     fun close()
 }
 
-class NotifierSessionsController : SessionsController<Member, Session> {
+class NotifierSessionsManager : SessionsManager<Member, Session> {
 
-    val sessionsMap = mutableMapOf<Member, Session>()
+    private val sessionsMap = mutableMapOf<Member, Session>()
 
     @Synchronized
     override fun get(listener: Member): Session? = sessionsMap[listener]
 
     @Synchronized
     override operator fun set(listener: Member, session: Session) {
-        sessionsMap.put(listener, session)
+        sessionsMap[listener] = session
     }
 
     @Synchronized

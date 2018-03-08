@@ -10,19 +10,22 @@ import org.eclipse.jetty.websocket.api.Session
 
 class CoreController private constructor(topicSet: Set<LifeParameters>) {
 
-    var topics: TopicsController<LifeParameters, Member> = NotifierTopicsController(topicSet)
-    var sessions: SessionsController<Member, Session> = NotifierSessionsController()
-    var subjects: SubjectsController<String, Any> = NotifierSubjectsController()
+    var topics: TopicsManager<LifeParameters, Member> = NotifierTopicsManager(topicSet)
+    var sessions: SessionsManager<Member, Session> = NotifierSessionsManager()
+    var subjects: SubjectsManager<String, Any> = NotifierSubjectsManager()
 
     @Volatile
     var useLogging = false
 
-    init {
+    init { }
+
+    fun loadSubjects() : CoreController {
         subjects.createNewSubjectFor<Pair<Session, String>>(RelayService::class.java.name)
 
         topics.activeTopics().map {
             it to subjects.createNewSubjectFor<String>(it.toString())
         }
+        return this
     }
 
     fun withLogging() : CoreController {

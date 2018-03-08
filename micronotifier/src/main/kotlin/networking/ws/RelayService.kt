@@ -23,8 +23,9 @@ class RelayService : WSServer<Payload<WSOperations, String>>("Notifier") {
 
     private val wsSubject: Subject<Pair<Session, String>>
 
-
     init {
+        NotifierReferenceManager[RelayService::class.java.name] = this
+
         wsSubject = core.subjects.getSubjectsOf(RelayService::class.java.name)!!
     }
 

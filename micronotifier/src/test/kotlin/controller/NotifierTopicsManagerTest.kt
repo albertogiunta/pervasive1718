@@ -7,9 +7,9 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
-class NotifierTopicsControllerTest {
+class NotifierTopicsManagerTest {
 
-    val controller = NotifierTopicsController(LifeParameters.values().toSet())
+    val controller = NotifierTopicsManager(LifeParameters.values().toSet())
 
     val m1 = Member("Mario Rossi")
     val m2 = Member("Padre Pio")

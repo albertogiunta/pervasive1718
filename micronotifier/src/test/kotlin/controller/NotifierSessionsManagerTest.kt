@@ -8,16 +8,16 @@ import org.junit.Test
 import java.net.InetSocketAddress
 
 
-class NotifierSessionsControllerTest {
+class NotifierSessionsManagerTest {
 
-    lateinit var sesCon: SessionsController<Member, Session>
+    lateinit var sesCon: SessionsManager<Member, Session>
 
     val m1 = Member("Mario Rossi")
     val m2 = Member("Padre Pio")
 
     @Before
     fun setUp() {
-        sesCon = NotifierSessionsController()
+        sesCon = NotifierSessionsManager()
     }
 
     @Test
