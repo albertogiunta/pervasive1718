@@ -84,6 +84,7 @@ class MMtoMNtoClientTest {
         Thread.sleep(5000L)
 
         client.sendMessage(closeMsg.toJson())
+        Thread.sleep(2000L)
         client.closeBlocking()
 
         if (checkBuffer.isEmpty()) {
@@ -123,6 +124,7 @@ class MMtoMNtoClientTest {
         Thread.sleep(10000L)
 
         client.sendMessage(closeMsg.toJson())
+        Thread.sleep(2000L)
         client.closeBlocking()
 
         if (checkBuffer.isEmpty()) {
@@ -161,6 +163,7 @@ class MMtoMNtoClientTest {
         client.sendMessage(subscriptionWrapper.toJson())
         Thread.sleep(2000L)
         client.sendMessage(closeMsg.toJson())
+        Thread.sleep(2000L)
         client.closeBlocking()
 
         if (checkBuffer.isEmpty()) {

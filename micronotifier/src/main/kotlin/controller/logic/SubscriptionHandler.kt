@@ -19,7 +19,6 @@ object SubscriptionHandler {
         val wsSubject: Subject<Pair<Session, String>> = core.subjects.getSubjectsOf(RelayService::class.java.name)!!
 
         wsSubject.map { (session, json) ->
-            Logger.info(json)
             session to GsonInitializer.fromJson(json, PayloadWrapper::class.java)
         }.subscribe { (session, wrapper) ->
             with(wrapper) {
