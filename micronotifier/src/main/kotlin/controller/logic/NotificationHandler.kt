@@ -24,9 +24,15 @@ object NotificationHandler {
     @Volatile
     private var boundaries: Map<LifeParameters, List<Boundary>> = emptyMap()
 
-    init {
+    init { }
+
+    fun runOn(core: CoreController) {
+
         // Continuously try to connect to the DB Micro-Service in order to retrieve necessary data
         Thread {
+
+            Logger.info("Connecting to $boundaryURL")
+
             while (boundaries.isEmpty()) {
                 boundaryURL.httpGet().responseString().third.fold(success = {
                     Logger.info("Loaded boundaries from DB")
@@ -37,15 +43,12 @@ object NotificationHandler {
                                 LifeParameters.Utils.getByID(it.healthParameterId) to it
                             }.groupBy({it.first}, {it.second})
                 }, failure = {
-                    Logger.info("Error Loading boundaries from DB... Retrying")
+                    Logger.info("Error Loading boundaries from DB... Retrying connecting to $boundaryURL")
                 })
 
                 Thread.sleep(2000L)
             }
         }.start()
-    }
-
-    fun runOn(core: CoreController) {
 
         val wsRef : RelayService? = NotifierReferenceManager[RelayService::class.java.name]
 

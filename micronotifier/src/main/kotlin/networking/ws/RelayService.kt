@@ -13,7 +13,7 @@ import utils.Logger
 import utils.toJson
 
 /**
- * A WS class which
+ * A WS class which relays and publish Messages
  *
  */
 @WebSocket
@@ -40,7 +40,7 @@ class RelayService : WSServer<Payload<WSOperations, String>>("Notifier") {
 
     override fun onMessage(session: Session, message: String) {
         super.onMessage(session, message)
-        wsSubject.onNext(Pair(session, message))
+        wsSubject.onNext(session to message)
     }
 
     @OnWebSocketError

@@ -1,6 +1,10 @@
 package networking.ws
 
-import org.eclipse.jetty.websocket.api.annotations.WebSocket
+import WSServerInitializer
+import config.ConfigLoader
+import config.Services
+import model.Member
+import spark.Spark
 
 interface ReferenceManager<N, R> {
     operator fun <T : R> set(refId : N, refObj : T) : R?
@@ -10,7 +14,7 @@ interface ReferenceManager<N, R> {
 }
 
 @Suppress("UNCHECKED_CAST")
-object NotifierReferenceManager : ReferenceManager<String, @WebSocket Any> {
+object NotifierReferenceManager : ReferenceManager<String, Any> {
 
     private val wsReferences = mutableMapOf<String, Any>()
 
@@ -25,5 +29,24 @@ object NotifierReferenceManager : ReferenceManager<String, @WebSocket Any> {
 
     @Synchronized
     override fun contains(refId: String): Boolean = wsReferences.contains(refId)
+
+}
+
+fun main(args: Array<String>) {
+
+    ConfigLoader().load(args)
+
+    WSServerInitializer.init(RelayService::class.java, Services.NOTIFIER.port, Services.NOTIFIER.root())
+
+    NotifierReferenceManager["Pippo"] = Member("kdfkjdsflkdsf")
+
+    val ws : () -> RelayService? = {NotifierReferenceManager[RelayService::class.java.name]}
+
+    Spark.awaitInitialization()
+
+    (0 until 20).forEach {
+        println(ws()?.name)
+        Thread.sleep(100L)
+    }
 
 }
