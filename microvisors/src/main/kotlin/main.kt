@@ -22,7 +22,7 @@ fun main(args: Array<String>) {
         val path = "file:" + separator + separator + separator + usrDir + "microvisors" + separator + "src" + separator + "index.html"
         val uri = URI(path)
         println(uri)
-//        Desktop.getDesktop().browse(uri)
+        Desktop.getDesktop().browse(uri)
     }
     RouteController.initRoutes()
 //    waitInitAndNotifyToMicroSession(args[0].toInt())
