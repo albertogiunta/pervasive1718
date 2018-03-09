@@ -27,17 +27,10 @@ object RouteController {
         port(Services.SESSION.port)
 
         path("/session") {
-            // la fa il leader, deve sapere quale chiudere (la prende dalla new)
-            delete("/close/:sessionid", Utils.RESTParams.applicationJson) { SessionApi.closeSessionById(request, response) }
-
-            // la fanno i membri, e deve restituire la lista di interventi disponibili
-            get("/all", Utils.RESTParams.applicationJson) { SessionApi.listAllSessions(request, response) }
-
-            // la fa il leader e restituisce la lista dei suoi interventi aperti
-            get("/all/:leadercf", Utils.RESTParams.applicationJson) { SessionApi.listAllOpenSessionsByLeaderCF(request, response) }
-
-            // la fanno i vari microservices per notificare il
+            get("", Utils.RESTParams.applicationJson) { SessionApi.listAllSessions(request, response) }
+            get("/:leadercf", Utils.RESTParams.applicationJson) { SessionApi.listAllOpenSessionsByLeaderCF(request, response) }
             get("/acknowledge/:instanceid", Utils.RESTParams.applicationJson) { SessionApi.acknowledgeReadyService(request, response) }
+            delete("/:sessionid", Utils.RESTParams.applicationJson) { SessionApi.closeSessionById(request, response) }
         }
     }
 }
@@ -62,7 +55,7 @@ object SessionApi {
 
         val dbUrl = createMicroDatabaseAddress(session.second)
 
-        "$dbUrl/api/session/close/$sessionId".httpDelete().responseString().third.fold(
+        "$dbUrl/api/session/$sessionId".httpDelete().responseString().third.fold(
             success = {
                 instance[session.second] = false
                 sessions.removeAll { it.first.sessionId == sessionId }
@@ -95,7 +88,7 @@ object SessionApi {
 
             val instanceDetails = sessionInitializationParamsWithInstanceId[instanceId]!!
 
-            "$dbUrl/api/session/add/patientcf/${instanceDetails.first.patientCF}/leadercf/${instanceDetails.first.leaderCF}/instanceid/$instanceId".httpPost().responseString().third.fold(
+            "$dbUrl/api/session/patientcf/${instanceDetails.first.patientCF}/leadercf/${instanceDetails.first.leaderCF}/instanceid/$instanceId".httpPost().responseString().third.fold(
                 success = {
                     val session = Klaxon().fieldConverter(KlaxonDate::class, dateConverter).parse<model.Session>(it)
                     if (session != null) {

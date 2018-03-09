@@ -22,16 +22,16 @@ interface LogDao {
                           @Bind(SESSION_ID) sessionId: Int = SessionController.getCurrentSessionId())
 
     @SqlQuery("SELECT * FROM $TABLE_NAME WHERE $SESSION_ID = (:$SESSION_ID)")
-    fun selectAllLogEntries(@Bind(SESSION_ID) sessionId: Int = SessionController.getCurrentSessionId()): List<Log>
+    fun selectAllLogEntriesBySessionId(@Bind(SESSION_ID) sessionId: Int): List<Log>
 
     @SqlQuery("SELECT * FROM $TABLE_NAME WHERE $SESSION_ID = (:$SESSION_ID) AND $HEALTH_PARAMETER_ID = (:$HEALTH_PARAMETER_ID)")
     fun selectAllLogEntriesByHealthParameterId(@Bind(HEALTH_PARAMETER_ID) healthParameterId: Int,
-                                               @Bind(SESSION_ID) sessionId: Int = SessionController.getCurrentSessionId()): List<Log>
+                                               @Bind(SESSION_ID) sessionId: Int): List<Log>
 
     @SqlQuery("SELECT * FROM $TABLE_NAME WHERE $SESSION_ID = (:$SESSION_ID) AND $HEALTH_PARAMETER_ID = (:$HEALTH_PARAMETER_ID) AND $HEALTH_PARAMETER_VALUE > (:$HEALTH_PARAMETER_VALUE)")
     fun selectAllLogEntriesByHealthParameterAboveThreshold(@Bind(HEALTH_PARAMETER_ID) healthParameterId: Int,
                                                            @Bind(HEALTH_PARAMETER_VALUE) value: Int,
-                                                           @Bind(SESSION_ID) sessionId: Int = SessionController.getCurrentSessionId()): List<Log>
+                                                           @Bind(SESSION_ID) sessionId: Int): List<Log>
 
 //    @SqlUpdate("DELETE FROM $TABLE_NAME")
 //    fun deleteAllLogs()

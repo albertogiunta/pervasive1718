@@ -4,12 +4,17 @@ package controllers.api
 
 import JdbiConfiguration
 import Params
+import badRequest
+import com.beust.klaxon.Klaxon
 import controllers.SubscriberController
 import dao.SessionDao
+import model.Activity
 import model.Session
 import ok
 import spark.Request
 import spark.Response
+import utils.KlaxonDate
+import utils.dateConverter
 import utils.toJson
 import java.sql.SQLException
 import java.sql.Timestamp
@@ -21,34 +26,22 @@ object SessionApi {
      * Adds a session
      */
     fun addSession(request: Request, response: Response): String {
-        var session = Session(patientCF = "", leaderCF = "", startDate = Timestamp(Date().time))
+        var session: Session = Klaxon().fieldConverter(KlaxonDate::class, dateConverter).parse<Session>(request.body())
+                ?: return response.badRequest()
+        session.startDate = Timestamp(Date().time)
         JdbiConfiguration.INSTANCE.jdbi.useExtension<SessionDao, SQLException>(SessionDao::class.java)
         {
-            session = it.insertNewSession(
-                request.params(Params.Session.PATIENT_CF),
-                request.params(Params.Session.LEADER_CF),
-                Timestamp(Date().time),
-                request.params(Params.Session.INSTANCE_ID).toInt())
-        }
-
-        SubscriberController.startListeningMonitorsForInstanceId(session)
-
-        return session.toJson()
-    }
-
-    /**
-     * Adds a session
-     */
-    fun addSessionWithId(request: Request, response: Response): String {
-        var session = Session(patientCF = "", leaderCF = "", startDate = Timestamp(Date().time))
-        JdbiConfiguration.INSTANCE.jdbi.useExtension<SessionDao, SQLException>(SessionDao::class.java)
-        {
-            session = it.insertNewSessionWithId(
-                    request.params(Params.Session.SESSION_ID).toInt(),
-                    request.params(Params.Session.PATIENT_CF),
-                    request.params(Params.Session.LEADER_CF),
-                    Timestamp(Date().time),
-                    request.params(Params.Session.INSTANCE_ID).toInt())
+            session =
+                when { session.id == -1 -> it.insertNewSession(session.patientCF,
+                        session.leaderCF,
+                        session.startDate,
+                        session.microServiceInstanceId)
+                    else -> it.insertNewSessionWithId(session.id,
+                        session.patientCF,
+                        session.leaderCF,
+                        session.startDate,
+                        session.microServiceInstanceId)
+            }
         }
 
         SubscriberController.startListeningMonitorsForInstanceId(session)
