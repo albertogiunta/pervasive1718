@@ -1,11 +1,11 @@
 package controller.logic
 
+import WSLogger
 import config.Services
 import controller.CoreController
 import model.PayloadWrapper
 import model.Update
 import model.WSOperations
-import networking.ws.NotifierReferenceManager
 import networking.ws.RelayService
 import org.eclipse.jetty.websocket.api.WebSocketException
 import utils.Logger
@@ -14,8 +14,6 @@ import utils.toJson
 object RelayHandler {
 
     fun runOn(core: CoreController) {
-
-        val wsRef : RelayService? = NotifierReferenceManager[RelayService::class.java.name]
 
         val publishSubjects = core.topics.activeTopics().map {
             it to core.subjects.getSubjectsOf<String>(it.toString())!!
@@ -38,7 +36,7 @@ object RelayHandler {
                     core.topics[lifeParameter]?.forEach { member ->
                         if (core.sessions.contains(member)) {
                             try {
-                                wsRef?.sendMessage(core.sessions[member]!!, message)
+                                RelayService.sendMessage(WSLogger.WSUser.SERVER, config.Services.NOTIFIER.wsPath, core.sessions[member]!!, message)
                             } catch (ex : Exception) {
                                 when(ex) {
                                     is WebSocketException -> {
@@ -55,6 +53,6 @@ object RelayHandler {
             }
         }
 
-        Logger.info("RelayHandler Loaded... @${wsRef?.name}")
+        Logger.info("RelayHandler Loaded...")
     }
 }

@@ -1,10 +1,10 @@
 package controller.logic
 
+import WSLogger
 import config.Services
 import controller.CoreController
 import io.reactivex.subjects.Subject
 import model.*
-import networking.ws.NotifierReferenceManager
 import networking.ws.RelayService
 import org.eclipse.jetty.websocket.api.Session
 import utils.GsonInitializer
@@ -15,7 +15,6 @@ object SubscriptionHandler {
 
     fun runOn(core: CoreController) {
 
-        val wsRef : RelayService? = NotifierReferenceManager[RelayService::class.java.name]
         val wsSubject: Subject<Pair<Session, String>> = core.subjects.getSubjectsOf(RelayService::class.java.name)!!
 
         wsSubject.map { (session, json) ->
@@ -37,7 +36,7 @@ object SubscriptionHandler {
                                 Response(200, wrapper.toJson()).toJson()
                         )
 
-                        wsRef?.sendMessage(session, okResponse)
+                        RelayService.sendMessage(WSLogger.WSUser.SERVER, config.Services.NOTIFIER.wsPath, session, okResponse)
 
                     }
                     WSOperations.CLOSE -> {
@@ -53,7 +52,7 @@ object SubscriptionHandler {
                         )
 
                         try {
-                            wsRef?.sendMessage(session, okResponse)
+                            RelayService.sendMessage(WSLogger.WSUser.SERVER, config.Services.NOTIFIER.wsPath, session, okResponse)
                         } catch (ex : Exception) {
                             Logger.error("Remote Endpoint has been closed...")
                         }
@@ -66,6 +65,6 @@ object SubscriptionHandler {
             }
         }
 
-        Logger.info("SubscriptionHandler Loaded... @${wsRef?.name}")
+        Logger.info("SubscriptionHandler Loaded...")
     }
 }

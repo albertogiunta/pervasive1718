@@ -13,9 +13,9 @@ import java.io.IOException
 
 @Suppress("unused", "UNUSED_PARAMETER", "MemberVisibilityCanBePrivate")
 @WebSocket
-open class WSServer<in P> (val name: String = "WS"){
+open class WSServer<in P>(val name: String = "WS", val wsUser: WSLogger.WSUser = WSLogger.WSUser.SERVER) {
 
-    private val log = WSLogger(WSLogger.WSUser.SERVER, name)
+    private val log = WSLogger(wsUser, name)
 
     @OnWebSocketConnect
     open fun onConnect(session: Session) {

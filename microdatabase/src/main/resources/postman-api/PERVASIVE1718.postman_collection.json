@@ -1,999 +1,804 @@
 {
-  "info": {
-    "name": "PERVASIVE1718",
-    "_postman_id": "e9c16e23-db0e-d86a-7aea-ee3d5d2b8f20",
-    "description": "",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-  },
-  "item": [
-    {
-      "name": "MICRODB",
-      "description": "",
-      "item": [
-        {
-          "name": "ACTIVITY",
-          "description": "",
-          "item": [
-            {
-              "name": "ALL ACTIVITIES",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "body": {},
-                "url": {
-                  "raw": "{{prefix}}/activity/all",
-                  "host": [
-                    "{{prefix}}"
-                  ],
-                  "path": [
-                    "activity",
-                    "all"
-                  ]
-                },
-                "description": ""
-              },
-              "response": []
-            },
-            {
-              "name": "ACTIVITY BY ID",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "body": {},
-                "url": {
-                  "raw": "{{prefix}}/activity/2",
-                  "host": [
-                    "{{prefix}}"
-                  ],
-                  "path": [
-                    "activity",
-                    "2"
-                  ]
-                },
-                "description": ""
-              },
-              "response": []
-            },
-            {
-              "name": "ADD ACTIVITY",
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"activityTypeId\",\n    \"activityTypeId\": 3,\n    \"acronym\": \"TST\",\n    \"boundaryId\": 0\n}"
-                },
-                "url": {
-                  "raw": "{{prefix}}/activity/add",
-                  "host": [
-                    "{{prefix}}"
-                  ],
-                  "path": [
-                    "activity",
-                    "add"
-                  ]
-                },
-                "description": ""
-              },
-              "response": []
-            }
-          ],
-          "_postman_isSubFolder": true
-        },
-        {
-          "name": "ACTIVITY TYPE",
-          "description": "",
-          "item": [
-            {
-              "name": "ALL ACTIVITY TYPES",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "body": {},
-                "url": {
-                  "raw": "{{prefix}}/activitytype/all",
-                  "host": [
-                    "{{prefix}}"
-                  ],
-                  "path": [
-                    "activitytype",
-                    "all"
-                  ]
-                },
-                "description": ""
-              },
-              "response": []
-            },
-            {
-              "name": "ACITIVITY BY ID",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "body": {},
-                "url": {
-                  "raw": "{{prefix}}/activitytype/1",
-                  "host": [
-                    "{{prefix}}"
-                  ],
-                  "path": [
-                    "activitytype",
-                    "1"
-                  ]
-                },
-                "description": ""
-              },
-              "response": []
-            },
-            {
-              "name": "ADD ACTIVITY TYPE",
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"Laddroga\"\n}"
-                },
-                "url": {
-                  "raw": "{{prefix}}/activitytype/add",
-                  "host": [
-                    "{{prefix}}"
-                  ],
-                  "path": [
-                    "activitytype",
-                    "add"
-                  ]
-                },
-                "description": ""
-              },
-              "response": []
-            }
-          ],
-          "_postman_isSubFolder": true
-        },
-        {
-          "name": "BOUNDARY",
-          "description": "",
-          "item": [
-            {
-              "name": "ALL BOUNDARIES",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "body": {},
-                "url": {
-                  "raw": "{{prefix}}/boundary/all",
-                  "host": [
-                    "{{prefix}}"
-                  ],
-                  "path": [
-                    "boundary",
-                    "all"
-                  ]
-                },
-                "description": ""
-              },
-              "response": []
-            },
-            {
-              "name": "BOUNDARY BY ID",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "body": {},
-                "url": {
-                  "raw": "{{prefix}}/boundary/1",
-                  "host": [
-                    "{{prefix}}"
-                  ],
-                  "path": [
-                    "boundary",
-                    "1"
-                  ]
-                },
-                "description": ""
-              },
-              "response": []
-            },
-            {
-              "name": "ADD BOUNDARY",
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/javascript"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n\t\"healthParameterId\": 1,\n\t\"activityId\": 1,\n\t\"upperBound\": 1.0,\n\t\"lowerBound\": 1.0 \n}"
-                },
-                "url": {
-                  "raw": "{{prefix}}/boundary/add",
-                  "host": [
-                    "{{prefix}}"
-                  ],
-                  "path": [
-                    "boundary",
-                    "add"
-                  ]
-                },
-                "description": ""
-              },
-              "response": []
-            }
-          ],
-          "_postman_isSubFolder": true
-        },
-        {
-          "name": "HEALTH PARAMETER",
-          "description": "",
-          "item": [
-            {
-              "name": "ALL HEALTH PARAMETERS",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "body": {},
-                "url": {
-                  "raw": "{{prefix}}/healthparameter/all",
-                  "host": [
-                    "{{prefix}}"
-                  ],
-                  "path": [
-                    "healthparameter",
-                    "all"
-                  ]
-                },
-                "description": ""
-              },
-              "response": []
-            },
-            {
-              "name": "HEALTH PARAMETER BY ID",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "body": {},
-                "url": {
-                  "raw": "{{prefix}}/healthparameter/1",
-                  "host": [
-                    "{{prefix}}"
-                  ],
-                  "path": [
-                    "healthparameter",
-                    "1"
-                  ]
-                },
-                "description": ""
-              },
-              "response": []
-            },
-            {
-              "name": "ADD HEALTH PARAMETER",
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": " {\n        \"name\": \"testone sterone\",\n        \"acronym\": \"CIAONE\"\n    }"
-                },
-                "url": {
-                  "raw": "{{prefix}}/healthparameter/add",
-                  "host": [
-                    "{{prefix}}"
-                  ],
-                  "path": [
-                    "healthparameter",
-                    "add"
-                  ]
-                },
-                "description": ""
-              },
-              "response": []
-            }
-          ],
-          "_postman_isSubFolder": true
-        },
-        {
-          "name": "ROLE",
-          "description": "",
-          "item": [
-            {
-              "name": "ALL ROLES",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "body": {},
-                "url": {
-                  "raw": "{{prefix}}/role/all",
-                  "host": [
-                    "{{prefix}}"
-                  ],
-                  "path": [
-                    "role",
-                    "all"
-                  ]
-                },
-                "description": ""
-              },
-              "response": []
-            },
-            {
-              "name": "ROLE BY ID",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "body": {},
-                "url": {
-                  "raw": "{{prefix}}/role/40",
-                  "host": [
-                    "{{prefix}}"
-                  ],
-                  "path": [
-                    "role",
-                    "40"
-                  ]
-                },
-                "description": ""
-              },
-              "response": []
-            },
-            {
-              "name": "ADD ROLE",
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "name",
-                    "value": "alberto",
-                    "disabled": true
-                  },
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{ \"name\": \"test name\", \"healthParameterId\": 10, \"healthParameterValue\": 10.0 }"
-                },
-                "url": {
-                  "raw": "{{prefix}}/log/add",
-                  "host": [
-                    "{{prefix}}"
-                  ],
-                  "path": [
-                    "log",
-                    "add"
-                  ]
-                },
-                "description": ""
-              },
-              "response": []
-            }
-          ],
-          "_postman_isSubFolder": true
-        },
-        {
-          "name": "LOG",
-          "description": "",
-          "item": [
-            {
-              "name": "LOG BY HEALTHPARAMETERID WITH MIN THRESHOLD",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "body": {},
-                "url": {
-                  "raw": "{{prefix}}/log/healthParameter/123/minthreshold/1",
-                  "host": [
-                    "{{prefix}}"
-                  ],
-                  "path": [
-                    "log",
-                    "healthParameter",
-                    "123",
-                    "minthreshold",
-                    "1"
-                  ]
-                },
-                "description": ""
-              },
-              "response": []
-            },
-            {
-              "name": "ADD LOG",
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": " {\n        \"name\": \"mariuccio grande e bello\",\n        \"healthParameterId\": 123,\n        \"healthParameterValue\": 1212\n}"
-                },
-                "url": {
-                  "raw": "{{prefix}}/log/add",
-                  "host": [
-                    "{{prefix}}"
-                  ],
-                  "path": [
-                    "log",
-                    "add"
-                  ]
-                },
-                "description": ""
-              },
-              "response": []
-            },
-            {
-              "name": "ALL LOGS",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "body": {},
-                "url": {
-                  "raw": "{{prefix}}/log/all",
-                  "host": [
-                    "{{prefix}}"
-                  ],
-                  "path": [
-                    "log",
-                    "all"
-                  ]
-                },
-                "description": ""
-              },
-              "response": []
-            },
-            {
-              "name": "LOG BY HEALTHPARAMETER ID",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "body": {},
-                "url": {
-                  "raw": "{{prefix}}/log/healthParameter/54",
-                  "host": [
-                    "{{prefix}}"
-                  ],
-                  "path": [
-                    "log",
-                    "healthParameter",
-                    "54"
-                  ]
-                },
-                "description": ""
-              },
-              "response": []
-            }
-          ],
-          "_postman_isSubFolder": true
-        },
-        {
-          "name": "OPERATOR",
-          "description": "",
-          "item": [
-            {
-              "name": "ALL OPERATORS",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "body": {},
-                "url": {
-                  "raw": "{{prefix}}/operator/all",
-                  "host": [
-                    "{{prefix}}"
-                  ],
-                  "path": [
-                    "operator",
-                    "all"
-                  ]
-                },
-                "description": ""
-              },
-              "response": []
-            },
-            {
-              "name": "OPERATOR BY ID",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "body": {},
-                "url": {
-                  "raw": "{{prefix}}/operator/1",
-                  "host": [
-                    "{{prefix}}"
-                  ],
-                  "path": [
-                    "operator",
-                    "1"
-                  ]
-                },
-                "description": ""
-              },
-              "response": []
-            },
-            {
-              "name": "ADD OPERATOR",
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/javascript"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n\t\"name\": \"albert\",\n\t\"surname\": \"giunt\",\n\t\"roleId\": 1,\n\t\"isActive\": true  \n}"
-                },
-                "url": {
-                  "raw": "{{prefix}}/operator/add",
-                  "host": [
-                    "{{prefix}}"
-                  ],
-                  "path": [
-                    "operator",
-                    "add"
-                  ]
-                },
-                "description": ""
-              },
-              "response": []
-            }
-          ],
-          "event": [
-            {
-              "listen": "prerequest",
-              "script": {
-                "id": "b625167d-3510-4fea-88ad-7092136d00fd",
-                "type": "text/javascript",
-                "exec": [
-                  ""
-                ]
-              }
-            },
-            {
-              "listen": "test",
-              "script": {
-                "id": "df8c502a-e15f-4fc8-95eb-0e14653fb4af",
-                "type": "text/javascript",
-                "exec": [
-                  ""
-                ]
-              }
-            }
-          ],
-          "_postman_isSubFolder": true
-        },
-        {
-          "name": "SESSION",
-          "description": "",
-          "item": [
-            {
-              "name": "ADD SESSION",
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": ""
-                },
-                "url": {
-                  "raw": "{{prefix}}/session/add/nonhaivisto/instanceid/0",
-                  "host": [
-                    "{{prefix}}"
-                  ],
-                  "path": [
-                    "session",
-                    "add",
-                    "nonhaivisto",
-                    "instanceid",
-                    "0"
-                  ]
-                },
-                "description": ""
-              },
-              "response": []
-            },
-            {
-              "name": "REMOVE SESSION",
-              "request": {
-                "method": "DELETE",
-                "header": [],
-                "body": {},
-                "url": {
-                  "raw": "{{prefix}}/session/close/1",
-                  "host": [
-                    "{{prefix}}"
-                  ],
-                  "path": [
-                    "session",
-                    "close",
-                    "1"
-                  ]
-                },
-                "description": ""
-              },
-              "response": []
-            },
-            {
-              "name": "LIST ALL SESSIONS",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "body": {},
-                "url": {
-                  "raw": "{{prefix}}/session/all",
-                  "host": [
-                    "{{prefix}}"
-                  ],
-                  "path": [
-                    "session",
-                    "all"
-                  ]
-                },
-                "description": ""
-              },
-              "response": []
-            },
-            {
-              "name": "GET ALL OPEN SESSIONS",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "body": {},
-                "url": {
-                  "raw": "{{prefix}}/session/all/open",
-                  "host": [
-                    "{{prefix}}"
-                  ],
-                  "path": [
-                    "session",
-                    "all",
-                    "open"
-                  ]
-                },
-                "description": ""
-              },
-              "response": []
-            }
-          ],
-          "_postman_isSubFolder": true
-        },
-        {
-          "name": "TASK",
-          "description": "",
-          "item": [
-            {
-              "name": "ALL TASKS",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "body": {},
-                "url": {
-                  "raw": "{{prefix}}/task/all",
-                  "host": [
-                    "{{prefix}}"
-                  ],
-                  "path": [
-                    "task",
-                    "all"
-                  ]
-                },
-                "description": ""
-              },
-              "response": []
-            },
-            {
-              "name": "TASK BY ID",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "body": {},
-                "url": {
-                  "raw": "{{prefix}}/task/1",
-                  "host": [
-                    "{{prefix}}"
-                  ],
-                  "path": [
-                    "task",
-                    "1"
-                  ]
-                },
-                "description": ""
-              },
-              "response": []
-            },
-            {
-              "name": "ADD TASK",
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/javascript"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n\t\"operatorId\": 1,\n\t\"startTime\": \"Feb 2, 2018 10:53:28 AM\",\n\t\"endTime\": \"Feb 2, 2018 10:58:28 AM\",\n\t\"activityId\": 1,\n\t\"statusId\": 1\n}"
-                },
-                "url": {
-                  "raw": "{{prefix}}/task/add",
-                  "host": [
-                    "{{prefix}}"
-                  ],
-                  "path": [
-                    "task",
-                    "add"
-                  ]
-                },
-                "description": ""
-              },
-              "response": []
-            },
-            {
-              "name": "CHANGE TASK STATUS ID",
-              "request": {
-                "method": "PUT",
-                "header": [],
-                "body": {},
-                "url": {
-                  "raw": "{{prefix}}/task/1/status/3",
-                  "host": [
-                    "{{prefix}}"
-                  ],
-                  "path": [
-                    "task",
-                    "1",
-                    "status",
-                    "3"
-                  ]
-                },
-                "description": ""
-              },
-              "response": []
-            },
-            {
-              "name": "DELETE TASK",
-              "request": {
-                "method": "DELETE",
-                "header": [],
-                "body": {},
-                "url": {
-                  "raw": "{{prefix}}/task/1",
-                  "host": [
-                    "{{prefix}}"
-                  ],
-                  "path": [
-                    "task",
-                    "1"
-                  ]
-                },
-                "description": ""
-              },
-              "response": []
-            }
-          ],
-          "event": [
-            {
-              "listen": "prerequest",
-              "script": {
-                "id": "b625167d-3510-4fea-88ad-7092136d00fd",
-                "type": "text/javascript",
-                "exec": [
-                  ""
-                ]
-              }
-            },
-            {
-              "listen": "test",
-              "script": {
-                "id": "df8c502a-e15f-4fc8-95eb-0e14653fb4af",
-                "type": "text/javascript",
-                "exec": [
-                  ""
-                ]
-              }
-            }
-          ],
-          "_postman_isSubFolder": true
-        },
-        {
-          "name": "TASK STATUS",
-          "description": "",
-          "item": [
-            {
-              "name": "ALL TASK STATUSES",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "body": {},
-                "url": {
-                  "raw": "{{prefix}}/taskstatus/all",
-                  "host": [
-                    "{{prefix}}"
-                  ],
-                  "path": [
-                    "taskstatus",
-                    "all"
-                  ]
-                },
-                "description": ""
-              },
-              "response": []
-            },
-            {
-              "name": "TASK STATUS BY ID",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "body": {},
-                "url": {
-                  "raw": "{{prefix}}/taskstatus/1",
-                  "host": [
-                    "{{prefix}}"
-                  ],
-                  "path": [
-                    "taskstatus",
-                    "1"
-                  ]
-                },
-                "description": ""
-              },
-              "response": []
-            },
-            {
-              "name": "ADD TASK STATUS",
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/javascript"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n        \"name\": \"chitemmuort\"\n}"
-                },
-                "url": {
-                  "raw": "{{prefix}}/taskstatus/add",
-                  "host": [
-                    "{{prefix}}"
-                  ],
-                  "path": [
-                    "taskstatus",
-                    "add"
-                  ]
-                },
-                "description": ""
-              },
-              "response": []
-            }
-          ],
-          "event": [
-            {
-              "listen": "prerequest",
-              "script": {
-                "id": "b625167d-3510-4fea-88ad-7092136d00fd",
-                "type": "text/javascript",
-                "exec": [
-                  ""
-                ]
-              }
-            },
-            {
-              "listen": "test",
-              "script": {
-                "id": "df8c502a-e15f-4fc8-95eb-0e14653fb4af",
-                "type": "text/javascript",
-                "exec": [
-                  ""
-                ]
-              }
-            }
-          ],
-          "_postman_isSubFolder": true
-        }
-      ]
-    },
-    {
-      "name": "MICROSESSION",
-      "description": "",
-      "item": [
-        {
-          "name": "NEW SESSION BY PAT ID",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {},
-            "url": {
-              "raw": "{{phost}}:8000/session/new/gntlrt94b21g479u",
-              "host": [
-                "{{phost}}"
-              ],
-              "port": "8000",
-              "path": [
-                "session",
-                "new",
-                "gntlrt94b21g479u"
-              ]
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "LIST ALL SESSIONS",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "body": {},
-            "url": {
-              "raw": "{{phost}}:8000/session/all",
-              "host": [
-                "{{phost}}"
-              ],
-              "port": "8000",
-              "path": [
-                "session",
-                "all"
-              ]
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "CLOSE SESSION BY PAT ID",
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "body": {},
-            "url": {
-              "raw": "{{phost}}:8000/session/close/1",
-              "host": [
-                "{{phost}}"
-              ],
-              "port": "8000",
-              "path": [
-                "session",
-                "close",
-                "1"
-              ]
-            },
-            "description": ""
-          },
-          "response": []
-        }
-      ]
-    }
-  ]
+	"variables": [],
+	"info": {
+		"name": "PERVASIVE1718",
+		"_postman_id": "be67a1dc-6f75-afb3-aef9-11ad4ecaeb75",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "MICRODB",
+			"description": "",
+			"item": [
+				{
+					"name": "ACTIVITY",
+					"description": "",
+					"item": [
+						{
+							"name": "GET ALL ACTIVITIES",
+							"request": {
+								"url": "{{prefix}}/activity",
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "ACTIVITY BY ID",
+							"request": {
+								"url": "{{prefix}}/activity/2",
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "ADD ACTIVITIES",
+							"request": {
+								"url": "{{prefix}}/activity",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"name\":\"Fibroscopia\",\n\t\"activityTypeId\":3,\n\t\"acronym\":\"FbrScp\",\n\t\"healthParameterIds\":[1,3,6]\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "ACTIVITY TYPE",
+					"description": "",
+					"item": [
+						{
+							"name": "ALL ACTIVITY TYPES",
+							"request": {
+								"url": "{{prefix}}/activitytype",
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "ACITIVITY BY ID",
+							"request": {
+								"url": "{{prefix}}/activitytype/1",
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "ADD ACTIVITY TYPE",
+							"request": {
+								"url": "{{prefix}}/activitytype",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Laddroga più potente\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "BOUNDARY",
+					"description": "",
+					"item": [
+						{
+							"name": "ALL BOUNDARIES",
+							"request": {
+								"url": "{{prefix}}/boundary",
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "BOUNDARY BY ID",
+							"request": {
+								"url": "{{prefix}}/boundary/1",
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "ADD BOUNDARY",
+							"request": {
+								"url": "{{prefix}}/boundary",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"healthParameterId\":4,\n\t\"upperBound\":37.0,\n\t\"lowerBound\":36.0,\n\t\"lightWarningOffset\":0.5,\n\t\"status\":\"Normale\",\n\t\"itsGood\":true,\n\t\"minAge\":0.0,\n\t\"maxAge\":999.0\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "HEALTH PARAMETER",
+					"description": "",
+					"item": [
+						{
+							"name": "ALL HEALTH PARAMETERS",
+							"request": {
+								"url": "{{prefix}}/healthparameter",
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "HEALTH PARAMETER BY ID",
+							"request": {
+								"url": "{{prefix}}/healthparameter/1",
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "ADD HEALTH PARAMETER",
+							"request": {
+								"url": "{{prefix}}/healthparameter",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"testone sterone\",\n    \"acronym\": \"CIAONE\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "ROLE",
+					"description": "",
+					"item": [
+						{
+							"name": "ALL ROLES",
+							"request": {
+								"url": "{{prefix}}/role",
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "ROLE BY ID",
+							"request": {
+								"url": "{{prefix}}/role/40",
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "ADD ROLE",
+							"request": {
+								"url": "{{prefix}}/role",
+								"method": "POST",
+								"header": [
+									{
+										"key": "name",
+										"value": "alberto",
+										"description": "",
+										"disabled": true
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{ \n\t\"name\": \"PASQUALONE DELLA GIG\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "LOG",
+					"description": "",
+					"item": [
+						{
+							"name": "ALL LOGS",
+							"request": {
+								"url": "{{prefix}}/log/session/612",
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "LOG BY HEALTHPARAMETERID WITH MIN THRESHOLD",
+							"request": {
+								"url": "{{prefix}}/log/session/612/healthparameter/3/minthreshold/73",
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "LOG BY HEALTHPARAMETER ID",
+							"request": {
+								"url": "{{prefix}}/log/session/612/healthparameter/3",
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "ADD LOG",
+							"request": {
+								"url": "{{prefix}}/log",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": " {\n        \"name\": \"mariuccio grande e bello\",\n        \"healthParameterId\": 123,\n        \"healthParameterValue\": 1212\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "OPERATOR",
+					"description": "",
+					"item": [
+						{
+							"name": "ALL OPERATORS",
+							"request": {
+								"url": "{{prefix}}/operator",
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "OPERATOR BY ID",
+							"request": {
+								"url": "{{prefix}}/operator/1",
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "ADD OPERATOR",
+							"request": {
+								"url": "{{prefix}}/operator",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"operatorCF\": \"albifaschifo\",\n\t\"name\": \"albert\",\n\t\"surname\": \"giunt\",\n\t\"roleId\": 1,\n\t\"isActive\": true  \n}"
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "SESSION",
+					"description": "",
+					"item": [
+						{
+							"name": "LIST ALL SESSIONS",
+							"request": {
+								"url": "{{prefix}}/session",
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "LIST ALL OPEN SESSIONS BY LEADER ID",
+							"request": {
+								"url": "{{prefix}}/session/opensessions/CFLeader212",
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "ADD SESSION",
+							"request": {
+								"url": "{{prefix}}/session",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"id\":6017,\n\t\"patientCF\":\"CFPatiwwt2ty1y\",\n\t\"leaderCF\":\"CFLeader2123\",\n\t\"startDate\":\"Mar 6, 2018 2:50:11 PM\",\n\t\"microServiceInstanceId\":1\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "CLOSE SESSION BY SESSION ID",
+							"request": {
+								"url": "{{prefix}}/session/6016",
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"id\":6016,\n\t\"patientCF\":\"CFPatiwwt2ty1y\",\n\t\"leaderCF\":\"CFLeader2123\",\n\t\"startDate\":\"Mar 6, 2018 2:50:11 PM\",\n\t\"microServiceInstanceId\":1\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "TASK",
+					"description": "",
+					"item": [
+						{
+							"name": "ALL TASKS",
+							"request": {
+								"url": "{{prefix}}/task",
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"id\":22,\"name\":\"S649A34CFLeader212k20180307101805788\",\"sessionId\":649,\"operatorCF\":\"CFLeader212k\",\"startTime\":\"Mar 7, 2018 10:18:05 AM\",\"activityId\":34,\"statusId\":2}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "ALL TASKS BY SESSION ID",
+							"request": {
+								"url": "{{prefix}}/task/session/612",
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"id\":22,\"name\":\"S649A34CFLeader212k20180307101805788\",\"sessionId\":649,\"operatorCF\":\"CFLeader212k\",\"startTime\":\"Mar 7, 2018 10:18:05 AM\",\"activityId\":34,\"statusId\":2}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "TASK BY ID",
+							"request": {
+								"url": "{{prefix}}/task/25",
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "ADD TASK",
+							"request": {
+								"url": "{{prefix}}/task",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/javascript",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"name\": \"S654A54CFGianniPanna212k20180307102917118\",\n\t\"operatorCF\": \"GianniPanna\",\n\t\"sessionId\": 612,\n\t\"startTime\": \"Feb 2, 2018 10:53:28 AM\",\n\t\"activityId\": 1,\n\t\"statusId\": 1\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "UPDATE TASK STATUS BY ID",
+							"request": {
+								"url": "{{prefix}}/task/22",
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"id\":22,\n\t\"name\":\"S649A34CFLeader212k20180307101805788\",\n\t\"sessionId\":649,\n\t\"operatorCF\":\"CFLeader212k\",\n\t\"startTime\":\"Mar 7, 2018 10:18:05 AM\",\n\t\"activityId\":34,\n\t\"statusId\":2\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "UPDATE TASK STATUS BY NAME",
+							"request": {
+								"url": "{{prefix}}/task/name/S649A34CFLeader212k20180307101805788",
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"id\":22,\n\t\"name\":\"S649A34CFLeader212k20180307101805788\",\n\t\"sessionId\":649,\n\t\"operatorCF\":\"CFLeader212k\",\n\t\"startTime\":\"Mar 7, 2018 10:18:05 AM\",\n\t\"activityId\":34,\n\t\"statusId\":3\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "END TASK BY NAME",
+							"request": {
+								"url": "{{prefix}}/task/stop/S649A34CFLeader212k20180307101805788",
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"id\":22,\n\t\"name\":\"S649A34CFLeader212k20180307101805788\",\n\t\"sessionId\":649,\n\t\"operatorCF\":\"CFLeader212k\",\n\t\"startTime\":\"Mar 7, 2018 10:18:05 AM\",\n\t\"activityId\":34,\n\t\"statusId\":3\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE TASK BY ID",
+							"request": {
+								"url": "{{prefix}}/task/53",
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE TASK BY NAME",
+							"request": {
+								"url": "{{prefix}}/task/name/S654A54CFGianniPanna212k20180307102917118",
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "TASK STATUS",
+					"description": "",
+					"item": [
+						{
+							"name": "ALL TASK STATUSES",
+							"request": {
+								"url": "{{prefix}}/taskstatus",
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "TASK STATUS BY ID",
+							"request": {
+								"url": "{{prefix}}/taskstatus/1",
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "ADD TASK STATUS",
+							"request": {
+								"url": "{{prefix}}/taskstatus",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/javascript",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"id\": 1,\n    \"name\": \"chitemmuort\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				}
+			]
+		},
+		{
+			"name": "MICROSESSION",
+			"description": "",
+			"item": [
+				{
+					"name": "LIST ALL SESSIONS",
+					"request": {
+						"url": "{{phost}}:8500/session",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "LIST ALL SESSIONS BY LEADER ID",
+					"request": {
+						"url": "{{phost}}:8500/session/asdasd",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "ACKNOWLEDGE SERVICE STARTUP",
+					"request": {
+						"url": "{{phost}}:8500/session/acknowledge/3",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "CLOSE SESSION BY PAT ID",
+					"request": {
+						"url": "{{phost}}:8500/session/123",
+						"method": "DELETE",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "MICROVISOR",
+			"description": "",
+			"item": [
+				{
+					"name": "GET ALL TASKS",
+					"request": {
+						"url": "{{phost}}:8400/api/tasks",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "ADD TASK",
+					"request": {
+						"url": "{{phost}}:8400/api/tasks",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"taskName\": \"franciccio\",\n\t\"name\": \"franciccione\",\n\t\"operatorCF\": \"salame\",\n\t\"operatorName\": \"di norcia\",\n\t\"operatorSurname\": \"a fette spesse\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "REMOVE TASK",
+					"request": {
+						"url": "{{phost}}:8400/api/tasks/franciccio",
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		}
+	]
 }

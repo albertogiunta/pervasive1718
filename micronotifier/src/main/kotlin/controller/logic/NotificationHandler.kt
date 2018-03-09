@@ -1,10 +1,10 @@
 package controller.logic
 
+import WSLogger
 import com.github.kittinunf.fuel.httpGet
 import config.Services
 import controller.CoreController
 import model.*
-import networking.ws.NotifierReferenceManager
 import networking.ws.RelayService
 import org.eclipse.jetty.websocket.api.WebSocketException
 import utils.GsonInitializer
@@ -18,7 +18,7 @@ object NotificationHandler {
             Services.Utils.Protocols.http,
             Services.Utils.defaultHost,
             Services.DATA_BASE.port,
-            "/api/${Boundary::class.simpleName?.toLowerCase()}/all"
+            "/api/${Boundary::class.simpleName?.toLowerCase()}"
     ).toString()
 
     @Volatile
@@ -49,8 +49,6 @@ object NotificationHandler {
                 Thread.sleep(2000L)
             }
         }.start()
-
-        val wsRef : RelayService? = NotifierReferenceManager[RelayService::class.java.name]
 
         val publishSubjects = core.topics.activeTopics().map {
             it to core.subjects.getSubjectsOf<String>(it.toString())!!
@@ -87,7 +85,7 @@ object NotificationHandler {
                 core.topics[lifeParameter]?.forEach { member ->
                     if (core.sessions.contains(member)) {
                         try {
-                            wsRef?.sendMessage(core.sessions[member]!!, message)
+                            RelayService.sendMessage(WSLogger.WSUser.SERVER, config.Services.NOTIFIER.wsPath, core.sessions[member]!!, message)
                         } catch (ex : Exception) {
                             when(ex) {
                                 is WebSocketException -> {
@@ -103,6 +101,6 @@ object NotificationHandler {
             }
         }
 
-        Logger.info("NotificationHandler Loaded... @${wsRef?.name}")
+        Logger.info("NotificationHandler Loaded...")
     }
 }

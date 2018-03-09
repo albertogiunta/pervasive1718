@@ -4,7 +4,7 @@ import utils.KlaxonDate
 import java.sql.Timestamp
 import java.util.*
 
-data class Session @JvmOverloads constructor(val id: Int = 0, val patientCF: String, val leaderCF: String, @KlaxonDate val startDate: Timestamp = Timestamp(Date().time), @KlaxonDate val endDate: Timestamp? = null, val microServiceInstanceId: Int = 0) {
+data class Session @JvmOverloads constructor(val id: Int = 0, val patientCF: String, val leaderCF: String, @KlaxonDate var startDate: Timestamp = Timestamp(Date().time), @KlaxonDate var endDate: Timestamp? = null, val microServiceInstanceId: Int = 0) {
     companion object {
         fun emptySession(): Session = Session(-1, "-1", leaderCF = "cf a caso", microServiceInstanceId = -1)
     }
@@ -46,6 +46,28 @@ data class Task @JvmOverloads constructor(var id: Int = 0, val name: String, val
                 Task(1, "Task", -1, "CF", Timestamp(Date().time), Timestamp(Date().time + 1000), 1, Status.RUNNING.id)
     }
 }
+
+data class TaskReportEntry constructor(
+        val sessionId: Int,
+        val taskStrId: String,
+        val leaderCF: String,
+        val patientCF: String,
+        val acronym: String,
+        val activityName: String,
+        val relatedHealthParameters: List<String>,
+        @KlaxonDate val startTime: Timestamp,
+        @KlaxonDate val endTime: Timestamp?,
+        val operatorCF: String)
+
+data class LogReportEntry constructor(
+        val sessionId: Int,
+        val taskStrId : String,
+        val leaderCF: String,
+        val patientCF: String,
+        @KlaxonDate val date: Timestamp,
+        val acronym: String,
+        val healthParameter: String,
+        val actualValue: Double)
 
 data class AugmentedMemberFromServer(val userCF: String, val items: MutableList<AugmentedTask> = mutableListOf())
 

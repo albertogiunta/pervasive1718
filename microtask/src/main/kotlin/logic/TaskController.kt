@@ -88,8 +88,6 @@ class TaskController private constructor(private val ws: WSTaskServer,
             }
         }
         val message = PayloadWrapper(Services.instanceId(), WSOperations.LIST_MEMBERS_RESPONSE, AugmentedMembersAdditionNotification(list).toJson())
-        println("Services"+Services.instanceId())
-        println("Ciao"+leader.second)
         ws.sendMessage(leader.second, message)
     }
 
@@ -102,7 +100,7 @@ class TaskController private constructor(private val ws: WSTaskServer,
             ws.sendMessage(leader.second, message)
 
             "$dbUrl/task/add".httpPost().body(augmentedTask.task.toJson()).responseString()
-            "$visorUrl/add".httpPost().body(augmentedTask.task.toVisibleTask(member, activityName = activityList.first { x -> x.id == augmentedTask.task.activityId }.name).toJson()).responseString()
+            "$visorUrl/tasks".httpPost().body(augmentedTask.task.toVisibleTask(member, activityName = activityList.first { x -> x.id == augmentedTask.task.activityId }.name).toJson()).responseString()
         }
     }
 
@@ -133,7 +131,7 @@ class TaskController private constructor(private val ws: WSTaskServer,
                 "$dbUrl/task/update/${it.task.name}/status/${it.task.statusId}".httpPut().responseString()
                 if(augmentedTask.task.statusId == Status.FINISHED.id) {
                     "$dbUrl/task/stopTask".httpPut().body(augmentedTask.task.toJson()).responseString()
-                    "$visorUrl/remove/${it.task.name}".httpDelete().responseString()
+                    "$visorUrl/tasks/${it.task.name}".httpDelete().responseString()
                 }
             } ?: ws.sendMessage(session, PayloadWrapper(Services.instanceId(),
                     WSOperations.ERROR_CHANGING_STATUS, StatusError(augmentedTask.task.statusId, augmentedTask.task, "").toJson()))

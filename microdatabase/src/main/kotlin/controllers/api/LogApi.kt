@@ -51,9 +51,9 @@ object LogApi {
     /**
      * Retrieves all the log entries
      */
-    fun getAllLogEntries(request: Request, response: Response): String {
+    fun getAllLogEntriesBySessionId(request: Request, response: Response): String {
         return JdbiConfiguration.INSTANCE.jdbi.withExtension<List<Log>, LogDao, SQLException>(LogDao::class.java)
-        { it.selectAllLogEntries() }
+        { it.selectAllLogEntriesBySessionId(request.params(Params.Log.SESSION_ID).toInt()) }
             .toJson()
     }
 
@@ -62,7 +62,8 @@ object LogApi {
      */
     fun getAllLogEntriesByHealthParameterId(request: Request, response: Response): String {
         return JdbiConfiguration.INSTANCE.jdbi.withExtension<List<Log>, LogDao, SQLException>(LogDao::class.java)
-        { it.selectAllLogEntriesByHealthParameterId(request.params(Params.Log.HEALTH_PARAMETER_ID).toInt()) }
+        { it.selectAllLogEntriesByHealthParameterId(request.params(Params.Log.HEALTH_PARAMETER_ID).toInt(),
+                request.params(Params.Log.SESSION_ID).toInt()) }
             .toJson()
     }
 
@@ -71,14 +72,10 @@ object LogApi {
      */
     fun getAllLogEntriesByHealthParameterIdAboveValue(request: Request, response: Response): String {
         return JdbiConfiguration.INSTANCE.jdbi.withExtension<List<Log>, LogDao, SQLException>(LogDao::class.java)
-        { it.selectAllLogEntriesByHealthParameterAboveThreshold(request.params(Params.Log.HEALTH_PARAMETER_ID).toInt(), request.params(Params.Log.HEALTH_PARAMETER_VALUE).toInt()) }
+        { it.selectAllLogEntriesByHealthParameterAboveThreshold(request.params(Params.Log.HEALTH_PARAMETER_ID).toInt(),
+                request.params(Params.Log.HEALTH_PARAMETER_VALUE).toInt(),
+                request.params(Params.Log.SESSION_ID).toInt()) }
             .toJson()
     }
-
-//    fun deleteAllLogs(request: Request, response: Response): String {
-//        return JdbiConfiguration.INSTANCE.jdbi.useExtension<LogDao, SQLException>(LogDao::class.java)
-//        { response.ok() }.toJson()
-//    }
-
 }
 

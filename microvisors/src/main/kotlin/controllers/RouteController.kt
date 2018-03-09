@@ -38,9 +38,9 @@ object RouteController {
          * NOTE: Calling APIs is CASE SENSITIVE. Use of camelCase on path definition is then discouraged.
          */
         path("/api") {
-            get("/all", RESTParams.applicationJson) { VisorApi.getAllTasks(request, response) }
-            post("/add", RESTParams.applicationJson) { VisorApi.addTask(request, response) }
-            delete("/remove/:taskName", RESTParams.applicationJson) { VisorApi.removeTask(request, response) }
+            get("/tasks", RESTParams.applicationJson) { VisorApi.getAllTasks(request, response) }
+            post("/tasks", RESTParams.applicationJson) { VisorApi.addTask(request, response) }
+            delete("/tasks/:taskName", RESTParams.applicationJson) { VisorApi.removeTask(request, response) }
         }
     }
 }
