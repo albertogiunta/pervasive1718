@@ -10,6 +10,7 @@ object Params {
         const val START_DATE = "startdate"
         const val END_DATE = "enddate"
         const val INSTANCE_ID = "microserviceinstanceid"
+        const val API_NAME = "sessions"
     }
 
     object Activity {
@@ -19,12 +20,14 @@ object Params {
         const val ACTIVITY_TYPE_ID = "activitytypeid"
         const val ACRONYM = "acronym"
         const val HEALTH_PARAMETER_IDS = "healthparameterids"
+        const val API_NAME = "activities"
     }
 
     object ActivityType {
         const val TABLE_NAME = "activitytype"
         const val ID = "id"
         const val NAME = "name"
+        const val API_NAME = "activitytypes"
     }
 
     object Boundary {
@@ -38,6 +41,7 @@ object Params {
         const val ITS_GOOD = "itsgood"
         const val MIN_AGE = "minage"
         const val MAX_AGE = "maxage"
+        const val API_NAME = "boundaries"
     }
 
     object HealthParameter {
@@ -45,6 +49,7 @@ object Params {
         const val ID = "id"
         const val NAME = "name"
         const val ACRONYM = "acronym"
+        const val API_NAME = "healthparameters"
     }
 
     object Log {
@@ -56,6 +61,7 @@ object Params {
         const val HEALTH_PARAMETER_VALUE = "healthparametervalue"
         const val SESSION_ID = "sessionid"
         const val SESSION = "session"
+        const val API_NAME = "logs"
     }
 
     object Operator {
@@ -65,12 +71,14 @@ object Params {
         const val SURNAME = "surname"
         const val ROLE_ID = "roleid"
         const val IS_ACTIVE = "isactive"
+        const val API_NAME = "operators"
     }
 
     object Role {
         const val TABLE_NAME = "role"
         const val ID = "id"
         const val NAME = "name"
+        const val API_NAME = "roles"
     }
 
     object Task {
@@ -83,12 +91,14 @@ object Params {
         const val STATUS_ID = "statusid"
         const val SESSION_ID = "sessionid"
         const val TASK_NAME = "name"
+        const val API_NAME = "tasks"
     }
 
     object TaskStatus {
         const val TABLE_NAME = "taskstatus"
         const val ID = "id"
         const val NAME = "name"
+        const val API_NAME = "taskstatuses"
     }
 }
 

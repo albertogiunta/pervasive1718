@@ -9,7 +9,7 @@ fun waitInitAndNotifyToMicroSession(serviceName: String, instanceId: Int) {
     println("[$serviceName] looping & waiting on microsession")
     Spark.awaitInitialization()
     while (configNotCompleted) {
-        "http://localhost:${Services.SESSION.port}/session/acknowledge/$instanceId"
+        "http://localhost:${Services.SESSION.port}/sessions/acknowledge/$instanceId"
             .httpGet()
             .responseString()
             .third

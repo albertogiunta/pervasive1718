@@ -24,41 +24,41 @@ object RouteController {
          */
         path("/api") {
 
-            path("/${Params.Activity.TABLE_NAME}") {
+            path("/${Params.Activity.API_NAME}") {
                 get("", applicationJson) { ActivityApi.getAllActivities(request, response) }
                 get("/:id", applicationJson) { ActivityApi.getActivityById(request, response) }
                 get("/type/:activitytypeid", applicationJson) { ActivityApi.getActivitiesByActivityTypeId(request, response) }
                 post("", applicationJson) { ActivityApi.addActivity(request, response) }
             }
 
-            path("/${Params.ActivityType.TABLE_NAME}") {
+            path("/${Params.ActivityType.API_NAME}") {
                 get("", applicationJson) { ActivityTypeApi.getAllActivityTypes(request, response) }
                 get("/:id", applicationJson) { ActivityTypeApi.getActivityTypeById(request, response) }
                 post("", applicationJson) { ActivityTypeApi.addActivityType(request, response) }
             }
 
-            path("/${Params.Boundary.TABLE_NAME}") {
+            path("/${Params.Boundary.API_NAME}") {
                 get("", applicationJson) { BoundaryApi.getAllBoundaries(request, response) }
                 get("/:id", applicationJson) { BoundaryApi.getBoundaryById(request, response) }
                 post("", applicationJson) { BoundaryApi.addBoundary(request, response) }
             }
 
-            path("/${Params.HealthParameter.TABLE_NAME}") {
+            path("/${Params.HealthParameter.API_NAME}") {
                 get("", applicationJson) { HealthParameterApi.getAllHealthParameters(request, response) }
                 get("/:id", applicationJson) { HealthParameterApi.getHealthParameterById(request, response) }
                 post("", applicationJson) { HealthParameterApi.addHealthParameter(request, response) }
             }
 
-            path("/${Params.Role.TABLE_NAME}") {
+            path("/${Params.Role.API_NAME}") {
                 get("", applicationJson) { RoleApi.getAllRoles(request, response) }
                 get("/:id", applicationJson) { RoleApi.getRoleById(request, response) }
                 post("", applicationJson) { RoleApi.addRole(request, response) }
             }
 
-            path("/${Params.Log.TABLE_NAME}") {
+            path("/${Params.Log.API_NAME}") {
                 path("/session/:sessionid") {
                     get("", applicationJson) { LogApi.getAllLogEntriesBySessionId(request, response) }
-                    path("/${Params.HealthParameter.TABLE_NAME}") {
+                    path("/${Params.HealthParameter.API_NAME}") {
                         get("/:${Params.Log.HEALTH_PARAMETER_ID}", applicationJson) { LogApi.getAllLogEntriesByHealthParameterId(request, response) }
                         get("/:${Params.Log.HEALTH_PARAMETER_ID}/minthreshold/:${Params.Log.HEALTH_PARAMETER_VALUE}", applicationJson) { LogApi.getAllLogEntriesByHealthParameterIdAboveValue(request, response) }
                     }
@@ -66,20 +66,20 @@ object RouteController {
                 post("", applicationJson) { LogApi.addLogEntry(request, response) }
             }
 
-            path("/${Params.Operator.TABLE_NAME}") {
+            path("/${Params.Operator.API_NAME}") {
                 get("", applicationJson) { OperatorApi.getAllOperators(request, response) }
                 get("/:id", applicationJson) { OperatorApi.getOperatorById(request, response) }
                 post("", applicationJson) { OperatorApi.addOperator(request, response) }
             }
 
-            path("/${Params.Session.TABLE_NAME}") {
+            path("/${Params.Session.API_NAME}") {
                 get("", applicationJson) { SessionApi.getAllSessions(request, response) }
                 get("/opensessions/:${Params.Session.LEADER_CF}", applicationJson) { SessionApi.getAllOpenSessionsByLeaderCF(request, response) }
                 post("", applicationJson) { SessionApi.addSession(request, response) }
                 put("/:${Params.Session.SESSION_ID}", applicationJson) { SessionApi.closeSessionBySessionId(request, response) }
             }
 
-            path("/${Params.Task.TABLE_NAME}") {
+            path("/${Params.Task.API_NAME}") {
                 get("", applicationJson) { TaskApi.getAllTasks(request, response) }
                 get("/:id", applicationJson) { TaskApi.getTaskById(request, response) }
                 get("/session/:id", applicationJson) { TaskApi.getTasksBySessionId(request, response) }
@@ -91,7 +91,7 @@ object RouteController {
                 delete("/name/:${Params.Task.TASK_NAME}", applicationJson) { TaskApi.removeTaskByName(request, response) }
             }
 
-            path("/${Params.TaskStatus.TABLE_NAME}") {
+            path("/${Params.TaskStatus.API_NAME}") {
                 get("", applicationJson) { TaskStatusApi.getAllTaskStatuss(request, response) }
                 get("/:id", applicationJson) { TaskStatusApi.getTaskStatusById(request, response) }
                 post("", applicationJson) { TaskStatusApi.addTaskStatus(request, response) }

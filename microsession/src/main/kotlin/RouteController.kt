@@ -26,7 +26,7 @@ object RouteController {
 
         port(Services.SESSION.port)
 
-        path("/session") {
+        path("/sessions") {
             get("", Utils.RESTParams.applicationJson) { SessionApi.listAllSessions(request, response) }
             get("/:leadercf", Utils.RESTParams.applicationJson) { SessionApi.listAllOpenSessionsByLeaderCF(request, response) }
             get("/acknowledge/:instanceid", Utils.RESTParams.applicationJson) { SessionApi.acknowledgeReadyService(request, response) }
