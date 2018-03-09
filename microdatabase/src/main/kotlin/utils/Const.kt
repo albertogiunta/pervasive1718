@@ -65,6 +65,7 @@ object Params {
         const val SURNAME = "surname"
         const val ROLE_ID = "roleid"
         const val IS_ACTIVE = "isactive"
+        const val CF = "operatorcf"
     }
 
     object Role {

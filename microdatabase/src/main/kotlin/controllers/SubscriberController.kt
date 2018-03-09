@@ -11,7 +11,6 @@ object SubscriberController {
 
     private lateinit var subscriber: RabbitMQSubscriber
 
-
     fun startListeningMonitorsForInstanceId(session: Session) {
         if (SessionController.attachInstanceId(session)) {
             BrokerConnector.init(LifeParameters.values().map { it.acronymWithSession(SessionController.getCurrentInstanceId()) }.toList())

@@ -47,6 +47,28 @@ data class Task @JvmOverloads constructor(var id: Int = 0, val name: String, val
     }
 }
 
+data class TaskReportEntry constructor(
+        val sessionId: Int,
+        val taskStrId: String,
+        val leaderCF: String,
+        val patientCF: String,
+        val acronym: String,
+        val activityName: String,
+        val relatedHealthParameters: List<String>,
+        @KlaxonDate val startTime: Timestamp,
+        @KlaxonDate val endTime: Timestamp?,
+        val operatorCF: String)
+
+data class LogReportEntry constructor(
+        val sessionId: Int,
+        val taskStrId : String,
+        val leaderCF: String,
+        val patientCF: String,
+        @KlaxonDate val date: Timestamp,
+        val acronym: String,
+        val healthParameter: String,
+        val actualValue: Double)
+
 data class AugmentedMemberFromServer(val userCF: String, val items: MutableList<AugmentedTask> = mutableListOf())
 
 data class AugmentedTask(val task: Task, val linkedParameters: List<LifeParameters>, val activityName: String)

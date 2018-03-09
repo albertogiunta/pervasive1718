@@ -77,6 +77,7 @@ object RouteController {
                 get("/opensessions/:${Params.Session.LEADER_CF}", applicationJson) { SessionApi.getAllOpenSessionsByLeaderCF(request, response) }
                 post("", applicationJson) { SessionApi.addSession(request, response) }
                 put("/:${Params.Session.SESSION_ID}", applicationJson) { SessionApi.closeSessionBySessionId(request, response) }
+                get("/:${Params.Session.SESSION_ID}/report", applicationJson) {SessionApi.generateReport(request, response)}
             }
 
             path("/${Params.Task.TABLE_NAME}") {

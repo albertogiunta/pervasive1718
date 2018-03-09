@@ -3,7 +3,6 @@ package networking.ws
 import WSServerInitializer
 import config.ConfigLoader
 import config.Services
-import model.Member
 import spark.Spark
 
 interface ReferenceManager<N, R> {
@@ -37,8 +36,6 @@ fun main(args: Array<String>) {
     ConfigLoader().load(args)
 
     WSServerInitializer.init(RelayService::class.java, Services.NOTIFIER.port, Services.NOTIFIER.root())
-
-    NotifierReferenceManager["Pippo"] = Member("kdfkjdsflkdsf")
 
     val ws : () -> RelayService? = {NotifierReferenceManager[RelayService::class.java.name]}
 

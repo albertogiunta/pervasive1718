@@ -8,7 +8,6 @@ import badRequest
 import com.beust.klaxon.Klaxon
 import controllers.SubscriberController
 import dao.SessionDao
-import model.Activity
 import model.Session
 import ok
 import spark.Request
@@ -79,5 +78,14 @@ object SessionApi {
         { it.closeSessionBySessionId(sessionId, Timestamp(Date().time)) }
 
         return response.ok()
+    }
+
+    fun generateReport(request: Request, response : Response) : String {
+         return listOf(
+                 JdbiConfiguration.INSTANCE.jdbi.withExtension<String, SessionDao, SQLException>(SessionDao::class.java)
+                    { it.getTaskReport(request.params(Params.Session.SESSION_ID).toInt()) },
+                 JdbiConfiguration.INSTANCE.jdbi.withExtension<String, SessionDao, SQLException>(SessionDao::class.java)
+                    { it.getLogReport(request.params(Params.Session.SESSION_ID).toInt()) }
+         ).toJson()
     }
 }
