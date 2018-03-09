@@ -12,6 +12,8 @@ import model.Log
 import okCreated
 import spark.Request
 import spark.Response
+import utils.KlaxonDate
+import utils.dateConverter
 import utils.toJson
 import java.sql.SQLException
 
@@ -21,7 +23,8 @@ object LogApi {
      * Insert a new entry in the Log table
      */
     fun addLogEntry(request: Request, response: Response): String {
-        val log: Log = Klaxon().parse<Log>(request.body()) ?: return response.badRequest()
+        val klaxon = Klaxon().fieldConverter(KlaxonDate::class, dateConverter)
+        val log: Log = klaxon.parse<Log>(request.body()) ?: return response.badRequest()
         JdbiConfiguration.INSTANCE.jdbi.useExtension<LogDao, SQLException>(LogDao::class.java)
         {
             it.insertNewLogEntry(
@@ -31,21 +34,6 @@ object LogApi {
                 log.healthParameterValue)
         }
         return response.okCreated()
-    }
-
-    /**
-     * Insert a new entry in the Log table
-     */
-    fun addLogEntry(param: LifeParameters, value: Double) {
-        val log = Log(name = LifeParameters.HEART_RATE.longName, healthParameterId = LifeParameters.HEART_RATE.id, healthParameterValue = value)
-        JdbiConfiguration.INSTANCE.jdbi.useExtension<LogDao, SQLException>(LogDao::class.java)
-        {
-            it.insertNewLogEntry(
-                log.name,
-                log.logTime,
-                log.healthParameterId,
-                log.healthParameterValue)
-        }
     }
 
     /**

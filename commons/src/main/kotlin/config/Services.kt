@@ -12,9 +12,6 @@ class Services private constructor(var port: Int, val wsPath: String, val execut
     fun wsURI(host : String = Utils.defaultHost) : URI =
             URI("${Utils.Protocols.websocket}://$host:${this.port}${root()}")
 
-    fun httpURI(host : String = Utils.defaultHost) : URI =
-            URI("${Utils.Protocols.http}://$host:${this.port}${root()}")
-
     companion object {
 
         private var instanceId : Int = 0
@@ -97,7 +94,8 @@ class Services private constructor(var port: Int, val wsPath: String, val execut
 
         fun defaultHostHttpPrefix(serv: Services) = "${Protocols.http}://$defaultHost:${serv.port}${Services.SESSION.wsPath}"
 
-        fun defaultHostUrlApi(serv: Services) = "${Protocols.http}://$defaultHost:${serv.port}/api"
+        fun defaultHostUrlApi(serv: Services) = "${Protocols.http}://$defaultHost:${serv.port}/${Connection.API}"
+        fun defaultHostUrlSession(serv: Services) = "${Protocols.http}://$defaultHost:${serv.port}"
 
         object WSParams {
             const val defaultWSRoot = "${Protocols.websocket}://$defaultHost:"

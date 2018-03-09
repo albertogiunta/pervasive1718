@@ -92,6 +92,7 @@ object Params {
         const val SESSION_ID = "sessionid"
         const val TASK_NAME = "name"
         const val API_NAME = "tasks"
+        const val STOP = "stop"
     }
 
     object TaskStatus {

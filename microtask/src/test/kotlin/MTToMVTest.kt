@@ -4,6 +4,7 @@ import Connection.PROTOCOL
 import Connection.PROTOCOL_SEPARATOR
 import com.github.kittinunf.fuel.httpDelete
 import com.github.kittinunf.fuel.httpGet
+import com.github.kittinunf.fuel.httpPut
 import config.ConfigLoader
 import config.Services
 import model.*
@@ -36,8 +37,8 @@ class MTtoMVTest {
         @JvmStatic
         fun setup() {
             ConfigLoader().load(startArguments)
-            getAllTaskVisor = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.VISORS.port}/${Connection.API}/all"
-            closeSession = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.SESSION.port}/session/close/"
+            getAllTaskVisor = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.VISORS.port}/${Connection.API}/${Params.Task.API_NAME}"
+            closeSession = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.SESSION.port}/${Params.Session.API_NAME}/"
 
             println("istanzio session")
             manager.newService(Services.SESSION, startArguments[0]) // 8500
@@ -81,8 +82,9 @@ class MTtoMVTest {
         listResult = handlingGetResponse(getAllTaskVisor.httpGet().responseString().also {
             println("La risposta è " + it.third)
         })
+        println(aTask.task.name)
         println(listResult.size)
-        Assert.assertTrue(listResult.firstOrNull { it.name == aTask.task.name } != null)
+        Assert.assertTrue(listResult.firstOrNull { it.taskName == aTask.task.name } != null)
 
     }
 
@@ -91,6 +93,6 @@ class MTtoMVTest {
 
         val aTask = mockLeaderMemberInteractionAndTaskRemoval(session, "gntlrt94b21g479u", 0, leaderWS, memberWS)
         listResult = handlingGetResponse(getAllTaskVisor.httpGet().responseString())
-        Assert.assertTrue(listResult.firstOrNull { it.name == aTask.task.name } == null)
+        Assert.assertTrue(listResult.firstOrNull { it.taskName == aTask.task.name } == null)
     }
 }

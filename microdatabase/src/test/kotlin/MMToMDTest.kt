@@ -2,7 +2,6 @@ import Connection.ADDRESS
 import Connection.PORT_SEPARATOR
 import Connection.PROTOCOL
 import Connection.PROTOCOL_SEPARATOR
-import Params.Log.TABLE_NAME
 import com.github.kittinunf.fuel.httpDelete
 import com.github.kittinunf.fuel.httpGet
 import config.ConfigLoader
@@ -38,8 +37,8 @@ class MMToMDTest {
         fun setup() {
             ConfigLoader("../config.json").load(startArguments)
 
-            closeSession = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.SESSION.port}/session/"
-            getAllLogs = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.DATA_BASE.port}/${Connection.API}/$TABLE_NAME"
+            closeSession = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.SESSION.port}/${Params.Session.API_NAME}/"
+            getAllLogs = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.DATA_BASE.port}/${Connection.API}/${Params.Log.API_NAME}/${Params.Session.TABLE_NAME}/"
 
             println("istanzio session")
             manager.newService(Services.SESSION, startArguments[0]) // 8500
@@ -69,13 +68,13 @@ class MMToMDTest {
         latch = CountDownLatch(1)
         wsClient.sendMessage(PayloadWrapper(-1, WSOperations.NEW_SESSION, SessionAssignment("gntlrt94b21g479u", "asdflkjasdflkj").toJson()).toJson())
         latch.await()
-        logList = handlingGetResponse(getAllLogs.httpGet().responseString())
+        Thread.sleep(5000)
+
+        logList = handlingGetResponse("$getAllLogs${session.sessionId}".httpGet().responseString())
         val startingSize = logList.size
 
-        Thread.sleep(10000)
-
         Thread.sleep(5000)
-        logList = handlingGetResponse(getAllLogs.httpGet().responseString())
+        logList = handlingGetResponse("$getAllLogs${session.sessionId}".httpGet().responseString())
         val newSize = logList.size
         assertTrue(newSize > startingSize)
         (closeSession + session.sessionId).httpDelete().responseString()

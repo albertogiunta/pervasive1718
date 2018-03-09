@@ -5,6 +5,7 @@ import com.github.kittinunf.fuel.core.Request
 import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.fuel.httpDelete
 import com.github.kittinunf.fuel.httpGet
+import com.github.kittinunf.fuel.httpDelete
 import com.github.kittinunf.result.Result
 import config.ConfigLoader
 import config.Services
@@ -41,7 +42,7 @@ class SessionTest {
         fun setUp() {
             ConfigLoader().load(startArguments)
 
-            baseUrl = Services.Utils.defaultHostHttpPrefix(Services.SESSION)
+            baseUrl = Services.Utils.defaultHostUrlSession(Services.SESSION) + "/"+ Params.Session.API_NAME
 
             println("istanzio sessionList")
             manager.newService(Services.SESSION, startArguments[0]) // 8500
@@ -82,8 +83,8 @@ class SessionTest {
 
         Thread.sleep(3000)
         killFunction = {
-            "$baseUrl/close/${sessionList.first().sessionId}".httpDelete().responseString()
-            println("$baseUrl/close/${sessionList.first().sessionId}")
+            println(baseUrl)
+            "$baseUrl/${sessionList.first().sessionId}".httpDelete().responseString()
             Thread.sleep(4000)
         }
         assertTrue(sessionList.first().patientCF == patient)
@@ -91,7 +92,7 @@ class SessionTest {
 
     @Test
     fun getAllSessions() {
-        handlingGetResponseWithArrayOfDnsSessions(makeGet("$baseUrl/all"))
+        handlingGetResponseWithArrayOfDnsSessions(makeGet(baseUrl))
         val previousSize = sessionList.size
         println(previousSize)
 
@@ -104,11 +105,11 @@ class SessionTest {
         latch.await()
 
         Thread.sleep(3000)
-        handlingGetResponseWithArrayOfDnsSessions(makeGet("$baseUrl/all"))
+        handlingGetResponseWithArrayOfDnsSessions(makeGet(baseUrl))
 
         killFunction = {
             sessionList.takeLast(3).forEach {
-                "$baseUrl/close/${it.sessionId}".httpDelete().responseString()
+                "$baseUrl/${it.sessionId}".httpDelete().responseString()
                 Thread.sleep(500)
             }
             Thread.sleep(4000)
@@ -124,12 +125,12 @@ class SessionTest {
         wsClient.sendMessage(PayloadWrapper(-1, WSOperations.NEW_SESSION, SessionAssignment("1", "-1").toJson()).toJson())
         latch.await()
 
-        handlingGetResponseWithArrayOfDnsSessions(makeGet("$baseUrl/all"))
+        handlingGetResponseWithArrayOfDnsSessions(makeGet(baseUrl))
         val sessionId = sessionList.first().sessionId
         val previousSize = sessionList.size
 
-        "$baseUrl/close/$sessionId".httpDelete().responseString()
-        handlingGetResponseWithArrayOfDnsSessions(makeGet("$baseUrl/all"))
+        "$baseUrl/$sessionId".httpDelete().responseString()
+        handlingGetResponseWithArrayOfDnsSessions(makeGet(baseUrl))
 
         assertTrue(sessionList.size == previousSize - 1)
     }

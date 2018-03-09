@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit
 
 class MicroServiceManager {
 
-    val sessionsMap = mutableMapOf<String, Map<Services, Pair<Process, URL>>>()
+    private val sessionsMap = mutableMapOf<String, Map<Services, Pair<Process, URL>>>()
 
     val instanceHandler = object : InstanceHandler<Services, String, Boolean> {
 
@@ -21,7 +21,7 @@ class MicroServiceManager {
             val url = URL(
                     Services.Utils.Protocols.http,
                     Services.Utils.defaultHost, slotId.toInt(),
-                    "/session/$slotId${service.wsPath}"
+                    "/${Params.Session.API_NAME}/$slotId${service.wsPath}"
             )
 
             val workingModule = StringJoiner(System.getProperty("file.separator"))
