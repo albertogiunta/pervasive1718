@@ -3,6 +3,7 @@ import Connection.PORT_SEPARATOR
 import Connection.PROTOCOL
 import Connection.PROTOCOL_SEPARATOR
 import Connection.REMOTE_HOST
+import Params.Log.SESSION
 import Params.Log.TABLE_NAME
 import com.github.kittinunf.fuel.core.FuelError
 import com.github.kittinunf.fuel.core.Request
@@ -19,6 +20,7 @@ import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.junit.Test
 import utils.handlingGetResponse
+import java.sql.Timestamp
 import java.util.*
 
 class DatabaseSubscriberTest {
@@ -40,9 +42,9 @@ class DatabaseSubscriberTest {
         @JvmStatic
         fun setup() {
             ConfigLoader("../config.json").load(startArguments)
-            getAllLogs = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.DATA_BASE.port}/${Connection.API}/$TABLE_NAME/all"
-            addLog = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.DATA_BASE.port}/${Connection.API}/$TABLE_NAME/add"
-            getLog = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.DATA_BASE.port}/${Connection.API}/$TABLE_NAME/${Params.HealthParameter.TABLE_NAME}/"
+            getAllLogs = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.DATA_BASE.port}/${Connection.API}/$TABLE_NAME/$SESSION/0"
+            addLog = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.DATA_BASE.port}/${Connection.API}/$TABLE_NAME"
+            getLog = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.DATA_BASE.port}/${Connection.API}/$TABLE_NAME/$SESSION/0/${Params.HealthParameter.TABLE_NAME}/"
 
             BrokerConnector.init(LifeParameters.values().map { it.acronym }.toList(), REMOTE_HOST)
             connector = BrokerConnector.INSTANCE

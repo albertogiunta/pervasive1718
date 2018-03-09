@@ -55,6 +55,7 @@ object Params {
         const val HEALTH_PARAMETER_ID = "healthparameterid"
         const val HEALTH_PARAMETER_VALUE = "healthparametervalue"
         const val SESSION_ID = "sessionid"
+        const val SESSION = "session"
     }
 
     object Operator {
