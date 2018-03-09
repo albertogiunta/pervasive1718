@@ -18,7 +18,7 @@ object NotificationHandler {
             Services.Utils.Protocols.http,
             Services.Utils.defaultHost,
             Services.DATA_BASE.port,
-            "/api/${Boundary::class.simpleName?.toLowerCase()}/all"
+            "/api/${Boundary::class.simpleName?.toLowerCase()}"
     ).toString()
 
     @Volatile
