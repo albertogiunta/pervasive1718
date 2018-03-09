@@ -72,6 +72,7 @@ object Params {
         const val ROLE_ID = "roleid"
         const val IS_ACTIVE = "isactive"
         const val API_NAME = "operators"
+        const val CF = "operatorcf"
     }
 
     object Role {
