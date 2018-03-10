@@ -12,6 +12,8 @@ annotation class KlaxonLifeParameterList
 val lifeParameterListConverter = object : Converter<List<LifeParameters>> {
 
     override fun fromJson(jv: JsonValue): List<LifeParameters> {
+        println("SONO STRONZO, MA TI CHIEDO SCUSA. IL più stronzo però è il db che genera i json col culo")
+        println(jv)
         if (jv.array != null) {
             val list = (jv.array as JsonArray<String>).map { elem: String ->
                 LifeParameters.Utils.getByLongName(elem)!!

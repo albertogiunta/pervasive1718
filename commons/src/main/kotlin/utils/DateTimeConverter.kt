@@ -11,14 +11,14 @@ import java.util.*
 @Target(AnnotationTarget.FIELD)
 annotation class KlaxonDate
 
-val dateConverter = object : Converter<Timestamp> {
+val dateConverter = object : Converter<Timestamp?> {
     val javaSDF = SimpleDateFormat("MMM d, yyyy hh:mm:ss aaa", Locale.ENGLISH)
     val androidSDF = SimpleDateFormat("MMM d, yyyy hh:mm:ss", Locale.ENGLISH)
     val defaultSDF = SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS", Locale.ENGLISH)
     val sdfList: List<SimpleDateFormat> = listOf(defaultSDF,androidSDF,javaSDF)
-    lateinit var date:Timestamp
+    var date: Timestamp? = null
 
-    override fun fromJson(jv: JsonValue): Timestamp{
+    override fun fromJson(jv: JsonValue): Timestamp? {
         if (jv.string != null) {
             sdfList.forEach{
                 try{
@@ -31,5 +31,5 @@ val dateConverter = object : Converter<Timestamp> {
         return date
     }
 
-    override fun toJson(value: Timestamp) = """ { "date" : $value } """
+    override fun toJson(value: Timestamp?) = """ { "date" : $value } """
 }
