@@ -14,19 +14,20 @@ inner join Role as R on O.roleid = R.id;
 /**
 Select all the logs with their respective health parameter
 **/
-select
-	S.id as sessionid,
-	S.leadercf,
-	S.patientcf,
-    L.logtime as Date,
-    HP.acronym,
-    HP.name as HealthParameter,
-    L.healthparametervalue as ActualValue
-from Session as S
-inner join Log as L on L.sessionid = S.id
-inner join HealthParameter as HP on L.healthparameterid = HP.id
-where S.id = '$id'
-order by 4;
+select array_to_json(array_agg(row_to_json(t))) from (
+    select
+        S.id,
+        S.leadercf,
+        S.patientcf,
+        L.logtime,
+        HP.name,
+        L.healthparametervalue
+    from Session as S
+    inner join Log as L on L.sessionid = S.id
+    inner join HealthParameter as HP on L.healthparameterid = HP.id
+    where S.id = '$id'
+    order by 4
+) t("sessionId", "leaderCF", "patientCF", "dateTime", "healthParameter", "hpValue");
 
 /**
 Select all the health parameters with their respective actual values and *static* boundaries
@@ -101,16 +102,16 @@ order by HealthParameter;
 **/
 select array_to_json(array_agg(row_to_json(t))) from (
 select
-		S.id as sessionId,
-		T.name as taskStrId,
-		S.leadercf as leaderCF,
-		S.patientcf as patientCF,
-		A.acronym as activityAcronym,
-		A.name as activityName,
-		A.hps as relatedHealthParameters,
-		T.starttime as startTime,
-		T.endtime as endTime,
-		O.operatorcf as operatorCF
+		S.id,
+		T.name,
+		S.leadercf,
+		S.patientcf,
+		A.acronym,
+		A.name,
+		A.hps,
+		T.starttime,
+		T.endtime,
+		O.operatorcf
 	from Session as S
 	left outer join Task as T on T.sessionid = S.id
 	left outer join (
@@ -122,4 +123,4 @@ select
 	left outer join Operator as O on T.operatorcf = O.operatorcf
 	where A.name is not NULL and S.id = '$id'
 	order by T.starttime
-) t;
+) t("sessionId", "taskStrId", "leaderCF", "patientCF", "activityAcronym", "activityName", "relatedHealthParameters", "startTime", "endTime", "operatorCF");

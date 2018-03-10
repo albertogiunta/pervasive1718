@@ -8,9 +8,6 @@ import Params.Session.PATIENT_CF
 import Params.Session.SESSION_ID
 import Params.Session.START_DATE
 import Params.Session.TABLE_NAME
-import Params.Task.END_TIME
-import Params.Task.OPERATOR_CF
-import Params.Task.START_TIME
 import model.Session
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys
@@ -49,14 +46,16 @@ interface SessionDao {
 
     @SqlQuery("select array_to_json(array_agg(row_to_json(t))) from (" +
                 "select " +
-                    "S.${Params.Session.SESSION_ID} as sessionId, " +
-                    "T.${Params.Task.TASK_NAME} as taskStrId, " +
+                    "S.${Params.Session.SESSION_ID}, " +
+                    "T.${Params.Task.TASK_NAME}, " +
                     "S.${Params.Session.LEADER_CF}, " +
                     "S.${Params.Session.PATIENT_CF}, " +
                     "A.${Params.Activity.ACRONYM}, " +
-                    "A.${Params.Activity.NAME} as activityName, " +
-                    "A.hps as relatedHealthParameters, " +
-                    "T.$START_TIME, T.$END_TIME, O.$OPERATOR_CF " +
+                    "A.${Params.Activity.NAME}, " +
+                    "A.hps, " +
+                    "T.${Params.Task.START_TIME}, " +
+                    "T.${Params.Task.END_TIME}, " +
+                    "O.${Params.Operator.CF} " +
                 "from ${Params.Session.TABLE_NAME} as S " +
                 "left outer join ${Params.Task.TABLE_NAME} as T on T.${Params.Task.SESSION_ID} = S.${Params.Session.SESSION_ID} " +
                 "left outer join (" +
@@ -68,24 +67,23 @@ interface SessionDao {
                 "left outer join ${Params.Operator.TABLE_NAME} as O on T.${Params.Task.OPERATOR_CF} = O.${Params.Operator.CF} " +
                 "where A.${Params.Activity.NAME} is not NULL and S.${Params.Session.SESSION_ID} = (:$SESSION_ID) " +
                 "order by T.${Params.Task.START_TIME}" +
-            ") t;")
+            ") t(\"sessionId\", \"taskStrId\", \"leaderCF\", \"patientCF\", \"activityAcronym\", \"activityName\", \"relatedHealthParameters\", \"startTime\", \"endTime\", \"operatorCF\");")
     fun getTaskReport(@Bind(SESSION_ID) sessionId: Int) : String
 
     @SqlQuery("select array_to_json(array_agg(row_to_json(t))) from (" +
             "select " +
-            "S.${Params.Session.SESSION_ID} as sessionid, " +
+            "S.${Params.Session.SESSION_ID}, " +
             "S.${Params.Session.LEADER_CF}, " +
             "S.${Params.Session.PATIENT_CF}, " +
-            "L.${Params.Log.LOG_TIME} as Date, " +
-            "HP.${Params.HealthParameter.ACRONYM}, " +
-            "HP.${Params.HealthParameter.NAME} as HealthParameter, " +
-            "L.${Params.Log.HEALTH_PARAMETER_VALUE} as ActualValue " +
+            "L.${Params.Log.LOG_TIME}, " +
+            "HP.${Params.HealthParameter.NAME}, " +
+            "L.${Params.Log.HEALTH_PARAMETER_VALUE} " +
             "from ${Params.Session.TABLE_NAME} as S " +
             "inner join ${Params.Log.TABLE_NAME} as L on L.${Params.Log.SESSION_ID} = S.${Params.Session.SESSION_ID} " +
             "inner join ${Params.HealthParameter.TABLE_NAME} as HP on L.${Params.Log.HEALTH_PARAMETER_ID} = HP.${Params.HealthParameter.ID} " +
             "where S.${Params.Session.SESSION_ID} = (:$SESSION_ID)" +
             "order by 4" +
-            ") t;")
+            ") t(\"sessionId\", \"leaderCF\", \"patientCF\", \"dateTime\", \"healthParameter\", \"hpValue\");")
     fun getLogReport(@Bind(SESSION_ID) sessionId: Int) : String
 }
 

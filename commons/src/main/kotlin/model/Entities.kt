@@ -52,22 +52,20 @@ data class TaskReportEntry constructor(
         val taskStrId: String,
         val leaderCF: String,
         val patientCF: String,
-        val acronym: String,
+        val activityAcronym: String,
         val activityName: String,
         val relatedHealthParameters: List<String>,
         @KlaxonDate val startTime: Timestamp,
         @KlaxonDate val endTime: Timestamp?,
-        val operatorCF: String)
+        val operatorCF: String?)
 
 data class LogReportEntry constructor(
         val sessionId: Int,
-        val taskStrId : String,
         val leaderCF: String,
         val patientCF: String,
-        @KlaxonDate val date: Timestamp,
-        val acronym: String,
+        @KlaxonDate val dateTime: Timestamp,
         val healthParameter: String,
-        val actualValue: Double)
+        val hpValue: Double)
 
 data class AugmentedMemberFromServer(val userCF: String, val items: MutableList<AugmentedTask> = mutableListOf())
 
