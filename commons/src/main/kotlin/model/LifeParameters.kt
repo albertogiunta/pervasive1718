@@ -11,5 +11,7 @@ enum class LifeParameters(val longName: String, val acronym: String, val id: Int
     object Utils {
         fun getByAcronym(acr: String) = LifeParameters.values().first { it.acronym == acr }
         fun getByID(id: Int) = LifeParameters.values().first { it.id == id }
+        fun getByEnumName(enumName: String) = LifeParameters.values().firstOrNull { it.toString() == enumName }
+        fun getByLongName(longName: String) = LifeParameters.values().firstOrNull { it.longName == longName }
     }
 }

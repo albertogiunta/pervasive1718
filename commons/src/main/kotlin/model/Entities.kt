@@ -1,6 +1,7 @@
 package model
 
 import utils.KlaxonDate
+import utils.KlaxonLifeParameterList
 import java.sql.Timestamp
 import java.util.*
 
@@ -54,16 +55,16 @@ data class TaskReportEntry @JvmOverloads constructor(
         val patientCF: String,
         val activityAcronym: String,
         val activityName: String,
-        val relatedHealthParameters: List<String>,
-        @KlaxonDate val startTime: Timestamp,
+        @KlaxonLifeParameterList val relatedHealthParameters: List<LifeParameters>,
+        @KlaxonDate val startTime: Timestamp? = null,
         @KlaxonDate val endTime: Timestamp? = null,
         val operatorCF: String? = null)
 
-data class LogReportEntry constructor(
+data class LogReportEntry @JvmOverloads constructor(
         val sessionId: Int,
         val leaderCF: String,
         val patientCF: String,
-        @KlaxonDate val dateTime: Timestamp,
+        @KlaxonDate val dateTime: Timestamp?,
         val healthParameter: String,
         val hpValue: Double)
 
