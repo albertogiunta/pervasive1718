@@ -37,7 +37,7 @@ class DeviceToMTTest {
         @JvmStatic
         fun setup() {
             ConfigLoader().load(startArguments)
-            closeSession = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.SESSION.port}/session/close/"
+            closeSession = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.SESSION.port}/${Params.Session.API_NAME}/"
 
 //            println(" In this test is normal if the system throw 2 bind Exceptions,\n" +
 //                    " because internally MicroSession will try to start 2 another\n" +
@@ -83,7 +83,6 @@ class DeviceToMTTest {
             Thread.sleep(5000)
             manager.closeSession(startArguments[0])
         }
-
     }
 
     @Test
@@ -104,25 +103,24 @@ class DeviceToMTTest {
     fun `create leader, create member, and test if leader assign task to member`() {
         val taskId = 32
         val userCF = "Member"
-        mockLeaderMemberInteractionAndTaskAddition(session, userCF, taskId, leaderWS, memberWS)
-
+        val augmentedTask = mockLeaderMemberInteractionAndTaskAddition(session, userCF, taskId, leaderWS, memberWS)
         println(taskController.taskMemberAssociationList)
-        assertTrue(taskController.taskMemberAssociationList.firstOrNull { it.task.id == taskId && it.member.userCF == userCF } != null)
+        assertTrue(taskController.taskMemberAssociationList.firstOrNull {
+            it.task.name == augmentedTask.task.name && it.member.userCF == userCF } != null)
     }
 
     @Test
     fun `create leader, create member, assign and remove task`() {
         val taskId = 41
-        mockLeaderMemberInteractionAndTaskRemoval(session, "Member", taskId, leaderWS, memberWS)
-        assertTrue(taskController.taskMemberAssociationList.firstOrNull{ it.task.id == taskId} == null)
+        val augmentedTask = mockLeaderMemberInteractionAndTaskRemoval(session, "Member", taskId, leaderWS, memberWS)
+        assertTrue(taskController.taskMemberAssociationList.firstOrNull{ it.task.name == augmentedTask.task.name } == null)
     }
 
     @Test
     fun `create leader, create member, assign task and change task's status`() {
         val taskId = 50
-        mockLeaderMemberInteractionAndTaskChange(session, "Member", taskId, leaderWS, memberWS)
-        assertTrue(taskController.taskMemberAssociationList.first { it.task.id == taskId }.task.statusId == Status.FINISHED.id)
+        val augmentedTask = mockLeaderMemberInteractionAndTaskChange(session, "Member", taskId, leaderWS, memberWS)
+        assertTrue(taskController.taskMemberAssociationList.first {
+            it.task.name == augmentedTask.task.name }.task.statusId == Status.FINISHED.id)
     }
-
-
 }

@@ -26,8 +26,6 @@ class TaskController private constructor(private val ws: WSTaskServer,
         private var configNotCompleted = true
         val dbUrl = Services.Utils.defaultHostUrlApi(Services.DATA_BASE)
         val visorUrl = Services.Utils.defaultHostUrlApi(Services.VISORS)
-        private lateinit var taskList: List<Task>
-        private var lastId: Int = 0
 
         lateinit var INSTANCE: TaskController
         private val isInitialized = AtomicBoolean()
@@ -42,7 +40,7 @@ class TaskController private constructor(private val ws: WSTaskServer,
 
         fun fetchActivitiesFromDB() {
             while (configNotCompleted) {
-                val responseString = "$dbUrl/activity/all".httpGet().responseString()
+                val responseString = "$dbUrl/${Params.Activity.API_NAME}".httpGet().responseString()
                 responseString.third.fold(
                     success = { configNotCompleted = false },
                     failure = {
@@ -99,8 +97,8 @@ class TaskController private constructor(private val ws: WSTaskServer,
             ws.sendMessage(members[member]!!, message)
             ws.sendMessage(leader.second, message)
 
-            "$dbUrl/task/add".httpPost().body(augmentedTask.task.toJson()).responseString()
-            "$visorUrl/tasks".httpPost().body(augmentedTask.task.toVisibleTask(member, activityName = activityList.first { x -> x.id == augmentedTask.task.activityId }.name).toJson()).responseString()
+            "$dbUrl/${Params.Task.API_NAME}".httpPost().body(augmentedTask.task.toJson()).responseString()
+            "$visorUrl/${Params.Task.API_NAME}".httpPost().body(augmentedTask.task.toVisibleTask(member, activityName = activityList.first { x -> x.id == augmentedTask.task.activityId }.name).toJson()).responseString()
         }
     }
 
@@ -113,7 +111,7 @@ class TaskController private constructor(private val ws: WSTaskServer,
                 ws.sendMessage(members[member]!!, message)
                 ws.sendMessage(leader.second, message)
 
-                "$dbUrl/task/remove/${it.task.name}".httpDelete().responseString()
+                "$dbUrl/${Params.Task.API_NAME}/${Params.Task.TASK_NAME}/${it.task.name}".httpDelete().responseString()
             }
                     ?: ws.sendMessage(leader.second, PayloadWrapper(Services.instanceId(),
                             WSOperations.ERROR_REMOVING_TASK, TaskError(augmentedTask.task, "").toJson()))
@@ -128,10 +126,10 @@ class TaskController private constructor(private val ws: WSTaskServer,
                         WSOperations.CHANGE_TASK_STATUS, TaskAssignment(member, this.task.toAugmentedTask(activityList)).toJson())
                 ws.sendMessage(members[member]!!, message)
                 ws.sendMessage(leader.second, message)
-                "$dbUrl/task/update/${it.task.name}/status/${it.task.statusId}".httpPut().responseString()
+                "$dbUrl/${Params.Task.API_NAME}/${Params.Task.TASK_NAME}/${it.task.name}".httpPut().body(it.task.toJson()).responseString()
                 if(augmentedTask.task.statusId == Status.FINISHED.id) {
-                    "$dbUrl/task/stopTask".httpPut().body(augmentedTask.task.toJson()).responseString()
-                    "$visorUrl/tasks/${it.task.name}".httpDelete().responseString()
+                    "$dbUrl/${Params.Task.API_NAME}/${Params.Task.STOP}".httpPut().body(augmentedTask.task.toJson()).responseString()
+                    "$visorUrl/${Params.Task.API_NAME}/${it.task.name}".httpDelete().responseString()
                 }
             } ?: ws.sendMessage(session, PayloadWrapper(Services.instanceId(),
                     WSOperations.ERROR_CHANGING_STATUS, StatusError(augmentedTask.task.statusId, augmentedTask.task, "").toJson()))

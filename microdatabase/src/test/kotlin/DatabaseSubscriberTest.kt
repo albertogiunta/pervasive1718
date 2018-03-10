@@ -3,6 +3,7 @@ import Connection.PORT_SEPARATOR
 import Connection.PROTOCOL
 import Connection.PROTOCOL_SEPARATOR
 import Connection.REMOTE_HOST
+import Params.Log.API_NAME
 import Params.Log.SESSION
 import Params.Log.TABLE_NAME
 import com.github.kittinunf.fuel.core.FuelError
@@ -14,6 +15,7 @@ import com.github.kittinunf.result.Result
 import com.google.gson.JsonObject
 import config.ConfigLoader
 import config.Services
+import controllers.SessionController
 import model.LifeParameters
 import model.Log
 import org.junit.AfterClass
@@ -42,9 +44,9 @@ class DatabaseSubscriberTest {
         @JvmStatic
         fun setup() {
             ConfigLoader("../config.json").load(startArguments)
-            getAllLogs = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.DATA_BASE.port}/${Connection.API}/$TABLE_NAME/$SESSION/0"
-            addLog = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.DATA_BASE.port}/${Connection.API}/$TABLE_NAME"
-            getLog = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.DATA_BASE.port}/${Connection.API}/$TABLE_NAME/$SESSION/0/${Params.HealthParameter.TABLE_NAME}/"
+            getAllLogs = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.DATA_BASE.port}/${Connection.API}/$API_NAME/$SESSION/${SessionController.getCurrentSessionId()}"
+            addLog = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.DATA_BASE.port}/${Connection.API}/$API_NAME"
+            getLog = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.DATA_BASE.port}/${Connection.API}/$API_NAME/$SESSION/${SessionController.getCurrentSessionId()}/${Params.HealthParameter.API_NAME}/"
 
             BrokerConnector.init(LifeParameters.values().map { it.acronym }.toList(), REMOTE_HOST)
             connector = BrokerConnector.INSTANCE
@@ -62,7 +64,7 @@ class DatabaseSubscriberTest {
     fun `receive single data from broker and write to DB`() {
 
         val sub = RabbitMQSubscriber(connector)
-        val randomId = Math.abs(Random().nextInt(500))
+        val randomId = Math.abs(Random().nextInt(5000))
         val json = JsonObject()
         json.addProperty("healthParameterId", randomId)
         json.addProperty("healthParameterValue", 1212)

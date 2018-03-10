@@ -18,7 +18,7 @@
 						{
 							"name": "GET ALL ACTIVITIES",
 							"request": {
-								"url": "{{prefix}}/activity",
+								"url": "{{prefix}}/activities",
 								"method": "GET",
 								"header": [
 									{
@@ -38,13 +38,10 @@
 						{
 							"name": "ACTIVITY BY ID",
 							"request": {
-								"url": "{{prefix}}/activity/2",
+								"url": "{{prefix}}/activities/2",
 								"method": "GET",
 								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
+								"body": {},
 								"description": ""
 							},
 							"response": []
@@ -52,7 +49,7 @@
 						{
 							"name": "ADD ACTIVITIES",
 							"request": {
-								"url": "{{prefix}}/activity",
+								"url": "{{prefix}}/activities",
 								"method": "POST",
 								"header": [
 									{
@@ -79,7 +76,7 @@
 						{
 							"name": "ALL ACTIVITY TYPES",
 							"request": {
-								"url": "{{prefix}}/activitytype",
+								"url": "{{prefix}}/activitytypes",
 								"method": "GET",
 								"header": [],
 								"body": {},
@@ -90,13 +87,10 @@
 						{
 							"name": "ACITIVITY BY ID",
 							"request": {
-								"url": "{{prefix}}/activitytype/1",
+								"url": "{{prefix}}/activitytypes/1",
 								"method": "GET",
 								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
+								"body": {},
 								"description": ""
 							},
 							"response": []
@@ -104,7 +98,7 @@
 						{
 							"name": "ADD ACTIVITY TYPE",
 							"request": {
-								"url": "{{prefix}}/activitytype",
+								"url": "{{prefix}}/activitytypes",
 								"method": "POST",
 								"header": [
 									{
@@ -131,7 +125,7 @@
 						{
 							"name": "ALL BOUNDARIES",
 							"request": {
-								"url": "{{prefix}}/boundary",
+								"url": "{{prefix}}/boundaries",
 								"method": "GET",
 								"header": [],
 								"body": {},
@@ -142,13 +136,10 @@
 						{
 							"name": "BOUNDARY BY ID",
 							"request": {
-								"url": "{{prefix}}/boundary/1",
+								"url": "{{prefix}}/boundaries/1",
 								"method": "GET",
 								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
+								"body": {},
 								"description": ""
 							},
 							"response": []
@@ -156,7 +147,7 @@
 						{
 							"name": "ADD BOUNDARY",
 							"request": {
-								"url": "{{prefix}}/boundary",
+								"url": "{{prefix}}/boundaries",
 								"method": "POST",
 								"header": [
 									{
@@ -183,7 +174,7 @@
 						{
 							"name": "ALL HEALTH PARAMETERS",
 							"request": {
-								"url": "{{prefix}}/healthparameter",
+								"url": "{{prefix}}/healthparameters",
 								"method": "GET",
 								"header": [],
 								"body": {},
@@ -194,13 +185,10 @@
 						{
 							"name": "HEALTH PARAMETER BY ID",
 							"request": {
-								"url": "{{prefix}}/healthparameter/1",
+								"url": "{{prefix}}/healthparameters/1",
 								"method": "GET",
 								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
+								"body": {},
 								"description": ""
 							},
 							"response": []
@@ -208,7 +196,7 @@
 						{
 							"name": "ADD HEALTH PARAMETER",
 							"request": {
-								"url": "{{prefix}}/healthparameter",
+								"url": "{{prefix}}/healthparameters",
 								"method": "POST",
 								"header": [
 									{
@@ -235,7 +223,7 @@
 						{
 							"name": "ALL ROLES",
 							"request": {
-								"url": "{{prefix}}/role",
+								"url": "{{prefix}}/roles",
 								"method": "GET",
 								"header": [],
 								"body": {},
@@ -246,13 +234,10 @@
 						{
 							"name": "ROLE BY ID",
 							"request": {
-								"url": "{{prefix}}/role/40",
+								"url": "{{prefix}}/roles/40",
 								"method": "GET",
 								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
+								"body": {},
 								"description": ""
 							},
 							"response": []
@@ -260,7 +245,7 @@
 						{
 							"name": "ADD ROLE",
 							"request": {
-								"url": "{{prefix}}/role",
+								"url": "{{prefix}}/roles",
 								"method": "POST",
 								"header": [
 									{
@@ -293,7 +278,7 @@
 						{
 							"name": "ALL LOGS",
 							"request": {
-								"url": "{{prefix}}/log/session/612",
+								"url": "{{prefix}}/log/sessions/612",
 								"method": "GET",
 								"header": [],
 								"body": {},
@@ -304,7 +289,7 @@
 						{
 							"name": "LOG BY HEALTHPARAMETERID WITH MIN THRESHOLD",
 							"request": {
-								"url": "{{prefix}}/log/session/612/healthparameter/3/minthreshold/73",
+								"url": "{{prefix}}/log/sessions/612/healthparameters/3/minthreshold/73",
 								"method": "GET",
 								"header": [],
 								"body": {},
@@ -315,7 +300,7 @@
 						{
 							"name": "LOG BY HEALTHPARAMETER ID",
 							"request": {
-								"url": "{{prefix}}/log/session/612/healthparameter/3",
+								"url": "{{prefix}}/log/sessions/612/healthparameters/3",
 								"method": "GET",
 								"header": [],
 								"body": {},
@@ -326,7 +311,7 @@
 						{
 							"name": "ADD LOG",
 							"request": {
-								"url": "{{prefix}}/log",
+								"url": "{{prefix}}/logs",
 								"method": "POST",
 								"header": [
 									{
@@ -353,7 +338,7 @@
 						{
 							"name": "ALL OPERATORS",
 							"request": {
-								"url": "{{prefix}}/operator",
+								"url": "{{prefix}}/operators",
 								"method": "GET",
 								"header": [],
 								"body": {},
@@ -364,13 +349,10 @@
 						{
 							"name": "OPERATOR BY ID",
 							"request": {
-								"url": "{{prefix}}/operator/1",
+								"url": "{{prefix}}/operators/1",
 								"method": "GET",
 								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
+								"body": {},
 								"description": ""
 							},
 							"response": []
@@ -378,7 +360,7 @@
 						{
 							"name": "ADD OPERATOR",
 							"request": {
-								"url": "{{prefix}}/operator",
+								"url": "{{prefix}}/operators",
 								"method": "POST",
 								"header": [
 									{
@@ -405,7 +387,7 @@
 						{
 							"name": "LIST ALL SESSIONS",
 							"request": {
-								"url": "{{prefix}}/session",
+								"url": "{{prefix}}/sessions",
 								"method": "GET",
 								"header": [],
 								"body": {},
@@ -416,7 +398,7 @@
 						{
 							"name": "LIST ALL OPEN SESSIONS BY LEADER ID",
 							"request": {
-								"url": "{{prefix}}/session/opensessions/CFLeader212",
+								"url": "{{prefix}}/sessions/opensessions/CFLeader212",
 								"method": "GET",
 								"header": [],
 								"body": {},
@@ -427,7 +409,7 @@
 						{
 							"name": "ADD SESSION",
 							"request": {
-								"url": "{{prefix}}/session",
+								"url": "{{prefix}}/sessions",
 								"method": "POST",
 								"header": [
 									{
@@ -447,7 +429,7 @@
 						{
 							"name": "CLOSE SESSION BY SESSION ID",
 							"request": {
-								"url": "{{prefix}}/session/6016",
+								"url": "{{prefix}}/sessions/6016",
 								"method": "PUT",
 								"header": [
 									{
@@ -474,7 +456,7 @@
 						{
 							"name": "ALL TASKS",
 							"request": {
-								"url": "{{prefix}}/task",
+								"url": "{{prefix}}/tasks",
 								"method": "GET",
 								"header": [
 									{
@@ -494,7 +476,7 @@
 						{
 							"name": "ALL TASKS BY SESSION ID",
 							"request": {
-								"url": "{{prefix}}/task/session/612",
+								"url": "{{prefix}}/tasks/session/612",
 								"method": "GET",
 								"header": [
 									{
@@ -514,7 +496,7 @@
 						{
 							"name": "TASK BY ID",
 							"request": {
-								"url": "{{prefix}}/task/25",
+								"url": "{{prefix}}/tasks/25",
 								"method": "GET",
 								"header": [],
 								"body": {},
@@ -525,7 +507,7 @@
 						{
 							"name": "ADD TASK",
 							"request": {
-								"url": "{{prefix}}/task",
+								"url": "{{prefix}}/tasks",
 								"method": "POST",
 								"header": [
 									{
@@ -545,7 +527,7 @@
 						{
 							"name": "UPDATE TASK STATUS BY ID",
 							"request": {
-								"url": "{{prefix}}/task/22",
+								"url": "{{prefix}}/tasks/22",
 								"method": "PUT",
 								"header": [
 									{
@@ -565,7 +547,7 @@
 						{
 							"name": "UPDATE TASK STATUS BY NAME",
 							"request": {
-								"url": "{{prefix}}/task/name/S649A34CFLeader212k20180307101805788",
+								"url": "{{prefix}}/tasks/name/S649A34CFLeader212k20180307101805788",
 								"method": "PUT",
 								"header": [
 									{
@@ -585,7 +567,7 @@
 						{
 							"name": "END TASK BY NAME",
 							"request": {
-								"url": "{{prefix}}/task/stop/S649A34CFLeader212k20180307101805788",
+								"url": "{{prefix}}/tasks/stop/S649A34CFLeader212k20180307101805788",
 								"method": "PUT",
 								"header": [
 									{
@@ -605,7 +587,7 @@
 						{
 							"name": "DELETE TASK BY ID",
 							"request": {
-								"url": "{{prefix}}/task/53",
+								"url": "{{prefix}}/tasks/53",
 								"method": "DELETE",
 								"header": [
 									{
@@ -625,7 +607,7 @@
 						{
 							"name": "DELETE TASK BY NAME",
 							"request": {
-								"url": "{{prefix}}/task/name/S654A54CFGianniPanna212k20180307102917118",
+								"url": "{{prefix}}/tasks/name/S654A54CFGianniPanna212k20180307102917118",
 								"method": "DELETE",
 								"header": [
 									{
@@ -652,7 +634,7 @@
 						{
 							"name": "ALL TASK STATUSES",
 							"request": {
-								"url": "{{prefix}}/taskstatus",
+								"url": "{{prefix}}/taskstatuses",
 								"method": "GET",
 								"header": [],
 								"body": {},
@@ -663,13 +645,10 @@
 						{
 							"name": "TASK STATUS BY ID",
 							"request": {
-								"url": "{{prefix}}/taskstatus/1",
+								"url": "{{prefix}}/taskstatuses/1",
 								"method": "GET",
 								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
+								"body": {},
 								"description": ""
 							},
 							"response": []
@@ -677,7 +656,7 @@
 						{
 							"name": "ADD TASK STATUS",
 							"request": {
-								"url": "{{prefix}}/taskstatus",
+								"url": "{{prefix}}/taskstatuses",
 								"method": "POST",
 								"header": [
 									{
@@ -706,7 +685,7 @@
 				{
 					"name": "LIST ALL SESSIONS",
 					"request": {
-						"url": "{{phost}}:8500/session",
+						"url": "{{phost}}:8500/sessions",
 						"method": "GET",
 						"header": [],
 						"body": {},
@@ -717,7 +696,7 @@
 				{
 					"name": "LIST ALL SESSIONS BY LEADER ID",
 					"request": {
-						"url": "{{phost}}:8500/session/asdasd",
+						"url": "{{phost}}:8500/sessions/asdasd",
 						"method": "GET",
 						"header": [],
 						"body": {},
@@ -728,7 +707,7 @@
 				{
 					"name": "ACKNOWLEDGE SERVICE STARTUP",
 					"request": {
-						"url": "{{phost}}:8500/session/acknowledge/3",
+						"url": "{{phost}}:8500/sessions/acknowledge/3",
 						"method": "GET",
 						"header": [],
 						"body": {},
@@ -739,7 +718,7 @@
 				{
 					"name": "CLOSE SESSION BY PAT ID",
 					"request": {
-						"url": "{{phost}}:8500/session/123",
+						"url": "{{phost}}:8500/sessions/123",
 						"method": "DELETE",
 						"header": [],
 						"body": {},

@@ -19,27 +19,25 @@ object MicroMonitorBootstrap {
         val spO2Monitor = SpO2MonitorsFactory.createSimulatedSpO2Monitor()
         val etCO2 = EtCO2MonitorsFactory.createSimulatedEtCO2Monitor()
 
-
-        //BrokerConnector.init("127.0.0.1")
         BrokerConnector.init(LifeParameters.values().map { it.acronymWithSession(args) }.toList())
         val pub = RabbitMQPublisher(BrokerConnector.INSTANCE)
 
-        val obsTempGen = ObservableMonitor<Double>(tempMonitor)
+        val obsTempGen = ObservableMonitor(tempMonitor)
         obsTempGen.createObservable(OBSERVATION_REFRESH_TIME).subscribe({
             pub.publish("" + it, obsTempGen.measuredParameter.acronymWithSession(args))
         })
 
-        val obsSysGen = ObservableMonitor<Double>(systolicMonitor)
+        val obsSysGen = ObservableMonitor(systolicMonitor)
         obsSysGen.createObservable(OBSERVATION_REFRESH_TIME).subscribe({
             pub.publish("" + it, obsSysGen.measuredParameter.acronymWithSession(args))
         })
 
-        val obsDiaGen = ObservableMonitor<Double>(diastolicMonitor)
+        val obsDiaGen = ObservableMonitor(diastolicMonitor)
         obsDiaGen.createObservable(OBSERVATION_REFRESH_TIME).subscribe({
             pub.publish("" + it, obsDiaGen.measuredParameter.acronymWithSession(args))
         })
 
-        val obsHrGen = ObservableMonitor<Double>(heartRateMonitor)
+        val obsHrGen = ObservableMonitor(heartRateMonitor)
         obsHrGen.createObservable(OBSERVATION_REFRESH_TIME).subscribe({
             pub.publish("" + it, obsHrGen.measuredParameter.acronymWithSession(args))
         })

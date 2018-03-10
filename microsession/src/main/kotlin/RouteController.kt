@@ -3,6 +3,7 @@
 import com.beust.klaxon.Klaxon
 import com.github.kittinunf.fuel.httpDelete
 import com.github.kittinunf.fuel.httpPost
+import com.github.kittinunf.fuel.httpPut
 import config.Services
 import config.Services.Utils
 import model.*
@@ -19,6 +20,8 @@ import utils.GsonInitializer
 import utils.KlaxonDate
 import utils.dateConverter
 import utils.toJson
+import java.sql.Timestamp
+import java.util.*
 
 object RouteController {
 
@@ -26,7 +29,7 @@ object RouteController {
 
         port(Services.SESSION.port)
 
-        path("/session") {
+        path("/${Params.Session.API_NAME}") {
             get("", Utils.RESTParams.applicationJson) { SessionApi.listAllSessions(request, response) }
             get("/:leadercf", Utils.RESTParams.applicationJson) { SessionApi.listAllOpenSessionsByLeaderCF(request, response) }
             get("/acknowledge/:instanceid", Utils.RESTParams.applicationJson) { SessionApi.acknowledgeReadyService(request, response) }
@@ -55,7 +58,7 @@ object SessionApi {
 
         val dbUrl = createMicroDatabaseAddress(session.second)
 
-        "$dbUrl/api/session/$sessionId".httpDelete().responseString().third.fold(
+        "$dbUrl/${Connection.API}/${Params.Session.API_NAME}/$sessionId".httpPut().responseString().third.fold(
             success = {
                 instance[session.second] = false
                 sessions.removeAll { it.first.sessionId == sessionId }
@@ -68,14 +71,7 @@ object SessionApi {
 
     fun listAllOpenSessionsByLeaderCF(request: Request, response: Response): String {
         val leaderCF = request.params("leadercf")
-
         return sessions.filter { it.first.leaderCF == leaderCF }.map { it.first }.toJson()
-
-//        sessionInitializationParamsWithInstanceId.forEach {
-//            if (it.value.first.leaderCF == leaderCF)
-//                return sessions.filter { session -> session.second == it.key }.map { it.first }.toJson()
-//        }
-//        return emptyList<SessionDNS>().toJson()
     }
 
     fun acknowledgeReadyService(request: Request, response: Response): String {
@@ -88,7 +84,7 @@ object SessionApi {
 
             val instanceDetails = sessionInitializationParamsWithInstanceId[instanceId]!!
 
-            "$dbUrl/api/session/patientcf/${instanceDetails.first.patientCF}/leadercf/${instanceDetails.first.leaderCF}/instanceid/$instanceId".httpPost().responseString().third.fold(
+            "$dbUrl/${Connection.API}/${Params.Session.API_NAME}".httpPost().body(Session(-1, instanceDetails.first.patientCF, instanceDetails.first.leaderCF, Timestamp(Date().time), null, instanceId).toJson()).responseString().third.fold(
                 success = {
                     val session = Klaxon().fieldConverter(KlaxonDate::class, dateConverter).parse<model.Session>(it)
                     if (session != null) {

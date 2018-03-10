@@ -1,15 +1,26 @@
 package controllers
 
 import BrokerConnector
+import Connection.ADDRESS
+import Connection.PORT_SEPARATOR
+import Connection.PROTOCOL
+import Connection.PROTOCOL_SEPARATOR
 import RabbitMQSubscriber
-import controllers.api.LogApi
+import com.github.kittinunf.fuel.httpPost
+import config.Services
 import model.LifeParameters
+import model.Log
 import model.Session
 import utils.acronymWithSession
+import utils.toJson
+import java.sql.Timestamp
+import java.util.*
 
 object SubscriberController {
 
     private lateinit var subscriber: RabbitMQSubscriber
+
+    private val addLog = "$PROTOCOL$PROTOCOL_SEPARATOR$ADDRESS$PORT_SEPARATOR${Services.DATA_BASE.port}/${Connection.API}/${Params.Log.API_NAME}"
 
     fun startListeningMonitorsForInstanceId(session: Session) {
         if (SessionController.attachInstanceId(session)) {
@@ -17,8 +28,8 @@ object SubscriberController {
             subscriber = RabbitMQSubscriber(BrokerConnector.INSTANCE)
             LifeParameters.values().forEach { param ->
                 subscriber.subscribe(param.acronymWithSession(SessionController.getCurrentInstanceId()), subscriber.createStringConsumer { value ->
-                    //                    println("Saving param $param value $value to session ${getCurrentInstanceId()}")
-                    if (SessionController.isAttached()) LogApi.addLogEntry(param, value.toDouble())
+                    val log = Log(-1, param.longName, Timestamp(Date().time), param.id, value.toDouble())
+                    if (SessionController.isAttached()) addLog.httpPost().body(log.toJson()).responseString()
                 })
             }
         }

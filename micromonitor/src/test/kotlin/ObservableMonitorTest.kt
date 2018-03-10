@@ -57,8 +57,8 @@ class ObservableMonitorTest {
      * */
     @Test
     fun createObservable() {
-        var log = ArrayList<Double>()
-        var dataFlow = obsMon.createObservable(observationRefreshTime)
+        val log = ArrayList<Double>()
+        val dataFlow = obsMon.createObservable(observationRefreshTime)
         dataFlow.subscribe({ log.add(it) })
         Thread.sleep(simulationRefreshRate * 4)
         assertTrue(log.size >= 4)
@@ -70,8 +70,8 @@ class ObservableMonitorTest {
      */
     @Test
     fun stopObservation() {
-        var log = ArrayList<Double>()
-        var dataFlow = obsMon.createObservable(observationRefreshTime)
+        val log = ArrayList<Double>()
+        val dataFlow = obsMon.createObservable(observationRefreshTime)
         dataFlow.subscribe({ log.add(it) })
         Thread.sleep(simulationRefreshRate * 4)
         obsMon.stopObservation()
