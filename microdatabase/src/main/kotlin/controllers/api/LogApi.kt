@@ -24,7 +24,9 @@ object LogApi {
      */
     fun addLogEntry(request: Request, response: Response): String {
         val klaxon = Klaxon().fieldConverter(KlaxonDate::class, dateConverter)
-        val log: Log = klaxon.parse<Log>(request.body()) ?: return response.badRequest()
+        val log: Log = klaxon.parse<Log>(
+                request.body()) ?: return response.badRequest("Expected Log json serialized object," +
+                "found: ${request.body()}")
         JdbiConfiguration.INSTANCE.jdbi.useExtension<LogDao, SQLException>(LogDao::class.java)
         {
             it.insertNewLogEntry(

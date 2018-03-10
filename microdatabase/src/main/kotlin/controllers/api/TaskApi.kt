@@ -26,8 +26,9 @@ object TaskApi {
      * Inserts a new role inside of the Task table
      */
     fun addTask(request: Request, response: Response): String {
-        val task: Task = Klaxon().fieldConverter(KlaxonDate::class, dateConverter).parse<Task>(request.body())
-                ?: return response.badRequest()
+        val task: Task = Klaxon().fieldConverter(KlaxonDate::class, dateConverter).parse<Task>(
+                request.body()) ?: return response.badRequest("Expected Task json serialized object," +
+                "found: ${request.body()}")
         JdbiConfiguration.INSTANCE.jdbi.useExtension<TaskDao, SQLException>(TaskDao::class.java)
         {
             it.insertNewTask(
@@ -52,20 +53,22 @@ object TaskApi {
     }*/
 
     fun updateTaskStatus(request: Request, response: Response): String {
-        val task: Task = Klaxon().fieldConverter(KlaxonDate::class, dateConverter).parse<Task>(request.body())
-                ?: return response.badRequest()
+        val task: Task = Klaxon().fieldConverter(KlaxonDate::class, dateConverter).parse<Task>(
+                request.body()) ?: return response.badRequest("Expected Task json serialized object," +
+                "found: ${request.body()}")
         JdbiConfiguration.INSTANCE.jdbi.useExtension<TaskDao, SQLException>(TaskDao::class.java)
         {
             it.updateTaskStatus(
                     task.id,
                     task.statusId)
         }
-        return response.okCreated()
+        return response.ok()
     }
 
     fun updateTaskStatusByName(request: Request, response: Response): String {
-        val task: Task = Klaxon().fieldConverter(KlaxonDate::class, dateConverter).parse<Task>(request.body())
-                ?: return response.badRequest()
+        val task: Task = Klaxon().fieldConverter(KlaxonDate::class, dateConverter).parse<Task>(
+                request.body()) ?: return response.badRequest("Expected Task json serialized object," +
+                "found: ${request.body()}")
 
         JdbiConfiguration.INSTANCE.jdbi.useExtension<TaskDao, SQLException>(TaskDao::class.java)
         {
@@ -74,7 +77,7 @@ object TaskApi {
                     task.statusId
             )
         }
-        return response.okCreated()
+        return response.ok()
     }
 
     fun updateTaskEndTimeByName(request: Request, response: Response): String {
@@ -118,7 +121,8 @@ object TaskApi {
      */
     fun getTasksBySessionId(request: Request, response: Response): String {
         return JdbiConfiguration.INSTANCE.jdbi.withExtension<List<Task>, TaskDao, SQLException>(TaskDao::class.java)
-        { it.selectAllTasks(request.params(Params.Session.SESSION_ID).toInt()) }.toJson()
+        { it.selectAllTasks(request.params(Params.Session.SESSION_ID).toInt()) }
+            .toJson()
     }
 
     /**

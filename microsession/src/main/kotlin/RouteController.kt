@@ -54,7 +54,7 @@ object SessionApi {
     fun closeSessionById(request: Request, response: Response): String {
         val sessionId = request.params("sessionid").toInt()
         val session = sessions.firstOrNull { it.first.sessionId == sessionId }
-        session ?: return response.notFound()
+        session ?: return response.notFound("Non existing session requested.")
 
         val dbUrl = createMicroDatabaseAddress(session.second)
 
@@ -65,7 +65,7 @@ object SessionApi {
                 sManager.closeSession(session.second.toString())
                 return response.ok()
             },
-            failure = { return it.toJson() }
+            failure = { return response.resourceNotAvailable(dbUrl, it.toJson()) }
         )
     }
 
@@ -77,7 +77,8 @@ object SessionApi {
     fun acknowledgeReadyService(request: Request, response: Response): String {
         val instanceId = request.params("instanceid").toInt()
         println("[RECEIVED ACK FOR INSTANCE $instanceId, map is $serviceInitializationStatus")
-        serviceInitializationStatus[instanceId] = serviceInitializationStatus[instanceId]?.plus(1) ?: return response.badRequest()
+        serviceInitializationStatus[instanceId] = serviceInitializationStatus[instanceId]?.plus(1) ?:
+                return response.badRequest("")
         println("INSTANCE ACKS ARE ${serviceInitializationStatus[instanceId]}")
         if (serviceInitializationStatus[instanceId] == 3) {
             val dbUrl = createMicroDatabaseAddress(instanceId)

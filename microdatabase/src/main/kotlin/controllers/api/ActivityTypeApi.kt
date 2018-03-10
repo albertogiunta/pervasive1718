@@ -20,7 +20,9 @@ object ActivityTypeApi {
      * Add a new activity type
      */
     fun addActivityType(request: Request, response: Response): String {
-        val activityType: ActivityType = Klaxon().parse<ActivityType>(request.body()) ?: return response.badRequest()
+        val activityType: ActivityType = Klaxon().parse<ActivityType>(
+                request.body()) ?: return response.badRequest("Expected ActivityType json serialized " +
+                "object, found: ${request.body()}")
         JdbiConfiguration.INSTANCE.jdbi.useExtension<ActivityTypeDao, SQLException>(ActivityTypeDao::class.java)
         { it.insertNewActivityType(activityType.name) }
         return response.okCreated()

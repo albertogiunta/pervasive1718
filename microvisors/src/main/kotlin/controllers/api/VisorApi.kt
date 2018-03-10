@@ -14,13 +14,15 @@ import utils.toJson
 
 object VisorApi {
 
-    val taskManager : TaskManager = TaskManager()
+    private val taskManager : TaskManager = TaskManager()
 
     /**
      * Add a task
      */
     fun addTask(request: Request, response: Response): String {
-        val task: VisibleTask = Klaxon().parse<VisibleTask>(request.body()) ?: return response.badRequest()
+        val task: VisibleTask = Klaxon().parse<VisibleTask>(
+                request.body()) ?: return response.badRequest("Expected VisibleTask json serialized " +
+                "object, found: ${request.body()}")
         taskManager.addTask(task)
         return response.okCreated()
     }

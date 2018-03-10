@@ -20,8 +20,9 @@ object HealthParameterApi {
      * Inserts a new health parameter inside of the Health Parameters table
      */
     fun addHealthParameter(request: Request, response: Response): String {
-        val healthParameter: HealthParameter = Klaxon().parse<HealthParameter>(request.body())
-                ?: return response.badRequest()
+        val healthParameter: HealthParameter = Klaxon().parse<HealthParameter>(
+                request.body()) ?: return response.badRequest("Expected HealthParameter json serialized " +
+                "object, found: ${request.body()}")
         JdbiConfiguration.INSTANCE.jdbi.useExtension<HealthParameterDao, SQLException>(HealthParameterDao::class.java)
         {
             it.insertNewHealthParameter(
