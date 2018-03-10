@@ -23,7 +23,7 @@ object ReportGenerator {
 
         val fileName = DEFAULT_FILE_NAME + Params.Session.SESSION_ID
         //val reportInJson: JsonValue =
-        val response = "http://localhost:8100/api/session/799/report".httpGet().responseString()
+        val response = "http://localhost:8100/api/sessions/799/report".httpGet().responseString()
         response.third.fold(
                 success = {
                     //println(it)
@@ -36,18 +36,18 @@ object ReportGenerator {
 
         response.third.fold(success = {
             val klaxon = Klaxon()
-                    .fieldConverter(KlaxonDate::class, dateConverter)
                     .fieldConverter(KlaxonLifeParameterList::class, lifeParameterListConverter)
-
+                    .fieldConverter(KlaxonDate::class, dateConverter)
+            //println(it + "\n")
             JsonReader(StringReader(it) as Reader).use { reader ->
                 reader.beginArray {
-                    val sTaskReportEntry = reader.nextString()
-                    println(sTaskReportEntry)
+                    val sTaskReportEntry: String = reader.nextString().removePrefix("[").removeSuffix("]")
+                    println(sTaskReportEntry + "\n\n\n")
                     taskReportEntry = klaxon.parse<TaskReportEntry>(sTaskReportEntry)!!
-                    val sLogReportEntry = reader.nextString()
-                    println(sTaskReportEntry)
-                    logReportEntry = klaxon.parse<LogReportEntry>(sLogReportEntry)!!
-                    logReportEntry?.run { println(this.toString()) }
+//                    val sLogReportEntry = reader.nextString()
+//                    println(sLogReportEntry)
+//                    logReportEntry = klaxon.parse<LogReportEntry>(sLogReportEntry)!!
+//                    logReportEntry?.run { println(this.toString()) }
                 }
             }
         }, failure = {
