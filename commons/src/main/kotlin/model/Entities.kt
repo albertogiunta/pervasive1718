@@ -47,7 +47,7 @@ data class Task @JvmOverloads constructor(var id: Int = 0, val name: String, val
     }
 }
 
-data class TaskReportEntry constructor(
+data class TaskReportEntry @JvmOverloads constructor(
         val sessionId: Int,
         val taskStrId: String,
         val leaderCF: String,
@@ -56,8 +56,8 @@ data class TaskReportEntry constructor(
         val activityName: String,
         val relatedHealthParameters: List<String>,
         @KlaxonDate val startTime: Timestamp,
-        @KlaxonDate val endTime: Timestamp?,
-        val operatorCF: String?)
+        @KlaxonDate val endTime: Timestamp? = null,
+        val operatorCF: String? = null)
 
 data class LogReportEntry constructor(
         val sessionId: Int,

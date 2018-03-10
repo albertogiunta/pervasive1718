@@ -83,9 +83,9 @@ object SessionApi {
     fun generateReport(request: Request, response : Response) : String {
          return listOf(
                  JdbiConfiguration.INSTANCE.jdbi.withExtension<String, SessionDao, SQLException>(SessionDao::class.java)
-                    { it.getTaskReport(request.params(Params.Session.SESSION_ID).toInt()) },
+                    { it.getTaskReport(request.params(Params.Session.SESSION_ID).toInt()).toJson() },
                  JdbiConfiguration.INSTANCE.jdbi.withExtension<String, SessionDao, SQLException>(SessionDao::class.java)
-                    { it.getLogReport(request.params(Params.Session.SESSION_ID).toInt()) }
+                    { it.getLogReport(request.params(Params.Session.SESSION_ID).toInt()).toJson() }
          ).toJson()
     }
 }

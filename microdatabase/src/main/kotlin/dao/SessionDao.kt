@@ -8,7 +8,9 @@ import Params.Session.PATIENT_CF
 import Params.Session.SESSION_ID
 import Params.Session.START_DATE
 import Params.Session.TABLE_NAME
+import model.LogReportEntry
 import model.Session
+import model.TaskReportEntry
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys
 import org.jdbi.v3.sqlobject.statement.SqlQuery
@@ -44,7 +46,7 @@ interface SessionDao {
     @SqlQuery("SELECT * FROM $TABLE_NAME WHERE $END_DATE IS NULL AND $LEADER_CF = (:$LEADER_CF)")
     fun selectAllOpenSessionsByLeaderCF(@Bind(LEADER_CF) leaderCF: String): List<Session>
 
-    @SqlQuery("select array_to_json(array_agg(row_to_json(t))) from (" +
+    @SqlQuery("select * from (" +
                 "select " +
                     "S.${Params.Session.SESSION_ID}, " +
                     "T.${Params.Task.TASK_NAME}, " +
@@ -68,9 +70,9 @@ interface SessionDao {
                 "where A.${Params.Activity.NAME} is not NULL and S.${Params.Session.SESSION_ID} = (:$SESSION_ID) " +
                 "order by T.${Params.Task.START_TIME}" +
             ") t(\"sessionId\", \"taskStrId\", \"leaderCF\", \"patientCF\", \"activityAcronym\", \"activityName\", \"relatedHealthParameters\", \"startTime\", \"endTime\", \"operatorCF\");")
-    fun getTaskReport(@Bind(SESSION_ID) sessionId: Int) : String
+    fun getTaskReport(@Bind(SESSION_ID) sessionId: Int) : List<TaskReportEntry>
 
-    @SqlQuery("select array_to_json(array_agg(row_to_json(t))) from (" +
+    @SqlQuery("select * from (" +
             "select " +
             "S.${Params.Session.SESSION_ID}, " +
             "S.${Params.Session.LEADER_CF}, " +
@@ -84,6 +86,6 @@ interface SessionDao {
             "where S.${Params.Session.SESSION_ID} = (:$SESSION_ID)" +
             "order by 4" +
             ") t(\"sessionId\", \"leaderCF\", \"patientCF\", \"dateTime\", \"healthParameter\", \"hpValue\");")
-    fun getLogReport(@Bind(SESSION_ID) sessionId: Int) : String
+    fun getLogReport(@Bind(SESSION_ID) sessionId: Int) : List<LogReportEntry>
 }
 
