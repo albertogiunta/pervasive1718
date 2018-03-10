@@ -7,9 +7,9 @@ import com.beust.klaxon.KlaxonException
 import model.LifeParameters
 
 @Target(AnnotationTarget.FIELD)
-annotation class KlaxonListLifeParameter
+annotation class KlaxonLifeParameterList
 
-val listLifeParameterConverter = object : Converter<List<LifeParameters>> {
+val lifeParameterListConverter = object : Converter<List<LifeParameters>> {
 
     override fun fromJson(jv: JsonValue): List<LifeParameters> {
         if (jv.array != null) {
@@ -18,7 +18,7 @@ val listLifeParameterConverter = object : Converter<List<LifeParameters>> {
             }.toList()
             return list
         } else {
-            throw KlaxonException("Couldn't parse date: ${jv.string}")
+            throw KlaxonException("Couldn't parse life parameter list: ${jv.string}")
         }
     }
 

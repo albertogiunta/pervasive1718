@@ -1,7 +1,7 @@
 package model
 
 import utils.KlaxonDate
-import utils.KlaxonListLifeParameter
+import utils.KlaxonLifeParameterList
 import java.sql.Timestamp
 import java.util.*
 
@@ -55,7 +55,7 @@ data class TaskReportEntry constructor(
         val patientCF: String,
         val acronym: String,
         val activityName: String,
-        @KlaxonListLifeParameter val relatedHealthParameters: List<String>,
+        @KlaxonLifeParameterList val relatedHealthParameters: List<String>,
         @KlaxonDate val startTime: Timestamp,
         @KlaxonDate val endTime: Timestamp?,
         val operatorCF: String)
