@@ -8,13 +8,12 @@ import Params.Session.PATIENT_CF
 import Params.Session.SESSION_ID
 import Params.Session.START_DATE
 import Params.Session.TABLE_NAME
-import model.LogReportEntry
 import model.Session
-import model.TaskReportEntry
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
+import utils.KlaxonDate
 import java.sql.Timestamp
 
 interface SessionDao {
@@ -70,7 +69,7 @@ interface SessionDao {
                 "where A.${Params.Activity.NAME} is not NULL and S.${Params.Session.SESSION_ID} = (:$SESSION_ID) " +
                 "order by T.${Params.Task.START_TIME}" +
             ") t(\"sessionId\", \"taskStrId\", \"leaderCF\", \"patientCF\", \"activityAcronym\", \"activityName\", \"relatedHealthParameters\", \"startTime\", \"endTime\", \"operatorCF\");")
-    fun getTaskReport(@Bind(SESSION_ID) sessionId: Int) : List<TaskReportEntry>
+    fun getTaskReport(@Bind(SESSION_ID) sessionId: Int) : List<TaskReportEntryString>
 
     @SqlQuery("select * from (" +
             "select " +
@@ -86,6 +85,28 @@ interface SessionDao {
             "where S.${Params.Session.SESSION_ID} = (:$SESSION_ID)" +
             "order by 4" +
             ") t(\"sessionId\", \"leaderCF\", \"patientCF\", \"dateTime\", \"healthParameter\", \"hpValue\");")
-    fun getLogReport(@Bind(SESSION_ID) sessionId: Int) : List<LogReportEntry>
-}
+    fun getLogReport(@Bind(SESSION_ID) sessionId: Int) : List<LogReportEntryString>
 
+    companion object {
+
+        data class TaskReportEntryString @JvmOverloads constructor(
+                val sessionId: Int,
+                val taskStrId: String,
+                val leaderCF: String,
+                val patientCF: String,
+                val activityAcronym: String,
+                val activityName: String,
+                val relatedHealthParameters: List<String>,
+                @KlaxonDate val startTime: Timestamp,
+                @KlaxonDate val endTime: Timestamp? = null,
+                val operatorCF: String? = null)
+
+        data class LogReportEntryString @JvmOverloads constructor(
+                val sessionId: Int,
+                val leaderCF: String,
+                val patientCF: String,
+                @KlaxonDate val dateTime: Timestamp,
+                val healthParameter: String,
+                val hpValue: Double)
+    }
+}

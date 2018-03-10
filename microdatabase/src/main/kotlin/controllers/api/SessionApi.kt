@@ -8,7 +8,10 @@ import badRequest
 import com.beust.klaxon.Klaxon
 import controllers.SubscriberController
 import dao.SessionDao
+import model.LifeParameters
+import model.LogReportEntry
 import model.Session
+import model.TaskReportEntry
 import ok
 import spark.Request
 import spark.Response
@@ -82,10 +85,36 @@ object SessionApi {
 
     fun generateReport(request: Request, response : Response) : String {
          return listOf(
-                 JdbiConfiguration.INSTANCE.jdbi.withExtension<String, SessionDao, SQLException>(SessionDao::class.java)
-                    { it.getTaskReport(request.params(Params.Session.SESSION_ID).toInt()).toJson() },
-                 JdbiConfiguration.INSTANCE.jdbi.withExtension<String, SessionDao, SQLException>(SessionDao::class.java)
-                    { it.getLogReport(request.params(Params.Session.SESSION_ID).toInt()).toJson() }
+                 JdbiConfiguration.INSTANCE.jdbi.withExtension<String, SessionDao, SQLException>(SessionDao::class.java) {
+                     it.getTaskReport(request.params(Params.Session.SESSION_ID).toInt()).map {
+                        it.toReportEntry()
+                     }.toJson()
+
+                 },
+                 JdbiConfiguration.INSTANCE.jdbi.withExtension<String, SessionDao, SQLException>(SessionDao::class.java) {
+                     it.getLogReport(request.params(Params.Session.SESSION_ID).toInt()).map {
+                         it.toReportEntry()
+                     }.toJson() }
          ).toJson()
     }
+
+    private fun SessionDao.Companion.TaskReportEntryString.toReportEntry() : TaskReportEntry {
+        return TaskReportEntry(
+                this.sessionId, this.taskStrId,
+                this.leaderCF, this.patientCF,
+                this.activityAcronym, this.activityName,
+                this.relatedHealthParameters.mapNotNull { LifeParameters.Utils.getByLongName(it) },
+                this.startTime, this.endTime,
+                this.operatorCF)
+    }
+
+    private fun SessionDao.Companion.LogReportEntryString.toReportEntry() : LogReportEntry {
+        return LogReportEntry(
+                this.sessionId,
+                this.leaderCF, this.patientCF,
+                this.dateTime,
+                LifeParameters.Utils.getByLongName(this.healthParameter),
+                this.hpValue)
+    }
+
 }

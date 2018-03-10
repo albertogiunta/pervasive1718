@@ -11,18 +11,38 @@ annotation class KlaxonLifeParameterList
 
 val lifeParameterListConverter = object : Converter<List<LifeParameters>> {
 
+    @Suppress("UNCHECKED_CAST")
     override fun fromJson(jv: JsonValue): List<LifeParameters> {
         if (jv.array != null) {
-            val list = (jv.array as JsonArray<String>).map { elem: String ->
-                LifeParameters.Utils.getByLongName(elem)!!
+            return (jv.array as JsonArray<String>).map { elem: String ->
+                LifeParameters.Utils.getByEnumName(elem)!!
             }.toList()
-            return list
         } else {
             throw KlaxonException("Couldn't parse life parameter list: ${jv.string}")
         }
     }
 
     override fun toJson(value: List<LifeParameters>): String? {
+        return value.toString()
+    }
+}
+
+@Target(AnnotationTarget.FIELD)
+annotation class KlaxonLifeParameter
+
+val lifeParameterConverter = object : Converter<LifeParameters> {
+
+    @Suppress("UNCHECKED_CAST")
+    override fun fromJson(jv: JsonValue): LifeParameters {
+        if (jv.string != null) {
+            return LifeParameters.Utils.getByEnumName(jv.string!!)!!
+
+        } else {
+            throw KlaxonException("Couldn't parse life parameter list: ${jv.string}")
+        }
+    }
+
+    override fun toJson(value: LifeParameters): String? {
         return value.toString()
     }
 }

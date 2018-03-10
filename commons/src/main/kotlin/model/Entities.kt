@@ -65,7 +65,7 @@ data class LogReportEntry @JvmOverloads constructor(
         val leaderCF: String,
         val patientCF: String,
         @KlaxonDate val dateTime: Timestamp?,
-        val healthParameter: String,
+        val healthParameter: LifeParameters?,
         val hpValue: Double)
 
 data class AugmentedMemberFromServer(val userCF: String, val items: MutableList<AugmentedTask> = mutableListOf())
