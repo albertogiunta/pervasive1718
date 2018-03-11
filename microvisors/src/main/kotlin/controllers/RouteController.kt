@@ -40,7 +40,9 @@ object RouteController {
         path("/api") {
             get("/tasks", RESTParams.applicationJson) { VisorApi.getAllTasks(request, response) }
             post("/tasks", RESTParams.applicationJson) { VisorApi.addTask(request, response) }
+            post("/sessions", RESTParams.applicationJson) { VisorApi.addSessionInfo(request, response) }
             delete("/tasks/:taskName", RESTParams.applicationJson) { VisorApi.removeTask(request, response) }
+            delete("/sessions", RESTParams.applicationJson) { VisorApi.clearSessionInfo(request, response) }
         }
     }
 }

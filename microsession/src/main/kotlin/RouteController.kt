@@ -80,8 +80,9 @@ object SessionApi {
         serviceInitializationStatus[instanceId] = serviceInitializationStatus[instanceId]?.plus(1) ?:
                 return response.badRequest("")
         println("INSTANCE ACKS ARE ${serviceInitializationStatus[instanceId]}")
-        if (serviceInitializationStatus[instanceId] == 3) {
+        if (serviceInitializationStatus[instanceId] == 4) {
             val dbUrl = createMicroDatabaseAddress(instanceId)
+            val visorUrl = Services.Utils.defaultHostUrlApi(Services.VISORS)
 
             val instanceDetails = sessionInitializationParamsWithInstanceId[instanceId]!!
 
@@ -91,6 +92,7 @@ object SessionApi {
                     if (session != null) {
                         sessions.add(Pair(SessionDNS(session.id, session.patientCF, instanceId, session.leaderCF), instanceId))
                         ws.sendMessage(instanceDetails.second, PayloadWrapper(-1, WSOperations.SESSION_HANDLER_RESPONSE, SessionDNS(session.id, session.patientCF, instanceId, session.leaderCF).toJson()))
+                        "$visorUrl/${Params.Session.API_NAME}".httpPost().body(SessionInfo(session.patientCF).toJson()).responseString()
                     } else {
                         ws.sendMessage(instanceDetails.second, PayloadWrapper(-1, WSOperations.SESSION_HANDLER_ERROR_RESPONSE, "Cannot parse response from database - session not created"))
                     }

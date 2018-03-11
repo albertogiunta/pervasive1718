@@ -52,20 +52,23 @@ $(document).ready(function () {
 //
 var handleConnect = function () {
 
-    consumeExchange.forEach(function (element, index, consumeExchange) {
-        consumeExchange[index] = element + sessionExchange
+	consumeExchange.forEach(function (element, index, consumeExchange) {
+		consumeExchange[index] = element + sessionExchange
 	});
-	
+
 	// Need to modify ID of punctual exchanges in DOM
 	punctualConsumeExchange.forEach(function (element, index, punctualConsumeExchange) {
-		$('#'+element).attr('id', element + sessionExchange);	
+		$('#' + element).attr('id', element + sessionExchange);
 	})
 
 	queueName = "queue" + Math.floor(Math.random() * 1000000);
 
-    amqpClient = amqpClientFactory.createAmqpClient();
+	amqpClient = amqpClientFactory.createAmqpClient();
 
-	var credentials = {username: username, password: password};
+	var credentials = {
+		username: username,
+		password: password
+	};
 	var options = {
 		url: url,
 		virtualHost: virtualhost,
@@ -92,11 +95,21 @@ var consumeChannelOpenHandler = function (channel) {
 	// the AmqpChannel.consumeBasic() function means there should be be explicit
 	// acknowledgement when the message is received. If set to true, then no
 	// explicit acknowledgement is required when the message is received.
-	consumeExchange.forEach(function(exchangeName) {
+	consumeExchange.forEach(function (exchangeName) {
 		myConsumerTag = "client" + Math.floor(Math.random() * 1000000);
-		consumeChannel.declareQueue({queue: queueName})
-			.bindQueue({queue: queueName, exchange: exchangeName, routingKey: routingKey})
-			.consumeBasic({queue: queueName, consumerTag: myConsumerTag, noAck: false});
+		consumeChannel.declareQueue({
+				queue: queueName
+			})
+			.bindQueue({
+				queue: queueName,
+				exchange: exchangeName,
+				routingKey: routingKey
+			})
+			.consumeBasic({
+				queue: queueName,
+				consumerTag: myConsumerTag,
+				noAck: false
+			});
 	});
 };
 
@@ -117,19 +130,18 @@ var handleMessageReceived = function (event) {
 
 	// Check how the payload was packaged since older browsers like IE7 don't
 	// support ArrayBuffer. In those cases, a Kaazing ByteBuffer was used instead.
-	if (typeof(ArrayBuffer) === "undefined") {
+	if (typeof (ArrayBuffer) === "undefined") {
 		body = event.getBodyAsByteBuffer().getString(Charset.UTF8);
-	}
-	else {
+	} else {
 		body = arrayBufferToString(event.getBodyAsArrayBuffer())
 	}
 	var exchange = event.args.exchange;
 
-    var curGraph = graphs.filter(graph => graph.channel === exchange)[0];
+	var curGraph = graphs.filter(graph => graph.channel === exchange)[0];
 	if (curGraph !== undefined)
 		curGraph.setData(body);
 	else {
-		var classId = "#"+exchange;
+		var classId = "#" + exchange;
 		$(classId).text(body);
 	}
 };
@@ -148,7 +160,7 @@ var createWebSocketFactory = function () {
 		// Yeah, nobody needs to hide this stuff.
 		var credentials = new PasswordAuthentication("admin", "admin");
 		callback(credentials);
-    };
+	};
 	webSocketFactory.setChallengeHandler(basicHandler);
 	return webSocketFactory;
 };
@@ -177,9 +189,9 @@ function getRandomInt(min, max) {
 	return Math.floor(Math.random() * (max - min)) + min;
 }
 
-graphs.push(new Graph("Battito cardiaco", "HR"+sessionExchange, 0, 220, "black", ".graphOne"));
+graphs.push(new Graph("Battito cardiaco", "HR" + sessionExchange, 0, 220, "black", ".graphOne"));
 //graphs.push(new Graph("Temperatura", "T", 0, 45, "red"));
-graphs.push(new Graph("Pressione sistolica", "SYS"+sessionExchange, 0, 230, "blue", ".graphTwo"));
-graphs.push(new Graph("Pressione diastolica", "DIA"+sessionExchange, 0, 150, "green", ".graphThree"));
+graphs.push(new Graph("Pressione sistolica", "SYS" + sessionExchange, 0, 230, "blue", ".graphTwo"));
+graphs.push(new Graph("Pressione diastolica", "DIA" + sessionExchange, 0, 150, "green", ".graphThree"));
 //graphs.push(new Graph("Saturazione ossigeno", "SpO2", 0, 100, "purple"));
 //graphs.push(new Graph("Fine respirazione CO2", "EtCO2", 0, 15, "gray"));

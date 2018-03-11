@@ -24,6 +24,13 @@ body {
   grid-auto-rows: minmax(100px, auto);
 }
 
+.center {
+  margin: auto;
+  width: 100%;
+  padding: 10px;
+}
+
+
 .one {
   grid-column: 1;
   grid-row: 1;
@@ -108,14 +115,18 @@ textarea {
   padding: 0.2em 0; }
 
 .header-container {
-  background: #132b3c; }
+  background: #15B4B0; }
 
 #responsive_header {
   height: 120px; }
 
 .footer-container {
   background: #2f2f2f;
-  margin-top: 150px; }
+  position:fixed;
+  bottom:0;
+  left:0; 
+  width:100%;
+}
 
 footer .row {
   margin-bottom: 0; }
@@ -249,7 +260,8 @@ header.wrapper nav a:hover, .nav-hover {
 
 .footer-container footer {
   color: white;
-  padding: 20px 0; }
+  padding: 20px 0;
+}
 
 .numParam {
   font-family: monospace, sans-serif;
@@ -295,7 +307,8 @@ header .logo {
   margin-top: 12px;
   margin-bottom: 10px;
   width: 800px;
-  height: 80px; }
+  height: 80px;
+  position: center }
 
 h1, h2, h3, h4, h5 {
   color: #4aaadf; }
@@ -307,7 +320,7 @@ h1 {
 
 h2 {
   font-size: 28px;
-  margin: 0.83em 0;
+  margin: 0.67em 0;
   line-height: 24px; }
 
 h3 {
@@ -445,8 +458,6 @@ footer div.k-bottom {
     float: left;
     margin-top: 6px;
     color: #8b8c8d; }
-    footer div.k-bottom .copyright:before {
-      content: "\00A9  2007 - 2016 Kaazing Corporation. All Rights Reserved."; }
   footer div.k-bottom .powered-footer {
     /* Leave blank for vendor Kaazing */
     /* Leave blank for vendor Kaazing */ }
@@ -498,18 +509,18 @@ ul.breadcrumbs {
      ==================== */
   header.wrapper nav {
     margin-bottom: 10px;
-    float: right; }
+    float: center; }
 
   header.wrapper nav ul {
-    float: right; }
+    float: center; }
 
   header.wrapper nav ul li {
-    float: left;
+    float: center;
     margin-left: 0;
     margin-right: 0; }
 
   header.wrapper nav a {
-    float: left;
+    float: center;
     margin: 0;
     padding: 0px 6px; }
 
@@ -544,19 +555,19 @@ ul.breadcrumbs {
       WIDE: Menu
      ============ */
   .title {
-    float: left; }
+    float: center; }
 
   /* Necessary modifcations due to styles inherited from main website. */
   #text_contact-2 .title, .social-icons li.title {
-    float: none; }
+    float: center; }
 
   header.wrapper nav {
-    float: right;
+    float: center;
     width: 66%;
     margin-top: 20px; }
 
   header.wrapper nav a {
-    margin: 0 1.7%; }
+    margin: 0 0; }
 
   /* ============
       WIDE: Main
@@ -736,3 +747,7 @@ ul.breadcrumbs {
 	font: 13px sans-serif;
 }
 
+br {
+  display: block;
+  margin: 4px 0;
+}
