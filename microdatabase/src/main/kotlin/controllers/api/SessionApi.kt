@@ -29,7 +29,8 @@ object SessionApi {
      */
     fun addSession(request: Request, response: Response): String {
         var session: Session = Klaxon().fieldConverter(KlaxonDate::class, dateConverter).parse<Session>(request.body())
-                ?: return response.badRequest()
+                ?: return response.badRequest("Expected Session json serialized object," +
+                        "found: ${request.body()}")
         session.startDate = Timestamp(Date().time)
         JdbiConfiguration.INSTANCE.jdbi.useExtension<SessionDao, SQLException>(SessionDao::class.java)
         {

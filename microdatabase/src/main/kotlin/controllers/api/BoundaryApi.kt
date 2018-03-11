@@ -20,7 +20,9 @@ object BoundaryApi {
      * Inserts a new status inside of the Boundary table
      */
     fun addBoundary(request: Request, response: Response): String {
-        val boundary: Boundary = Klaxon().parse<Boundary>(request.body()) ?: return response.badRequest()
+        val boundary: Boundary = Klaxon().parse<Boundary>(
+                request.body()) ?: return response.badRequest("Expected Boundary json serialized object," +
+                "found: ${request.body()}")
         JdbiConfiguration.INSTANCE.jdbi.useExtension<BoundaryDao, SQLException>(BoundaryDao::class.java)
         {
             it.insertNewStatus(
@@ -53,5 +55,4 @@ object BoundaryApi {
         { it.selectStatusById(request.params(Params.Role.ID).toInt()) }
             .toJson()
     }
-
 }

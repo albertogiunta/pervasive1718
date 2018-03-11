@@ -20,7 +20,9 @@ object OperatorApi {
      * Inserts a new role inside of the Operator table
      */
     fun addOperator(request: Request, response: Response): String {
-        val operator: Operator = Klaxon().parse<Operator>(request.body()) ?: return response.badRequest()
+        val operator: Operator = Klaxon().parse<Operator>(
+                request.body()) ?: return response.badRequest("Expected Operator json serialized object," +
+                "found: ${request.body()}")
         JdbiConfiguration.INSTANCE.jdbi.useExtension<OperatorDao, SQLException>(OperatorDao::class.java)
         {
             it.insertNewOperator(
@@ -50,5 +52,4 @@ object OperatorApi {
         { it.selectOperatorById(request.params(Params.Operator.ID).toInt()) }
             .toJson()
     }
-
 }

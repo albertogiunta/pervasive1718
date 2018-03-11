@@ -20,7 +20,9 @@ object RoleApi {
      * Inserts a new role inside of the Role table
      */
     fun addRole(request: Request, response: Response): String {
-        val role: Role = Klaxon().parse<Role>(request.body()) ?: return response.badRequest()
+        val role: Role = Klaxon().parse<Role>(
+                request.body()) ?: return response.badRequest("Expected Role json serialized object," +
+                "found: ${request.body()}")
         JdbiConfiguration.INSTANCE.jdbi.useExtension<RoleDao, SQLException>(RoleDao::class.java)
         { it.insertNewRole(role.name) }
         return response.okCreated()

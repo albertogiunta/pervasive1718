@@ -24,30 +24,30 @@ fun Response.okAccepted(): String {
     return this.body()
 }
 
-fun Response.badRequest(): String {
+fun Response.badRequest(additionalInformation: String?): String {
     this.status(400)
     this.type("application/json")
-    this.body(ResponseMessage(400, "Request body was unacceptable").toJson())
+    this.body(ResponseMessage(400, "Request body was unacceptable. $additionalInformation?").toJson())
     return this.body()
 }
 
-fun Response.notFound(): String {
+fun Response.notFound(additionalInformation: String?): String {
     this.status(404)
     this.type("application/json")
-    this.body(ResponseMessage(404, "Resource not found").toJson())
+    this.body(ResponseMessage(404, "Resource not found. $additionalInformation?").toJson())
     return this.body()
 }
 
-fun Response.internalServerError(error: String): String {
+fun Response.internalServerError(errorDetails: String): String {
     this.status(500)
     this.type("application/json")
-    this.body(ResponseMessage(500, "Internal server error. Details: $error").toJson())
+    this.body(ResponseMessage(500, "Internal server error. Details: $errorDetails").toJson())
     return this.body()
 }
 
-fun Response.resourceNotAvailable(host: String): String {
+fun Response.resourceNotAvailable(host: String, errorDetails: String): String {
     this.status(503)
     this.type("application/json")
-    this.body(ResponseMessage(503, "Service $host not available.").toJson())
+    this.body(ResponseMessage(503, "Service $host not available. Additional info: $errorDetails").toJson())
     return this.body()
 }

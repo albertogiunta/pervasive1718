@@ -20,7 +20,9 @@ object TaskStatusApi {
      * Add a new activity status type
      */
     fun addTaskStatus(request: Request, response: Response): String {
-        val taskStatus: TaskStatus = Klaxon().parse<TaskStatus>(request.body()) ?: return response.badRequest()
+        val taskStatus: TaskStatus = Klaxon().parse<TaskStatus>(
+                request.body()) ?: return response.badRequest("Expected TaskStatus json serialized " +
+                "object, found: ${request.body()}")
         JdbiConfiguration.INSTANCE.jdbi.useExtension<TaskStatusDao, SQLException>(TaskStatusDao::class.java)
         { it.insertNewTaskStatus(taskStatus.name) }
         return response.okCreated()
@@ -29,7 +31,7 @@ object TaskStatusApi {
     /**
      * Retrieves all the activity status
      */
-    fun getAllTaskStatuss(request: Request, response: Response): String {
+    fun getAllTaskStatus(request: Request, response: Response): String {
         return JdbiConfiguration.INSTANCE.jdbi.withExtension<List<TaskStatus>, TaskStatusDao, SQLException>(TaskStatusDao::class.java)
         { it.selectAllTaskStatuss() }
             .toJson()
@@ -43,5 +45,4 @@ object TaskStatusApi {
         { it.selectTaskStatusById(request.params(Params.TaskStatus.ID).toInt()) }
             .toJson()
     }
-
 }

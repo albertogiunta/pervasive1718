@@ -20,7 +20,9 @@ object ActivityApi {
      * Retrieves all the activities
      */
     fun addActivity(request: Request, response: Response): String {
-        val activity: Activity = Klaxon().parse<Activity>(request.body()) ?: return response.badRequest()
+        val activity: Activity = Klaxon().parse<Activity>(
+                request.body()) ?: return response.badRequest("Expected Activity json serialized object," +
+                "found: ${request.body()}")
         JdbiConfiguration.INSTANCE.jdbi.useExtension<ActivityDao, SQLException>(ActivityDao::class.java) {
             it.insertNewActivity(
                 activity.name,

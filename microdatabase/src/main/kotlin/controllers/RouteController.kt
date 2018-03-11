@@ -93,7 +93,7 @@ object RouteController {
             }
 
             path("/${Params.TaskStatus.API_NAME}") {
-                get("", applicationJson) { TaskStatusApi.getAllTaskStatuss(request, response) }
+                get("", applicationJson) { TaskStatusApi.getAllTaskStatus(request, response) }
                 get("/:id", applicationJson) { TaskStatusApi.getTaskStatusById(request, response) }
                 post("", applicationJson) { TaskStatusApi.addTaskStatus(request, response) }
             }
