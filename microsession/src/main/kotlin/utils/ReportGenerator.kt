@@ -38,6 +38,7 @@ object ReportGenerator {
                     val sLogReport = reader.nextString()
                     var logReportEntry = klaxon.parseArray<LogReportEntry>(sLogReport)!!
                     writeReportOnFile(taskReport, logReportEntry, reportFile)
+                    println("Generating the final Report ${fileName + FILE_EXTENSION} in ${DEFAULT_PATH}")
                 }
             }
         }, failure = {

@@ -1,7 +1,6 @@
 @file:Suppress("UNUSED_PARAMETER")
 
 import com.beust.klaxon.Klaxon
-import com.github.kittinunf.fuel.httpDelete
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.fuel.httpPut
 import config.Services
@@ -16,10 +15,7 @@ import spark.Spark.path
 import spark.Spark.port
 import spark.kotlin.delete
 import spark.kotlin.get
-import utils.GsonInitializer
-import utils.KlaxonDate
-import utils.dateConverter
-import utils.toJson
+import utils.*
 import java.sql.Timestamp
 import java.util.*
 
@@ -61,6 +57,7 @@ object SessionApi {
         "$dbUrl/${Connection.API}/${Params.Session.API_NAME}/$sessionId".httpPut().responseString().third.fold(
             success = {
                 instance[session.second] = false
+                ReportGenerator.generateFinalReport(sessionId.toString())
                 sessions.removeAll { it.first.sessionId == sessionId }
                 sManager.closeSession(session.second.toString())
                 return response.ok()
