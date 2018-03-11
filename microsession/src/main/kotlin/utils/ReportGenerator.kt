@@ -38,7 +38,7 @@ object ReportGenerator {
                     val sLogReport = reader.nextString()
                     var logReportEntry = klaxon.parseArray<LogReportEntry>(sLogReport)!!
                     writeReportOnFile(taskReport, logReportEntry, reportFile)
-                    println("Generating the final Report ${fileName + FILE_EXTENSION} in ${DEFAULT_PATH}")
+                    println("Generating the final report => \"${fileName + FILE_EXTENSION}\" in ${DEFAULT_PATH}")
                 }
             }
         }, failure = {
@@ -50,7 +50,7 @@ object ReportGenerator {
         reportFile.printWriter().use { out ->
             out.println("TASK REPORT")
             taskReport.forEach {
-                var line = "Leader: ${it.leaderCF} | Operator ${it.operatorCF} | Patient ${it.patientCF} | Activity ${it.activityName} | StartTime ${it.startTime} -> EndTIme ${it.endTime}"
+                var line = "Leader: ${it.leaderCF} | Operator: ${it.operatorCF} | Patient: ${it.patientCF} | Activity: ${it.activityName} | StartTime: ${it.startTime} -> EndTIme: ${it.endTime}"
                 out.println(line)
                 line.forEach { out.print("-") }
                 out.print("\n")
