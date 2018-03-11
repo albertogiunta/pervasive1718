@@ -37,6 +37,8 @@ data class Member(val userCF: String) {
     }
 }
 
+data class MemberWithNameSurname(val userCF: String, val name: String, val surname: String)
+
 data class Task @JvmOverloads constructor(var id: Int = 0, val name: String, val sessionId: Int, val operatorCF: String, @KlaxonDate val startTime: Timestamp, @KlaxonDate var endTime: Timestamp? = null, val activityId: Int, var statusId: Int) {
 
     companion object {
@@ -68,6 +70,6 @@ data class LogReportEntry @JvmOverloads constructor(
         val healthParameter: LifeParameters?,
         val hpValue: Double)
 
-data class AugmentedMemberFromServer(val userCF: String, val items: MutableList<AugmentedTask> = mutableListOf())
+data class AugmentedMemberFromServer(val member: MemberWithNameSurname, val items: MutableList<AugmentedTask> = mutableListOf())
 
 data class AugmentedTask(val task: Task, val linkedParameters: List<LifeParameters>, val activityName: String)

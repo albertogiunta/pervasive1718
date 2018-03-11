@@ -1,5 +1,6 @@
 package logic
 
+import Params
 import com.github.kittinunf.fuel.httpDelete
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpPost
@@ -30,6 +31,7 @@ class TaskController private constructor(private val ws: WSTaskServer,
         lateinit var INSTANCE: TaskController
         private val isInitialized = AtomicBoolean()
         private lateinit var activityList: MutableList<Activity>
+        private lateinit var operatorList: MutableList<Operator>
 
         fun init(ws: WSTaskServer) {
             if (!isInitialized.getAndSet(true)) {
@@ -38,9 +40,9 @@ class TaskController private constructor(private val ws: WSTaskServer,
             }
         }
 
-        fun fetchActivitiesFromDB() {
+        fun fetchActivitiesAndOperatorsFromDB() {
             while (configNotCompleted) {
-                val responseString = "$dbUrl/${Params.Activity.API_NAME}".httpGet().responseString()
+                var responseString = "$dbUrl/${Params.Activity.API_NAME}".httpGet().responseString()
                 responseString.third.fold(
                     success = { configNotCompleted = false },
                     failure = {
@@ -50,29 +52,46 @@ class TaskController private constructor(private val ws: WSTaskServer,
                     }
                 )
                 activityList = handlingGetResponse<Activity>(responseString).toMutableList()
+
+                responseString = "$dbUrl/${Params.Operator.API_NAME}".httpGet().responseString()
+                responseString.third.fold(
+                    success = { configNotCompleted = false },
+                    failure = {}
+                )
+                operatorList = handlingGetResponse<Operator>(responseString).toMutableList()
             }
         }
     }
 
-
+    private fun getMemberWithNameSurnameFromOperatorsByCF(cf: String): MemberWithNameSurname {
+//        println(cf)
+//        println(operatorList)
+//        println(members.keys.toList())
+        return try {
+            operatorList.filter { it.operatorCF == cf }.map { MemberWithNameSurname(it.operatorCF, it.name, it.surname) }.first()
+        } catch (e: NoSuchElementException) {
+            MemberWithNameSurname(cf, "", "")
+        }
+    }
 
     fun addLeader(member: Member, session: Session) {
         leader = Pair(member, session)
-        ws.sendMessage(leader.second, PayloadWrapper(Services.instanceId(),WSOperations.LEADER_RESPONSE,"ok"))
+        ws.sendMessage(leader.second, PayloadWrapper(Services.instanceId(), WSOperations.LEADER_RESPONSE, "ok"))
     }
 
     fun addMember(member: Member, session: Session) {
-        if(members.containsKey(member)){
+        if (members.containsKey(member)) {
             members[member] = session
-            val list = mutableListOf<AugmentedMemberFromServer>()
-            list.add(AugmentedMemberFromServer(member.userCF, taskMemberAssociationList.filter { it.member.userCF == member.userCF && it.task.statusId != Status.FINISHED.id}.map { it.task.toAugmentedTask(activityList) }.toMutableList()))
-            val message = PayloadWrapper(Services.instanceId(), WSOperations.MEMBER_COMEBACK_RESPONSE, AugmentedMembersAdditionNotification(list).toJson())
-            ws.sendMessage(members[member]!!,message)
-        }else {
+            val augmentedMember = AugmentedMemberFromServer(
+                getMemberWithNameSurnameFromOperatorsByCF(member.userCF),
+                taskMemberAssociationList.filter { it.member.userCF == member.userCF && it.task.statusId != Status.FINISHED.id }.map { it.task.toAugmentedTask(activityList) }.toMutableList())
+            val message = PayloadWrapper(Services.instanceId(), WSOperations.MEMBER_COMEBACK_RESPONSE, augmentedMember.toJson())
+            ws.sendMessage(members[member]!!, message)
+        } else {
             members[member] = session
             if (leader.second.isOpen) {
                 val message = PayloadWrapper(Services.instanceId(),
-                        WSOperations.ADD_MEMBER, MembersAdditionNotification(members.keys().toList()).toJson())
+                    WSOperations.ADD_MEMBER_NOTIFICATION, (getMemberWithNameSurnameFromOperatorsByCF(member.userCF)).toJson())
                 ws.sendMessage(leader.second, message)
             }
         }
@@ -82,7 +101,7 @@ class TaskController private constructor(private val ws: WSTaskServer,
         val list = mutableListOf<AugmentedMemberFromServer>()
         if (members.isNotEmpty()) {
             members.keys.toList().forEach { member ->
-                list.add(AugmentedMemberFromServer(member.userCF, taskMemberAssociationList.filter { it.member.userCF == member.userCF && it.task.statusId != Status.FINISHED.id}.map { it.task.toAugmentedTask(activityList) }.toMutableList()))
+                list.add(AugmentedMemberFromServer(getMemberWithNameSurnameFromOperatorsByCF(member.userCF), taskMemberAssociationList.filter { it.member.userCF == member.userCF && it.task.statusId != Status.FINISHED.id }.map { it.task.toAugmentedTask(activityList) }.toMutableList()))
             }
         }
         val message = PayloadWrapper(Services.instanceId(), WSOperations.LIST_MEMBERS_RESPONSE, AugmentedMembersAdditionNotification(list).toJson())
@@ -93,7 +112,7 @@ class TaskController private constructor(private val ws: WSTaskServer,
         if (members.containsKey(member)) {
             taskMemberAssociationList.add(TaskMemberAssociation.create(augmentedTask.task, member))
             val message = PayloadWrapper(Services.instanceId(),
-                    WSOperations.ADD_TASK, TaskAssignment(member, augmentedTask).toJson())
+                WSOperations.ADD_TASK, TaskAssignment(member, augmentedTask).toJson())
             ws.sendMessage(members[member]!!, message)
             ws.sendMessage(leader.second, message)
 
@@ -105,34 +124,35 @@ class TaskController private constructor(private val ws: WSTaskServer,
     fun removeTask(augmentedTask: AugmentedTask) {
         with(taskMemberAssociationList.firstOrNull { it.task.name == augmentedTask.task.name }) {
             this?.let {
+                augmentedTask.task.statusId = Status.ELIMINATED.id
                 taskMemberAssociationList.remove(this)
                 val message = PayloadWrapper(Services.instanceId(),
-                        WSOperations.REMOVE_TASK, TaskAssignment(member, augmentedTask).toJson())
+                    WSOperations.REMOVE_TASK, TaskAssignment(member, augmentedTask).toJson())
                 ws.sendMessage(members[member]!!, message)
                 ws.sendMessage(leader.second, message)
 
                 "$dbUrl/${Params.Task.API_NAME}/${Params.Task.TASK_NAME}/${it.task.name}".httpDelete().responseString()
             }
                     ?: ws.sendMessage(leader.second, PayloadWrapper(Services.instanceId(),
-                            WSOperations.ERROR_REMOVING_TASK, TaskError(augmentedTask.task, "").toJson()))
+                        WSOperations.ERROR_REMOVING_TASK, TaskError(augmentedTask.task, "").toJson()))
         }
     }
 
     fun changeTaskStatus(augmentedTask: AugmentedTask, session: Session) {
-        with(taskMemberAssociationList.firstOrNull { it.task.name == augmentedTask.task.name}) {
+        with(taskMemberAssociationList.firstOrNull { it.task.name == augmentedTask.task.name }) {
             this?.let {
                 it.task.statusId = augmentedTask.task.statusId
                 val message = PayloadWrapper(Services.instanceId(),
-                        WSOperations.CHANGE_TASK_STATUS, TaskAssignment(member, this.task.toAugmentedTask(activityList)).toJson())
+                    WSOperations.CHANGE_TASK_STATUS, TaskAssignment(member, this.task.toAugmentedTask(activityList)).toJson())
                 ws.sendMessage(members[member]!!, message)
                 ws.sendMessage(leader.second, message)
                 "$dbUrl/${Params.Task.API_NAME}/${Params.Task.TASK_NAME}/${it.task.name}".httpPut().body(it.task.toJson()).responseString()
-                if(augmentedTask.task.statusId == Status.FINISHED.id) {
+                if (augmentedTask.task.statusId == Status.FINISHED.id) {
                     "$dbUrl/${Params.Task.API_NAME}/${Params.Task.STOP}".httpPut().body(augmentedTask.task.toJson()).responseString()
                     "$visorUrl/${Params.Task.API_NAME}/${it.task.name}".httpDelete().responseString()
                 }
             } ?: ws.sendMessage(session, PayloadWrapper(Services.instanceId(),
-                    WSOperations.ERROR_CHANGING_STATUS, StatusError(augmentedTask.task.statusId, augmentedTask.task, "").toJson()))
+                WSOperations.ERROR_CHANGING_STATUS, StatusError(augmentedTask.task.statusId, augmentedTask.task, "").toJson()))
         }
     }
 

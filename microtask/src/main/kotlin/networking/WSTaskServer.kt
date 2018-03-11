@@ -27,17 +27,12 @@ class WSTaskServer : WSServer<PayloadWrapper>("Task") {
             with(taskWrapper) {
                 when (subject) {
                     WSOperations.ADD_LEADER -> {
-                        val notification: MembersAdditionNotification = taskWrapper.objectify(body)
-                        //TODO GESTIRE CADUTA LEADER
-                        if (notification.members.isNotEmpty()) {
-                            controller.addLeader(notification.members.first(), session)
-                        }
+                        val leader: Member = taskWrapper.objectify(body)
+                        controller.addLeader(leader, session)
                     } // done by leader
                     WSOperations.ADD_MEMBER -> {
-                        val notification: MembersAdditionNotification = taskWrapper.objectify(body)
-                        if (notification.members.isNotEmpty()) {
-                            controller.addMember(notification.members.first(), session)
-                        }
+                        val newMember: Member = taskWrapper.objectify(body)
+                        controller.addMember(newMember, session)
                     } // done by member
                     WSOperations.LIST_MEMBERS_REQUEST -> {
                         controller.getAllMembers()

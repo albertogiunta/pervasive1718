@@ -11,8 +11,7 @@ fun mockLeader(memberCF: String,
                leaderWS: WSClient,
                leader: Member = Member("Leader")) {
 
-    val message = PayloadWrapper(Services.instanceId(), WSOperations.ADD_LEADER,
-        MembersAdditionNotification(listOf(leader)).toJson())
+    val message = PayloadWrapper(Services.instanceId(), WSOperations.ADD_LEADER, leader.toJson())
 
     leaderWS.sendMessage(message.toJson()).also { Thread.sleep(2000) }
 }
@@ -25,10 +24,8 @@ fun mockLeaderAndMembers(memberCF: String,
     mockLeader(memberCF, leaderWS, leader).also { Thread.sleep(1000) }
     val member2 = Member("Member2")
 
-    val message1 = PayloadWrapper(Services.instanceId(), WSOperations.ADD_MEMBER,
-        MembersAdditionNotification(listOf(member)).toJson())
-    val message2 = PayloadWrapper(Services.instanceId(), WSOperations.ADD_MEMBER,
-        MembersAdditionNotification(listOf(member2)).toJson())
+    val message1 = PayloadWrapper(Services.instanceId(), WSOperations.ADD_MEMBER, member.toJson())
+    val message2 = PayloadWrapper(Services.instanceId(), WSOperations.ADD_MEMBER, member2.toJson())
 
     memberWS.sendMessage(message1.toJson()).also { Thread.sleep(1000) }
     memberWS.sendMessage(message2.toJson()).also { Thread.sleep(1000) }
@@ -51,8 +48,7 @@ fun mockLeaderMemberInteractionAndTaskAddition(session: SessionDNS,
 
     mockLeader(memberCF, leaderWS, leader).also { Thread.sleep(1000) }
 
-    val message1 = PayloadWrapper(Services.instanceId(), WSOperations.ADD_MEMBER,
-        MembersAdditionNotification(listOf(member)).toJson())
+    val message1 = PayloadWrapper(Services.instanceId(), WSOperations.ADD_MEMBER, member.toJson())
 
     val message2 = PayloadWrapper(Services.instanceId(), WSOperations.ADD_TASK,
         TaskAssignment(member, augmentedTask).toJson())
