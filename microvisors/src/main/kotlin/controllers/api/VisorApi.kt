@@ -5,12 +5,15 @@ package controllers.api
 import badRequest
 import com.beust.klaxon.Klaxon
 import logic.TaskManager
+import model.SessionInfo
 import model.VisibleTask
 import ok
 import okCreated
 import spark.Request
 import spark.Response
+import utils.PathGetter
 import utils.toJson
+import java.io.File
 
 object VisorApi {
 
@@ -25,6 +28,27 @@ object VisorApi {
                 "object, found: ${request.body()}")
         taskManager.addTask(task)
         return response.okCreated()
+    }
+
+    /**
+     * Creates or updates content of infoLoader.js about the patient
+     */
+    fun addSessionInfo(request: Request, response: Response): String {
+        val info: SessionInfo = Klaxon().parse<SessionInfo>(
+                request.body()) ?: return response.badRequest("Expected SessionInfo json serialized " +
+                "object, found: ${request.body()}")
+        File(PathGetter.getRootPath()+"microvisors/src/view/js/infoLoader.js").bufferedWriter().use { out ->
+            out.write("var patientCF = \"${info.patientCF}\"" )}
+        return response.okCreated()
+    }
+
+    /**
+     * Erases the content of infoLoader.js about the patient
+     */
+    fun clearSessionInfo(request: Request, response: Response): String {
+        File(PathGetter.getRootPath()+"microvisors/src/view/js/infoLoader.js").bufferedWriter().use { out ->
+            out.write("")}
+        return response.ok()
     }
 
     /**

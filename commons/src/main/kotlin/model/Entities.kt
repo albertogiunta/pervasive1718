@@ -29,6 +29,8 @@ data class TaskStatus(val id: Int = 0, val name: String) // sospseso, in corso, 
 
 data class VisibleTask(val taskName: String, val name: String, val operatorCF: String, val operatorName: String, val operatorSurname: String)
 
+data class SessionInfo(val patientCF: String)
+
 data class Member(val userCF: String) {
     companion object {
         fun emptyMember(): Member = Member(EmptyMember.emptyMemberName)

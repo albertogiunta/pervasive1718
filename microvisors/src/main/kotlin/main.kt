@@ -1,4 +1,5 @@
 import config.ConfigLoader
+import config.Services
 import controllers.RouteController
 import utils.PathGetter
 import java.awt.Desktop
@@ -8,7 +9,8 @@ import java.net.URLEncoder
 
 fun main(args: Array<String>) {
     ConfigLoader().load(args)
-
+    RouteController.initRoutes()
+    waitInitAndNotifyToMicroSession(Services.VISORS.executableName, Services.instanceId())
     File(PathGetter.getRootPath()+"microvisors/src/view/js/portLoader.js").bufferedWriter().use { out -> out.write("var sessionExchange = " + (if (args[0].isNullOrEmpty()) "" else args[0])) }
     if (Desktop.isDesktopSupported()) {
         var rootProjectPath = PathGetter.getRootPath()
@@ -24,5 +26,4 @@ fun main(args: Array<String>) {
         println(uri)
         Desktop.getDesktop().browse(uri)
     }
-    RouteController.initRoutes()
 }

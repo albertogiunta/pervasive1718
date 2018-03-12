@@ -1,29 +1,29 @@
 function Graph(paramName, channel, lowerbound, upperbound, color, divClass) {
     var limit = 60 * 1,
-    duration = 2000,
-    now = new Date(Date.now() - duration),
-    dataPeriod = 2 // Number of seconds passing between a value and another.
-    
+        duration = 2000,
+        now = new Date(Date.now() - duration),
+        dataPeriod = 2 // Number of seconds passing between a value and another.
+
     this.paramName = paramName;
     this.channel = channel;
-    var width = $(document).width()/4,
-    height = $(document).height()/4;
+    var width = $(document).width() / 4,
+        height = $(document).height() / 4;
 
     var healthParam = {
         value: 0,
         color: color,
-        data: d3.range(limit).map(function() {
+        data: d3.range(limit).map(function () {
             return 0
         })
     };
 
-    this.setData = function(data) {
+    this.setData = function (data) {
         healthParam.data.push(data)
     }
 
     var x_scale = d3.time.scale()
         .domain([now - (limit - dataPeriod), now - duration])
-        .range([0, width/1.2])
+        .range([0, width / 1.2])
 
     var y_scale = d3.scale.linear()
         .domain([lowerbound, upperbound])
@@ -31,10 +31,10 @@ function Graph(paramName, channel, lowerbound, upperbound, color, divClass) {
 
     var line = d3.svg.line()
         .interpolate('basis')
-        .x(function(d, i) {
+        .x(function (d, i) {
             return x_scale(now - (limit - 9 - i) * duration)
         })
-        .y(function(d) {
+        .y(function (d) {
             return y_scale(d)
         })
 
@@ -57,12 +57,14 @@ function Graph(paramName, channel, lowerbound, upperbound, color, divClass) {
 
     // Ticks for determining current value on y
     var ticks = y_scale.ticks();
-        ticks.shift();
+    ticks.shift();
 
     svg.selectAll(".c_y_grid")
         .data(ticks)
         .enter().append("path")
-        .attr("d", function (d, i) { return "M" + 50 + "," + y_scale(d) + "L" + (width + 10) + "," + y_scale(d); })
+        .attr("d", function (d, i) {
+            return "M" + 50 + "," + y_scale(d) + "L" + (width + 10) + "," + y_scale(d);
+        })
         .attr("class", "c_y_grid");
 
     // Scale on y axis
@@ -72,7 +74,7 @@ function Graph(paramName, channel, lowerbound, upperbound, color, divClass) {
 
     svg.append("g")
         .attr("class", "c_y_axis")
-        .attr("transform", "translate(" + width/8 + ",0)")
+        .attr("transform", "translate(" + width / 8 + ",0)")
         .call(yAxis);
 
     // Naming the axis
@@ -80,7 +82,7 @@ function Graph(paramName, channel, lowerbound, upperbound, color, divClass) {
         .attr("transform", "rotate(-90)")
         .attr("y", 10)
         .attr("x", -100)
-        .attr("class","c_axis_title")
+        .attr("class", "c_axis_title")
         .text(paramName);
 
     function tick() {
@@ -107,7 +109,7 @@ function Graph(paramName, channel, lowerbound, upperbound, color, divClass) {
 
         // Remove oldest data point
         healthParam.data.shift()
-        if (healthParam.data.length < limit -1)
+        if (healthParam.data.length < limit - 1)
             healthParam.data.push(0)
     }
 

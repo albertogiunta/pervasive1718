@@ -1,7 +1,6 @@
 @file:Suppress("UNUSED_PARAMETER")
 
 import com.beust.klaxon.Klaxon
-import com.github.kittinunf.fuel.httpDelete
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.fuel.httpPut
 import config.Services
@@ -16,10 +15,7 @@ import spark.Spark.path
 import spark.Spark.port
 import spark.kotlin.delete
 import spark.kotlin.get
-import utils.GsonInitializer
-import utils.KlaxonDate
-import utils.dateConverter
-import utils.toJson
+import utils.*
 import java.sql.Timestamp
 import java.util.*
 
@@ -61,6 +57,7 @@ object SessionApi {
         "$dbUrl/${Connection.API}/${Params.Session.API_NAME}/$sessionId".httpPut().responseString().third.fold(
             success = {
                 instance[session.second] = false
+                ReportGenerator.generateFinalReport(sessionId.toString())
                 sessions.removeAll { it.first.sessionId == sessionId }
                 sManager.closeSession(session.second.toString())
                 return response.ok()
@@ -80,8 +77,9 @@ object SessionApi {
         serviceInitializationStatus[instanceId] = serviceInitializationStatus[instanceId]?.plus(1) ?:
                 return response.badRequest("")
         println("INSTANCE ACKS ARE ${serviceInitializationStatus[instanceId]}")
-        if (serviceInitializationStatus[instanceId] == 3) {
+        if (serviceInitializationStatus[instanceId] == 4) {
             val dbUrl = createMicroDatabaseAddress(instanceId)
+            val visorUrl = Services.Utils.defaultHostUrlApi(Services.VISORS)
 
             val instanceDetails = sessionInitializationParamsWithInstanceId[instanceId]!!
 
@@ -91,6 +89,7 @@ object SessionApi {
                     if (session != null) {
                         sessions.add(Pair(SessionDNS(session.id, session.patientCF, instanceId, session.leaderCF), instanceId))
                         ws.sendMessage(instanceDetails.second, PayloadWrapper(-1, WSOperations.SESSION_HANDLER_RESPONSE, SessionDNS(session.id, session.patientCF, instanceId, session.leaderCF).toJson()))
+                        "$visorUrl/${Params.Session.API_NAME}".httpPost().body(SessionInfo(session.patientCF).toJson()).responseString()
                     } else {
                         ws.sendMessage(instanceDetails.second, PayloadWrapper(-1, WSOperations.SESSION_HANDLER_ERROR_RESPONSE, "Cannot parse response from database - session not created"))
                     }
