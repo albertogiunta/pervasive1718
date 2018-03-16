@@ -2,6 +2,7 @@ package controller
 
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
+import java.util.concurrent.ConcurrentHashMap
 
 interface SubjectsManager <I, T> {
 
@@ -14,11 +15,10 @@ interface SubjectsManager <I, T> {
 @Suppress("UNCHECKED_CAST")
 class NotifierSubjectsManager : SubjectsManager<String, Any>{
 
-    private val publishSubjects = mutableMapOf<String, Subject<out Any>>()
+    private val publishSubjects = ConcurrentHashMap<String, Subject<out Any>>()
 
     init { }
 
-    @Synchronized
     override fun <N : Any> createNewSubjectFor(identifier: String): Subject<N> {
         if (!publishSubjects.containsKey(identifier)) {
             publishSubjects[identifier] = PublishSubject.create<N>()
@@ -27,6 +27,5 @@ class NotifierSubjectsManager : SubjectsManager<String, Any>{
         return publishSubjects[identifier]!! as Subject<N>
     }
 
-    @Synchronized
     override fun <N : Any> getSubjectsOf(identifier: String): Subject<N>? = publishSubjects[identifier] as? Subject<N>
 }

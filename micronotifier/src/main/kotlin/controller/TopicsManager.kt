@@ -2,6 +2,7 @@ package controller
 
 import model.LifeParameters
 import model.Member
+import java.util.concurrent.ConcurrentHashMap
 
 interface TopicsManager<T, L> {
 
@@ -25,7 +26,7 @@ interface TopicsManager<T, L> {
 
 class NotifierTopicsManager(private var topics: Set<LifeParameters>) : TopicsManager<LifeParameters, Member> {
 
-    private val topicsMap = mutableMapOf<LifeParameters, MutableSet<Member>>()
+    private val topicsMap = ConcurrentHashMap<LifeParameters, MutableSet<Member>>()
 
     init {
         topics.forEach {
@@ -33,14 +34,12 @@ class NotifierTopicsManager(private var topics: Set<LifeParameters>) : TopicsMan
         }
     }
 
-    @Synchronized
     override fun add(topic: LifeParameters, listener: Member) {
         if (topics.contains(topic)) {
             topicsMap[topic]?.add(listener)
         }
     }
 
-    @Synchronized
     override fun add(topics: Iterable<LifeParameters>, listener: Member) {
 
         val goodies = topics.filter { this.topics.contains(it) }
@@ -50,31 +49,22 @@ class NotifierTopicsManager(private var topics: Set<LifeParameters>) : TopicsMan
         }
     }
 
-    @Synchronized
     override operator fun get(topic: LifeParameters): Set<Member>? = topicsMap[topic]
 
-    @Synchronized
     override fun of(listener: Member): Set<LifeParameters> =
             topicsMap.filter { e -> e.value.contains(listener) }.keys
 
-    @Synchronized
-    override fun removeListener(listener: Member) {
+    override fun removeListener(listener: Member) =
         topicsMap.filter { it.value.contains(listener) }.forEach{
             topicsMap[it.key]?.remove(listener)
         }
-    }
 
-    @Synchronized
-    override fun removeListenerOn(topics: Iterable<LifeParameters>, listener: Member) {
+    override fun removeListenerOn(topics: Iterable<LifeParameters>, listener: Member) =
         topics.forEach {
             topicsMap[it]?.remove(listener)
         }
-    }
 
-    @Synchronized
-    override fun clearListeners() {
-        topicsMap.replaceAll { _, _ -> mutableSetOf()}
-    }
+    override fun clearListeners() = topicsMap.replaceAll { _, _ -> mutableSetOf() }
 
     override fun activeTopics(): Set<LifeParameters> = topics
 }
