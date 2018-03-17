@@ -156,11 +156,10 @@ class TaskController private constructor(private val ws: WSTaskServer,
         }
     }
 
-    fun getAllActivities(activityTypeId: Int) {
+    fun getAllActivities() {
         if (activityList.isNotEmpty()) {
-            val filteredList = activityList.filter { it.activityTypeId == activityTypeId }.sortedBy { it.name }
             val message = PayloadWrapper(Services.instanceId(),
-                WSOperations.SET_ALL_ACTIVITIES, ActivityAdditionNotification(filteredList).toJson())
+                WSOperations.SET_ALL_ACTIVITIES, ActivityAdditionNotification(activityList.sortedBy { it.name }).toJson())
             ws.sendMessage(leader.second, message)
         }
     }

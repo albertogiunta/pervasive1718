@@ -68,7 +68,7 @@ enum class WSOperations(val objectifier: (String) -> Any) {
     ERROR_CHANGING_STATUS({ GsonInitializer.fromJson(it, StatusError::class.java) }),
     ERROR_CREATING_INSTANCE_POOL_FULL({ GsonInitializer.fromJson(it, kotlin.Unit::class.java)}),
     // ACTIVITY
-    GET_ALL_ACTIVITIES({ GsonInitializer.fromJson(it, ActivityRequest::class.java) }),
+    GET_ALL_ACTIVITIES({ GsonInitializer.fromJson(it, Unit::class.java) }),
     SET_ALL_ACTIVITIES({ GsonInitializer.fromJson(it, ActivityAdditionNotification::class.java) }),
 
     // SESSION
@@ -90,8 +90,6 @@ data class TaskAssignment(val member: Member, val augmentedTask: AugmentedTask)
 //data class MembersAdditionNotification(val members: List<Member>)
 
 data class AugmentedMembersAdditionNotification(val members: List<AugmentedMemberFromServer>)
-
-data class ActivityRequest(val activityTypeId: Int)
 
 data class ActivityAdditionNotification(val activities: List<Activity>)
 
