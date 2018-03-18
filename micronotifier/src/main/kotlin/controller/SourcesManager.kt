@@ -2,6 +2,7 @@ package controller
 
 import io.reactivex.Observable
 import io.reactivex.subjects.Subject
+import java.util.concurrent.ConcurrentHashMap
 
 interface SourcesManager <I, T> {
 
@@ -13,7 +14,7 @@ interface SourcesManager <I, T> {
 @Suppress("UNCHECKED_CAST")
 class NotifierSourcesManager : SourcesManager<String, Any>{
 
-    private val observableSources = mutableMapOf<String, Observable<out Any>>()
+    private val observableSources = ConcurrentHashMap<String, Observable<out Any>>()
 
     init { }
 
