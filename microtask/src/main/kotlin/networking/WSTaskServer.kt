@@ -27,17 +27,12 @@ class WSTaskServer : WSServer<PayloadWrapper>("Task") {
             with(taskWrapper) {
                 when (subject) {
                     WSOperations.ADD_LEADER -> {
-                        val notification: MembersAdditionNotification = taskWrapper.objectify(body)
-                        //TODO GESTIRE CADUTA LEADER
-                        if (notification.members.isNotEmpty()) {
-                            controller.addLeader(notification.members.first(), session)
-                        }
+                        val leader: Member = taskWrapper.objectify(body)
+                        controller.addLeader(leader, session)
                     } // done by leader
                     WSOperations.ADD_MEMBER -> {
-                        val notification: MembersAdditionNotification = taskWrapper.objectify(body)
-                        if (notification.members.isNotEmpty()) {
-                            controller.addMember(notification.members.first(), session)
-                        }
+                        val newMember: Member = taskWrapper.objectify(body)
+                        controller.addMember(newMember, session)
                     } // done by member
                     WSOperations.LIST_MEMBERS_REQUEST -> {
                         controller.getAllMembers()
@@ -56,8 +51,7 @@ class WSTaskServer : WSServer<PayloadWrapper>("Task") {
                         controller.changeTaskStatus(assignment.augmentedTask, session)
                     } // done by both
                     WSOperations.GET_ALL_ACTIVITIES -> {
-                        val notification: ActivityRequest = taskWrapper.objectify(body)
-                        controller.getAllActivities(notification.activityTypeId)
+                        controller.getAllActivities()
                     } // done by leader
                     else -> println("Message was not handled " + message)
                 }

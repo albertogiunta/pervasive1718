@@ -2,6 +2,7 @@ package controller
 
 import model.Member
 import org.eclipse.jetty.websocket.api.Session
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * A controller interface that manage generic sessions for multiple user
@@ -48,34 +49,26 @@ interface SessionsManager<L, S> {
 
 class NotifierSessionsManager : SessionsManager<Member, Session> {
 
-    private val sessionsMap = mutableMapOf<Member, Session>()
+    private val sessionsMap = ConcurrentHashMap<Member, Session>()
 
-    @Synchronized
     override fun get(listener: Member): Session? = sessionsMap[listener]
 
-    @Synchronized
     override operator fun set(listener: Member, session: Session) {
         sessionsMap[listener] = session
     }
 
-    @Synchronized
     override fun getOn(session: Session): Member? =
         sessionsMap.filter{ it.value == session }.keys.first()
 
-    @Synchronized
     override fun removeListener(listener: Member): Session? = sessionsMap.remove(listener)
 
-    @Synchronized
     override fun removeListenerOn(session: Session): Iterable<Member> =
             sessionsMap.filter { it.value == session }.keys.toList().onEach { sessionsMap.remove(it) }
 
-    @Synchronized
     override fun contains(listener: Member): Boolean = sessionsMap.containsKey(listener)
 
     override fun has(session: Session): Boolean = sessionsMap.containsValue(session)
 
-    @Synchronized
-    override fun close() {
-        sessionsMap.clear()
-    }
+    override fun close() = sessionsMap.clear()
+
 }

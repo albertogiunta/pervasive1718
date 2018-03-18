@@ -43,14 +43,15 @@ enum class WSOperations(val objectifier: (String) -> Any) {
     ANSWER({ GsonInitializer.fromJson(it, Response::class.java)}),
 
     // TASKS
-    ADD_LEADER({ GsonInitializer.fromJson(it, MembersAdditionNotification::class.java) }),
-    LIST_MEMBERS_REQUEST({ GsonInitializer.fromJson(it, Unit::class.java) }),
-    LIST_MEMBERS_RESPONSE({ GsonInitializer.fromJson(it, MembersAdditionNotification::class.java) }),
-    MEMBER_COMEBACK_RESPONSE({ GsonInitializer.fromJson(it, AugmentedMembersAdditionNotification::class.java) }),
-    LEADER_RESPONSE({ utils.GsonInitializer.fromJson(it,GenericResponse::class.java) }),
     SESSION_HANDLER_ERROR_RESPONSE({ utils.GsonInitializer.fromJson(it,GenericResponse::class.java) }),
     SESSION_HANDLER_RESPONSE({ utils.GsonInitializer.fromJson(it,SessionDNS::class.java) }),
-    ADD_MEMBER({ GsonInitializer.fromJson(it, MembersAdditionNotification::class.java) }),
+    ADD_LEADER({ GsonInitializer.fromJson(it, Member::class.java) }),
+    LEADER_RESPONSE({ utils.GsonInitializer.fromJson(it, GenericResponse::class.java) }),
+    ADD_MEMBER({ GsonInitializer.fromJson(it, Member::class.java) }),
+    ADD_MEMBER_NOTIFICATION({ GsonInitializer.fromJson(it, MemberWithNameSurname::class.java) }),
+    MEMBER_COMEBACK_RESPONSE({ GsonInitializer.fromJson(it, AugmentedMemberFromServer::class.java) }),
+    LIST_MEMBERS_REQUEST({ GsonInitializer.fromJson(it, Unit::class.java) }),
+    LIST_MEMBERS_RESPONSE({ GsonInitializer.fromJson(it, AugmentedMembersAdditionNotification::class.java) }),
 
     ADD_TASK({ com.beust.klaxon.Klaxon().fieldConverter(utils.KlaxonDate::class,
             utils.dateConverter).parse<model.TaskAssignment>(it)!! }),
@@ -67,7 +68,7 @@ enum class WSOperations(val objectifier: (String) -> Any) {
     ERROR_CHANGING_STATUS({ GsonInitializer.fromJson(it, StatusError::class.java) }),
     ERROR_CREATING_INSTANCE_POOL_FULL({ GsonInitializer.fromJson(it, kotlin.Unit::class.java)}),
     // ACTIVITY
-    GET_ALL_ACTIVITIES({ GsonInitializer.fromJson(it, ActivityRequest::class.java) }),
+    GET_ALL_ACTIVITIES({ GsonInitializer.fromJson(it, Unit::class.java) }),
     SET_ALL_ACTIVITIES({ GsonInitializer.fromJson(it, ActivityAdditionNotification::class.java) }),
 
     // SESSION
@@ -86,11 +87,9 @@ data class Subscription(val subject: Member, val topics: List<LifeParameters>)
 
 data class TaskAssignment(val member: Member, val augmentedTask: AugmentedTask)
 
-data class MembersAdditionNotification(val members: List<Member>)
+//data class MembersAdditionNotification(val members: List<Member>)
 
 data class AugmentedMembersAdditionNotification(val members: List<AugmentedMemberFromServer>)
-
-data class ActivityRequest(val activityTypeId: Int)
 
 data class ActivityAdditionNotification(val activities: List<Activity>)
 
