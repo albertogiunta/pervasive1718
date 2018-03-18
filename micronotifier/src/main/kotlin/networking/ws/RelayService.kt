@@ -4,9 +4,7 @@ import WSLogger
 import WSServer
 import config.Services
 import controller.CoreController
-import io.reactivex.subjects.PublishSubject
 import model.Payload
-import model.PayloadWrapper
 import model.WSOperations
 import org.eclipse.jetty.websocket.api.Session
 import org.eclipse.jetty.websocket.api.WebSocketException
@@ -16,7 +14,6 @@ import patterns.Observable
 import patterns.Observer
 import utils.Logger
 import utils.asJson
-import utils.toJson
 
 /**
  * A WS class which relays and publish Messages
@@ -25,16 +22,16 @@ import utils.toJson
 @WebSocket
 class RelayService : WSServer<Payload<WSOperations, String>>(name = Services.NOTIFIER.wsPath) , Observable{
 
-    private val core = CoreController.singleton()
+    private val observers = mutableListOf<Observer>()
 
-    private val wsSubject = PublishSubject.create<Pair<Session, String>>()
+//    private val wsSubject = PublishSubject.create<Pair<Session, String>>()
 
     init {
-        this.addObserver(core)
+        this.addObserver(CoreController.singleton())
     }
 
     override fun addObserver(observer: Observer) {
-        observer.notify(RelayService::class.java.toString() to wsSubject)
+        observers.add(observer)
     }
 
     override fun removeObserver(observer: Observer) {}
@@ -45,16 +42,12 @@ class RelayService : WSServer<Payload<WSOperations, String>>(name = Services.NOT
 
     override fun onClose(session: Session, statusCode: Int, reason: String) {
         Logger.info("[ ${wsUser.name} | ${this.name} *** ] session onClose on remote | exit code $statusCode")
-        if (core.sessions.has(session)) {
-            val message = PayloadWrapper(-1, WSOperations.CLOSE,
-                    core.sessions.getOn(session)!!.toJson()).toJson()
-            wsSubject.onNext(Pair(session, message))
-        }
+        observers.parallelStream().forEach { it.notify(session) }
     }
 
     override fun onMessage(session: Session, message: String) {
         Logger.info("[ ${wsUser.name} | $name --> ] $message")
-        wsSubject.onNext(session to message)
+        observers.parallelStream().forEach { it.notify(session to message) }
     }
 
     @OnWebSocketError

@@ -1,6 +1,5 @@
 package controller
 
-import io.reactivex.subjects.PublishSubject
 import model.LifeParameters
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -22,8 +21,9 @@ class SourcesManagerTest {
     @Test
     fun createNewSubjectForAndGet() {
         val subj = LifeParameters.TEMPERATURE.toString()
-        subjCont.addNewObservableSourceFor<String>(subj)
-        assertEquals(subjCont.getObservableSourceOf<String>(subj)!!.javaClass, PublishSubject::class.java)
+        val observable = io.reactivex.subjects.PublishSubject.create<String>().publish().autoConnect()
+        subjCont.addNewObservableSource(subj, observable)
+        assertEquals(subjCont.getObservableSourceOf<String>(subj)!!::class.java , observable::class.java)
     }
 
     @Test

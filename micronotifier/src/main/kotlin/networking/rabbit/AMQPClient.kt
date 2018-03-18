@@ -2,7 +2,6 @@ package networking.rabbit
 
 import BrokerConnector
 import RabbitMQSubscriber
-import io.reactivex.subjects.PublishSubject
 import model.LifeParameters
 import patterns.Observer
 
@@ -13,13 +12,10 @@ import patterns.Observer
  *  @author XanderC
  *
  */
-class AMQPClient(private val topics: Map<LifeParameters, String>) :  patterns.Observable{
+class AMQPClient(private val topics: Map<LifeParameters, String>) : patterns.Observable {
 
     private val subscriber : RabbitMQSubscriber
-    private val amqpSubjects = topics.map {
-        it.key to PublishSubject.create<String>()
-    }.toMap()
-
+    private val observers = mutableListOf<Observer>()
     init {
         BrokerConnector.init(topics.values.toList())
 
@@ -27,9 +23,7 @@ class AMQPClient(private val topics: Map<LifeParameters, String>) :  patterns.Ob
     }
 
     override fun addObserver(observer: Observer) {
-        amqpSubjects.forEach{
-            observer.notify(AMQPClient::class.java.toString() to it)
-        }
+        observers.add(observer)
     }
 
     override fun removeObserver(observer: Observer) {   }
@@ -41,8 +35,8 @@ class AMQPClient(private val topics: Map<LifeParameters, String>) :  patterns.Ob
      */
     fun startPublishing() {
         topics.forEach { (lp, channel) ->
-            subscriber.subscribe(channel, subscriber.createStringConsumer {
-                amqpSubjects[lp]?.onNext(it)
+            subscriber.subscribe(channel, subscriber.createStringConsumer {value ->
+                observers.parallelStream().forEach{it.notify(lp to value)}
             })
         }
     }

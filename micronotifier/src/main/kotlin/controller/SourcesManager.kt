@@ -1,14 +1,13 @@
 package controller
 
 import io.reactivex.Observable
-import io.reactivex.subjects.Subject
 import java.util.concurrent.ConcurrentHashMap
 
 interface SourcesManager <I, T> {
 
     fun <N : T> addNewObservableSource(identifier: I, source: Observable<N>): Observable<N>
 
-    fun <N : T> getObservableSourceOf(identifier: I): Subject<N>?
+    fun <N : T> getObservableSourceOf(identifier: I): Observable<N>?
 }
 
 @Suppress("UNCHECKED_CAST")
@@ -26,5 +25,5 @@ class NotifierSourcesManager : SourcesManager<String, Any>{
         return source
     }
 
-    override fun <N : Any> getObservableSourceOf(identifier: String): Subject<N>? = observableSources[identifier] as? Subject<N>
+    override fun <N : Any> getObservableSourceOf(identifier: String): Observable<N>? = observableSources[identifier] as? Observable<N>
 }
