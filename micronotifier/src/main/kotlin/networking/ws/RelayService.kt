@@ -36,18 +36,22 @@ class RelayService : WSServer<Payload<WSOperations, String>>(name = Services.NOT
 
     override fun removeObserver(observer: Observer) {}
 
+    override fun notify(obj: Any) {
+        observers.parallelStream().forEach { it.update(obj) }
+    }
+
     override fun onConnect(session: Session) {
         Logger.info("[ ${wsUser.name} | ${this.name} *** ] session open on remote ${session.remote.inetSocketAddress}")
     }
 
     override fun onClose(session: Session, statusCode: Int, reason: String) {
         Logger.info("[ ${wsUser.name} | ${this.name} *** ] session onClose on remote | exit code $statusCode")
-        observers.parallelStream().forEach { it.notify(session) }
+        this.notify(session)
     }
 
     override fun onMessage(session: Session, message: String) {
         Logger.info("[ ${wsUser.name} | $name --> ] $message")
-        observers.parallelStream().forEach { it.notify(session to message) }
+        this.notify(session to message)
     }
 
     @OnWebSocketError

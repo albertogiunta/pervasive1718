@@ -28,6 +28,10 @@ class AMQPClient(private val topics: Map<LifeParameters, String>) : patterns.Obs
 
     override fun removeObserver(observer: Observer) {   }
 
+    override fun notify(obj: Any) {
+        observers.parallelStream().forEach { it.update(obj) }
+    }
+
     /**
      * By calling this method the client will start to publish the data it receives from the topics
      * that have been passed on the constructor to the publish subjects created.
@@ -36,7 +40,7 @@ class AMQPClient(private val topics: Map<LifeParameters, String>) : patterns.Obs
     fun startPublishing() {
         topics.forEach { (lp, channel) ->
             subscriber.subscribe(channel, subscriber.createStringConsumer {value ->
-                observers.parallelStream().forEach{it.notify(lp to value)}
+                this.notify(lp to value)
             })
         }
     }

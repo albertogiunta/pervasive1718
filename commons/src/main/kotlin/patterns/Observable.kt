@@ -6,8 +6,9 @@ interface Observable {
 
     fun removeObserver(observer: Observer)
 
+    fun notify(obj: Any)
 }
 
 interface Observer {
-    fun notify(obj : Any)
+    fun update(obj : Any)
 }

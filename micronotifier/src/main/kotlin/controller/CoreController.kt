@@ -60,7 +60,7 @@ class CoreController private constructor(topicSet: Set<LifeParameters>) : patter
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun notify(obj: Any) {
+    override fun update(obj: Any) {
         when (obj) {
             is Pair<*, *> -> {
                 when(obj.first) {
