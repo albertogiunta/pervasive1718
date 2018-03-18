@@ -15,23 +15,20 @@ fun main(args: Array<String>) {
 
     Logger.setLogger(Services.NOTIFIER.wsPath)
 
-    val core = CoreController.singleton()
-            .withoutLogging()
-            .loadSubjects()
+    val core = CoreController.singleton().withoutLogging()
 
     WSServerInitializer.init(RelayService::class.java, Services.NOTIFIER.port, Services.NOTIFIER.root())
 
     Spark.awaitInitialization()
 
+    val topics = core.topics.activeTopics().map { it to it.acronymWithSession(args) }.toMap()
+    val amqp = AMQPClient(topics)
+
+    amqp.addObserver(core)
+
     core.loadHandlers()
 
-    val amqp = AMQPClient(core.topics.activeTopics().map { it to it.acronymWithSession(args) }.toMap())
-
-    val publishSubjects = core.topics.activeTopics().map {
-        it to core.subjects.getSubjectsOf<String>(it.toString())!!
-    }.toMap()
-
-    amqp.publishOn(publishSubjects)
+    amqp.startPublishing()
 
     if (Services.isNotStartedIndependently()) {
         waitInitAndNotifyToMicroSession(Services.NOTIFIER.executableName, Services.instanceId())

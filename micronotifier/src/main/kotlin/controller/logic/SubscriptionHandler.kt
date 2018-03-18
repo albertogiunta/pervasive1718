@@ -15,7 +15,7 @@ object SubscriptionHandler {
 
     fun runOn(core: CoreController) {
 
-        val wsSubject: Subject<Pair<Session, String>> = core.subjects.getSubjectsOf(RelayService::class.java.name)!!
+        val wsSubject: Subject<Pair<Session, String>> = core.sources.getObservableSourceOf(RelayService::class.java.name)!!
 
         wsSubject.map { (session, json) ->
             session to GsonInitializer.fromJson(json, PayloadWrapper::class.java)

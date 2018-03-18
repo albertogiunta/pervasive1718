@@ -16,7 +16,7 @@ object RelayHandler {
     fun runOn(core: CoreController) {
 
         val publishSubjects = core.topics.activeTopics().map {
-            it to core.subjects.getSubjectsOf<String>(it.toString())!!
+            it to core.sources.getObservableSourceOf<String>(it.toString())!!
         }.toMap()
 
         // Simple relays received Health Values to Listeners

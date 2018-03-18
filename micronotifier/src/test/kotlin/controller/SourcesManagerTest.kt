@@ -10,26 +10,26 @@ import org.junit.Test
 /**
  * Created by Matteo Gabellini on 12/02/18.
  */
-class SubjectsManagerTest {
+class SourcesManagerTest {
 
-    lateinit var subjCont: SubjectsManager<String, Any>
+    lateinit var subjCont: SourcesManager<String, Any>
 
     @Before
     fun setUp() {
-        subjCont = NotifierSubjectsManager()
+        subjCont = NotifierSourcesManager()
     }
 
     @Test
     fun createNewSubjectForAndGet() {
         val subj = LifeParameters.TEMPERATURE.toString()
-        subjCont.createNewSubjectFor<String>(subj)
-        assertEquals(subjCont.getSubjectsOf<String>(subj)!!.javaClass, PublishSubject::class.java)
+        subjCont.addNewObservableSourceFor<String>(subj)
+        assertEquals(subjCont.getObservableSourceOf<String>(subj)!!.javaClass, PublishSubject::class.java)
     }
 
     @Test
     fun getSubjectsOfNotPresent() {
         val subj = LifeParameters.HEART_RATE.toString()
-        val res = subjCont.getSubjectsOf<String>(subj)
+        val res = subjCont.getObservableSourceOf<String>(subj)
         assertNull(res)
     }
 }
