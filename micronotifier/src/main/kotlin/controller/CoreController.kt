@@ -12,6 +12,7 @@ import networking.ws.RelayService
 import org.eclipse.jetty.websocket.api.Session
 import utils.Logger
 import utils.toJson
+import java.util.concurrent.ConcurrentHashMap
 
 class CoreController private constructor(topicSet: Set<LifeParameters>) : patterns.Observer {
 
@@ -19,26 +20,23 @@ class CoreController private constructor(topicSet: Set<LifeParameters>) : patter
     var sessions: SessionsManager<Member, Session> = NotifierSessionsManager()
     var sources: SourcesManager<String, Any> = NotifierSourcesManager()
 
-    private var amqpSubjects : Map<LifeParameters, PublishSubject<String>>
-    private var wsSubject : PublishSubject<Pair<Session, String>>
+    private val amqpSubjects = ConcurrentHashMap<LifeParameters, PublishSubject<String>>()
+    private val wsSubjects = ConcurrentHashMap<String, PublishSubject<Pair<Session, String>>>()
+
     @Volatile
     var useLogging = false
 
     init {
 
-        amqpSubjects = topics.activeTopics().map {
-            it to PublishSubject.create<String>()
-        }.toMap()
-
-        amqpSubjects.forEach { lp, source ->
-            Logger.info("Adding Observable Source $source for $lp")
-            sources.addNewObservableSource(lp.toString(), source.publish().autoConnect())
+        topics.activeTopics().forEach { lp ->
+            amqpSubjects[lp] = PublishSubject.create<String>()
+            Logger.info("Adding Observable Source $amqpSubjects[lp] for $lp")
+            sources.addNewObservableSource(lp.toString(), amqpSubjects[lp]!!.publish().autoConnect())
         }
 
-        wsSubject = PublishSubject.create<Pair<Session, String>>()
-        Logger.info("Adding Observable Source $wsSubject. for ${RelayService::class.java.name}")
-        sources.addNewObservableSource(RelayService::class.java.name, wsSubject.publish().autoConnect())
-
+        wsSubjects[RelayService::class.java.name] = PublishSubject.create<Pair<Session, String>>()
+        Logger.info("Adding Observable Source ${wsSubjects[RelayService::class.java.name]} for ${RelayService::class.java.name}")
+        sources.addNewObservableSource(RelayService::class.java.name, wsSubjects[RelayService::class.java.name]!!.publish().autoConnect())
     }
 
     fun withLogging() : CoreController {
@@ -65,7 +63,7 @@ class CoreController private constructor(topicSet: Set<LifeParameters>) : patter
             is Pair<*, *> -> {
                 when(obj.first) {
                     is Session -> {
-                        wsSubject.onNext(obj as Pair<Session, String>)
+                        wsSubjects[RelayService::class.java.name]?.onNext(obj as Pair<Session, String>)
                     }
 
                     is LifeParameters -> {
@@ -78,7 +76,7 @@ class CoreController private constructor(topicSet: Set<LifeParameters>) : patter
             is Session -> {
                 if (sessions.has(obj)) {
                     val message = PayloadWrapper(-1, WSOperations.CLOSE, sessions.getOn(obj)!!.toJson()).toJson()
-                    wsSubject.onNext(obj to message)
+                    wsSubjects[RelayService::class.java.name]?.onNext(obj to message)
                 }
             }
             else -> {}
