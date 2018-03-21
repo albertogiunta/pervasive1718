@@ -3,29 +3,40 @@ package controller
 import controller.logic.NotificationHandler
 import controller.logic.RelayHandler
 import controller.logic.SubscriptionHandler
+import io.reactivex.subjects.PublishSubject
 import model.LifeParameters
 import model.Member
+import model.PayloadWrapper
+import model.WSOperations
 import networking.ws.RelayService
 import org.eclipse.jetty.websocket.api.Session
+import utils.Logger
+import utils.toJson
+import java.util.concurrent.ConcurrentHashMap
 
-class CoreController private constructor(topicSet: Set<LifeParameters>) {
+class CoreController private constructor(topicSet: Set<LifeParameters>) : patterns.Observer {
 
     var topics: TopicsManager<LifeParameters, Member> = NotifierTopicsManager(topicSet)
     var sessions: SessionsManager<Member, Session> = NotifierSessionsManager()
-    var subjects: SubjectsManager<String, Any> = NotifierSubjectsManager()
+    var sources: SourcesManager<String, Any> = NotifierSourcesManager()
+
+    private val amqpSubjects = ConcurrentHashMap<LifeParameters, PublishSubject<String>>()
+    private val wsSubjects = ConcurrentHashMap<String, PublishSubject<Pair<Session, String>>>()
 
     @Volatile
     var useLogging = false
 
-    init { }
+    init {
 
-    fun loadSubjects() : CoreController {
-        subjects.createNewSubjectFor<Pair<Session, String>>(RelayService::class.java.name)
-
-        topics.activeTopics().map {
-            it to subjects.createNewSubjectFor<String>(it.toString())
+        topics.activeTopics().forEach { lp ->
+            amqpSubjects[lp] = PublishSubject.create<String>()
+            Logger.info("Adding Observable Source $amqpSubjects[lp] for $lp")
+            sources.addNewObservableSource(lp.toString(), amqpSubjects[lp]!!.publish().autoConnect())
         }
-        return this
+
+        wsSubjects[RelayService::class.java.name] = PublishSubject.create<Pair<Session, String>>()
+        Logger.info("Adding Observable Source ${wsSubjects[RelayService::class.java.name]} for ${RelayService::class.java.name}")
+        sources.addNewObservableSource(RelayService::class.java.name, wsSubjects[RelayService::class.java.name]!!.publish().autoConnect())
     }
 
     fun withLogging() : CoreController {
@@ -44,6 +55,32 @@ class CoreController private constructor(topicSet: Set<LifeParameters>) {
     fun withoutLogging() : CoreController {
         this.useLogging = false
         return this
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    override fun update(obj: Any) {
+        when (obj) {
+            is Pair<*, *> -> {
+                when(obj.first) {
+                    is Session -> {
+                        wsSubjects[RelayService::class.java.name]?.onNext(obj as Pair<Session, String>)
+                    }
+
+                    is LifeParameters -> {
+                        val (lp, message) = obj as Pair<LifeParameters, String>
+                        amqpSubjects[lp]?.onNext(message)
+                    }
+                    else -> {}
+                }
+            }
+            is Session -> {
+                if (sessions.has(obj)) {
+                    val message = PayloadWrapper(-1, WSOperations.CLOSE, sessions.getOn(obj)!!.toJson()).toJson()
+                    wsSubjects[RelayService::class.java.name]?.onNext(obj to message)
+                }
+            }
+            else -> {}
+        }
     }
 
     companion object {

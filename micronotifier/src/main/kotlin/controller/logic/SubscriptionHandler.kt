@@ -3,7 +3,7 @@ package controller.logic
 import WSLogger
 import config.Services
 import controller.CoreController
-import io.reactivex.subjects.Subject
+import io.reactivex.Observable
 import model.*
 import networking.ws.RelayService
 import org.eclipse.jetty.websocket.api.Session
@@ -15,7 +15,8 @@ object SubscriptionHandler {
 
     fun runOn(core: CoreController) {
 
-        val wsSubject: Subject<Pair<Session, String>> = core.subjects.getSubjectsOf(RelayService::class.java.name)!!
+        val wsSubject: Observable<Pair<Session, String>> =
+                core.sources.getObservableSourceOf(RelayService::class.java.name)!!
 
         wsSubject.map { (session, json) ->
             session to GsonInitializer.fromJson(json, PayloadWrapper::class.java)

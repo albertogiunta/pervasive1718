@@ -2,8 +2,8 @@ package networking.rabbit
 
 import BrokerConnector
 import RabbitMQSubscriber
-import io.reactivex.subjects.Subject
 import model.LifeParameters
+import patterns.Observer
 
 /**
  *  This RabbitMQ class wrapper work as relay point in order to move (@publishOn)
@@ -12,25 +12,35 @@ import model.LifeParameters
  *  @author XanderC
  *
  */
-class AMQPClient(private val topics: Map<LifeParameters, String>) {
+class AMQPClient(private val topics: Map<LifeParameters, String>) : patterns.Observable {
 
     private val subscriber : RabbitMQSubscriber
-
+    private val observers = mutableListOf<Observer>()
     init {
         BrokerConnector.init(topics.values.toList())
 
         subscriber = RabbitMQSubscriber(BrokerConnector.INSTANCE)
     }
 
+    override fun addObserver(observer: Observer) {
+        observers.add(observer)
+    }
+
+    override fun removeObserver(observer: Observer) {   }
+
+    override fun notify(obj: Any) {
+        observers.parallelStream().forEach { it.update(obj) }
+    }
+
     /**
      * By calling this method the client will start to publish the data it receives from the topics
-     * that have been passed on the constructor to the publish subjects it has received.
+     * that have been passed on the constructor to the publish subjects created.
      *
      */
-    fun publishOn(publishSubjects: Map<LifeParameters, Subject<String>>) {
+    fun startPublishing() {
         topics.forEach { (lp, channel) ->
-            subscriber.subscribe(channel, subscriber.createStringConsumer {
-                publishSubjects[lp]?.onNext(it)
+            subscriber.subscribe(channel, subscriber.createStringConsumer {value ->
+                this.notify(lp to value)
             })
         }
     }

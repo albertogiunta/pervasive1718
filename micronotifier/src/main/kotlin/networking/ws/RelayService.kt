@@ -4,31 +4,40 @@ import WSLogger
 import WSServer
 import config.Services
 import controller.CoreController
-import io.reactivex.subjects.Subject
 import model.Payload
-import model.PayloadWrapper
 import model.WSOperations
 import org.eclipse.jetty.websocket.api.Session
 import org.eclipse.jetty.websocket.api.WebSocketException
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketError
 import org.eclipse.jetty.websocket.api.annotations.WebSocket
+import patterns.Observable
+import patterns.Observer
 import utils.Logger
 import utils.asJson
-import utils.toJson
 
 /**
  * A WS class which relays and publish Messages
  *
  */
 @WebSocket
-class RelayService : WSServer<Payload<WSOperations, String>>(Services.NOTIFIER.wsPath) {
+class RelayService : WSServer<Payload<WSOperations, String>>(name = Services.NOTIFIER.wsPath) , Observable{
 
-    private val core = CoreController.singleton()
+    private val observers = mutableListOf<Observer>()
 
-    private val wsSubject: Subject<Pair<Session, String>>
+//    private val wsSubject = PublishSubject.create<Pair<Session, String>>()
 
     init {
-        wsSubject = core.subjects.getSubjectsOf(RelayService::class.java.name)!!
+        this.addObserver(CoreController.singleton())
+    }
+
+    override fun addObserver(observer: Observer) {
+        observers.add(observer)
+    }
+
+    override fun removeObserver(observer: Observer) {}
+
+    override fun notify(obj: Any) {
+        observers.parallelStream().forEach { it.update(obj) }
     }
 
     override fun onConnect(session: Session) {
@@ -37,21 +46,17 @@ class RelayService : WSServer<Payload<WSOperations, String>>(Services.NOTIFIER.w
 
     override fun onClose(session: Session, statusCode: Int, reason: String) {
         Logger.info("[ ${wsUser.name} | ${this.name} *** ] session onClose on remote | exit code $statusCode")
-        if (core.sessions.has(session)) {
-            val message = PayloadWrapper(-1, WSOperations.CLOSE,
-                    core.sessions.getOn(session)!!.toJson()).toJson()
-            wsSubject.onNext(Pair(session, message))
-        }
+        this.notify(session)
     }
 
     override fun onMessage(session: Session, message: String) {
         Logger.info("[ ${wsUser.name} | $name --> ] $message")
-        wsSubject.onNext(session to message)
+        this.notify(session to message)
     }
 
     @OnWebSocketError
     fun onError(session : Session, error : Throwable) {
-        Logger.error("[WS Error !] @ ${session.remote}", error)
+        Logger.error("[${wsUser.name} | $name --- Error] @ ${session.remote}", error)
     }
 
     companion object {

@@ -1,5 +1,6 @@
 package controller.logic
 
+import Params
 import WSLogger
 import com.github.kittinunf.fuel.httpGet
 import config.Services
@@ -51,7 +52,7 @@ object NotificationHandler {
         }.start()
 
         val publishSubjects = core.topics.activeTopics().map {
-            it to core.subjects.getSubjectsOf<String>(it.toString())!!
+            it to core.sources.getObservableSourceOf<String>(it.toString())!!
         }.toMap()
 
         // Check OUT OF BOUND Heath Parameters

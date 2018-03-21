@@ -14,7 +14,7 @@ object MicroTaskBootstrap {
             waitInitAndNotifyToMicroSession(Services.TASK_HANDLER.executableName, Services.instanceId())
         }
 
-        TaskController.fetchActivitiesFromDB()
+        TaskController.fetchActivitiesAndOperatorsFromDB()
         println("[${Services.TASK_HANDLER.executableName}] FINISHED bootstrap")
     }
 }
