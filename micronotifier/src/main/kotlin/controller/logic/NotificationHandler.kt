@@ -13,6 +13,10 @@ import utils.Logger
 import utils.toJson
 import java.net.URL
 
+/**
+ * @author XanderC
+ *
+ */
 object NotificationHandler {
 
     private val boundaryURL = URL(

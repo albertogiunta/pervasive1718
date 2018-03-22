@@ -15,6 +15,7 @@ import spark.Spark.path
 import spark.Spark.port
 import spark.kotlin.delete
 import spark.kotlin.get
+import spark.kotlin.post
 import utils.*
 import java.sql.Timestamp
 import java.util.*
@@ -29,7 +30,7 @@ object RouteController {
         path("/${Params.Session.API_NAME}") {
             get("", Utils.RESTParams.applicationJson) { SessionApi.listAllSessions(request, response) }
             get("/:leadercf", Utils.RESTParams.applicationJson) { SessionApi.listAllOpenSessionsByLeaderCF(request, response) }
-            get("/acknowledge/:instanceid", Utils.RESTParams.applicationJson) { SessionApi.acknowledgeReadyService(request, response) }
+            post("/acknowledge/:instanceid", Utils.RESTParams.applicationJson) { SessionApi.acknowledgeReadyService(request, response) }
             delete("/:sessionid", Utils.RESTParams.applicationJson) { SessionApi.closeSessionById(request, response) }
         }
     }
@@ -78,6 +79,18 @@ object SessionApi {
         serviceInitializationStatus[instanceId] = serviceInitializationStatus[instanceId]?.plus(1) ?:
                 return response.badRequest("")
         println("INSTANCE ACKS ARE ${serviceInitializationStatus[instanceId]}")
+
+        try {
+            val hook = GsonInitializer.fromJson(request.body(), MicroServiceHook::class.java)
+            sessionManager.setHook(
+                    hook.service!!,
+                    hook.instanceId,
+                    hook
+            )
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+        }
+
         if (serviceInitializationStatus[instanceId] == 4) {
             val dbUrl = createMicroDatabaseAddress(instanceId)
             val visorUrl = Services.Utils.defaultHostUrlApi(Services.VISORS)

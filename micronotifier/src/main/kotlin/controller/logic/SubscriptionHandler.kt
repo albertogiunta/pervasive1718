@@ -11,6 +11,10 @@ import utils.GsonInitializer
 import utils.Logger
 import utils.toJson
 
+/**
+ * @author XanderC
+ *
+ */
 object SubscriptionHandler {
 
     fun runOn(core: CoreController) {
@@ -38,7 +42,6 @@ object SubscriptionHandler {
                         )
 
                         RelayService.sendMessage(WSLogger.WSUser.SERVER, config.Services.NOTIFIER.wsPath, session, okResponse)
-
                     }
                     WSOperations.CLOSE -> {
                         val listener: Member = wrapper.objectify(body)

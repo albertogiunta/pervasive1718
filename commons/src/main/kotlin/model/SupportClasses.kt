@@ -1,10 +1,13 @@
 package model
 
 import com.beust.klaxon.Klaxon
+import config.Services
 import utils.KlaxonDate
 import utils.dateConverter
 import java.sql.Timestamp
 import java.util.*
+
+data class MicroServiceHook(val service: Services?, val instanceId: String, val hostAddress: String, val hostName: String)
 
 object EmptyTask{
     const val emptyTaskId: Int = -1

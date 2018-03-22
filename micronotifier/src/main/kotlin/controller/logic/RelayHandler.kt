@@ -11,6 +11,10 @@ import org.eclipse.jetty.websocket.api.WebSocketException
 import utils.Logger
 import utils.toJson
 
+/**
+ * @author XanderC
+ *
+ */
 object RelayHandler {
 
     fun runOn(core: CoreController) {

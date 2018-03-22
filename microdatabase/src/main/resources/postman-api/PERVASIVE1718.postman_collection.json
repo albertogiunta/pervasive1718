@@ -708,7 +708,7 @@
 					"name": "ACKNOWLEDGE SERVICE STARTUP",
 					"request": {
 						"url": "{{phost}}:8500/sessions/acknowledge/3",
-						"method": "GET",
+						"method": "POST",
 						"header": [],
 						"body": {},
 						"description": ""
