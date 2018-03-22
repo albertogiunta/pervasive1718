@@ -3,11 +3,8 @@ import org.junit.Test
 
 class GenerationStrategiesTest {
 
-    /**
-     * Checks if the double sinusoid generator returns values in boundaries.
-     */
     @Test
-    fun doubleSinusoidGenBoundaryCheck() {
+    fun `Checks if the double sinusoid generator returns values in boundaries`() {
         val minBound = 0.0
         val maxBound = 100.0
         val dSG = GenerationStrategies.DoubleSinusoidGeneration(minBound, maxBound)
@@ -19,11 +16,8 @@ class GenerationStrategiesTest {
         }
     }
 
-    /**
-     * Checks if the int sinusoid generator returns values in boundaries.
-     */
     @Test
-    fun intSinusoidGenBoundaryCheck() {
+    fun `Checks if the int sinusoid generator returns values in boundaries`() {
         val minBound = 0
         val maxBound = 100
         val iSG = GenerationStrategies.IntSinusoidGeneration(minBound, maxBound)
@@ -35,11 +29,8 @@ class GenerationStrategiesTest {
         }
     }
 
-    /**
-     * Checks if the double linear generator returns expected values and in boundaries.
-     */
     @Test
-    fun doubleLinearGeneration() {
+    fun `Checks if the double linear generator returns expected values and in boundaries`() {
         val minBound = 0.0
         val maxBound = 100.0
         val dLG = GenerationStrategies.DoubleLinearGeneration(minBound, maxBound)
@@ -59,11 +50,8 @@ class GenerationStrategiesTest {
         }
     }
 
-    /**
-     * Checks if the integer linear generator returns expected values and in boundaries.
-     */
     @Test
-    fun intLinearGeneration() {
+    fun `Checks if the integer linear generator returns expected values and in boundaries`() {
         val minBound = 0
         val maxBound = 100
         val iLG = GenerationStrategies.IntLinearGeneration(minBound, maxBound)
@@ -83,41 +71,29 @@ class GenerationStrategiesTest {
         }
     }
 
-    /**
-     * Checks if IllegalArgumentException is thrown in DoubleSinusoidGeneration
-     */
     @Test(expected = IllegalArgumentException::class)
-    fun doubleSinusoidGenerationException() {
+    fun `Checks if IllegalArgumentException is thrown in DoubleSinusoidGeneration`() {
         val minBound = 100.0
         val maxBound = 0.0
         GenerationStrategies.DoubleSinusoidGeneration(minBound, maxBound)
     }
 
-    /**
-     * Checks if IllegalArgumentException is thrown in IntSinusoidGeneration
-     */
     @Test(expected = IllegalArgumentException::class)
-    fun intSinusoidGenerationException() {
+    fun `Checks if IllegalArgumentException is thrown in IntSinusoidGeneration`() {
         val minBound = 100
         val maxBound = 0
         GenerationStrategies.IntSinusoidGeneration(minBound, maxBound)
     }
 
-    /**
-     * Checks if IllegalArgumentException is thrown in DoubleLinearGeneration
-     */
     @Test(expected = IllegalArgumentException::class)
-    fun doubleLinearGenerationException() {
+    fun `Checks if IllegalArgumentException is thrown in DoubleLinearGeneration`() {
         val minBound = 100.0
         val maxBound = 0.0
         GenerationStrategies.DoubleLinearGeneration(minBound, maxBound)
     }
 
-    /**
-     * Checks if IllegalArgumentException is thrown in IntLinearGeneration
-     */
     @Test(expected = IllegalArgumentException::class)
-    fun intLinearGenerationException() {
+    fun `Checks if IllegalArgumentException is thrown in IntLinearGeneration`() {
         val minBound = 100
         val maxBound = 0
         GenerationStrategies.IntLinearGeneration(minBound, maxBound)

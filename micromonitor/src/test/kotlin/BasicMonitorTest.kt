@@ -6,28 +6,28 @@ import org.junit.Test
 
 class BasicMonitorTest {
 
-    lateinit var mon: BasicMonitor<Double>
-    val initialValue = 10.0
-    val name = "Prova"
-    val measuredParamenter = LifeParameters.HEART_RATE
+    private lateinit var monitor: BasicMonitor<Double>
+    private val initialValue = 10.0
+    private val name = "Prova"
+    private val measuredParameter = LifeParameters.HEART_RATE
 
     @Before
-    fun initialization() {
-        mon = BasicMonitor(initialValue, name, measuredParamenter)
+    fun setup() {
+        monitor = BasicMonitor(initialValue, name, measuredParameter)
     }
 
     @Test
-    fun currentValue() {
-        Assert.assertTrue(mon.currentValue() == initialValue)
+    fun `test monitor's initial value`() {
+        Assert.assertTrue(monitor.currentValue() == initialValue)
     }
 
     @Test
-    fun getName() {
-        Assert.assertTrue(mon.name == name)
+    fun `test monitor's name`() {
+        Assert.assertTrue(monitor.name == name)
     }
 
     @Test
-    fun getMeasuredParameter() {
-        Assert.assertTrue(mon.measuredParameter == measuredParamenter)
+    fun `test monitor's measured parameter type`() {
+        Assert.assertTrue(monitor.measuredParameter == measuredParameter)
     }
 }

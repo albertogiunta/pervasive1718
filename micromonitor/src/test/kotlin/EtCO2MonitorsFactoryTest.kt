@@ -9,14 +9,14 @@ import org.junit.Test
 class EtCO2MonitorsFactoryTest {
 
     @Test
-    fun createStaticEtCO2Monitor() {
+    fun `create Static EtCO2 Monitor`() {
         val mon = EtCO2MonitorsFactory.createStaticEtCO2Monitor()
         assertTrue(mon.currentValue() == EtCO2MonitorsFactory.DEFAULT_INIT_VALUE)
         assertEquals(mon.measuredParameter, LifeParameters.END_TIDAL_CARBON_DIOXIDE)
     }
 
     @Test
-    fun createSimulatedEtCO2Monitor() {
+    fun `create Simulated EtCO2 Monitor`() {
         val mon = EtCO2MonitorsFactory.createSimulatedEtCO2Monitor()
         assertEquals(mon.measuredParameter, LifeParameters.END_TIDAL_CARBON_DIOXIDE)
     }

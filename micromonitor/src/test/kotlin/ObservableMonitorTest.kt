@@ -27,36 +27,23 @@ class ObservableMonitorTest {
         obsMon = ObservableMonitor(simMon)
     }
 
-    /**
-     * The name of the observable monitor must be equal to the name of the decorated monitor
-     * */
     @Test
-    fun getName() {
+    fun `The name of the observable monitor must be equal to the name of the decorated monitor`() {
         assertEquals(simMon.name, obsMon.name)
     }
 
-    /**
-     * The measured parameter of the observable monitor must be equal to the measured parameter of the decorated monitor
-     * */
     @Test
-    fun getMeasuredParameter() {
+    fun `The measured parameter of the observable monitor must be equal to the measured parameter of the decorated monitor`() {
         assertEquals(obsMon.measuredParameter, simMon.measuredParameter)
     }
 
-    /**
-     * The current value of the observable monitor must be equal to the measured parameter of the decorated monitor
-     * */
     @Test
-    fun currentValue() {
+    fun `The current value of the observable monitor must be equal to the measured parameter of the decorated monitor`() {
         assertTrue(obsMon.currentValue() == simMon.currentValue())
     }
 
-    /**
-     * The create observable must create an RxKotlin Flowable object that
-     * rappresents the stream of the simulated data
-     * */
     @Test
-    fun createObservable() {
+    fun `The observable object that represents the stream of the simulated data`() {
         val log = ArrayList<Double>()
         val dataFlow = obsMon.createObservable(observationRefreshTime)
         dataFlow.subscribe({ log.add(it) })
@@ -64,12 +51,8 @@ class ObservableMonitorTest {
         assertTrue(log.size >= 4)
     }
 
-    /**
-     *  The observable monitor must stop to produce data on the observable flowable
-     *  after calling stopObservation
-     */
     @Test
-    fun stopObservation() {
+    fun `The observable monitor must stop to produce data on the observable flowable after calling stopObservation`() {
         val log = ArrayList<Double>()
         val dataFlow = obsMon.createObservable(observationRefreshTime)
         dataFlow.subscribe({ log.add(it) })
