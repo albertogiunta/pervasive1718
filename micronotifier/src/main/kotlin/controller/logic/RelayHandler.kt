@@ -32,14 +32,17 @@ object RelayHandler {
                         Update(lifeParameter, value.toDouble()).toJson()
                 )
             }.doOnNext {
-                if (core.useLogging) Logger.info(it.toString())
+                if (core.useLogging) Logger.info(it.body)
             }.subscribe { message ->
                 // Do stuff with the WebSockets, dispatch only some of the merged values
                 // With one are specified into controller.listenerMap: Member -> Set<model.LifeParameters>
                 core.topics[lifeParameter]?.forEach { member ->
                     if (core.sessions.contains(member)) {
                         try {
-                            RelayService.sendMessage(WSLogger.WSUser.SERVER, config.Services.NOTIFIER.wsPath, core.sessions[member]!!, message)
+                            RelayService.sendMessage(
+                                    WSLogger.WSUser.SERVER, config.Services.NOTIFIER.wsPath,
+                                    core.sessions[member]!!, message, logEnabled = false
+                            )
                         } catch (ex : Exception) {
                             when(ex) {
                                 is WebSocketException -> {

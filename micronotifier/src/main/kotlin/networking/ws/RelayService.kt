@@ -24,8 +24,6 @@ class RelayService : WSServer<Payload<WSOperations, String>>(name = Services.NOT
 
     private val observers = mutableListOf<Observer>()
 
-//    private val wsSubject = PublishSubject.create<Pair<Session, String>>()
-
     init {
         this.addObserver(CoreController.singleton())
     }
@@ -65,16 +63,16 @@ class RelayService : WSServer<Payload<WSOperations, String>>(name = Services.NOT
          * This is the stub method to call when relaying a onMessage to/through the web-socket to the client
          *
          */
-        fun <P> sendMessage(wsUser: WSLogger.WSUser, wsName: String, session: Session, payload: P) {
+        fun <P> sendMessage(wsUser: WSLogger.WSUser, wsName: String, session: Session, payload: P, logEnabled: Boolean = true) {
             try {
+                if (logEnabled) Logger.info("[ ${wsUser.name} | $wsName <-- ] ${payload.toString()}")
                 sendMessage(wsUser, wsName, session, payload.asJson())
             } catch (e: WebSocketException) {
                 println(e.message)
             }
         }
 
-        fun sendMessage(wsUser: WSLogger.WSUser, wsName: String, session: Session, message: String) {
-            Logger.info("[ ${wsUser.name} | $wsName <-- ] $message")
+        fun sendMessage(session: Session, message: String) {
             session.remote.sendString(message)
         }
     }
