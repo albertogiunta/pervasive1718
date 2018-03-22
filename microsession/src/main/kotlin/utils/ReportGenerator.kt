@@ -29,8 +29,8 @@ object ReportGenerator {
 
         response.third.fold(success = {
             val klaxon = Klaxon()
-                    .fieldConverter(KlaxonLifeParameterList::class, lifeParameterListConverter)
-                    .fieldConverter(KlaxonDate::class, dateConverter)
+                .fieldConverter(KlaxonLifeParameterList::class, lifeParameterListConverter)
+                .fieldConverter(KlaxonDate::class, dateConverter)
             JsonReader(StringReader(it) as Reader).use { reader ->
                 reader.beginArray {
                     val sTaskReport = reader.nextString()
@@ -50,7 +50,7 @@ object ReportGenerator {
         reportFile.printWriter().use { out ->
             out.println("TASK REPORT")
             taskReport.forEach {
-                var line = "Leader: ${it.leaderCF} | Operator: ${it.operatorCF} | Patient: ${it.patientCF} | Activity: ${it.activityName} | StartTime: ${it.startTime} -> EndTime: ${it.endTime}"
+                val line = "Leader: ${it.leaderCF} | Operator: ${it.operatorCF} | Patient: ${it.patientCF} | Activity: ${it.activityName} | StartTime: ${it.startTime} -> EndTIme: ${it.endTime}"
                 out.println(line)
                 line.forEach { out.print("-") }
                 out.print("\n")
