@@ -65,8 +65,10 @@ class RelayService : WSServer<Payload<WSOperations, String>>(name = Services.NOT
          */
         fun <P> sendMessage(wsUser: WSLogger.WSUser, wsName: String, session: Session, payload: P, logEnabled: Boolean = true) {
             try {
-                if (logEnabled) Logger.info("[ ${wsUser.name} | $wsName <-- ] ${payload.toString()}")
-                sendMessage(wsUser, wsName, session, payload.asJson())
+                if (logEnabled) {
+                    Logger.info("[ ${wsUser.name} | $wsName <-- ] ${payload.toString()}")
+                }
+                sendMessage(session, payload.asJson())
             } catch (e: WebSocketException) {
                 println(e.message)
             }

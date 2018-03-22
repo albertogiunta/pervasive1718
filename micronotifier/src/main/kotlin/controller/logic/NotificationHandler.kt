@@ -51,7 +51,7 @@ object NotificationHandler {
                     Logger.info("Error Loading boundaries from DB... Retrying connecting to $boundaryURL")
                 })
 
-                Thread.sleep(2000L)
+                Thread.sleep(1000L)
             }
         }.start()
 
