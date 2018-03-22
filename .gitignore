@@ -130,3 +130,4 @@ hs_err_pid*
 *.orig
 *.zargo~
 *.MF
+sessionReport/
