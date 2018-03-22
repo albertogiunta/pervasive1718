@@ -7,11 +7,12 @@ import utils.PathGetter
 import java.io.File
 import java.net.URL
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 
 class MicroServiceManager {
 
-    private val sessionsMap = mutableMapOf<String, Map<Services, Pair<Process, URL>>>()
+    private val sessionsMap = ConcurrentHashMap<String, ConcurrentHashMap<Services, Pair<Process, URL>>>()
 
     val instanceHandler = object : InstanceHandler<Services, String, Boolean> {
 
@@ -43,13 +44,12 @@ class MicroServiceManager {
 
     fun newService(service: Services, slotId: String, startIndependently: Boolean = false){
 
-        lateinit var map: MutableMap<Services, Pair<Process, URL>>
-        when(!sessionsMap.containsKey(slotId)){
-            true -> map = mutableMapOf()
-            false -> map = sessionsMap[slotId]!!.toMutableMap()
+        val map: ConcurrentHashMap<Services, Pair<Process, URL>> = when (!sessionsMap.containsKey(slotId)) {
+            true -> ConcurrentHashMap()
+            false -> sessionsMap[slotId]!!
         }
         map[service] = instanceHandler.new(service, slotId, startIndependently)
-        sessionsMap[slotId] = map.toMap()
+        sessionsMap[slotId] = map
     }
 
     fun closeSession(slotId: String) {
@@ -70,8 +70,7 @@ class MicroServiceManager {
 
 }
 
-interface InstanceHandler<X, Y, Z> {
-
+interface InstanceHandler<in X, in Y, in Z> {
     fun new(service: X, slotId: Y, startIndependently: Z) : Pair<Process, URL>
 }
 

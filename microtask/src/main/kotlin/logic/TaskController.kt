@@ -21,7 +21,7 @@ class TaskController private constructor(private val ws: WSTaskServer,
                                          val taskMemberAssociationList: MutableList<TaskMemberAssociation> = mutableListOf()) {
 
     lateinit var leader: Pair<Member, Session>
-    val members: ConcurrentHashMap<Member, Session> = ConcurrentHashMap()
+    val members = ConcurrentHashMap<Member, Session>()
 
     companion object {
         private var configNotCompleted = true
@@ -64,9 +64,6 @@ class TaskController private constructor(private val ws: WSTaskServer,
     }
 
     private fun getMemberWithNameSurnameFromOperatorsByCF(cf: String): MemberWithNameSurname {
-//        println(cf)
-//        println(operatorList)
-//        println(members.keys.toList())
         return try {
             operatorList.filter { it.operatorCF == cf }.map { MemberWithNameSurname(it.operatorCF, it.name, it.surname) }.first()
         } catch (e: NoSuchElementException) {

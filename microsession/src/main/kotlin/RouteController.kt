@@ -18,6 +18,7 @@ import spark.kotlin.get
 import utils.*
 import java.sql.Timestamp
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
 object RouteController {
 
@@ -38,10 +39,10 @@ object RouteController {
 object SessionApi {
 
     private val instance = BooleanArray(Utils.maxSimultaneousSessions)
+    private var sessionManager = MicroServiceManager()
     private val sessions = mutableListOf<Pair<SessionDNS, Int>>()
-    private var sManager = MicroServiceManager()
-    private var serviceInitializationStatus = HashMap<Int, Int>()
-    private var sessionInitializationParamsWithInstanceId = HashMap<Int, Pair<SessionAssignment, Session>>()
+    private var serviceInitializationStatus = ConcurrentHashMap<Int, Int>()
+    private var sessionInitializationParamsWithInstanceId = ConcurrentHashMap<Int, Pair<SessionAssignment, Session>>()
     private var ws = WSSessionServer()
 
     @Throws(IndexOutOfBoundsException::class)
@@ -59,7 +60,7 @@ object SessionApi {
                 instance[session.second] = false
                 ReportGenerator.generateFinalReport(sessionId.toString())
                 sessions.removeAll { it.first.sessionId == sessionId }
-                sManager.closeSession(session.second.toString())
+                sessionManager.closeSession(session.second.toString())
                 return response.ok()
             },
             failure = { return response.resourceNotAvailable(dbUrl, it.toJson()) }
@@ -97,7 +98,7 @@ object SessionApi {
                     if (error.exception.message == "Connection refused (Connection refused)") {
                         ws.sendMessage(instanceDetails.second, PayloadWrapper(-1, WSOperations.SESSION_HANDLER_ERROR_RESPONSE, "Connection refused - session not created"))
                     }
-                    sManager.closeSession(instanceId.toString())
+                    sessionManager.closeSession(instanceId.toString())
                     ws.sendMessage(instanceDetails.second, PayloadWrapper(-1, WSOperations.SESSION_HANDLER_ERROR_RESPONSE, "Internal server error - session not created"))
                 })
         }
@@ -133,7 +134,7 @@ object SessionApi {
                                 sessionInitializationParamsWithInstanceId[instanceId] = Pair(sessionWrapper.objectify(body), session)
                                 println("Current boot $instanceId")
                                 println("Last session ${sessionInitializationParamsWithInstanceId[instanceId]!!.first}")
-                                sManager.newSession(instanceId.toString())
+                                sessionManager.newSession(instanceId.toString())
 
                             } catch (ex : Exception) {
                                 when(ex) {
