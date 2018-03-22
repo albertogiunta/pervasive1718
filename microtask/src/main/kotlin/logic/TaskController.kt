@@ -148,7 +148,7 @@ class TaskController private constructor(private val ws: WSTaskServer,
                 ws.sendMessage(leader.second, message)
                 "$dbUrl/${Params.Task.API_NAME}/${Params.Task.TASK_NAME}/${it.task.name}".httpPut().body(it.task.toJson()).responseString()
                 if (augmentedTask.task.statusId == Status.FINISHED.id) {
-                    "$dbUrl/${Params.Task.API_NAME}/${Params.Task.STOP}".httpPut().body(augmentedTask.task.toJson()).responseString()
+                    "$dbUrl/${Params.Task.API_NAME}/${Params.Task.STOP}/${it.task.name}".httpPut().body(augmentedTask.task.toJson()).responseString()
                     "$visorUrl/${Params.Task.API_NAME}/${it.task.name}".httpDelete().responseString()
                 }
             } ?: ws.sendMessage(session, PayloadWrapper(Services.instanceId(),
