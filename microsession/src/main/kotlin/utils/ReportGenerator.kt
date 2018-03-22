@@ -22,6 +22,7 @@ object ReportGenerator {
     fun generateFinalReport(sessionId: String) {
 
         val fileName = DEFAULT_FILE_NAME + sessionId
+        File(DEFAULT_PATH).mkdirs()
         val reportFile = File(DEFAULT_PATH + fileName + FILE_EXTENSION)
         val restAddress = "http://localhost:8100/api/sessions/$sessionId/report"
         val response = restAddress.httpGet().responseString()
@@ -49,7 +50,7 @@ object ReportGenerator {
         reportFile.printWriter().use { out ->
             out.println("TASK REPORT")
             taskReport.forEach {
-                var line = "Leader: ${it.leaderCF} | Operator: ${it.operatorCF} | Patient: ${it.patientCF} | Activity: ${it.activityName} | StartTime: ${it.startTime} -> EndTIme: ${it.endTime}"
+                var line = "Leader: ${it.leaderCF} | Operator: ${it.operatorCF} | Patient: ${it.patientCF} | Activity: ${it.activityName} | StartTime: ${it.startTime} -> EndTime: ${it.endTime}"
                 out.println(line)
                 line.forEach { out.print("-") }
                 out.print("\n")
