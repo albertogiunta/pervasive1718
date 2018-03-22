@@ -14,31 +14,30 @@ import java.io.StringReader
  * */
 object ReportGenerator {
 
-    val separator = System.getProperty("file.separator").get(0)
-    val DEFAULT_PATH = PathGetter.getRootPath() + separator + "sessionReport" + separator
-    val DEFAULT_FILE_NAME = "Report Session N "
-    val FILE_EXTENSION = ".txt"
+    private val separator = System.getProperty("file.separator")[0]
+    private val DEFAULT_PATH = PathGetter.getRootPath() + separator + "sessionReport" + separator
+    private const val DEFAULT_FILE_NAME = "Report Session N "
+    private const val FILE_EXTENSION = ".txt"
 
     fun generateFinalReport(sessionId: String) {
 
         val fileName = DEFAULT_FILE_NAME + sessionId
         val reportFile = File(DEFAULT_PATH + fileName + FILE_EXTENSION)
-        val restAddress = "http://localhost:8100/api/sessions/${sessionId}/report"
+        val restAddress = "http://localhost:8100/api/sessions/$sessionId/report"
         val response = restAddress.httpGet().responseString()
 
         response.third.fold(success = {
             val klaxon = Klaxon()
                     .fieldConverter(KlaxonLifeParameterList::class, lifeParameterListConverter)
                     .fieldConverter(KlaxonDate::class, dateConverter)
-            //println(it + "\n")
             JsonReader(StringReader(it) as Reader).use { reader ->
                 reader.beginArray {
                     val sTaskReport = reader.nextString()
-                    var taskReport = klaxon.parseArray<TaskReportEntry>(sTaskReport)!!
+                    val taskReport = klaxon.parseArray<TaskReportEntry>(sTaskReport)!!
                     val sLogReport = reader.nextString()
-                    var logReportEntry = klaxon.parseArray<LogReportEntry>(sLogReport)!!
+                    val logReportEntry = klaxon.parseArray<LogReportEntry>(sLogReport)!!
                     writeReportOnFile(taskReport, logReportEntry, reportFile)
-                    println("Generating the final report => \"${fileName + FILE_EXTENSION}\" in ${DEFAULT_PATH}")
+                    println("Generating the final report => \"${fileName + FILE_EXTENSION}\" in $DEFAULT_PATH")
                 }
             }
         }, failure = {
