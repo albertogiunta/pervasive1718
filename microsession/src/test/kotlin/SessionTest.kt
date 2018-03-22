@@ -73,7 +73,7 @@ class SessionTest {
     }
 
     @Test
-    fun createNewSessionTest() {
+    fun `create new session`() {
         sessionList.clear()
         latch = CountDownLatch(1)
         val patient = "gntlrt94b21g479u"
@@ -91,7 +91,7 @@ class SessionTest {
     }
 
     @Test
-    fun getAllSessions() {
+    fun `get all sessions list`() {
         handlingGetResponseWithArrayOfDnsSessions(makeGet(baseUrl))
         val previousSize = sessionList.size
         println(previousSize)
@@ -120,7 +120,7 @@ class SessionTest {
     }
 
     @Test
-    fun closeSession() {
+    fun `close session`() {
         latch = CountDownLatch(1)
         wsClient.sendMessage(PayloadWrapper(-1, WSOperations.NEW_SESSION, SessionAssignment("1", "-1").toJson()).toJson())
         latch.await()
