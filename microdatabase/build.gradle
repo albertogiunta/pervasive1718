@@ -15,6 +15,7 @@ dependencies {
 
 task microDatabaseJar(type: Jar) {
     baseName = 'runMicroDatabase'
+    destinationDir = file(gradle.ext.jarDirPath)
     manifest {
         attributes 'Implementation-Title': 'microdatabase',
                 'Implementation-Version': 1.0,
