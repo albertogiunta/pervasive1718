@@ -82,6 +82,9 @@ object SessionApi {
 
         try {
             val hook = GsonInitializer.fromJson(request.body(), MicroServiceHook::class.java)
+
+            println("Got this hook $hook...")
+
             sessionManager.setHook(
                     hook.service!!,
                     hook.instanceId,
