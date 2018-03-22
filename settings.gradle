@@ -5,6 +5,8 @@ def jsonFile = file('config.json')
 def jsonText = jsonFile.text
 def parsedJson = new groovy.json.JsonSlurper().parseText(jsonText)
 
+
+gradle.ext.jarDirPath = rootProject.projectDir.toString() + "/generatedJars/"
 gradle.ext.microMonitorJarName = parsedJson.microMonitor.jarName
 gradle.ext.microVisorsJarName = parsedJson.microVisors.jarName
 gradle.ext.microTaskJarName = parsedJson.microTask.jarName

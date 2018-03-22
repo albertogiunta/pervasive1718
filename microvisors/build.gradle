@@ -7,6 +7,7 @@ dependencies {
 
 task microVisorsJar(type: Jar) {
     baseName = 'runMicroVisors'
+    destinationDir = file(gradle.ext.jarDirPath)
     manifest {
         attributes 'Implementation-Title': 'microvisors',
                 'Implementation-Version': 1.0,

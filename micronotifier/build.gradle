@@ -14,6 +14,7 @@ dependencies {
 
 task microNotifierJar(type: Jar) {
     baseName = 'runMicroNotifier'
+    destinationDir = file(gradle.ext.jarDirPath)
     manifest {
         attributes 'Implementation-Title': 'micronotifier',
                 'Implementation-Version': 1.0,

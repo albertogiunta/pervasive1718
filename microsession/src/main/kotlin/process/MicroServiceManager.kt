@@ -1,5 +1,6 @@
 package process
 
+import Params
 import config.ConfigLoader
 import config.Services
 import utils.PathGetter
@@ -16,7 +17,7 @@ class MicroServiceManager {
 
         override fun new(service: Services, slotId: String, startIndependently: Boolean): Pair<Process, URL> {
 
-            val dir = PathGetter.getRootPath()
+            val dir = PathGetter.getJarGenerationDirectoryPath()
 
             val url = URL(
                     Services.Utils.Protocols.http,
@@ -26,9 +27,6 @@ class MicroServiceManager {
 
             val workingModule = StringJoiner(System.getProperty("file.separator"))
                     .add(dir)
-                    .add(service.module)
-                    .add("build")
-                    .add("libs")
                     .toString()
 
             return "java -jar ${service.executableName} ${slotId.toInt()} -si $startIndependently"

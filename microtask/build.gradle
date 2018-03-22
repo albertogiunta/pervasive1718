@@ -10,6 +10,7 @@ dependencies {
 
 task microTaskJar(type: Jar) {
     baseName = 'runMicroTask'
+    destinationDir = file(gradle.ext.jarDirPath)
     manifest {
         attributes 'Implementation-Title': 'microtask',
                 'Implementation-Version': 1.0,

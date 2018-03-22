@@ -6,6 +6,7 @@ dependencies {
 
 task microSessionJar(type: Jar) {
     baseName = 'runMicroSession'
+    destinationDir = file(gradle.ext.jarDirPath)
     manifest {
         attributes 'Implementation-Title': 'microsession',
                 'Implementation-Version': 1.0,
