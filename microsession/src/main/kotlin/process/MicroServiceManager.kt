@@ -3,6 +3,7 @@ package process
 import config.Services
 import model.MicroServiceHook
 import utils.PathGetter
+import utils.runCommand
 import java.io.File
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -61,14 +62,6 @@ class MicroServiceManager {
             sessionsMap.remove(slotId)
         }
     }
-
-    private fun String.runCommand(dir: File) : Process =
-        ProcessBuilder(*split(" ").toTypedArray())
-                .directory(dir)
-                .redirectOutput(ProcessBuilder.Redirect.INHERIT)
-                .redirectError(ProcessBuilder.Redirect.INHERIT)
-                .start()
-
 }
 
 interface InstanceHandler<in X, in Y, in Z, out W, out V> {
