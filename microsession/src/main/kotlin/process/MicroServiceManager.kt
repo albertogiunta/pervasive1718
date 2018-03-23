@@ -3,7 +3,7 @@ package process
 import config.Services
 import model.MicroServiceHook
 import utils.PathGetter
-import utils.runCommand
+import utils.runCommandIn
 import java.io.File
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -26,7 +26,7 @@ class MicroServiceManager {
                             .toString()
 
                     return "java -jar ${service.executableName} ${slotId.toInt()} -si $startIndependently"
-                            .runCommand(File(workingModule)) to defaultURL
+                            .runCommandIn(File(workingModule)) to defaultURL
                 }
             }
 
