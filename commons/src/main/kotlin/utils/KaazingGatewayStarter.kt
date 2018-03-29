@@ -20,7 +20,7 @@ object KaazingGatewayStarter {
             command ="./gateway.start"
         } else if (isWindows()) {
             dir =  "windows"
-            command = "gateway.start.bat"
+            command = "cmd.exe /c start \"\" gateway.start.bat"
         }
 
         val workingModule = PathGetter.getKaazingGatewayPath() +
@@ -29,7 +29,7 @@ object KaazingGatewayStarter {
                 PathGetter.SYSTEM_SEPARATOR +
                 EXECUTABLE_LOCATION
 
-        command.runCommandIn(File(workingModule)).killOnFatherDeath()
+        command.runCommandIn(File(workingModule))
     }
 
     private fun isWindows(): Boolean = os.contains("windows")
