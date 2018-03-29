@@ -118,7 +118,7 @@ class TaskController private constructor(private val ws: WSTaskServer,
                 request, response, result ->  ResponseHandlers.emptyHandler(request, response, result)
             }
             "$visorUrl/${Params.Task.API_NAME}".httpPost()
-                    .body(augmentedTask.task.toVisibleTask(member, activityName = activityList.first { x -> x.id == augmentedTask.task.activityId }.name).toJson())
+                    .body(augmentedTask.task.toVisibleTask(getMemberWithNameSurnameFromOperatorsByCF(member.userCF), activityName = activityList.first { x -> x.id == augmentedTask.task.activityId }.name).toJson())
                     .responseString {
                         request, response, result ->  ResponseHandlers.emptyHandler(request, response, result)
                     }
