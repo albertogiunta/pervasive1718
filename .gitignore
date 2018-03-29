@@ -131,3 +131,4 @@ hs_err_pid*
 *.zargo~
 *.MF
 sessionReport/
+generatedJars/
