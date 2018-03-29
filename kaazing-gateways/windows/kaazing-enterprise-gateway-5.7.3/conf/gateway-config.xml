@@ -1,19 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
-
     Copyright 2007-2017, Kaazing Corporation. All rights reserved.
-
 -->
 <gateway-config xmlns="http://xmlns.kaazing.org/2016/06/gateway">
 
   <!--
   #############################################################################
   #############################################################################
-
                 Kaazing WebSocket Gateway Configuration File
-
     See Kaazing Documentation for details: http://kaazing.com/documentation
-
   #############################################################################
   #############################################################################
   -->
