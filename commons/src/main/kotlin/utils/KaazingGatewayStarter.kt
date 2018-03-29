@@ -12,7 +12,7 @@ object KaazingGatewayStarter {
             "bin" +
             PathGetter.SYSTEM_SEPARATOR
 
-    fun startGateway() {
+    fun startGateway(): Process {
         var dir = ""
         var command = ""
         if (isLinux() || isMac()) {
@@ -29,7 +29,7 @@ object KaazingGatewayStarter {
                 PathGetter.SYSTEM_SEPARATOR +
                 EXECUTABLE_LOCATION
 
-        command.runCommandIn(File(workingModule))
+        return command.runCommandIn(File(workingModule))
     }
 
     private fun isWindows(): Boolean = os.contains("windows")
