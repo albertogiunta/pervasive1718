@@ -1,6 +1,5 @@
-package controller
+package model
 
-import model.Member
 import org.eclipse.jetty.websocket.api.Session
 import java.util.concurrent.ConcurrentHashMap
 
@@ -11,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap
  * @param S session type
  * (ex: websocket,...)
  * */
-interface SessionsManager<L, S> {
+interface SessionsContainer<L, S> {
 
     /**
      * Set a new session for the specified listener
@@ -36,18 +35,27 @@ interface SessionsManager<L, S> {
     /**
      * Remove all the listener on a specified session and return them
      * */
-    fun removeListenerOn(session: S): Iterable<L>
+    fun removeListenerOn(session: S): L?
 
+    /**
+     * Return if this Manager contains the specified Listener
+     *
+     */
     fun contains(listener: L) : Boolean
 
+    /**
+     * Return if this Manager contains the specified Session
+     *
+     */
     fun has(session: S) : Boolean
+
     /**
      * Remove all members and respective session
      * */
     fun close()
 }
 
-class NotifierSessionsManager : SessionsManager<Member, Session> {
+class NotifierSessionsContainer : SessionsContainer<Member, Session> {
 
     private val sessionsMap = ConcurrentHashMap<Member, Session>()
 
@@ -58,12 +66,14 @@ class NotifierSessionsManager : SessionsManager<Member, Session> {
     }
 
     override fun getOn(session: Session): Member? =
-        sessionsMap.filter{ it.value == session }.keys.first()
+        sessionsMap.filter{ it.value == session }.keys.firstOrNull()
 
     override fun removeListener(listener: Member): Session? = sessionsMap.remove(listener)
 
-    override fun removeListenerOn(session: Session): Iterable<Member> =
-            sessionsMap.filter { it.value == session }.keys.toList().onEach { sessionsMap.remove(it) }
+    override fun removeListenerOn(session: Session): Member? =
+            this.getOn(session).apply {
+                this?:sessionsMap.remove(this)
+            }
 
     override fun contains(listener: Member): Boolean = sessionsMap.containsKey(listener)
 

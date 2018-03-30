@@ -1,24 +1,21 @@
-package controller
+package model
 
-import model.Member
 import org.eclipse.jetty.websocket.api.*
+import org.eclipse.jetty.websocket.api.Session
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import java.net.InetSocketAddress
 
+class SessionsContainerTest {
 
-class NotifierSessionsManagerTest {
-
-    lateinit var sesCon: SessionsManager<Member, Session>
+    val sessionsContainer: SessionsContainer<Member, Session> = NotifierSessionsContainer()
 
     val m1 = Member("Mario Rossi")
     val m2 = Member("Padre Pio")
 
     @Before
-    fun setUp() {
-        sesCon = NotifierSessionsManager()
-    }
+    fun setUp() {}
 
     @Test
     fun setAndGet() {
@@ -88,9 +85,9 @@ class NotifierSessionsManagerTest {
             }
         }
 
-        sesCon.set(m1, ses)
-        assertEquals(sesCon[m1]!!, ses)
-        assertEquals(sesCon.getOn(ses), m1)
+        sessionsContainer.set(m1, ses)
+        assertEquals(sessionsContainer[m1]!!, ses)
+        assertEquals(sessionsContainer.getOn(ses), m1)
     }
 
     @Test
@@ -161,9 +158,9 @@ class NotifierSessionsManagerTest {
             }
         }
 
-        sesCon[m1] = ses
-        assertEquals(sesCon.removeListener(m1)!!, ses)
-        assertNull(sesCon.removeListener(m2))
+        sessionsContainer[m1] = ses
+        assertEquals(sessionsContainer.removeListener(m1)!!, ses)
+        assertNull(sessionsContainer.removeListener(m2))
     }
 
     @Test
@@ -234,11 +231,10 @@ class NotifierSessionsManagerTest {
             }
         }
 
-        sesCon[m1] = ses
-        val iter = sesCon.removeListenerOn(ses)
-        iter.forEach({ println(it) })
-        assertTrue(iter.contains(m1))
-        assertFalse(iter.contains(m2))
+        sessionsContainer[m1] = ses
+        val member = sessionsContainer.removeListenerOn(ses)
+        assertEquals(member, m1)
+        assertNotEquals(member, m2)
     }
 
 }

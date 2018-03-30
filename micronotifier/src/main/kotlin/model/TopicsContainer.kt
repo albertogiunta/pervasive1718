@@ -1,10 +1,8 @@
-package controller
+package model
 
-import model.LifeParameters
-import model.Member
 import java.util.concurrent.ConcurrentHashMap
 
-interface TopicsManager<T, L> {
+interface TopicsContainer<T, L> {
 
     fun add(topic: T, listener: L)
 
@@ -12,7 +10,7 @@ interface TopicsManager<T, L> {
 
     operator fun get(topic: T): Set<L>?
 
-    fun of(listener: L): Set<T>?
+    fun of(listener: L): Set<T>
 
     fun removeListener(listener: L)
 
@@ -24,7 +22,7 @@ interface TopicsManager<T, L> {
 
 }
 
-class NotifierTopicsManager(private var topics: Set<LifeParameters>) : TopicsManager<LifeParameters, Member> {
+class NotifierTopicsContainer(private var topics: Set<LifeParameters>) : TopicsContainer<LifeParameters, Member> {
 
     private val topicsMap = ConcurrentHashMap<LifeParameters, MutableSet<Member>>()
 
