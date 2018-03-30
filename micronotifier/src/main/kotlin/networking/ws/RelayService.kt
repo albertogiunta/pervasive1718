@@ -16,7 +16,10 @@ import utils.Logger
 import utils.asJson
 
 /**
- * A WS class which relays and publish Messages
+ * A class implementing a WS that receives messages from
+ * clients and notify such messages to the CoreController
+ *
+ * @author XanderC
  *
  */
 @WebSocket
@@ -57,6 +60,13 @@ class RelayService : WSServer<Payload<WSOperations, String>>(name = Services.NOT
         Logger.error("[${wsUser.name} | $name --- Error] @ ${session.remote}", error)
     }
 
+    /**
+     * Since the reference of the WS class is handled by SparkJava
+     * and as such not callable from code,
+     * this companion object wraps some stubs methods
+     * to handle replies from the WS to the clients
+     *
+     */
     companion object {
 
         /**

@@ -11,16 +11,26 @@ import utils.Logger
 import utils.toJson
 import java.util.concurrent.ConcurrentHashMap
 
+/**
+ * This SINGLETON class encapsulates the references of major entities of the Notifier.
+ *
+ * The io.reactivex.PublishSubjects, used to handle the various messages received through
+ * patterns.Observer Pattern by the WS and the AQMP client, are embedded and directly managed
+ * by the controller.
+ *
+ * The Containers for Topic, Session and Observable can be accessed from outside
+ * since their reference are read-only.
+ *
+ */
 class CoreController private constructor(topicSet: Set<LifeParameters>) : patterns.Observer {
 
-    var topics: TopicsContainer<LifeParameters, Member> = NotifierTopicsContainer(topicSet)
-    var sessions: SessionsContainer<Member, Session> = NotifierSessionsContainer()
-    var sources: SourcesContainer<String, Any> = NotifierSourcesContainer()
+    val topics: TopicsContainer<LifeParameters, Member> = NotifierTopicsContainer(topicSet)
+    val sessions: SessionsContainer<Member, Session> = NotifierSessionsContainer()
+    val sources: SourcesContainer<String, Any> = NotifierSourcesContainer()
 
     private val amqpSubjects = ConcurrentHashMap<LifeParameters, PublishSubject<String>>()
     private val wsSubjects = ConcurrentHashMap<String, PublishSubject<Pair<Session, String>>>()
 
-    @Volatile
     var useLogging = false
 
     init {
