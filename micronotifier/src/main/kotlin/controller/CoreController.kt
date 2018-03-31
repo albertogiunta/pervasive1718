@@ -4,26 +4,33 @@ import controller.logic.NotificationHandler
 import controller.logic.RelayHandler
 import controller.logic.SubscriptionHandler
 import io.reactivex.subjects.PublishSubject
-import model.LifeParameters
-import model.Member
-import model.PayloadWrapper
-import model.WSOperations
+import model.*
 import networking.ws.RelayService
 import org.eclipse.jetty.websocket.api.Session
 import utils.Logger
 import utils.toJson
 import java.util.concurrent.ConcurrentHashMap
 
+/**
+ * This SINGLETON class encapsulates the references of major entities of the Notifier.
+ *
+ * The io.reactivex.PublishSubjects, used to handle the various messages received through
+ * patterns.Observer Pattern by the WS and the AQMP client, are embedded and directly managed
+ * by the controller.
+ *
+ * The Containers for Topic, Session and Observable can be accessed from outside
+ * since their reference are read-only.
+ *
+ */
 class CoreController private constructor(topicSet: Set<LifeParameters>) : patterns.Observer {
 
-    var topics: TopicsManager<LifeParameters, Member> = NotifierTopicsManager(topicSet)
-    var sessions: SessionsManager<Member, Session> = NotifierSessionsManager()
-    var sources: SourcesManager<String, Any> = NotifierSourcesManager()
+    val topics: TopicsContainer<LifeParameters, Member> = NotifierTopicsContainer(topicSet)
+    val sessions: SessionsContainer<Member, Session> = NotifierSessionsContainer()
+    val sources: SourcesContainer<String, Any> = NotifierSourcesContainer()
 
     private val amqpSubjects = ConcurrentHashMap<LifeParameters, PublishSubject<String>>()
     private val wsSubjects = ConcurrentHashMap<String, PublishSubject<Pair<Session, String>>>()
 
-    @Volatile
     var useLogging = false
 
     init {
@@ -61,12 +68,12 @@ class CoreController private constructor(topicSet: Set<LifeParameters>) : patter
     override fun update(obj: Any) {
         when (obj) {
             is Pair<*, *> -> {
-                when(obj.first) {
-                    is Session -> {
+                when(obj) {
+                    obj.first is Session && obj.second is String -> {
                         wsSubjects[RelayService::class.java.name]?.onNext(obj as Pair<Session, String>)
                     }
 
-                    is LifeParameters -> {
+                    obj.first is LifeParameters && obj.second is String -> {
                         val (lp, message) = obj as Pair<LifeParameters, String>
                         amqpSubjects[lp]?.onNext(message)
                     }
@@ -75,8 +82,8 @@ class CoreController private constructor(topicSet: Set<LifeParameters>) : patter
             }
             is Session -> {
                 if (sessions.has(obj)) {
-                    val message = PayloadWrapper(-1, WSOperations.CLOSE, sessions.getOn(obj)!!.toJson()).toJson()
-                    wsSubjects[RelayService::class.java.name]?.onNext(obj to message)
+                    val message = PayloadWrapper(-1, WSOperations.CLOSE, sessions.getOn(obj)!!.toJson())
+                    wsSubjects[RelayService::class.java.name]?.onNext(obj to message.toJson())
                 }
             }
             else -> {}

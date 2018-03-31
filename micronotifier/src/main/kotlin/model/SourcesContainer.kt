@@ -1,9 +1,9 @@
-package controller
+package model
 
 import io.reactivex.Observable
 import java.util.concurrent.ConcurrentHashMap
 
-interface SourcesManager <I, T> {
+interface SourcesContainer <I, T> {
 
     fun <N : T> addNewObservableSource(identifier: I, source: Observable<N>): Observable<N>
 
@@ -11,7 +11,7 @@ interface SourcesManager <I, T> {
 }
 
 @Suppress("UNCHECKED_CAST")
-class NotifierSourcesManager : SourcesManager<String, Any>{
+class NotifierSourcesContainer : SourcesContainer<String, Any> {
 
     private val observableSources = ConcurrentHashMap<String, Observable<out Any>>()
 
