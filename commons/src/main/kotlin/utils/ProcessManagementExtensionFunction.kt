@@ -15,13 +15,17 @@ fun String.runCommandIn(dir: File): Process =
                 .redirectError(ProcessBuilder.Redirect.INHERIT)
                 .start()
 
-fun Process.killKaazingGatewayOnFatherDeath() = {
+/**
+ * Extension function that attach a shutdownhook to the specified process
+ *
+ * @param cleanFunction higher order function called before the process killing.
+ *
+ * */
+fun Process.killOnFatherDeath(cleanFunction: () -> Unit) = {
     val closeChildThread = object : Thread() {
         override fun run() {
-            if (SystemInfo.isWindows()) {
-                "pkill /IM " + KaazingGatewayStarter.WINDOWS_EXECUTABLE_NAME + " /F"
-            }
-            this@killKaazingGatewayOnFatherDeath.destroy()
+            cleanFunction()
+            this@killOnFatherDeath.destroy()
         }
     }
 
