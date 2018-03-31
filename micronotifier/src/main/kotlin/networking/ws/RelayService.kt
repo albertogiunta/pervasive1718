@@ -42,22 +42,22 @@ class RelayService : WSServer<Payload<WSOperations, String>>(name = Services.NOT
     }
 
     override fun onConnect(session: Session) {
-        Logger.info("[ ${wsUser.name} | ${this.name} *** ] session open on remote ${session.remote.inetSocketAddress}")
+        Logger.info("[ ${wsUser.name} | $name@${this.javaClass.simpleName} *** ] session open on remote ${session.remote.inetSocketAddress}")
     }
 
     override fun onClose(session: Session, statusCode: Int, reason: String) {
-        Logger.info("[ ${wsUser.name} | ${this.name} *** ] session onClose on remote | exit code $statusCode")
+        Logger.info("[ ${wsUser.name} | $name@${this.javaClass.simpleName} *** ] session onClose on remote | exit code $statusCode")
         this.notify(session)
     }
 
     override fun onMessage(session: Session, message: String) {
-        Logger.info("[ ${wsUser.name} | $name --> ] $message")
+        Logger.info("[ ${wsUser.name} | $name@${this.javaClass.simpleName} --> ] received message: $message")
         this.notify(session to message)
     }
 
     @OnWebSocketError
     fun onError(session : Session, error : Throwable) {
-        Logger.error("[${wsUser.name} | $name --- Error] @ ${session.remote}", error)
+        Logger.error("[${wsUser.name} | $name@${this.javaClass.simpleName} --- Error] @ ${session.remote}", error)
     }
 
     /**

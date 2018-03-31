@@ -1,8 +1,8 @@
 package controller
 
 import controller.logic.NotificationHandler
-import controller.logic.RelayHandler
 import controller.logic.SubscriptionHandler
+import controller.logic.UpdateHandler
 import io.reactivex.subjects.PublishSubject
 import model.*
 import networking.ws.RelayService
@@ -53,7 +53,7 @@ class CoreController private constructor(topicSet: Set<LifeParameters>) : patter
 
     fun loadHandlers() : CoreController {
         SubscriptionHandler.runOn(this)
-        RelayHandler.runOn(this)
+        UpdateHandler.runOn(this)
         NotificationHandler.runOn(this)
 
         return this
@@ -64,20 +64,21 @@ class CoreController private constructor(topicSet: Set<LifeParameters>) : patter
         return this
     }
 
-    @Suppress("UNCHECKED_CAST")
+    @Suppress("UNCHECKED_CAST", "PLATFORM_CLASS_MAPPED_TO_KOTLIN")
     override fun update(obj: Any) {
         when (obj) {
             is Pair<*, *> -> {
-                when(obj) {
-                    obj.first is Session && obj.second is String -> {
+                when(obj.first) {
+                    is Session -> {
                         wsSubjects[RelayService::class.java.name]?.onNext(obj as Pair<Session, String>)
                     }
-
-                    obj.first is LifeParameters && obj.second is String -> {
+                    is LifeParameters -> {
                         val (lp, message) = obj as Pair<LifeParameters, String>
                         amqpSubjects[lp]?.onNext(message)
                     }
-                    else -> {}
+                    else -> {
+                        Logger.error("Unsupported (${obj.first}, ${obj.second})")
+                    }
                 }
             }
             is Session -> {
@@ -86,7 +87,9 @@ class CoreController private constructor(topicSet: Set<LifeParameters>) : patter
                     wsSubjects[RelayService::class.java.name]?.onNext(obj to message.toJson())
                 }
             }
-            else -> {}
+            else -> {
+                Logger.error("Unsupported ($obj)")
+            }
         }
     }
 

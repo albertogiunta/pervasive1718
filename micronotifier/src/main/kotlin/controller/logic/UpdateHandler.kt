@@ -15,7 +15,7 @@ import utils.toJson
  * @author XanderC
  *
  */
-object RelayHandler {
+object UpdateHandler {
 
     fun runOn(core: CoreController) {
 
@@ -58,6 +58,6 @@ object RelayHandler {
             }
         }
 
-        Logger.info("RelayHandler Loaded...")
+        Logger.info("UpdateHandler Loaded...")
     }
 }
