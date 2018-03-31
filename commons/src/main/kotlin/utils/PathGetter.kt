@@ -2,7 +2,7 @@ package utils
 
 object PathGetter {
 
-    val SYSTEM_SEPARATOR = System.getProperty("file.separator").get(0)
+    val SYSTEM_SEPARATOR = SystemInfo.FILE_SEPARATOR
     val PROJECT_NAME = "pervasive1718"
     val CONFIG_FILE = "config.json"
     val JARS_GENERATION_DIRECTORY_NAME = "generatedJars"

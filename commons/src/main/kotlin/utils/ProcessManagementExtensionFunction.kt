@@ -15,10 +15,13 @@ fun String.runCommandIn(dir: File): Process =
                 .redirectError(ProcessBuilder.Redirect.INHERIT)
                 .start()
 
-fun Process.killOnFatherDeath() = {
+fun Process.killKaazingGatewayOnFatherDeath() = {
     val closeChildThread = object : Thread() {
         override fun run() {
-            this@killOnFatherDeath.destroy()
+            if (SystemInfo.isWindows()) {
+                "pkill /IM " + KaazingGatewayStarter.WINDOWS_EXECUTABLE_NAME + " /F"
+            }
+            this@killKaazingGatewayOnFatherDeath.destroy()
         }
     }
 

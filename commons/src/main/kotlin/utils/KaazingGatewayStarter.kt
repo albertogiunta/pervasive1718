@@ -4,7 +4,6 @@ import java.io.File
 
 object KaazingGatewayStarter {
 
-    private val os = System.getProperty("os.name").toLowerCase()
     private val GATEWAY_VERSION = "5.7.3"
     private val GATEWAY_DIRECTORY_NAME = "kaazing-enterprise-gateway-" + GATEWAY_VERSION
     private val EXECUTABLE_LOCATION = GATEWAY_DIRECTORY_NAME +
@@ -12,15 +11,18 @@ object KaazingGatewayStarter {
             "bin" +
             PathGetter.SYSTEM_SEPARATOR
 
+    val UNIX_EXECUTABLE_NAME = "gateway.start"
+    val WINDOWS_EXECUTABLE_NAME = "gateway.start.bat"
+
     fun startGateway(): Process {
         var dir = ""
         var command = ""
-        if (isLinux() || isMac()) {
+        if (SystemInfo.isLinux() || SystemInfo.isMac()) {
             dir =  "unix"
-            command ="./gateway.start"
-        } else if (isWindows()) {
+            command = "./" + UNIX_EXECUTABLE_NAME
+        } else if (SystemInfo.isWindows()) {
             dir =  "windows"
-            command = "cmd.exe /c start \"\" gateway.start.bat"
+            command = "cmd.exe /c start \"\" " + WINDOWS_EXECUTABLE_NAME + "/B"
         }
 
         val workingModule = PathGetter.getKaazingGatewayPath() +
@@ -31,10 +33,4 @@ object KaazingGatewayStarter {
 
         return command.runCommandIn(File(workingModule))
     }
-
-    private fun isWindows(): Boolean = os.contains("windows")
-
-    private fun isLinux(): Boolean = os.contains("linux")
-
-    private fun isMac(): Boolean = os.contains("mac os x")
 }
