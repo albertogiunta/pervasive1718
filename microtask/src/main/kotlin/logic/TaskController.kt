@@ -138,6 +138,9 @@ class TaskController private constructor(private val ws: WSTaskServer,
                 "$dbUrl/${Params.Task.API_NAME}/${Params.Task.TASK_NAME}/${it.task.name}".httpDelete().responseString {
                     request, response, result ->  ResponseHandlers.emptyHandler(request, response, result)
                 }
+                "$visorUrl/${Params.Task.API_NAME}/${it.task.name}".httpDelete().responseString {
+                    request, response, result ->  ResponseHandlers.emptyHandler(request, response, result)
+                }
             }
                     ?: ws.sendMessage(leader.second, PayloadWrapper(Services.instanceId(),
                         WSOperations.ERROR_REMOVING_TASK, TaskError(augmentedTask.task, "").toJson()))
