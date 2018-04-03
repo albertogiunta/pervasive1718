@@ -86,7 +86,6 @@ object NotificationHandler {
             }.doOnNext {
                 if (core.useLogging) utils.Logger.info(it.toString())
             }.subscribe {message ->
-                // Do Stuff, if necessary but SubscriptionHandler is MANDATORY.
                 core.topics[lifeParameter]?.forEach { member ->
                     if (core.sessions.contains(member)) {
                         try {
