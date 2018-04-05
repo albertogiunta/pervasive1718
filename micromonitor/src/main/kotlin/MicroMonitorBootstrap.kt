@@ -8,7 +8,7 @@ object MicroMonitorBootstrap {
     fun main(args: Array<String>) {
         ConfigLoader().load(args)
 
-        val OBSERVATION_REFRESH_TIME = 1000L
+        val OBSERVATION_REFRESH_TIME = 3000L
 
         val tempMonitor = TemperatureMonitorsFactory.createSimulatedTemperatureMonitor()
 

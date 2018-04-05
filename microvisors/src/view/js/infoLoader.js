@@ -1,1 +1,1 @@
-var patientCF = "jin"
+var patientCF = "CFPatient2";

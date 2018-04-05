@@ -15,7 +15,7 @@ object HeartMonitorsFactory {
     private const val DEFAULT_HEART_RATE_MAX_BOUND = 200.0
 
 
-    private const val DEFAULT_REFRESH_RATE = 1000L
+    private const val DEFAULT_REFRESH_RATE = 3000L
 
 
     /**
