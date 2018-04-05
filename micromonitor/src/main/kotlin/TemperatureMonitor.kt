@@ -5,7 +5,7 @@ object TemperatureMonitorsFactory {
     val DEFAULT_INIT_VALUE = 80
     val DEFAULT_MIN_BOUND = 36.0
     val DEFAULT_MAX_BOUND = 43.0
-    val DEFAULT_REFRESH_RATE = 3000L
+    val DEFAULT_REFRESH_RATE = 1500L
 
     /**
      * A factory method for a static Temperature Monitor
