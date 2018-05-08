@@ -27,3 +27,7 @@ Il progetto è suddiviso in 2 repository:
 Una relazione dettagliata del sistema è invece reperibile a questo indirizzo in formato LaTeX: https://www.dropbox.com/home/Apps/ShareLaTeX/Pervasive%20System%20-%20Project
 
 ### Deployment
+
+### Resource Material 
+
+Promo Video: https://youtu.be/5zBNVL_9MyI
