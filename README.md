@@ -24,7 +24,7 @@ Il progetto è suddiviso in 2 repository:
 * Repository dei Microservizi: https://github.com/albertogiunta/pervasive1718
 * Repository delle applicazioni Android: https://github.com/iswearimnotalurker/androidPervasive1718
 
-Una relazione dettagliata del sistema è invece reperibile a questo indirizzo in formato LaTeX: https://www.dropbox.com/home/Apps/ShareLaTeX/Pervasive%20System%20-%20Project
+Una relazione dettagliata del sistema è invece reperibile a questo indirizzo in formato LaTeX: https://www.dropbox.com/s/c0saubv8vagzu8d/Pervasive_System___Project.pdf?dl=0
 
 ### Deployment
 
